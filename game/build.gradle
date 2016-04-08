@@ -1,2 +1,2 @@
-group 'com.scottlogic.hackathon'
-version '1.0-SNAPSHOT'
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"

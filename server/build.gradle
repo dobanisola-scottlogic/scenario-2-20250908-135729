@@ -1,15 +1,16 @@
-group 'com.scottlogic.hackathon'
-version '1.0-SNAPSHOT'
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"
 
-def mainClass = 'com.scottlogic.hackathon.server.HackathonApplication'
+def mainClass = "com.scottlogic.hackathon.server.HackathonApplication"
 
-apply plugin: 'application'
+apply plugin: "application"
 
 mainClassName = mainClass
 
 dependencies {
-    compile group: 'io.dropwizard', name: 'dropwizard-core', version: '0.9.2'
+    compile group: "io.dropwizard", name: "dropwizard-core", version: "0.9.2"
     compile project(":game")
+    compile project(":game-engine")
 }
 
 jar {
@@ -22,10 +23,10 @@ jar {
 }
 
 runShadow {
-    args 'server'
+    args "server"
 }
 
 run {
     main mainClass
-    args 'server'
+    args "server"
 }

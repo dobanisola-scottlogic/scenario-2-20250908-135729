@@ -1,5 +1,5 @@
-group 'com.scottlogic.hackathon'
-version '1.0-SNAPSHOT'
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"
 
 allprojects {
     repositories {
@@ -7,7 +7,7 @@ allprojects {
     }
 
     task wrapper(type: Wrapper) {
-        gradleVersion = '2.9'
+        gradleVersion = "2.9"
         distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
     }
 }
@@ -19,18 +19,18 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
     }
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: "java"
+    apply plugin: "com.github.johnrengelman.shadow"
 
     sourceCompatibility = 1.8
 
     dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.11'
+        testCompile group: "junit", name: "junit", version: "4.11"
     }
 
     shadowJar {

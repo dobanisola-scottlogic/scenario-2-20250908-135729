@@ -1,6 +1,27 @@
-group 'com.scottlogic.hackathon'
-version '1.0-SNAPSHOT'
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"
+
+def mainClass = "com.scottlogic.hackathon.client.Client"
+
+apply plugin: "application"
+
+mainClassName = mainClass
 
 dependencies {
     compile project(":game")
+    compile project(":game-engine")
+    compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "hackathon-client",
+                "Implementation-Version": version,
+                "Main-Class": mainClass )
+    }
+}
+
+run {
+    main mainClass
 }

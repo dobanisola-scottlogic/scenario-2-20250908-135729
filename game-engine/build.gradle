@@ -1,0 +1,6 @@
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"
+
+dependencies {
+    compile project(":game")
+}
