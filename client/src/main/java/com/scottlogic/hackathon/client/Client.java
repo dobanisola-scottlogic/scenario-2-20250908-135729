@@ -47,6 +47,10 @@ public class Client {
         final PhaseResult finalResult = gameResult.getPhaseResults().get(gameResult.getPhaseResults().size() - 1);
         System.out.printf("Game completed in %s phases", finalResult.getPhase())
                 .println();
+
+        System.out.printf("Ended because %s", gameResult.getCutoffCondition().toString())
+                .println();
+
         System.out.printf("The game has %s spawn points, %s players and %s collectables left",
                 finalResult.getSpawnPoints().size(),
                 finalResult.getPlayers().size(),

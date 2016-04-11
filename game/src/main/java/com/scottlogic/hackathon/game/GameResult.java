@@ -7,4 +7,5 @@ public interface GameResult {
     List<PhaseResult> getPhaseResults();
     Map getMap();
     Set<Position> getOutOfBoundPositions();
+    CutoffCondition getCutoffCondition();
 }

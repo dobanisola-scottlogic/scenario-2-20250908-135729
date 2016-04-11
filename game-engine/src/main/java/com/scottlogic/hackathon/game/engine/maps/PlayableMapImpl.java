@@ -70,7 +70,7 @@ class PlayableMapImpl implements PlayableMap {
         int x = position.getX();
         int y = position.getY();
 
-        if (direction == Direction.NOTHWEST || direction == Direction.WEST || direction == Direction.SOUTHWEST) {
+        if (direction == Direction.NORTHWEST || direction == Direction.WEST || direction == Direction.SOUTHWEST) {
             x = (x - distance) % width;
             if (x < 0) {
                 x = width + x;
@@ -79,7 +79,7 @@ class PlayableMapImpl implements PlayableMap {
             x = (x + distance) % width;
         }
 
-        if (direction == Direction.NORTHEAST || direction == Direction.NORTH || direction == Direction.NOTHWEST) {
+        if (direction == Direction.NORTHEAST || direction == Direction.NORTH || direction == Direction.NORTHWEST) {
             y = (y - distance) % height;
             if (y < 0) {
                 y = height + y;
@@ -113,6 +113,19 @@ class PlayableMapImpl implements PlayableMap {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public int distanceBetween(final Position p1, final Position p2) {
+        final int x1 = p1.getX();
+        final int x2 = p2.getX();
+        final int y1 = p1.getY();
+        final int y2 = p2.getY();
+
+        final int deltaX = Math.min(Math.abs(x1 - x2), getWidth() - Math.abs(x1 - x2));
+        final int deltaY = Math.min(Math.abs(y1 - y2), getHeight() - Math.abs(y1 - y2));
+
+        return (int) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
 
     public String toString() {

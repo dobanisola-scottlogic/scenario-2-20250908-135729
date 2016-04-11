@@ -20,6 +20,7 @@ public class GameEngine {
     private final int spawnPhases = 8;
     private final int maxVisibleDistance = 2;
     private final int maxCollectablesSpawnedPerPhase = 4;
+    private final int minCollectableDistanceFromSpawn = 8;
     private final double collectablesSpawnFrequency = 0.2;
     Map<Bot, GameStateImpl> gamesStates = new HashMap<Bot, GameStateImpl>();
     private TrackedSet<PlayerImpl> players;
@@ -75,12 +76,14 @@ public class GameEngine {
         final PhaseResult initialPhaseResult = createPhaseResult();
         phaseResults.add(initialPhaseResult);
 
+        CutoffCondition cutoffCondition;
         do {
             final PhaseResult phaseResult = playPhase();
             phaseResults.add(phaseResult);
-        } while (!isFinished());
+            cutoffCondition = getCutoffCondition();
+        } while (cutoffCondition == null);
 
-        return new GameResultImpl(phaseResults, map, map.getOutOfBoundsPositions());
+        return new GameResultImpl(phaseResults, map, map.getOutOfBoundsPositions(), cutoffCondition);
     }
 
     private PhaseResult playPhase() throws Exception {
@@ -169,9 +172,21 @@ public class GameEngine {
         return visibleItems;
     }
 
-    private boolean isFinished() {
-        final Map<UUID, Set<Player>> ownerToPlayerLookup = createLookup(players, player -> player.getOwner(), Function.identity());
-        return ownerToPlayerLookup.size() <= 1 || spawnPoints.size() == 0 || phase > maxPhases;
+    private CutoffCondition getCutoffCondition() {
+        CutoffCondition cutoffCondition = null;
+
+        if (phase > maxPhases) {
+            cutoffCondition = CutoffCondition.TURN_LIMIT_REACHED;
+        } else if (spawnPoints.size() == 0) {
+            cutoffCondition = CutoffCondition.RANK_STABLE;
+        } else {
+            final Map<UUID, Set<Player>> ownerToPlayerLookup = createLookup(players, player -> player.getOwner(), Function.identity());
+            if (ownerToPlayerLookup.size() == 1) {
+                cutoffCondition = CutoffCondition.LONE_SURVIVOR;
+            }
+        }
+
+        return cutoffCondition;
     }
 
     private void setBotIds() {
@@ -274,12 +289,12 @@ public class GameEngine {
 
     private CollectableImpl spawnCollectable(final Collectable.Type type) {
         final Random random = new Random();
+
         final Set<Position> excludedPositions = Stream.concat(
                 map.getOutOfBoundsPositions().stream(),
                 spawnPoints.stream().map(spawnPoint -> spawnPoint.getPosition()))
                 .distinct()
                 .collect(Collectors.toSet());
-
 
         Position position;
         int attempts = 0;
@@ -290,11 +305,17 @@ public class GameEngine {
             if (attempts++ > 100) {
                 throw new RuntimeException("Too many positions are excluded to allow use to find a free position");
             }
-        } while (excludedPositions.contains(position));
+        } while (excludedPositions.contains(position) || closeToSpawnPoint(position, minCollectableDistanceFromSpawn));
 
         final CollectableImpl collectable = new CollectableImpl(type, position);
         collectables.add(collectable);
         return collectable;
+    }
+
+    private boolean closeToSpawnPoint(final Position source, final int range) {
+        return spawnPoints
+                .stream()
+                .anyMatch(spawnPoint -> map.distanceBetween(source, spawnPoint.getPosition()) <= range);
     }
 
     private void spawnPlayers() {
