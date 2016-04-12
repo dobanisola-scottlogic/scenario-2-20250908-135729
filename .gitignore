@@ -29,3 +29,6 @@ gradle-app.setting
 
 .idea/gradle.xml
 .idea/libraries
+
+# Node
+node_modules
