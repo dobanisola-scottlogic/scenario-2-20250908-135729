@@ -1,11 +1,13 @@
 package com.scottlogic.hackathon.server.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.resources.HackathonResource;
 
 public class HackathonHealthCheck extends HealthCheck {
     private final HackathonResource hackathonResource;
 
+    @Inject
     public HackathonHealthCheck(final HackathonResource hackathonResource) {
         this.hackathonResource = hackathonResource;
     }

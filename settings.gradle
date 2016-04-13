@@ -1,2 +1,2 @@
 rootProject.name = "hackathon"
-include "game", "game-engine", "client", "server", "default-bot"
+include "game", "game-engine", "client", "server", "default-bots"

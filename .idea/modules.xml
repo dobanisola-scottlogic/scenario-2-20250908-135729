@@ -5,9 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/client.iml" filepath="$PROJECT_DIR$/.idea/modules/client/client.iml" group="client" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/client_main.iml" filepath="$PROJECT_DIR$/.idea/modules/client/client_main.iml" group="client" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/client_test.iml" filepath="$PROJECT_DIR$/.idea/modules/client/client_test.iml" group="client" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/default-bot/default-bot.iml" filepath="$PROJECT_DIR$/.idea/modules/default-bot/default-bot.iml" group="default-bot" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/default-bot/default-bot_main.iml" filepath="$PROJECT_DIR$/.idea/modules/default-bot/default-bot_main.iml" group="default-bot" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/default-bot/default-bot_test.iml" filepath="$PROJECT_DIR$/.idea/modules/default-bot/default-bot_test.iml" group="default-bot" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/default-bots/default-bots.iml" filepath="$PROJECT_DIR$/.idea/modules/default-bots/default-bots.iml" group="default-bots" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/default-bots/default-bots_main.iml" filepath="$PROJECT_DIR$/.idea/modules/default-bots/default-bots_main.iml" group="default-bots" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/default-bots/default-bots_test.iml" filepath="$PROJECT_DIR$/.idea/modules/default-bots/default-bots_test.iml" group="default-bots" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/game/game.iml" filepath="$PROJECT_DIR$/.idea/modules/game/game.iml" group="game" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-engine/game-engine.iml" filepath="$PROJECT_DIR$/.idea/modules/game-engine/game-engine.iml" group="game-engine" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-engine/game-engine_main.iml" filepath="$PROJECT_DIR$/.idea/modules/game-engine/game-engine_main.iml" group="game-engine" />

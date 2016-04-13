@@ -1,13 +1,27 @@
 package com.scottlogic.hackathon.game.engine;
 
+import com.scottlogic.hackathon.game.TrackedSet;
+
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class TrackedSet<T> implements Iterable<T> {
-    private final Set<T> tracked = new HashSet<T>();
-    private final Set<T> added = new HashSet<T>();
-    private final Set<T> removed = new HashSet<T>();
+public class TrackedSetImpl<T> implements TrackedSet<T> {
+    private final Set<T> tracked;
+    private final Set<T> added;
+    private final Set<T> removed;
+
+    public TrackedSetImpl() {
+        tracked = new HashSet<T>();
+        added = new HashSet<T>();
+        removed = new HashSet<T>();
+    }
+
+    public TrackedSetImpl(final TrackedSetImpl<? extends T> source) {
+        tracked = new HashSet<T>(source.getTracked());
+        added = new HashSet<T>(source.getAdded());
+        removed = new HashSet<T>(source.getRemoved());
+    }
 
     public Set<T> getTracked() {
         return Collections.unmodifiableSet(tracked);
@@ -21,13 +35,25 @@ public class TrackedSet<T> implements Iterable<T> {
         return Collections.unmodifiableSet(removed);
     }
 
+    public boolean contains(final T item) {
+        return tracked.contains(item);
+    }
+
+    public Stream<T> stream() {
+        return StreamSupport.stream(Spliterators.spliterator(iterator(), size(), Spliterator.IMMUTABLE | Spliterator.DISTINCT), false);
+    }
+
+    public Iterator<T> iterator() {
+        return tracked.iterator();
+    }
+
+    public int size() {
+        return tracked.size();
+    }
+
     public void reset() {
         added.clear();
         removed.clear();
-    }
-
-    public boolean contains(final Object o) {
-        return tracked.contains(o);
     }
 
     public void addAll(final Iterable<? extends T> items) {
@@ -66,20 +92,6 @@ public class TrackedSet<T> implements Iterable<T> {
         }
         return found;
     }
-
-    public Stream<T> stream() {
-        return StreamSupport.stream(Spliterators.spliterator(iterator(), size(), Spliterator.IMMUTABLE | Spliterator.DISTINCT), false);
-
-    }
-
-    public Iterator<T> iterator() {
-        return tracked.iterator();
-    }
-
-    public int size() {
-        return tracked.size();
-    }
-
 
     private class TrackedSetIterator implements Iterator<T> {
         private final Iterator<T> tracked;

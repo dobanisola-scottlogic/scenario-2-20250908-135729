@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.client;
 
+import com.scottlogic.hackathon.bots.ConsistentRandomBot;
 import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.game.engine.GameEngine;
 import org.fusesource.jansi.AnsiConsole;

@@ -1,11 +1,9 @@
 package com.scottlogic.hackathon.game;
 
-import java.util.Set;
-
 public interface PhaseResult {
     int getPhase();
-    Set<Player> getPlayers();
-    Set<SpawnPoint> getSpawnPoints();
-    Set<Collectable> getCollectables();
-    Set<DisqualifiedBot> getDisqualifiedBots();
+    TrackedSet<Player> getPlayers();
+    TrackedSet<SpawnPoint> getSpawnPoints();
+    TrackedSet<Collectable> getCollectables();
+    TrackedSet<DisqualifiedBot> getDisqualifiedBots();
 }

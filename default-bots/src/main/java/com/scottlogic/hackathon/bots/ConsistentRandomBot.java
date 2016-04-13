@@ -1,4 +1,4 @@
-package com.scottlogic.hackathon.client;
+package com.scottlogic.hackathon.bots;
 
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.game.Direction;

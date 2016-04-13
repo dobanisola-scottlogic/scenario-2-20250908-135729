@@ -2,21 +2,18 @@ package com.scottlogic.hackathon.game.engine.models;
 
 import com.scottlogic.hackathon.game.*;
 
-import java.util.Collections;
-import java.util.Set;
-
 public class PhaseResultImpl implements PhaseResult {
     private final int phase;
-    private final Set<Player> players;
-    private final Set<SpawnPoint> spawnPoints;
-    private final Set<Collectable> collectables;
-    private final Set<DisqualifiedBot> disqualifiedBots;
+    private final TrackedSet<Player> players;
+    private final TrackedSet<SpawnPoint> spawnPoints;
+    private final TrackedSet<Collectable> collectables;
+    private final TrackedSet<DisqualifiedBot> disqualifiedBots;
 
     public PhaseResultImpl(final int phase,
-                           final Set<Player> players,
-                           final Set<SpawnPoint> spawnPoints,
-                           final Set<Collectable> collectables,
-                           final Set<DisqualifiedBot> disqualifiedBots) {
+                           final TrackedSet<Player> players,
+                           final TrackedSet<SpawnPoint> spawnPoints,
+                           final TrackedSet<Collectable> collectables,
+                           final TrackedSet<DisqualifiedBot> disqualifiedBots) {
         this.phase = phase;
         this.players = players;
         this.spawnPoints = spawnPoints;
@@ -30,23 +27,23 @@ public class PhaseResultImpl implements PhaseResult {
     }
 
     @Override
-    public Set<Player> getPlayers() {
-        return Collections.unmodifiableSet(players);
+    public TrackedSet<Player> getPlayers() {
+        return players;
     }
 
     @Override
-    public Set<SpawnPoint> getSpawnPoints() {
-        return Collections.unmodifiableSet(spawnPoints);
+    public TrackedSet<SpawnPoint> getSpawnPoints() {
+        return spawnPoints;
     }
 
     @Override
-    public Set<Collectable> getCollectables() {
-        return Collections.unmodifiableSet(collectables);
+    public TrackedSet<Collectable> getCollectables() {
+        return collectables;
     }
 
     @Override
-    public Set<DisqualifiedBot> getDisqualifiedBots() {
-        return Collections.unmodifiableSet(disqualifiedBots);
+    public TrackedSet<DisqualifiedBot> getDisqualifiedBots() {
+        return disqualifiedBots;
     }
 
     public String toString() {
@@ -57,5 +54,4 @@ public class PhaseResultImpl implements PhaseResult {
                 collectables.size(),
                 disqualifiedBots.size());
     }
-
 }

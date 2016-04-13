@@ -11,6 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="game_main" />
     <orderEntry type="module" module-name="game-engine_main" />
+    <orderEntry type="module" module-name="default-bots_main" />
     <orderEntry type="library" name="Gradle: org.fusesource.jansi:jansi:1.11" level="project" />
   </component>
 </module>

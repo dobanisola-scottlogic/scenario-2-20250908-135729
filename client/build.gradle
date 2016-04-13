@@ -10,6 +10,7 @@ mainClassName = mainClass
 dependencies {
     compile project(":game")
     compile project(":game-engine")
+    compile project(":default-bots")
     compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
 }
 

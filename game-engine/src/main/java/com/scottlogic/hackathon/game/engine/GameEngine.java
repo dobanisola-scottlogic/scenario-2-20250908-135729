@@ -24,10 +24,10 @@ public class GameEngine {
     private final double collectablesSpawnFrequency = 0.2;
     private final int battleRadius = 2;
     Map<Bot, GameStateImpl> gamesStates = new HashMap<Bot, GameStateImpl>();
-    private TrackedSet<PlayerImpl> players;
-    private TrackedSet<CollectableImpl> collectables;
-    private TrackedSet<SpawnPointImpl> spawnPoints;
-    private TrackedSet<DisqualifiedBotImpl> disqualifiedBots;
+    private TrackedSetImpl<PlayerImpl> players;
+    private TrackedSetImpl<CollectableImpl> collectables;
+    private TrackedSetImpl<SpawnPointImpl> spawnPoints;
+    private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase = 0;
 
     public GameEngine(final PlayableMap map, final Set<Bot> bots) throws IllegalArgumentException {
@@ -62,10 +62,10 @@ public class GameEngine {
     }
 
     public GameResult play() throws Exception {
-        players = new TrackedSet<PlayerImpl>();
-        collectables = new TrackedSet<CollectableImpl>();
-        spawnPoints = new TrackedSet<SpawnPointImpl>();
-        disqualifiedBots = new TrackedSet<DisqualifiedBotImpl>();
+        players = new TrackedSetImpl<PlayerImpl>();
+        collectables = new TrackedSetImpl<CollectableImpl>();
+        spawnPoints = new TrackedSetImpl<SpawnPointImpl>();
+        disqualifiedBots = new TrackedSetImpl<DisqualifiedBotImpl>();
 
         setBotIds();
         createSpawnPoints();
@@ -127,10 +127,10 @@ public class GameEngine {
     private PhaseResult createPhaseResult() {
         final PhaseResultBuilder phaseResultBuilder = new PhaseResultBuilder()
                 .setPhase(phase)
-                .setPlayers(new HashSet<Player>(players.getTracked()))
-                .setSpawnPoints(new HashSet<SpawnPoint>(spawnPoints.getTracked()))
-                .setCollectables(new HashSet<Collectable>(collectables.getTracked()))
-                .setDisqualifiedBots(new HashSet<DisqualifiedBot>(disqualifiedBots.getTracked()));
+                .setPlayers(new TrackedSetImpl<>(players))
+                .setSpawnPoints(new TrackedSetImpl<>(spawnPoints))
+                .setCollectables(new TrackedSetImpl<>(collectables))
+                .setDisqualifiedBots(new TrackedSetImpl<>(disqualifiedBots));
 
         return phaseResultBuilder.createPhaseResult();
     }
@@ -449,7 +449,7 @@ public class GameEngine {
         return map;
     }
 
-    private <T> void removeIf(final TrackedSet<T> items, final Predicate<T> predicate) {
+    private <T> void removeIf(final TrackedSetImpl<T> items, final Predicate<T> predicate) {
         for (final Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
             final T item = iterator.next();
             if (predicate.test(item)) {
