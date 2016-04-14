@@ -14,4 +14,5 @@ public interface PlayableMap extends Map {
     Position calculatePosition(Position position, Direction direction);
     Position calculatePosition(Position position, Direction direction, int distance);
     Stream<Position> getSurroundingPositions(Position position, int distance, boolean includeOrigin);
+    int distanceBetween(final Position a, final Position b);
 }
