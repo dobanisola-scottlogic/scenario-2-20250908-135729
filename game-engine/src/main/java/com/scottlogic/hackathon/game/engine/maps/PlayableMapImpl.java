@@ -106,6 +106,19 @@ class PlayableMapImpl implements PlayableMap {
     }
 
     @Override
+    public int distanceBetween(final Position position1, final Position position2) {
+        final int x1 = position1.getX();
+        final int x2 = position2.getX();
+        final int y1 = position1.getY();
+        final int y2 = position2.getY();
+
+        final int deltaX = Math.min(Math.abs(x1 - x2), getWidth() - Math.abs(x1 - x2));
+        final int deltaY = Math.min(Math.abs(y1 - y2), getHeight() - Math.abs(y1 - y2));
+
+        return (int) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+    }
+
+    @Override
     public int getWidth() {
         return width;
     }
@@ -113,19 +126,6 @@ class PlayableMapImpl implements PlayableMap {
     @Override
     public int getHeight() {
         return height;
-    }
-
-    @Override
-    public int distanceBetween(final Position p1, final Position p2) {
-        final int x1 = p1.getX();
-        final int x2 = p2.getX();
-        final int y1 = p1.getY();
-        final int y2 = p2.getY();
-
-        final int deltaX = Math.min(Math.abs(x1 - x2), getWidth() - Math.abs(x1 - x2));
-        final int deltaY = Math.min(Math.abs(y1 - y2), getHeight() - Math.abs(y1 - y2));
-
-        return (int) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
 
     public String toString() {

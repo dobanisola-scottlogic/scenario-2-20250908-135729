@@ -18,10 +18,11 @@ public class GameEngine {
     private final PlayableMap map;
     private final int maxPhases = 512;
     private final int spawnPhases = 8;
-    private final int maxVisibleDistance = 2;
+    private final int maxVisibleDistance = 3;
     private final int maxCollectablesSpawnedPerPhase = 4;
     private final int minCollectableDistanceFromSpawn = 8;
     private final double collectablesSpawnFrequency = 0.2;
+    private final int battleRadius = 2;
     Map<Bot, GameStateImpl> gamesStates = new HashMap<Bot, GameStateImpl>();
     private TrackedSet<PlayerImpl> players;
     private TrackedSet<CollectableImpl> collectables;
@@ -209,7 +210,7 @@ public class GameEngine {
         for (final Bot bot : bots) {
             bot.setId(UUID.randomUUID());
             final Position spawnPointPosition = spawnPointPositionsIterator.next();
-            final SpawnPointImpl spawnPoint = new SpawnPointImpl(spawnPointPosition, bot.getId());
+            final SpawnPointImpl spawnPoint = new SpawnPointImpl(spawnPointPosition, bot.getId(), spawnPhases);
             spawnPoints.add(spawnPoint);
         }
     }
@@ -319,8 +320,8 @@ public class GameEngine {
     }
 
     private void spawnPlayers() {
-        if (phase < spawnPhases) {
-            for (final SpawnPoint spawnPoint : spawnPoints) {
+        for (final SpawnPointImpl spawnPoint : spawnPoints) {
+            if (spawnPoint.shouldSpawnPlayer()) {
                 spawnPlayer(spawnPoint);
             }
         }
@@ -334,7 +335,8 @@ public class GameEngine {
 
     private void collide() throws Exception {
         collideOutOfBoundsTiles();
-        collidePlayers();
+        collideOwnPlayers();
+        battlePlayers();
         collideSpawnPoints();
     }
 
@@ -348,37 +350,28 @@ public class GameEngine {
         }
     }
 
-    private void collidePlayers() {
+    private void collideOwnPlayers() {
         final Map<Position, Set<PlayerImpl>> positionToPlayersLookup = createLookup(players, player -> player.getPosition(), Function.identity());
 
         for (final Set<PlayerImpl> players : positionToPlayersLookup.values()) {
             if (players.size() > 1) {
-                final Map<UUID, Set<Player>> ownerToPlayersLookup = createLookup(players, player -> player.getOwner(), Function.identity());
-                // If more than one bot has players meeting then we need to remove players
-                if (ownerToPlayersLookup.size() > 1) {
-                    final Map<Integer, Set<UUID>> playerCountToOwnersLookup = createLookup(ownerToPlayersLookup.entrySet(), entry -> entry.getValue().size(), (entry) -> entry.getKey());
-                    final Set<PlayerImpl> playersToRemove = new HashSet<PlayerImpl>(players);
-                    // If they've not all got the same number of players we might want to remove only some
-                    if (playerCountToOwnersLookup.size() > 1) {
-                        final Integer maxCount = playerCountToOwnersLookup.keySet()
-                                .stream()
-                                .max(Comparator.naturalOrder())
-                                .get();
-                        // If we have a single bot with the most players, don't remove their players
-                        if (playerCountToOwnersLookup.get(maxCount).size() == 1) {
-                            final UUID owner = playerCountToOwnersLookup
-                                    .get(maxCount)
-                                    .stream()
-                                    .findFirst()
-                                    .get();
-                            playersToRemove.removeAll(ownerToPlayersLookup.get(owner));
-                        }
-                    }
-                    if (playersToRemove.size() > 0) {
-                        this.players.removeAll(playersToRemove);
+                final Map<UUID, Set<PlayerImpl>> ownerToPlayersLookup = createLookup(players, player -> player.getOwner(), Function.identity());
+
+                for (final Set<PlayerImpl> ownedPlayers : ownerToPlayersLookup.values()) {
+                    if (ownedPlayers.size() > 1) {
+                        this.players.removeAll(ownedPlayers);
                     }
                 }
             }
+        }
+    }
+
+    private void battlePlayers() {
+        final BattleSystem battleSystem = new BattleSystem(players, map, battleRadius);
+        final Set<PlayerImpl> deadPlayers = battleSystem.runBattle();
+
+        if (deadPlayers.size() > 0) {
+            this.players.removeAll(deadPlayers);
         }
     }
 
@@ -417,7 +410,7 @@ public class GameEngine {
                 .filter(item -> item.getOwner().equals(owner))
                 .findFirst();
         if (spawnPoint.isPresent()) {
-            spawnPlayer(spawnPoint.get());
+            spawnPoint.get().queuePlayer();
         }
         return true;
     }
