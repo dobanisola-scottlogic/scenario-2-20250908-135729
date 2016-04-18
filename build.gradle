@@ -38,3 +38,7 @@ subprojects {
     }
 }
 
+task stage {
+    dependsOn ":server:shadowJar"
+    dependsOn ":client:shadowJar"
+}

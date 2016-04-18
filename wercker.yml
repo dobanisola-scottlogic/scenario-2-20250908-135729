@@ -1,0 +1,32 @@
+box: rsillem/hackathon:latest
+
+build:
+  steps:
+    - script:
+      name: server test
+      code: |
+        chmod +x gradlew
+        ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR :server:test
+    - script:
+      name: client test
+      code: |
+        chmod +x gradlew
+        ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR :client:test
+    - script:
+      name: viewer install
+      code: |
+        cd viewer
+        mkdir -p "$WERCKER_CACHE_DIR/npm"
+        npm config set cache "$WERCKER_CACHE_DIR/npm"
+        npm install
+    - script:
+      name: viewer test
+      code: |
+        cd viewer
+        npm test
+deploy:
+  steps:
+    - heroku-deploy:
+        key: $HEROKU_KEY
+        user: $HEROKU_USER
+        app-name: $HEROKU_APP_NAME
