@@ -1,11 +1,15 @@
 package com.scottlogic.hackathon.server.models;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import com.sleepycat.persist.model.Entity;
+import com.sleepycat.persist.model.PrimaryKey;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Entity
 public class GameResult {
+    @PrimaryKey
+    private String key;
     private UUID id;
     private Map map;
     private Set<SpawnPoint> spawnPoints;
@@ -18,10 +22,11 @@ public class GameResult {
                final Map map,
                final Set<SpawnPoint> spawnPoints,
                final List<PhaseResult> phaseResults) {
+        this.key = id.toString();
         this.id = id;
         this.map = map;
-        this.spawnPoints = spawnPoints;
-        this.phaseResults = phaseResults;
+        this.spawnPoints = new HashSet<>(spawnPoints);
+        this.phaseResults = new ArrayList<>(phaseResults);
     }
 
     public static GameResult create(final com.scottlogic.hackathon.game.GameResult gameResult) {
@@ -42,6 +47,10 @@ public class GameResult {
         );
     }
 
+    public String getKey() {
+        return key;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -51,11 +60,11 @@ public class GameResult {
     }
 
     public Set<SpawnPoint> getSpawnPoints() {
-        return spawnPoints;
+        return Collections.unmodifiableSet(spawnPoints);
     }
 
     public List<PhaseResult> getPhaseResults() {
-        return phaseResults;
+        return Collections.unmodifiableList(phaseResults);
     }
 
 }

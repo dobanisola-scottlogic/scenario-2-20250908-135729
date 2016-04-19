@@ -1,10 +1,13 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.scottlogic.hackathon.game.Position;
+import com.sleepycat.persist.model.Persistent;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+@Persistent
 public class Map {
     private int width;
     private int height;
@@ -18,7 +21,7 @@ public class Map {
                final Set<Position> outOfBoundPositions) {
         this.width = width;
         this.height = height;
-        this.outOfBoundPositions = outOfBoundPositions;
+        this.outOfBoundPositions = new HashSet<>(outOfBoundPositions);
     }
 
     public static Map create(final com.scottlogic.hackathon.game.GameResult gameResult) {
@@ -26,6 +29,9 @@ public class Map {
                 gameResult.getMap().getWidth(),
                 gameResult.getMap().getHeight(),
                 gameResult.getOutOfBoundPositions()
+                        .stream()
+                        .map(Position::create)
+                        .collect(Collectors.toSet())
         );
     }
 

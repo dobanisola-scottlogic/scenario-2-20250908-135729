@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class GameService {
     private final Logger logger;
@@ -45,11 +44,7 @@ public class GameService {
     }
 
     public List<UUID> getGameResults() {
-        return gameStore
-                .getGameResults()
-                .stream()
-                .map(gameResult -> gameResult.getId())
-                .collect(Collectors.toList());
+        return gameStore.getGameResults();
     }
 
     public GameResult getGameResult(final UUID id) {

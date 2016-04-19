@@ -1,7 +1,10 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.sleepycat.persist.model.Persistent;
+
 import java.util.UUID;
 
+@Persistent
 public class Player {
     private UUID id;
     private UUID owner;

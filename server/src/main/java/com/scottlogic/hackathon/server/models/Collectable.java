@@ -1,9 +1,10 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.scottlogic.hackathon.game.Position;
+import com.sleepycat.persist.model.Persistent;
 
 import java.util.UUID;
 
+@Persistent
 public class Collectable {
     private UUID id;
     private int type;
@@ -22,7 +23,7 @@ public class Collectable {
         return new Collectable(
                 collectable.getId(),
                 collectable.getType().ordinal(),
-                collectable.getPosition());
+                Position.create(collectable.getPosition()));
     }
 
     public UUID getId() {

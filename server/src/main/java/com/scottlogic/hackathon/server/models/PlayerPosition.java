@@ -1,10 +1,11 @@
 package com.scottlogic.hackathon.server.models;
 
 import com.scottlogic.hackathon.game.Player;
-import com.scottlogic.hackathon.game.Position;
+import com.sleepycat.persist.model.Persistent;
 
 import java.util.UUID;
 
+@Persistent
 public class PlayerPosition {
     private UUID id;
     private Position position;
@@ -20,7 +21,7 @@ public class PlayerPosition {
     public static PlayerPosition create(final Player player) {
         return new PlayerPosition(
                 player.getId(),
-                player.getPosition()
+                Position.create(player.getPosition())
         );
     }
 
