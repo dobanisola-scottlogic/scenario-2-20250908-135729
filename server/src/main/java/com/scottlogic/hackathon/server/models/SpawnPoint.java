@@ -1,9 +1,10 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.scottlogic.hackathon.game.Position;
+import com.sleepycat.persist.model.Persistent;
 
 import java.util.UUID;
 
+@Persistent
 public class SpawnPoint {
     private UUID id;
     private UUID owner;
@@ -22,7 +23,7 @@ public class SpawnPoint {
         return new SpawnPoint(
                 spawnPoint.getId(),
                 spawnPoint.getOwner(),
-                spawnPoint.getPosition());
+                Position.create(spawnPoint.getPosition()));
     }
 
     public UUID getId() {
