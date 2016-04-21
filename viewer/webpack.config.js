@@ -1,17 +1,17 @@
 var path = require('path');
 
 const PATHS = {
-    build: path.join(__dirname, 'build'),
-    phaser: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),
-    pixi: path.join(__dirname, '/node_modules/phaser/build/custom/pixi.js'),
-    p2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js')
+    BUILD: path.join(__dirname, 'build'),
+    PHASER: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),
+    PIXI: path.join(__dirname, '/node_modules/phaser/build/custom/pixi.js'),
+    P2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js')
 };
 
 module.exports = {
     entry: './scripts/entry.js',
     output: {
-        path: PATHS.build,
-        publicPath: PATHS.build,
+        path: PATHS.BUILD,
+        publicPath: PATHS.BUILD,
         filename: 'bundle.js'
     },
     module: {
@@ -48,9 +48,9 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'phaser': PATHS.phaser,
-            'pixi': PATHS.pixi,
-            'p2': PATHS.p2
+            'phaser': PATHS.PHASER,
+            'pixi': PATHS.PIXI,
+            'p2': PATHS.P2
         },
         extensions: ['', '.js', '.json']
     }
