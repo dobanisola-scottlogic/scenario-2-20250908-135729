@@ -1,7 +1,7 @@
 
-// Import constants
 let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
+
 let Spawn = require('./Spawn');
 
 class Map {
@@ -25,7 +25,7 @@ class Map {
         // Populate obstacles
         this.gameData.constants.outOfBoundPositions.forEach((obstacle) => {
             this.tileGrid[obstacle.y][obstacle.x] = SPRITE.MAP.INDEXES.OBSTRUCTION;
-        }, this);
+        });
     }
     create(phaser) {
         for (let row = 0; row < this.tileGrid.length; row ++) {
@@ -44,12 +44,17 @@ class Map {
 
         this.gameData.constants.spawnPoints.forEach((spawn) => {
             this.spawns.push(new Spawn(phaser, this.gameData, spawn));
-        }, this);
+        });
     }
-    destorySpawn(spawnId) {
-        let spawnIndex = this.spawns.map(spawn => spawn.id).indexOf(spawnId);
-        this.spawns[spawnIndex].sprite.destroy();
-        this.spawns.splice(spawnIndex, 1);
+    destroySpawn(spawnId) {
+        let spawnIndex = this.spawns.map(spawn => spawn.id)
+                                    .indexOf(spawnId);
+        if (spawnIndex !== -1) {
+            this.spawns[spawnIndex].destroy();
+            this.spawns.splice(spawnIndex, 1);
+        } else {
+            console.log('ERROR : Failed to destroy spawn[' + spawnId + '].');
+        }
     }
 }
 

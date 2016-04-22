@@ -30,6 +30,15 @@ class Engine {
 
         // Construct map object
         this.map = new Map(this.gameData);
+
+        // Define arrays to hold game objects
+        this.collectables = [];
+    }
+    getPhaseCount() {
+        return this.gameData.deltas.length;
+    }
+    getPhaseDelta(index) {
+        return this.gameData.deltas[index];
     }
 }
 

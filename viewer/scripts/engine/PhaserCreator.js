@@ -1,5 +1,4 @@
 
-// Import constants
 let PHASER = require('../enums/phaser.js');
 let SPRITE = require('../enums/sprite.js');
 
@@ -17,8 +16,6 @@ class PhaserCreator {
         this.create = this.create.bind(this);
     }
     create() {
-
-        // Construct map sprites
         this.engine.map.create(this.engine.game);
     }
 }

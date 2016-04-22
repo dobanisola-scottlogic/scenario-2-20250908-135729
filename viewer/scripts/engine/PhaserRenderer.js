@@ -1,5 +1,4 @@
 
-// Import constants
 let PHASER = require('../enums/phaser.js');
 
 /*

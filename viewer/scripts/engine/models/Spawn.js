@@ -1,3 +1,4 @@
+
 let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
 
@@ -17,6 +18,9 @@ class Spawn {
         newSpawnSprite.height = PHASER.CELL.HEIGHT * 3;
         newSpawnSprite.anchor.setTo(0.5, 0.5);
         return newSpawnSprite;
+    }
+    destroy() {
+        this.sprite.destroy();
     }
 }
 

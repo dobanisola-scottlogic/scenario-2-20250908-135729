@@ -1,5 +1,4 @@
 
-// Import constants
 let PHASER = require('../enums/phaser.js');
 let SPRITE = require('../enums/sprite.js');
 
@@ -17,8 +16,6 @@ class PhaserPreloader {
         this.preload = this.preload.bind(this);
     }
     preload() {
-
-        // Load spritesheets
         this.loadSpriteSheet(SPRITE.MAP);
         this.loadSpriteSheet(SPRITE.PLAYER);
         this.loadSpriteSheet(SPRITE.SPAWN);
