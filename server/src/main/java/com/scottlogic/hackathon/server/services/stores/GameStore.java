@@ -1,7 +1,6 @@
 package com.scottlogic.hackathon.server.services.stores;
 
 
-import com.scottlogic.hackathon.server.database.DataAccessor;
 import com.scottlogic.hackathon.server.database.Database;
 import com.scottlogic.hackathon.server.models.GameResult;
 import com.sleepycat.persist.EntityCursor;
@@ -23,59 +22,29 @@ public class GameStore {
     }
 
     public void addGameResult(final GameResult gameResult) {
-        Database database = null;
-
-        try {
-            database = new Database();
-            final DataAccessor dataAccessor = new DataAccessor(database.getEntityStore());
-            dataAccessor.gameResultById.put(gameResult);
-        } catch (final Exception ex) {
-            logger.error("Error adding game result to database", ex);
-        } finally {
-            if (database != null) {
-                database.close();
-            }
-        }
+        Database.accessDatabase(dataAccessor -> dataAccessor.gameResultById.put(gameResult),
+                ex -> logger.error("Error adding game result to database", ex));
     }
 
     public GameResult getGameResult(final UUID id) {
-        GameResult gameResult = null;
-
-        Database database = null;
-        try {
-            database = new Database();
-            final DataAccessor dataAccessor = new DataAccessor(database.getEntityStore());
-            gameResult = dataAccessor.gameResultById.get(id.toString());
-        } catch (final Exception ex) {
-            logger.error("Error getting game result from database", ex);
-        } finally {
-            if (database != null) {
-                database.close();
-            }
-        }
-
-        return gameResult;
+        return Database.accessDatabase(dataAccessor -> dataAccessor.gameResultById.get(id.toString()),
+                ex -> logger.error("Error getting game result from database", ex));
     }
 
     public List<UUID> getGameResults() {
-        Database database = null;
-        List<UUID> gameResults = new ArrayList<UUID>();
+        List<UUID> gameResults = Database.accessDatabase(dataAccessor -> {
+                    final EntityCursor<GameResult> items = dataAccessor.gameResultById.entities();
 
-        try {
-            database = new Database();
-            final DataAccessor dataAccessor = new DataAccessor(database.getEntityStore());
-            final EntityCursor<GameResult> items = dataAccessor.gameResultById.entities();
+                    final List<UUID> gameResultsIds = StreamSupport.stream(items.spliterator(), false)
+                            .map(item -> item.getId())
+                            .collect(Collectors.toList());
+                    items.close();
+                    return gameResultsIds;
+                },
+                ex -> logger.error("Error retrieving game results from database", ex));
 
-            gameResults = StreamSupport.stream(items.spliterator(), false)
-                    .map(item -> item.getId())
-                    .collect(Collectors.toList());
-            items.close();
-        } catch (final Exception ex) {
-            logger.error("Error retrieving game results from database", ex);
-        } finally {
-            if (database != null) {
-                database.close();
-            }
+        if (gameResults == null) {
+            gameResults = new ArrayList<>();
         }
 
         return Collections.unmodifiableList(gameResults);

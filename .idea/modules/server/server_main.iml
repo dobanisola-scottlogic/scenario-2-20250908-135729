@@ -10,6 +10,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-core:0.9.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-auth:0.9.2" level="project" />
     <orderEntry type="library" name="Gradle: com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="Gradle: com.sleepycat:je:5.0.73" level="project" />
     <orderEntry type="module" module-name="game_main" />
