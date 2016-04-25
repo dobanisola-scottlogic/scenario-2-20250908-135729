@@ -1,7 +1,8 @@
 var path = require('path');
 
 const PATHS = {
-    BUILD: path.join(__dirname, 'build'),
+    BUILD: path.join(__dirname, '/build/'),
+    PUBLIC: '/build/',
     PHASER: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),
     PIXI: path.join(__dirname, '/node_modules/phaser/build/custom/pixi.js'),
     P2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js')
@@ -11,7 +12,7 @@ module.exports = {
     entry: './scripts/entry.js',
     output: {
         path: PATHS.BUILD,
-        publicPath: PATHS.BUILD,
+        publicPath: PATHS.PUBLIC,
         filename: 'bundle.js'
     },
     module: {
