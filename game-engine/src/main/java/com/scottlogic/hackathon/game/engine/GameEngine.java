@@ -293,7 +293,8 @@ public class GameEngine {
 
         final Set<Position> excludedPositions = Stream.concat(
                 map.getOutOfBoundsPositions().stream(),
-                spawnPoints.stream().map(spawnPoint -> spawnPoint.getPosition()))
+                Stream.concat(collectables.stream().map(collectable -> collectable.getPosition()),
+                        spawnPoints.stream().map(spawnPoint -> spawnPoint.getPosition())))
                 .distinct()
                 .collect(Collectors.toSet());
 
