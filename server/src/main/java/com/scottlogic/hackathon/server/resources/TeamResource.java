@@ -3,6 +3,7 @@ package com.scottlogic.hackathon.server.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.HackathonConfiguration;
+import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.services.TeamService;
 import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
@@ -29,7 +30,7 @@ public class TeamResource {
 
     @POST
     @Timed
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Authorizer.ROLE_ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Team addTeam(final Team team) {
@@ -39,7 +40,7 @@ public class TeamResource {
     @PUT
     @Timed
     @Path("/{id}")
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Authorizer.ROLE_ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Team updateTeam(@PathParam("id") final UUID id, final TeamUpdate teamUpdate) {
@@ -48,7 +49,7 @@ public class TeamResource {
 
     @GET
     @Timed
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Authorizer.ROLE_ADMIN)
     public List<Team> getTeams() {
         return teamService.getTeams();
     }
@@ -56,7 +57,7 @@ public class TeamResource {
     @GET
     @Timed
     @Path("/{id}")
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Authorizer.ROLE_ADMIN)
     public Team getTeam(@PathParam("id") final UUID id) {
         return teamService.getTeam(id);
     }
@@ -64,7 +65,7 @@ public class TeamResource {
     @DELETE
     @Timed
     @Path("/{id}")
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Authorizer.ROLE_ADMIN)
     public void deleteTeam(@PathParam("id") final UUID id) {
         teamService.deleteTeam(id);
     }

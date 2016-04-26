@@ -49,6 +49,11 @@ public class TeamStore {
                 ex -> logger.error("Error getting team from database", ex));
     }
 
+    public Team getTeam(final String name) {
+        return Database.accessDatabase(dataAccessor -> dataAccessor.teamByName.get(name),
+                ex -> logger.error("Error getting team by name from database", ex));
+    }
+
     public List<Team> getTeams() {
         List<Team> teamResults = Database.accessDatabase(dataAccessor -> {
                     final EntityCursor<Team> items = dataAccessor.teamById.entities();

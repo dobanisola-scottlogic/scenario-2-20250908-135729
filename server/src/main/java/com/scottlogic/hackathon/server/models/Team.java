@@ -4,6 +4,7 @@ import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
@@ -38,5 +39,9 @@ public class Team {
 
     public void setPassword(final String password) {
         this.password = password;
+    }
+
+    public boolean authenticate(final BasicCredentials credentials) {
+        return credentials.getUsername().equals(name) && credentials.getPassword().equals(password);
     }
 }
