@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class GameStateBuilder {
     private int phase;
+    private Map map;
     private Set<Position> outOfBoundsPositions;
     private Set<Player> players;
     private Set<Player> removedPlayers;
@@ -16,6 +17,11 @@ public class GameStateBuilder {
 
     public GameStateBuilder setPhase(final int phase) {
         this.phase = phase;
+        return this;
+    }
+
+    public GameStateBuilder setMap(final Map map) {
+        this.map = map;
         return this;
     }
 
@@ -50,6 +56,6 @@ public class GameStateBuilder {
     }
 
     public GameState createGameState() {
-        return new GameStateImpl(phase, outOfBoundsPositions, players, removedPlayers, spawnPoints, removedSpawnPoints, collectables);
+        return new GameStateImpl(phase, map, outOfBoundsPositions, players, removedPlayers, spawnPoints, removedSpawnPoints, collectables);
     }
 }

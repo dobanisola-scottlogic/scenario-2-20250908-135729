@@ -1,13 +1,14 @@
 package com.scottlogic.hackathon.game.engine.maps;
 
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Position;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface PlayableMap extends Map {
+public interface PlayableMap {
+    int getWidth();
+    int getHeight();
     Set<Position> getOutOfBoundsPositions();
     Set<Position> getSpawnPointPositions();
     boolean contains(Position position);

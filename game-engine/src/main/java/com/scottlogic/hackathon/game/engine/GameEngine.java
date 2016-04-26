@@ -84,7 +84,7 @@ public class GameEngine {
             cutoffCondition = getCutoffCondition();
         } while (cutoffCondition == null);
 
-        return new GameResultImpl(phaseResults, map, map.getOutOfBoundsPositions(), cutoffCondition);
+        return new GameResultImpl(phaseResults, new MapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
     }
 
     private PhaseResult playPhase() throws Exception {
@@ -137,7 +137,8 @@ public class GameEngine {
 
     private GameState createGameState(final Bot bot) {
         final GameStateBuilder gameStateBuilder = new GameStateBuilder()
-                .setPhase(phase);
+                .setPhase(phase)
+                .setMap(new MapImpl(map.getWidth(), map.getHeight()));
 
         final Set<Player> ownPlayers = getOwnedItems(players.stream(), player -> player.getOwner() == bot.getId());
 
