@@ -19,14 +19,14 @@ class Map {
         for (let row = 0; row < this.height; row ++) {
             let tileRow = [];
             for (let column = 0; column < this.width; column ++) {
-                tileRow.push(SPRITE.MAP.INDEXES.CLEAR);
+                tileRow.push(SPRITE.MAP.ANIMATIONS.CLEAR);
             }
             this.tileGrid.push(tileRow);
         }
 
         // Populate obstacles
         outOfBoundPositions.forEach((obstacle) => {
-            this.tileGrid[obstacle.y][obstacle.x] = SPRITE.MAP.INDEXES.OBSTRUCTION;
+            this.tileGrid[obstacle.y][obstacle.x] = SPRITE.MAP.ANIMATIONS.OBSTRUCTION;
         });
 
         for (let row = 0; row < this.tileGrid.length; row ++) {
@@ -37,7 +37,7 @@ class Map {
                                                          this.tileGrid[row][column]);
                 sprite.width = PHASER.CELL.WIDTH;
                 sprite.height = PHASER.CELL.HEIGHT;
-                if (this.tileGrid[row][column] === SPRITE.MAP.INDEXES.OBSTRUCTION) {
+                if (this.tileGrid[row][column] === SPRITE.MAP.ANIMATIONS.OBSTRUCTION) {
                     this.obsticles.push(sprite);
                 }
             }

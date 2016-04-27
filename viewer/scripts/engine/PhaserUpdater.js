@@ -108,7 +108,7 @@ class PhaserUpdater {
                 let column = cellShifter.wrap((playerCell.column + playerShift.columnShift), this.engine.getColumnCount());
                 let row = cellShifter.wrap((playerCell.row + playerShift.rowShift), this.engine.getRowCount());
 
-                this.engine.players[playerIndex].setCell(new Cell(column, row));
+                this.engine.players[playerIndex].setCell(new Cell(column, row), player.movement);
             } else {
                 console.log('ERROR : Failed to move player[' + player.id + '].');
             }

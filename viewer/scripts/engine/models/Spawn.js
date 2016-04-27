@@ -3,6 +3,7 @@ let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
 
 let Cell = require('./Cell.js');
+let Sprite = require('./Sprite.js');
 
 class Spawn {
     constructor(game, id, owner, teamIndex, cell) {
@@ -13,13 +14,7 @@ class Spawn {
         this.sprite = this.constructSprite(game);
     }
     constructSprite(game) {
-        let sprite = game.add.sprite((this.cell.column + 0.5) * PHASER.CELL.WIDTH,
-                                       (this.cell.row + 0.5) * PHASER.CELL.HEIGHT,
-                                       SPRITE.SPAWN.IDENTIFIER,
-                                       this.teamIndex);
-        sprite.width = PHASER.CELL.WIDTH * 3;
-        sprite.height = PHASER.CELL.HEIGHT * 3;
-        sprite.anchor.setTo(0.5, 0.5);
+        let sprite = new Sprite(game, SPRITE.SPAWN, 3, 3, this.cell, this.teamIndex);
         return sprite;
     }
     destroy() {

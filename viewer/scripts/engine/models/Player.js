@@ -3,6 +3,7 @@ let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
 
 let Cell = require('./Cell.js');
+let Sprite = require('./Sprite.js');
 
 class Player {
     constructor(game, id, owner, teamIndex, cell) {
@@ -13,22 +14,16 @@ class Player {
         this.sprite = this.constructSprite(game);
     }
     constructSprite(game) {
-        let sprite = game.add.sprite((this.cell.column + 0.5) * PHASER.CELL.WIDTH,
-                                       (this.cell.row + 0.5) * PHASER.CELL.HEIGHT,
-                                       SPRITE.PLAYER.IDENTIFIER,
-                                       this.teamIndex);
-        sprite.width = PHASER.CELL.WIDTH * 0.8;
-        sprite.height = PHASER.CELL.HEIGHT * 0.8;
-        sprite.anchor.setTo(0.5, 0.5);
+        let sprite = new Sprite(game, SPRITE.PLAYER, 3, 3, this.cell, this.teamIndex);
         return sprite;
     }
     destroy() {
         this.sprite.destroy();
     }
-    setCell(cell) {
+    setCell(cell, direction) {
         this.cell = cell;
-        this.sprite.x = (this.cell.column + 0.5) * PHASER.CELL.WIDTH;
-        this.sprite.y = (this.cell.row + 0.5) * PHASER.CELL.HEIGHT;
+        this.sprite.setCell(this.cell);
+        this.sprite.setDirection(direction);
     }
 }
 
