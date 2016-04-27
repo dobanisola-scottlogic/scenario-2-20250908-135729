@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.server.database;
 
+import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import com.scottlogic.hackathon.server.models.GameResult;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.UploadedBot;
@@ -16,6 +17,8 @@ public class DataAccessor {
     public PrimaryIndex<String, UploadedBot> botById;
     public SecondaryIndex<String, String, UploadedBot> botByTeamId;
 
+    public PrimaryIndex<String, ActiveBot> activeBotByTeamId;
+
     public DataAccessor(final EntityStore store) throws DatabaseException {
         gameResultById = store.getPrimaryIndex(String.class, GameResult.class);
 
@@ -24,5 +27,7 @@ public class DataAccessor {
 
         botById = store.getPrimaryIndex(String.class, UploadedBot.class);
         botByTeamId = store.getSecondaryIndex(botById, String.class, "teamId");
+
+        activeBotByTeamId = store.getPrimaryIndex(String.class, ActiveBot.class);
     }
 }

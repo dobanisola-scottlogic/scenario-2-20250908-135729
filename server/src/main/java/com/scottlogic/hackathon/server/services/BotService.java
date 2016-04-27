@@ -5,18 +5,25 @@ import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.UploadedBot;
+import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import com.scottlogic.hackathon.server.services.stores.BotStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BotService {
+    private final Logger logger;
     private final BotStore botStore;
     private final TeamService teamService;
 
     @Inject
     public BotService(final BotStore botStore, final TeamService teamService) {
+        logger = LoggerFactory.getLogger(this.getClass().getName());
         this.botStore = botStore;
         this.teamService = teamService;
     }
@@ -72,6 +79,47 @@ public class BotService {
 
             if (uploadedBot != null && team.getId().equals(uploadedBot.getTeamId())) {
                 result = true;
+            }
+        }
+
+        return result;
+    }
+
+    public List<UploadedBot> getActiveBots(final User user) {
+        List<UploadedBot> visibleActiveBots = botStore.getActiveBots();
+
+        if (user.getRole() == User.Role.TEAM) {
+            final UUID teamId = teamService.getTeam(user.getName()).getId();
+
+            visibleActiveBots = visibleActiveBots.stream()
+                    .filter(uploadedBot -> uploadedBot.getTeamId().equals(teamId))
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.unmodifiableList(visibleActiveBots);
+    }
+
+    public UploadedBot setActiveBot(final User user, final ActiveBot activeBot) {
+        UploadedBot result = null;
+        Team team = null;
+
+        if (user.getRole() == User.Role.ADMIN) {
+            team = teamService.getTeam(activeBot.getTeamId());
+        } else {
+            final Team usersTeam = teamService.getTeam(user.getName());
+            if (usersTeam.getId().equals(activeBot.getTeamId()) || activeBot.getTeamId() == null) {
+                team = usersTeam;
+            } else {
+                logger.error("Requested team id is not your team id");
+            }
+        }
+
+        if (team != null) {
+            final UploadedBot uploadedBot = getBot(activeBot.getBotId());
+            if (uploadedBot != null) {
+                if (botStore.setActiveBot(uploadedBot) != null) {
+                    result = uploadedBot;
+                }
             }
         }
 

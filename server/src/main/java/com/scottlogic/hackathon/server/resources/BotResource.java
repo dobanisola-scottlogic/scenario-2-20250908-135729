@@ -9,6 +9,7 @@ import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.UploadedBot;
 import com.scottlogic.hackathon.server.services.BotService;
 import com.scottlogic.hackathon.server.services.TeamService;
+import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -60,5 +61,23 @@ public class BotResource {
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
     public void deleteBot(@Auth final User user, @PathParam("id") final UUID id) {
         botService.deleteUploadedBot(user, id);
+    }
+
+    @GET
+    @Timed
+    @Path("/active")
+    @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
+    public List<UploadedBot> getActive(@Auth final User user) {
+        return botService.getActiveBots(user);
+    }
+
+    @PUT
+    @Timed
+    @Path("/active")
+    @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public UploadedBot setActiveBot(@Auth final User user, final ActiveBot activeBot) {
+        return botService.setActiveBot(user, activeBot);
     }
 }
