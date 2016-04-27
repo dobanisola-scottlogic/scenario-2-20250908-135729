@@ -5,7 +5,8 @@ const PATHS = {
     PUBLIC: '/build/',
     PHASER: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),
     PIXI: path.join(__dirname, '/node_modules/phaser/build/custom/pixi.js'),
-    P2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js')
+    P2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js'),
+    ANGULAR: path.join(__dirname, '/node_modules/angular/index.js')
 };
 
 module.exports = {
@@ -51,7 +52,8 @@ module.exports = {
         alias: {
             'phaser': PATHS.PHASER,
             'pixi': PATHS.PIXI,
-            'p2': PATHS.P2
+            'p2': PATHS.P2,
+            'angular': PATHS.ANGULAR
         },
         extensions: ['', '.js', '.json']
     }

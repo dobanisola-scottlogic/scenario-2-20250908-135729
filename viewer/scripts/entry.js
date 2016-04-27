@@ -1,6 +1,7 @@
 require('../styles/style.css');
 require('pixi');
 require('p2');
+require('./app/application');
 
 var gameData = require('json!../testData/exampleGame');
 var parser = require('./parser');
