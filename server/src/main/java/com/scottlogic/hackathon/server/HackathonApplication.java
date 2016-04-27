@@ -9,6 +9,7 @@ import com.scottlogic.hackathon.server.healthchecks.HackathonHealthCheck;
 import com.scottlogic.hackathon.server.resources.BotResource;
 import com.scottlogic.hackathon.server.resources.GameResource;
 import com.scottlogic.hackathon.server.resources.HackathonResource;
+import com.scottlogic.hackathon.server.resources.LoginResource;
 import com.scottlogic.hackathon.server.resources.TeamResource;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.Application;
@@ -56,6 +57,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         environment.jersey().register(injector.getInstance(GameResource.class));
         environment.jersey().register(injector.getInstance(TeamResource.class));
         environment.jersey().register(injector.getInstance(BotResource.class));
+        environment.jersey().register(injector.getInstance(LoginResource.class));
 
         environment.healthChecks().register("hackathon", injector.getInstance(HackathonHealthCheck.class));
     }
