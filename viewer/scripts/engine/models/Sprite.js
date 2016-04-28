@@ -2,15 +2,16 @@
 let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
 let MOVEMENT = require('../../enums/movement.js');
+let COLOURS = require('../../enums/colours.js');
 
 let Cell = require('./Cell.js');
 
 class Sprite {
-    constructor(game, staticSprite, width, height, cell, teamIndex) {
+    constructor(game, staticSprite, width, height, cell, colour) {
         this.width = width;
         this.height = height;
         this.cell = new Cell(cell.column, cell.row);
-        let defaultFrame = staticSprite.getTeamIndexOfFrame(staticSprite.ANIMATIONS.DEFAULT, teamIndex);
+        let defaultFrame = staticSprite.COLOUR_MAP[colour.ID].DEFAULT;
         this.sprite = game.add.sprite(this.cell.getCentreXPosition(),
                                         this.cell.getCentreYPosition(),
                                         staticSprite.IDENTIFIER,

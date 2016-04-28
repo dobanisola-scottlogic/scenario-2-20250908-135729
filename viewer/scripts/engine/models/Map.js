@@ -1,6 +1,7 @@
 
 let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
+let COLOURS = require('../../enums/colours.js');
 
 let Spawn = require('./Spawn');
 
@@ -14,37 +15,45 @@ class Map {
         this.spawns = [];
 
     }
-    create(game, spawns, outOfBoundPositions) {
+    create(game, spawns, outOfBoundPositions, ownerMap) {
+
+        let spriteMap = SPRITE.MAP.COLOUR_MAP[COLOURS.NONE.ID];
+
         // Populate tileGrid
         for (let row = 0; row < this.height; row ++) {
             let tileRow = [];
             for (let column = 0; column < this.width; column ++) {
-                tileRow.push(SPRITE.MAP.ANIMATIONS.CLEAR);
+                tileRow.push(spriteMap.CLEAR);
             }
             this.tileGrid.push(tileRow);
         }
 
         // Populate obstacles
         outOfBoundPositions.forEach((obstacle) => {
-            this.tileGrid[obstacle.y][obstacle.x] = SPRITE.MAP.ANIMATIONS.OBSTRUCTION;
+            this.tileGrid[obstacle.y][obstacle.x] = spriteMap.OBSTRUCTION;
         });
 
         for (let row = 0; row < this.tileGrid.length; row ++) {
             for (let column = 0; column < this.tileGrid[row].length; column ++) {
                 let sprite = game.add.sprite(column * PHASER.CELL.WIDTH,
-                                                         row * PHASER.CELL.HEIGHT,
-                                                         SPRITE.MAP.IDENTIFIER,
-                                                         this.tileGrid[row][column]);
+                                             row * PHASER.CELL.HEIGHT,
+                                             SPRITE.MAP.IDENTIFIER,
+                                             this.tileGrid[row][column]);
                 sprite.width = PHASER.CELL.WIDTH;
                 sprite.height = PHASER.CELL.HEIGHT;
-                if (this.tileGrid[row][column] === SPRITE.MAP.ANIMATIONS.OBSTRUCTION) {
+                if (this.tileGrid[row][column] === spriteMap.OBSTRUCTION) {
                     this.obsticles.push(sprite);
                 }
             }
         }
 
         spawns.forEach((spawn) => {
-            this.spawns.push(new Spawn(game, spawn.id, spawn.owner, spawn.teamIndex, spawn.cell));
+            let ownerColour = ownerMap[spawn.owner];
+            if (ownerColour) {
+                this.spawns.push(new Spawn(game, spawn.id, spawn.owner, ownerColour, spawn.cell));
+            } else {
+                console.log('ERROR : Failed to find associated owner for id[' + spawn.owner + '].');
+            }
         });
     }
     destroySpawn(spawnId) {
