@@ -33,5 +33,15 @@ gradle-app.setting
 .idea/gradle.xml
 .idea/libraries
 
+# Eclipse
+.classpath
+.project
+.settings
+./*/bin
+
+# Ubuntu
+*.swp
+
 # Node
 node_modules
+npm-debug.log
