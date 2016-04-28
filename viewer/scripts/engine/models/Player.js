@@ -6,15 +6,15 @@ let Cell = require('./Cell.js');
 let Sprite = require('./Sprite.js');
 
 class Player {
-    constructor(game, id, owner, teamIndex, cell) {
+    constructor(game, id, owner, colour, cell) {
         this.id = id;
         this.owner = owner;
-        this.teamIndex = teamIndex;
+        this.colour = colour;
         this.cell = cell.clone();
         this.sprite = this.constructSprite(game);
     }
     constructSprite(game) {
-        let sprite = new Sprite(game, SPRITE.PLAYER, 3, 3, this.cell, this.teamIndex);
+        let sprite = new Sprite(game, SPRITE.PLAYER, 3, 3, this.cell, this.colour);
         return sprite;
     }
     destroy() {

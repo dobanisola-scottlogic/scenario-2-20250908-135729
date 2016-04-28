@@ -1,5 +1,6 @@
 
 let PHASER = require('../enums/phaser.js');
+let COLOURS = require('../enums/colours.js');
 
 let PhaserPreloader = require('./PhaserPreloader.js');
 let PhaserCreator = require('./PhaserCreator.js');
@@ -34,6 +35,26 @@ class Engine {
         // Define arrays to hold game objects
         this.collectables = [];
         this.players = [];
+        this.owners = this.createOwners(this.getSpawns());
+    }
+    createOwners(spawns) {
+        let owners = {};
+        let colours = [];
+        for (let member in COLOURS.TEAM_COLOURS) {
+            if (COLOURS.TEAM_COLOURS.hasOwnProperty(member)) {
+                colours.push(COLOURS.TEAM_COLOURS[member]);
+            }
+        }
+        spawns.forEach((spawn, index) => {
+            owners[spawn.owner] = colours[index];
+        });
+        return owners;
+    }
+    getOwnerColour(ownerId) {
+        return this.owners[ownerId];
+    }
+    getOwners() {
+        return this.owners;
     }
     getPhaseCount() {
         return this.gameData.deltas.length;

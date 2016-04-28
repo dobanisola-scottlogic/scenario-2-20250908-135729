@@ -1,6 +1,7 @@
 
 let PHASER = require('../../enums/phaser.js');
 let SPRITE = require('../../enums/sprite.js');
+let COLOURS = require('../../enums/colours.js');
 
 let Cell = require('./Cell.js');
 let Sprite = require('./Sprite.js');
@@ -13,7 +14,7 @@ class Collectable {
         this.sprite = this.constructSprite(game);
     }
     constructSprite(game) {
-        let sprite = new Sprite(game, SPRITE.COLLECTABLE, 3, 3, this.cell, this.teamIndex);
+        let sprite = new Sprite(game, SPRITE.COLLECTABLE, 3, 3, this.cell, COLOURS.NONE);
         return sprite;
     }
     destroy() {
