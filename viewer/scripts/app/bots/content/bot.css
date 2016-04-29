@@ -1,0 +1,16 @@
+.botPanel .uploadedFileName {
+    text-align: right;
+    color: darkgreen;
+}
+
+.botPanel .botListItem {
+    cursor: pointer;
+    min-width: 300px;
+    padding: 10px;
+    border: 2px solid transparent;
+}
+
+.botPanel .botListItem.isSelected {
+    min-width: 300px;
+    border: 2px solid blue;
+}
