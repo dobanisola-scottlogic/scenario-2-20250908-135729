@@ -304,7 +304,7 @@ public class GameEngine {
         do {
             final int x = random.nextInt(map.getWidth());
             final int y = random.nextInt(map.getHeight());
-            position = new PositionImpl(x, y);
+            position = new Position(x, y);
             if (attempts++ > 100) {
                 throw new RuntimeException("Too many positions are excluded to allow use to find a free position");
             }

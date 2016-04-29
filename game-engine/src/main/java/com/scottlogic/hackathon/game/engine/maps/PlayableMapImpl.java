@@ -2,7 +2,6 @@ package com.scottlogic.hackathon.game.engine.maps;
 
 import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.engine.models.PositionImpl;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +87,7 @@ class PlayableMapImpl implements PlayableMap {
             y = (y + distance) % height;
         }
 
-        return new PositionImpl(x, y);
+        return new Position(x, y);
     }
 
     @Override
