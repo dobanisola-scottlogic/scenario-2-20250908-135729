@@ -11,7 +11,7 @@ public class GameResult {
     @PrimaryKey
     private String key;
     private UUID id;
-    private Map map;
+    private Game game;
     private Set<SpawnPoint> spawnPoints;
     private List<PhaseResult> phaseResults;
 
@@ -19,20 +19,20 @@ public class GameResult {
     }
 
     GameResult(final UUID id,
-               final Map map,
+               final Game game,
                final Set<SpawnPoint> spawnPoints,
                final List<PhaseResult> phaseResults) {
         this.key = id.toString();
         this.id = id;
-        this.map = map;
+        this.game = game;
         this.spawnPoints = new HashSet<>(spawnPoints);
         this.phaseResults = new ArrayList<>(phaseResults);
     }
 
-    public static GameResult create(final com.scottlogic.hackathon.game.GameResult gameResult) {
+    public static GameResult create(final Game game, final com.scottlogic.hackathon.game.GameResult gameResult) {
         return new GameResult(
                 gameResult.getId(),
-                Map.create(gameResult),
+                game,
                 gameResult.getPhaseResults()
                         .stream()
                         .flatMap(phaseResult -> phaseResult.getSpawnPoints().stream())
@@ -55,8 +55,8 @@ public class GameResult {
         return id;
     }
 
-    public Map getMap() {
-        return map;
+    public Game getGame() {
+        return game;
     }
 
     public Set<SpawnPoint> getSpawnPoints() {
