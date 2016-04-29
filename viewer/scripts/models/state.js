@@ -35,10 +35,50 @@ class State {
 
 function parsePlayerPositions(index, gameData) {
     let players = [];
+    let previousPlayers = [];
+    let spawnPoints = [];
+
+    spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => {
+        return {
+            id: spawnPoint.id,
+            owner: spawnPoint.owner,
+            cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
+            teamIndex: teamIndex
+        };
+    });
+
+    if (index > 0) {
+        previousPlayers = states[index - 1].players.map(previousPlayer => previousPlayer.id);
+    }
+
     gameData.phaseResults[index].playerPositions.forEach((player) => {
+        let teamIndex = -1;
+        let owner = null;
+
+        if (index === 0 || previousPlayers.indexOf(player.id) === -1) {
+            // Add owner and teamIndex for players that have just spawned
+            let addedPlayerIndex = gameData.phaseResults[index].addedPlayers.map(addedPlayer => addedPlayer.id)
+                                                                            .indexOf(player.id);
+            owner = gameData.phaseResults[index].addedPlayers[addedPlayerIndex].owner || null;
+
+            spawnPoints.forEach(spawnPoint => {
+                if (spawnPoint.owner === owner) {
+                    teamIndex = spawnPoint.teamIndex;
+                }
+            });
+        } else {
+            // Add owner and teamIndex for players that haven't just spawned
+            let previousIndex = states[index - 1].players.map(previousPlayer => previousPlayer.id)
+                                                         .indexOf(player.id);
+            owner = states[index - 1].players[previousIndex].owner;
+            teamIndex = states[index - 1].players[previousIndex].teamIndex;
+        }
+
         players.push({
             id: player.id,
-            cell: new Cell(player.position.x, player.position.y)
+            owner: owner,
+            cell: new Cell(player.position.x, player.position.y),
+            teamIndex: teamIndex
         });
     });
 
@@ -83,11 +123,12 @@ function parseSpawnPositions(index, gameData) {
 
     // Set the current spawn points to the previous spawn point
     if (index === 0) {
-        gameData.spawnPoints.forEach((spawnPoint) => {
+        gameData.spawnPoints.forEach((spawnPoint, teamIndex) => {
             spawnPoints.push({
                 id: spawnPoint.id,
                 owner: spawnPoint.owner,
-                cell: new Cell(spawnPoint.position.x, spawnPoint.position.y)
+                cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
+                teamIndex: teamIndex
             });
         });
     } else {

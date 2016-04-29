@@ -62,6 +62,9 @@ class Engine {
     getPhaseDelta(index) {
         return this.gameData.deltas[index];
     }
+    getPhaseState(index) {
+        return this.gameData.state[index];
+    }
     getColumnCount() {
         return this.gameData.constants.width;
     }
@@ -74,14 +77,11 @@ class Engine {
     getSpawns() {
         return this.gameData.constants.spawnPoints;
     }
-    getSpawnAtCell(cell) {
-        let spawnAtCell = null;
-        this.gameData.constants.spawnPoints.forEach(spawn => {
-            if (cell.column === spawn.cell.column && cell.row === spawn.cell.row) {
-                spawnAtCell = spawn;
-            }
-        });
-        return spawnAtCell;
+    getCurrentSpawns() {
+        return this.map.spawns;
+    }
+    addSpawns(spawns) {
+        this.map.addSpawns(this.game, spawns, this.getOwners());
     }
 }
 

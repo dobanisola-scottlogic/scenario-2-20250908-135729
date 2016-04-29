@@ -46,7 +46,9 @@ class Map {
                 }
             }
         }
-
+        this.addSpawns(game, spawns, ownerMap);
+    }
+    addSpawns(game, spawns, ownerMap) {
         spawns.forEach((spawn) => {
             let ownerColour = ownerMap[spawn.owner];
             if (ownerColour) {
