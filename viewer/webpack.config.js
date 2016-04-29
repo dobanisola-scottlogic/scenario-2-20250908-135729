@@ -39,7 +39,9 @@ module.exports = {
                 exclude: [
                     /pixi\.js/,
                     /phaser-split\.js$/,
-                    /p2\.js/
+                    /p2\.js/,
+                    /d3\.js$/,
+                    /d3fc\.js$/
                 ],
                 loader: 'babel-loader',
                 query: {

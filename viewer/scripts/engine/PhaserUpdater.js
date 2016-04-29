@@ -8,6 +8,8 @@ let Cell = require('./models/Cell.js');
 
 let cellShifter = require('./utils/CellShifter.js');
 
+let ChartRenderer = require('../app/charts/ChartRenderer.js');
+
 /*
  * Phaser Update function:
  *
@@ -21,6 +23,7 @@ let cellShifter = require('./utils/CellShifter.js');
 class PhaserUpdater {
     constructor(engine) {
         this.engine = engine;
+        this.chartRenderer = new ChartRenderer(engine);
         this.phaseIndex = 0;
         this.lastPhaseTime = new Date().getTime() - PHASER.PHASE_DELAY;
         this.update = this.update.bind(this);
@@ -43,6 +46,8 @@ class PhaserUpdater {
             this.addPlayers(deltaPhase.playersAdded);
             this.destroyPlayers(deltaPhase.playersDestroyed);
             this.movePlayers(deltaPhase.playerMovement);
+
+            this.chartRenderer.render();
 
             this.phaseIndex ++;
         }
