@@ -6,7 +6,9 @@ const PHASER = {
         HEIGHT: 12
     },
 
-    PHASE_DELAY: 100
+    PHASE_DELAY: 300,
+
+    A_SECOND: 1000
 
 };
 

@@ -23,14 +23,14 @@ class Map {
         for (let row = 0; row < this.height; row ++) {
             let tileRow = [];
             for (let column = 0; column < this.width; column ++) {
-                tileRow.push(spriteMap.CLEAR);
+                tileRow.push(spriteMap.CLEAR.START);
             }
             this.tileGrid.push(tileRow);
         }
 
         // Populate obstacles
         outOfBoundPositions.forEach((obstacle) => {
-            this.tileGrid[obstacle.y][obstacle.x] = spriteMap.OBSTRUCTION;
+            this.tileGrid[obstacle.y][obstacle.x] = spriteMap.OBSTRUCTION.START;
         });
 
         for (let row = 0; row < this.tileGrid.length; row ++) {
@@ -41,7 +41,7 @@ class Map {
                                              this.tileGrid[row][column]);
                 sprite.width = PHASER.CELL.WIDTH;
                 sprite.height = PHASER.CELL.HEIGHT;
-                if (this.tileGrid[row][column] === spriteMap.OBSTRUCTION) {
+                if (this.tileGrid[row][column] === spriteMap.OBSTRUCTION.START) {
                     this.obsticles.push(sprite);
                 }
             }
