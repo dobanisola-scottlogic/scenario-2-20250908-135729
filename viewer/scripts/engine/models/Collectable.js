@@ -15,10 +15,13 @@ class Collectable {
     }
     constructSprite(game) {
         let sprite = new Sprite(game, SPRITE.COLLECTABLE, 3, 3, this.cell, COLOURS.NONE);
+        sprite.addAnimation('active');
+        sprite.addAnimation('die');
+        sprite.playAnimation('active');
         return sprite;
     }
     destroy() {
-        this.sprite.destroy();
+        this.sprite.destroy(true);
     }
 }
 

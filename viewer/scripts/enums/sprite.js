@@ -21,6 +21,23 @@ let COLOURS = require('./colours.js');
  *
  */
 
+class StaticAnimation {
+    constructor(id, start, end, frameRate, isLoop) {
+        this.ID = id;
+        this.START = start;
+        this.END = end || start;
+        this.FRAME_RATE = frameRate || 10;
+        this.IS_LOOP = isLoop || false;
+    }
+    cloneOffset(frameOffset) {
+        return new StaticAnimation(this.ID,
+                                   this.START + frameOffset,
+                                   this.END + frameOffset,
+                                   this.FRAME_RATE,
+                                   this.IS_LOOP);
+    }
+}
+
 class StaticSprite {
     constructor(identifier, filePath, tileCount, width, height, colourMap) {
         this.IDENTIFIER = identifier;
@@ -75,7 +92,7 @@ class StaticSpriteBuilder {
         var animationSet = {};
         for (let member in this.animations) {
             if (this.animations.hasOwnProperty(member)) {
-                animationSet[member] = this.animations[member] + offsetCount;
+                animationSet[member] = this.animations[member].cloneOffset(offsetCount);
             }
         }
         return animationSet;
@@ -120,28 +137,28 @@ class StaticSpriteBuilder {
 }
 
 const SPRITE = {
-    MAP: (new StaticSpriteBuilder()
+    MAP: new StaticSpriteBuilder()
             .setIdentifier('sheet_map')
             .setTileCount(2)
             .setWidth(20)
             .setHeight(20)
-            .setAnimations({ CLEAR: 0,
-                             OBSTRUCTION: 1 })
-            .get()),
+            .setAnimations({ CLEAR: new StaticAnimation('clear', 0),
+                             OBSTRUCTION: new StaticAnimation('obstruction', 1) })
+            .get(),
 
     PLAYER: new StaticSpriteBuilder()
                 .setIdentifier('sheet_player')
                 .setTileCount(216)
                 .setWidth(48)
                 .setHeight(48)
-                .setAnimations({ DEFAULT: 4,
-                                 STAND: 0,
-                                 RUN: 4,
-                                 SLAM: 12,
-                                 BITE: 16,
-                                 BLOCK: 20,
-                                 HIT_AND_DIE: 22,
-                                 DIE: 28 })
+                .setAnimations({ DEFAULT: new StaticAnimation('default', 4),
+                                 STAND: new StaticAnimation('stand', 0),
+                                 RUN: new StaticAnimation('run', 4, 11, 10, true),
+                                 SLAM: new StaticAnimation('slam', 12, 15),
+                                 BITE: new StaticAnimation('bite', 16, 19),
+                                 BLOCK: new StaticAnimation('block', 20, 21),
+                                 HIT_AND_DIE: new StaticAnimation('hit_and_die', 22, 27),
+                                 DIE: new StaticAnimation('die', 28, 35) })
                 .setTeamSpriteCount(36)
                 .get(),
 
@@ -150,8 +167,9 @@ const SPRITE = {
                .setTileCount(108)
                .setWidth(64)
                .setHeight(64)
-               .setAnimations({ DEFAULT: 0,
-                                DIE: 11 })
+               .setAnimations({ DEFAULT: new StaticAnimation('default', 0),
+                                ACTIVE: new StaticAnimation('active', 0, 10, 12, true),
+                                DIE: new StaticAnimation('die', 11, 17, 8, false) })
                .setTeamSpriteCount(18)
                .get(),
 
@@ -160,8 +178,9 @@ const SPRITE = {
                      .setTileCount(15)
                      .setWidth(64)
                      .setHeight(64)
-                     .setAnimations({ DEFAULT: 0,
-                                      DIE: 8 })
+                     .setAnimations({ DEFAULT: new StaticAnimation('default', 0),
+                                      ACTIVE: new StaticAnimation('active', 0, 7, 10, true),
+                                      DIE: new StaticAnimation('die', 8, 14, 20, false) })
                      .get()
 };
 

@@ -14,11 +14,19 @@ class Spawn {
         this.sprite = this.constructSprite(game);
     }
     constructSprite(game) {
-        let sprite = new Sprite(game, SPRITE.SPAWN, 3, 3, this.cell, this.teamIndex);
+        let sprite = new Sprite(game,
+                                SPRITE.SPAWN,
+                                3,
+                                3,
+                                this.cell,
+                                this.teamIndex);
+        sprite.addAnimation('active');
+        sprite.addAnimation('die');
+        sprite.playAnimation('active');
         return sprite;
     }
     destroy() {
-        this.sprite.destroy();
+        this.sprite.destroy(true, true);
     }
 }
 
