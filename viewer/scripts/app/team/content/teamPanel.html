@@ -1,0 +1,42 @@
+<div class="teamPanel">
+    <form>
+        <label for="username">Username:</label>
+        <input type="text"
+               id="username"
+               ng-model="controller.newTeamDetails.username"
+               ng-disabled="controller.userInterfaceDisabled">
+        <label for="password">Password:</label>
+        <input type="password"
+               id="password"
+               ng-model="controller.newTeamDetails.password"
+               ng-disabled="controller.userInterfaceDisabled">
+        <button ng-disabled="controller.addButtonDisabled"
+                ng-click="controller.addNewTeam()">Add New Team</button>
+    </form>
+
+    <div class="teamList">
+        <hack-team
+            ng-repeat="team in controller.teams track by team.id"
+            ng-click="controller.onTeamSelected(team)"
+            ng-class="{'isSelected': controller.isSelected(team)}"
+            name="team.name"></hack-team>
+    </div>
+
+    <div class="teamDetails">
+        <div>Selected Team: {{controller.selectedTeam.name}}</div>
+        <div>ID: {{controller.selectedTeam.id}}</div>
+        <div>
+            <form>
+                <label for="password">Password:</label>
+                <input type="text"
+                        id="password"
+                        ng-model="controller.updatePassword"
+                        ng-disabled="controller.userInterfaceDisabled">
+                <button ng-click="controller.onUpdatePassword()"
+                        ng-disabled="controller.updatePasswordButtonDisabled">Update Password</button>
+                <button ng-click="controller.onDelete()"
+                        ng-disabled="controller.deleteButtonDisabled">Delete Team</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -5,13 +5,16 @@
             <title>Hackathon Viewer</title>
       </head>
       <body>
-            <div id="phaserApp"></div>
-
             <script src="./build/bundle.js"></script>
 
             <div ng-app="hackathon">
-                  <hack-login></hack-login>
                   <hack-navigation-bar></hack-navigation-bar>
+                  <hack-login></hack-login>
+
+                  <hack-dashboard title="Team Dashboard">
+                        <hack-add-team></hack-add-team>
+                        <hack-team-panel></hack-team-panel>
+                  </hack-dashboard>
                   <hack-viewer></hack-viewer>
                   <collectables-chart></collectables-chart>
             </div>
