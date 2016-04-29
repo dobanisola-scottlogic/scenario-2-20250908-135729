@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.io.ByteStreams;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.server.services.RemoteClassLoader;
@@ -17,15 +18,14 @@ import java.util.UUID;
 
 @Entity
 public class UploadedBot {
+    @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Team.class)
+    String teamId;
     @PrimaryKey()
     private String key;
     private UUID id;
     private byte[] data;
     private String botClassName;
     private Date timeStamp;
-
-    @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Team.class)
-    String teamId;
 
     public UploadedBot() {
 
@@ -70,6 +70,7 @@ public class UploadedBot {
         }
     }
 
+    @JsonIgnore
     public Bot getBot() {
         Bot loadedBot = null;
 
