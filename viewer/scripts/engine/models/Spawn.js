@@ -29,7 +29,7 @@ class Spawn {
         this.sprite.setPaused(paused);
     }
     destroy() {
-        this.sprite.destroy(true, true);
+        this.sprite.destroy();
     }
 }
 

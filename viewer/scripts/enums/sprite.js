@@ -168,7 +168,7 @@ const SPRITE = {
                .setWidth(64)
                .setHeight(64)
                .setAnimations({ DEFAULT: new StaticAnimation('default', 0),
-                                ACTIVE: new StaticAnimation('active', 0, 10, 12, true),
+                                ACTIVE: new StaticAnimation('active', 0, 0, 12, true),
                                 DIE: new StaticAnimation('die', 11, 17, 8, false) })
                .setTeamSpriteCount(18)
                .get(),
