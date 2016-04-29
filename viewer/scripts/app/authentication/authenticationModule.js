@@ -1,7 +1,7 @@
 let angular = require('angular');
 let authenticationService = require('./AuthenticationService');
 let loginFormDirectiveFactory = require('./loginForm/loginFormDirectiveFactory');
-let loginFormController = require('./loginForm/loginFormController');
+let loginFormController = require('./loginForm/LoginFormController');
 
 let authentication = angular.module('hackathon.authentication', []);
 
