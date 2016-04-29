@@ -1,0 +1,32 @@
+.chart {
+    margin: 10px 0;
+}
+
+#collectables-chart {
+    width: 100px;
+    height: 768px;
+    position: fixed;
+    top: 0;
+    right: 10px;
+}
+
+.chart>svg {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gridline.x {
+    display: none;
+}
+
+.annotation .right-handle {
+    display: none;
+}
+
+.title text {
+    font-size: 15pt;
+}
+
+.bar path {
+    stroke-width: 0;
+}
