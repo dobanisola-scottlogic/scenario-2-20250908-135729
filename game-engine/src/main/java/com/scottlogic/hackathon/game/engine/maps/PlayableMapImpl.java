@@ -19,23 +19,34 @@ class PlayableMapImpl implements PlayableMap {
             final int width,
             final int height,
             final Set<Position> outOfBoundsPositions,
-            final Set<Position> spawnPointPositions) throws IllegalArgumentException {
+            final Set<Position> spawnPointPositions) throws Exception {
         this.width = width;
         this.height = height;
         this.outOfBoundsPositions = outOfBoundsPositions;
         this.spawnPointPositions = spawnPointPositions;
+        this.validate();
+    }
 
+    public void validate() throws Exception {
         if (outOfBoundsPositions.stream().anyMatch((outOfBoundsPosition) -> !this.contains(outOfBoundsPosition))) {
-            throw new IllegalArgumentException("all out of bounds positions must be inside the map");
+            throw new Exception("all out of bounds positions must be inside the map");
         }
 
         if (spawnPointPositions.stream().anyMatch((spawnPointPosition) -> !this.contains(spawnPointPosition))) {
-            throw new IllegalArgumentException("all spawn point positions must be inside the map");
+            throw new Exception("all spawn point positions must be inside the map");
         }
 
         if (spawnPointPositions.size() == 0) {
-            throw new IllegalArgumentException("must have some spawn points");
+            throw new Exception("must have some spawn points");
         }
+    }
+
+    public String toString() {
+        return String.format("With %s - Height %s - Spawn Point Positions %s - Out Of Bounds Positions %s",
+                width,
+                height,
+                spawnPointPositions.size(),
+                outOfBoundsPositions.size());
     }
 
     @Override
@@ -127,11 +138,5 @@ class PlayableMapImpl implements PlayableMap {
         return height;
     }
 
-    public String toString() {
-        return String.format("With %s - Height %s - Spawn Point Positions %s - Out Of Bounds Positions %s",
-                width,
-                height,
-                spawnPointPositions.size(),
-                outOfBoundsPositions.size());
-    }
+
 }

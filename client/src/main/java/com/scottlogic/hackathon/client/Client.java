@@ -22,7 +22,12 @@ public class Client {
         bots.add(new ConsistentRandomBot());
         bots.add(new ConsistentRandomBot());
 
-        final GameEngine gameEngine = GameEngine.create("FourPlayerCross", bots);
+        String mapName = "Cross";
+        if (args.length >= 1) {
+            mapName = args[0];
+        }
+        final GameEngine gameEngine = GameEngine.create(mapName, bots);
+
         try {
             final GameResult gameResult = gameEngine.play();
 
