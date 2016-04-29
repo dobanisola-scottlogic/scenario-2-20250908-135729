@@ -1,6 +1,45 @@
 package com.scottlogic.hackathon.game;
 
-public interface Position {
-    int getX();
-    int getY();
+
+public class Position {
+    private final int x;
+    private final int y;
+
+    public Position(final int x, final int y) {
+        if (x < 0) {
+            throw new IllegalArgumentException("x must be >= 0");
+        }
+        if (y < 0) {
+            throw new IllegalArgumentException("y must be >= 0");
+        }
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(x) ^ Integer.hashCode(y);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return obj != null
+                && obj instanceof Position
+                && x == ((Position) obj).getX()
+                && y == ((Position) obj).getY();
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("X %s - Y %s", x, y);
+    }
 }
+
