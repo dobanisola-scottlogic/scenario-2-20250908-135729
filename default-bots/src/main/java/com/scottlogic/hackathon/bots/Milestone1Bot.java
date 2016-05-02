@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.bots;
 
+import com.scottlogic.hackathon.bots.move.TimidMove;
 import com.scottlogic.hackathon.game.*;
 
 import java.util.*;
