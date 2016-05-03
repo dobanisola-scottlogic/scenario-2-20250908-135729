@@ -1,7 +1,7 @@
 class BotPanelController {
-    constructor($scope, authenticationService, botService, Upload) {
+    constructor($scope, navigationBarService, botService, Upload) {
         this.$scope = $scope;
-        this.authenticationService = authenticationService;
+        this.navigationBarService = navigationBarService;
         this.botService = botService;
         this.Upload = Upload;
 
@@ -98,10 +98,10 @@ class BotPanelController {
     }
 
     get isTeamUser() {
-        return this.authenticationService.isAuthourised('TEAM');
+        return this.navigationBarService.isAuthourised('TEAM');
     }
 }
 
-BotPanelController.$inject = ['$scope', 'AuthenticationService', 'BotService', 'Upload'];
+BotPanelController.$inject = ['$scope', 'NavigationBarService', 'BotService', 'Upload'];
 
 module.exports = BotPanelController;

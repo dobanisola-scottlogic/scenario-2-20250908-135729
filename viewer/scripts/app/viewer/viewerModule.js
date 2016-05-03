@@ -8,7 +8,7 @@ viewer.directive('hackViewer', function() {
         transclude: false,
         scope: {},
         replace: true,
-        template: '<div id="phaserApp"></div>'
+        template: '<div class="col-md-10" id="phaserApp"></div>'
     };
 });
 

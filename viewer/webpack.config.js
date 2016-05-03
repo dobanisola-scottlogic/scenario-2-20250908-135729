@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 
 const PATHS = {
     BUILD: path.join(__dirname, '/build/'),
@@ -31,13 +32,19 @@ module.exports = {
             }
         ],
         loaders: [
+            { test: /jquery\.js/, loader: 'expose?jQuery' },
+            { test: /angular\.js/, loader: 'imports?$=jQuery' },
             { test: /pixi\.js/, loader: 'expose?PIXI' },
             { test: /phaser-split\.js$/, loader: 'expose?Phaser' },
             { test: /p2\.js/, loader: 'expose?p2' },
             { test: /\.html$/, loaders: ["html"] },
             { test: /\.css$/, loader: 'style!css' },
+            { test: /\.(woff|woff2)$/,  loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+            { test: /\.ttf$/,    loader: "file-loader" },
+            { test: /\.eot$/,    loader: "file-loader" },
+            { test: /\.svg$/,    loader: "file-loader" },
             {
-                test: /\.js$/,
+                test: /scripts\/\.js$/,
                 exclude: [
                     /pixi\.js/,
                     /phaser-split\.js$/,
@@ -52,6 +59,12 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        new webpack.IgnorePlugin(/jsdom$/),
+        new webpack.IgnorePlugin(/xmlhttprequest$/),
+        new webpack.IgnorePlugin(/location$/),
+        new webpack.IgnorePlugin(/navigator$/)
+    ],
     resolve: {
         alias: {
             'phaser': PATHS.PHASER,

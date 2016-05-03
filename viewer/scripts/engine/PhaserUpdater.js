@@ -29,7 +29,6 @@ class PhaserUpdater {
         this.update = this.update.bind(this);
     }
     update() {
-
         // Control rate of phase updates, limiting to PHASE_DELAY
         if (new Date().getTime() - this.lastPhaseTime > PHASER.PHASE_DELAY &&
             this.phaseIndex < this.engine.getPhaseCount()) {

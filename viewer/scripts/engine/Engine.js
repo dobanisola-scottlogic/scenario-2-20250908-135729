@@ -83,6 +83,12 @@ class Engine {
     addSpawns(spawns) {
         this.map.addSpawns(this.game, spawns, this.getOwners());
     }
+    destroyAndCleanup() {
+        this.game.input.enabled = false;
+        this.game.cache.destroy();
+        this.game.destroy();
+        this.game = null;
+    }
 }
 
 module.exports = Engine;

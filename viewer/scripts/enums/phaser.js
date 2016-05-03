@@ -2,8 +2,8 @@
 const PHASER = {
 
     CELL: {
-        WIDTH: 12,
-        HEIGHT: 12
+        WIDTH: 10,
+        HEIGHT: 10
     },
 
     PHASE_DELAY: 300,

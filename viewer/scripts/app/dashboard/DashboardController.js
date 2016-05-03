@@ -1,14 +1,19 @@
 class DashboardController {
-    constructor(authenticationService) {
-        this.authenticationService = authenticationService;
-        this.isOpen = false;
+    constructor($rootScope, navigationBarService) {
+        this.$rootScope = $rootScope;
+        this.navigationBarService = navigationBarService;
+        DashboardController.instances.push(this);
     }
 
     get loggedIn() {
-        return this.authenticationService.isLoggedIn;
+        return this.navigationBarService.isLoggedIn;
     }
 
     open() {
+        DashboardController.instances.forEach(instance => {
+            instance.close();
+        });
+
         this.isOpen = true;
     }
 
@@ -17,6 +22,7 @@ class DashboardController {
     }
 }
 
-DashboardController.$inject = ['AuthenticationService'];
+DashboardController.$inject = ['$rootScope', 'NavigationBarService'];
+DashboardController.instances = [];
 
 module.exports = DashboardController;
