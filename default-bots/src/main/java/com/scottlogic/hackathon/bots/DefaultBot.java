@@ -8,7 +8,7 @@ import com.scottlogic.hackathon.game.Move;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ConsistentRandomBot extends Bot {
+public class DefaultBot extends Bot {
     private final List<DirectionAndDistanceMove> moves = new LinkedList<DirectionAndDistanceMove>();
 
     @Override

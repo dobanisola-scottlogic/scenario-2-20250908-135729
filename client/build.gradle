@@ -25,4 +25,9 @@ jar {
 
 run {
     main mainClass
+    args "com.scottlogic.hackathon.bots.DefaultBot"
+}
+
+runShadow {
+    args "com.scottlogic.hackathon.bots.DefaultBot"
 }
