@@ -1,7 +1,5 @@
 <div>
-    <button ng-click="controller.open()"
-            ng-disabled="!controller.loggedIn">Open</button>
-    <div class="dashboardOverlay" ng-if="controller.isOpen">
+    <div class="dashboardOverlay" ng-show="controller.isOpen">
         <div class="content">
             <div class="close" ng-click="controller.close()">X</div>
             <div class="titleText">{{title}}</div>

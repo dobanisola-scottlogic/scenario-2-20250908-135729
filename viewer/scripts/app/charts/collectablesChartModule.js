@@ -8,7 +8,7 @@ collectablesChart.directive('collectablesChart', function() {
         transclude: false,
         scope: {},
         replace: true,
-        template: '<div id="collectables-chart" class="chart"></div>'
+        template: '<div id="collectables-chart" class="col-md-offset= 10 col-md-2"></div>'
     };
 });
 

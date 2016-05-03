@@ -1,11 +1,17 @@
-class AuthenticationService {
+
+class NavigationBarService {
     constructor($http, $q, $window, apiPath) {
         this.apiPath = apiPath;
         this.$http = $http;
         this.$q = $q;
         this.$window = $window;
     }
-
+    getGamesList() {
+        return this.$http.get(`${this.apiPath}/game`).then(response => response.data);
+    }
+    getGameData(gameId, callback) {
+        return this.$http.get(`${this.apiPath}/game/` + gameId).then(response => response.data);
+    }
     login(username, password) {
         let loginDeferred = this.$q.defer();
         let authenticationData = this.$window.btoa(username + ':' + password);
@@ -23,26 +29,21 @@ class AuthenticationService {
 
         return loginDeferred.promise;
     }
-
-
     logout() {
         this.$http.defaults.headers.common.Authorization = undefined;
         this.loggedInUser = null;
     }
-
     get isLoggedIn() {
         return !!this.loggedInUser;
     }
-
     getLoggedInUserName() {
         return this.loggedInUser ? this.loggedInUser.name : null;
     }
-
     isAuthourised(role) {
         return this.loggedInUser && this.loggedInUser.role === role;
     }
 }
 
-AuthenticationService.$inject = ['$http', '$q', '$window', 'API_PATH'];
+NavigationBarService.$inject = ['$http', '$q', '$window', 'API_PATH'];
 
-module.exports = AuthenticationService;
+module.exports = NavigationBarService;

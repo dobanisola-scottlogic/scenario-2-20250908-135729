@@ -8,6 +8,7 @@ dashboard.directive('hackDashboard', function() {
         restrict: 'E',
         transclude: true,
         scope: {
+            controller: '=',
             show: '=',
             title: '@'
         },

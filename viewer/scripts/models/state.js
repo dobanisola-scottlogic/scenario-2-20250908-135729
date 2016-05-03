@@ -1,5 +1,4 @@
 var Cell = require('../engine/models/Cell');
-var states = [];
 
 class State {
     constructor(players, collectables, spawnPoints) {
@@ -19,11 +18,16 @@ class State {
     }
 
     static parseEnumerable(gameData) {
+        let states = [];
         for (let i = 0; i < gameData.phaseResults.length; i++) {
+            let previousState = null;
+            if (i > 0) {
+                previousState = states[i - 1];
+            }
             let state = new State(
-                parsePlayerPositions(i, gameData),
-                parseCollectablePositions(i, gameData),
-                parseSpawnPositions(i, gameData)
+                parsePlayerPositions(i, gameData, previousState),
+                parseCollectablePositions(i, gameData, previousState),
+                parseSpawnPositions(i, gameData, previousState)
             );
 
             states.push(state);
@@ -33,7 +37,7 @@ class State {
     }
 }
 
-function parsePlayerPositions(index, gameData) {
+function parsePlayerPositions(index, gameData, previousState) {
     let players = [];
     let previousPlayers = [];
     let spawnPoints = [];
@@ -48,7 +52,7 @@ function parsePlayerPositions(index, gameData) {
     });
 
     if (index > 0) {
-        previousPlayers = states[index - 1].players.map(previousPlayer => previousPlayer.id);
+        previousPlayers = previousState.players.map(previousPlayer => previousPlayer.id);
     }
 
     gameData.phaseResults[index].playerPositions.forEach((player) => {
@@ -68,10 +72,10 @@ function parsePlayerPositions(index, gameData) {
             });
         } else {
             // Add owner and teamIndex for players that haven't just spawned
-            let previousIndex = states[index - 1].players.map(previousPlayer => previousPlayer.id)
+            let previousIndex = previousState.players.map(previousPlayer => previousPlayer.id)
                                                          .indexOf(player.id);
-            owner = states[index - 1].players[previousIndex].owner;
-            teamIndex = states[index - 1].players[previousIndex].teamIndex;
+            owner = previousState.players[previousIndex].owner;
+            teamIndex = previousState.players[previousIndex].teamIndex;
         }
 
         players.push({
@@ -85,12 +89,12 @@ function parsePlayerPositions(index, gameData) {
     return players;
 }
 
-function parseCollectablePositions(index, gameData) {
+function parseCollectablePositions(index, gameData, previousState) {
     let collectables = [];
 
     // Set current collectables to previous collectables
     if (index > 0) {
-        states[index - 1].collectables.forEach((collectable) => {
+        previousState.collectables.forEach((collectable) => {
             collectables.push(collectable);
         });
     }
@@ -118,7 +122,7 @@ function parseCollectablePositions(index, gameData) {
     return collectables;
 }
 
-function parseSpawnPositions(index, gameData) {
+function parseSpawnPositions(index, gameData, previousState) {
     let spawnPoints = [];
 
     // Set the current spawn points to the previous spawn point
@@ -132,7 +136,7 @@ function parseSpawnPositions(index, gameData) {
             });
         });
     } else {
-        states[index - 1].spawnPoints.forEach((spawnPoint) => {
+        previousState.spawnPoints.forEach((spawnPoint) => {
             spawnPoints.push(spawnPoint);
         });
     }
