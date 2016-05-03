@@ -6,7 +6,8 @@ const PATHS = {
     PHASER: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),
     PIXI: path.join(__dirname, '/node_modules/phaser/build/custom/pixi.js'),
     P2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js'),
-    ANGULAR: path.join(__dirname, '/node_modules/angular/index.js')
+    ANGULAR: path.join(__dirname, '/node_modules/angular/index.js'),
+    NG_FILE_UPLOAD: path.join(__dirname, '/node_modules/ng-file-upload/dist/ng-file-upload.js')
 };
 
 module.exports = {
@@ -56,7 +57,8 @@ module.exports = {
             'phaser': PATHS.PHASER,
             'pixi': PATHS.PIXI,
             'p2': PATHS.P2,
-            'angular': PATHS.ANGULAR
+            'angular': PATHS.ANGULAR,
+            'ng-file-upload': PATHS.NG_FILE_UPLOAD
         },
         extensions: ['', '.js', '.json']
     }

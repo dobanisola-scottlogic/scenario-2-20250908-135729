@@ -39,7 +39,7 @@ class AuthenticationService {
     }
 
     isAuthourised(role) {
-        return this.getLoggedInUser && this.getLoggedInUser.role === role;
+        return this.loggedInUser && this.loggedInUser.role === role;
     }
 }
 
