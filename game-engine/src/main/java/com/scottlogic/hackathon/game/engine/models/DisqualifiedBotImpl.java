@@ -2,22 +2,22 @@ package com.scottlogic.hackathon.game.engine.models;
 
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.game.DisqualifiedBot;
-import com.scottlogic.hackathon.game.RejectedMove;
+import com.scottlogic.hackathon.game.Rejection;
 
 import java.util.Collections;
 import java.util.List;
 
 public class DisqualifiedBotImpl implements DisqualifiedBot {
     private final Bot bot;
-    private final List<RejectedMove> rejectedMoves;
+    private final List<Rejection> rejections;
 
-    public DisqualifiedBotImpl(final Bot bot, final List<RejectedMove> rejectedMoves) {
+    public DisqualifiedBotImpl(final Bot bot, final List<Rejection> rejections) {
         this.bot = bot;
-        this.rejectedMoves = rejectedMoves;
+        this.rejections = rejections;
     }
 
-    public List<RejectedMove> getRejectedMoves() {
-        return Collections.unmodifiableList(rejectedMoves);
+    public List<Rejection> getRejections() {
+        return Collections.unmodifiableList(rejections);
     }
 
     public Bot getBot() {

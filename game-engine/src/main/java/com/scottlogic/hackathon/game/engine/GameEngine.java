@@ -8,6 +8,9 @@ import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 
 import java.util.*;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -23,12 +26,15 @@ public class GameEngine {
     private final int minCollectableDistanceFromSpawn = 8;
     private final double collectablesSpawnFrequency = 0.2;
     private final int battleRadius = 2;
+    private final int initialiseTimeoutSeconds = 30;
+    private final int makeMovesTimeoutSeconds = 5;
+    private final TimedConsumer<Bot> timedConsumer = new TimedConsumer<Bot>();
     Map<Bot, GameStateImpl> gamesStates = new HashMap<Bot, GameStateImpl>();
     private TrackedSetImpl<PlayerImpl> players;
     private TrackedSetImpl<CollectableImpl> collectables;
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
-    private int phase = 0;
+    private int phase;
 
     public GameEngine(final PlayableMap map, final Set<Bot> bots) throws IllegalArgumentException {
         this.map = map;
@@ -58,8 +64,9 @@ public class GameEngine {
         collectables = new TrackedSetImpl<CollectableImpl>();
         spawnPoints = new TrackedSetImpl<SpawnPointImpl>();
         disqualifiedBots = new TrackedSetImpl<DisqualifiedBotImpl>();
+        phase = 0;
 
-        setBotIds();
+        initialiseBots();
         createSpawnPoints();
 
         final List<PhaseResult> phaseResults = new ArrayList<PhaseResult>(maxPhases);
@@ -79,10 +86,45 @@ public class GameEngine {
         return new GameResultImpl(phaseResults, new MapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
     }
 
+    private void initialiseBots() throws InterruptedException, ExecutionException {
+        final Map<Bot, GameState> botToGameStateMap = new ConcurrentHashMap<>(bots.size());
+        for (final Bot bot : bots) {
+            botToGameStateMap.put(bot, createGameState(bot));
+        }
+
+        final Set<TimedConsumer.Result<Bot>> consumeResults = timedConsumer.consume(bot -> {
+            final GameState gameState = botToGameStateMap.get(bot);
+            bot.initialise(gameState);
+        }, bots, initialiseTimeoutSeconds, TimeUnit.SECONDS);
+
+        consumeResults.stream()
+                .filter(consumeResult -> !consumeResult.isCompleted())
+                .forEach(consumeResult -> {
+                    disqualifyBot(consumeResult.getItem(), Arrays.asList(new BotRejection("initialise took too long")));
+                });
+    }
+
+    private void disqualifyBot(final Bot bot, final List<Rejection> rejectedMoves) {
+        final DisqualifiedBotImpl disqualifiedBot = new DisqualifiedBotImpl(bot, rejectedMoves);
+        disqualifiedBots.add(disqualifiedBot);
+        removeIf(players, player -> player.getOwner().equals(bot.getId()));
+        removeIf(players, player -> player.getOwner().equals(bot.getId()));
+        removeIf(spawnPoints, spawnPoint -> spawnPoint.getOwner().equals(bot.getId()));
+    }
+
+    private <T> void removeIf(final TrackedSetImpl<T> items, final Predicate<T> predicate) {
+        for (final Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
+            final T item = iterator.next();
+            if (predicate.test(item)) {
+                iterator.remove();
+            }
+        }
+    }
+
     private PhaseResult playPhase() throws Exception {
         final Set<Bot> bots = getQualifyingBots();
 
-        final Map<Bot, GameState> botToGameStateMap = new HashMap<Bot, GameState>(bots.size());
+        final Map<Bot, GameState> botToGameStateMap = new ConcurrentHashMap<>(bots.size());
         for (final Bot bot : bots) {
             botToGameStateMap.put(bot, createGameState(bot));
         }
@@ -91,19 +133,33 @@ public class GameEngine {
         collectables.reset();
         spawnPoints.reset();
 
-        for (final Bot bot : bots) {
-            final GameState gameState = botToGameStateMap.get(bot);
 
+        final Map<Bot, List<Move>> botMoves = new ConcurrentHashMap<>(bots.size());
+        final Set<TimedConsumer.Result<Bot>> consumeResults = timedConsumer.consume(bot -> {
+            final GameState gameState = botToGameStateMap.get(bot);
             final List<Move> moves = bot.makeMoves(gameState);
 
-            final List<RejectedMove> rejectedMoves = getRejectedMoves(bot, moves);
+            botMoves.put(bot, moves);
+        }, bots, makeMovesTimeoutSeconds, TimeUnit.SECONDS);
 
-            if (rejectedMoves.size() > 0) {
-                disqualifyBot(bot, rejectedMoves);
-            } else {
-                applyMoves(moves);
-            }
-        }
+        consumeResults
+                .stream()
+                .forEach(consumeResult -> {
+                    final Bot bot = consumeResult.getItem();
+                    if (!consumeResult.isCompleted()) {
+                        disqualifyBot(bot, Arrays.asList(new BotRejection("makeMoves took too long")));
+
+                    } else {
+                        final List<Move> moves = botMoves.get(bot);
+                        final List<Rejection> rejectedMoves = getRejectedMoves(bot, moves);
+
+                        if (rejectedMoves.size() > 0) {
+                            disqualifyBot(bot, rejectedMoves);
+                        } else {
+                            applyMoves(moves);
+                        }
+                    }
+                });
 
         collide();
         collect();
@@ -143,13 +199,26 @@ public class GameEngine {
 
         gameStateBuilder
                 .setOutOfBoundsPositions(getVisibleItems(visiblePositions, map.getOutOfBoundsPositions().stream(), Function.identity()))
-                .setPlayers(getVisibleItems(visiblePositions, players.stream(), player -> player.getPosition()))
+                .setPlayers(getVisibleItemsOrOwnedItems(visiblePositions,
+                        players.stream(),
+                        player -> player.getPosition(),
+                        player -> player.getOwner().equals(bot.getId())))
                 .setCollectables(getVisibleItems(visiblePositions, collectables.stream(), collectable -> collectable.getPosition()))
-                .setSpawnPoints(getVisibleItems(visiblePositions, spawnPoints.stream(), spawnPoint -> spawnPoint.getPosition()))
+                .setSpawnPoints(getVisibleItemsOrOwnedItems(visiblePositions,
+                        spawnPoints.stream(),
+                        spawnPoint -> spawnPoint.getPosition(),
+                        spawnPoint -> spawnPoint.getOwner().equals(bot.getId())))
                 .setRemovedPlayers(getOwnedItems(players.getRemoved().stream(), player -> player.getOwner().equals(bot.getId())))
                 .setRemovedSpawnPoints(getOwnedItems(spawnPoints.getRemoved().stream(), spawnPoint -> spawnPoint.getOwner().equals(bot.getId())));
 
         return gameStateBuilder.createGameState();
+    }
+
+    private <T> Set<T> getVisibleItemsOrOwnedItems(final Set<Position> visiblePositions, final Stream<? extends T> items, final Function<T, Position> getPosition, final Predicate<T> isOwned) {
+        final Set<T> visibleItemsOrOwnedItems = items
+                .filter(item -> visiblePositions.contains(getPosition.apply(item)) || isOwned.test(item))
+                .collect(Collectors.toSet());
+        return visibleItemsOrOwnedItems;
     }
 
     private <T> Set<T> getOwnedItems(final Stream<? extends T> items, final Predicate<T> isOwned) {
@@ -183,12 +252,6 @@ public class GameEngine {
         return cutoffCondition;
     }
 
-    private void setBotIds() {
-        for (final Bot bot : bots) {
-            bot.setId(UUID.randomUUID());
-        }
-    }
-
     private void createSpawnPoints() {
         final Random random = new Random();
         final List<Position> spawnPointPositions = map
@@ -201,19 +264,10 @@ public class GameEngine {
         final Iterator<Position> spawnPointPositionsIterator = spawnPointPositions.iterator();
 
         for (final Bot bot : bots) {
-            bot.setId(UUID.randomUUID());
             final Position spawnPointPosition = spawnPointPositionsIterator.next();
             final SpawnPointImpl spawnPoint = new SpawnPointImpl(spawnPointPosition, bot.getId(), spawnPhases);
             spawnPoints.add(spawnPoint);
         }
-    }
-
-    private void disqualifyBot(final Bot bot, final List<RejectedMove> rejectedMoves) {
-        final DisqualifiedBotImpl disqualifiedBot = new DisqualifiedBotImpl(bot, rejectedMoves);
-        disqualifiedBots.add(disqualifiedBot);
-        removeIf(players, player -> player.getOwner().equals(bot.getId()));
-        removeIf(players, player -> player.getOwner().equals(bot.getId()));
-        removeIf(spawnPoints, spawnPoint -> spawnPoint.getOwner().equals(bot.getId()));
     }
 
     private Set<Bot> getQualifyingBots() {
@@ -224,30 +278,30 @@ public class GameEngine {
         return bots;
     }
 
-    private List<RejectedMove> getRejectedMoves(final Bot bot, final List<Move> moves) {
+    private List<Rejection> getRejectedMoves(final Bot bot, final List<Move> moves) {
         final Map<UUID, Set<Move>> playerToMovesLookup = createLookup(moves, move -> move.getPlayer(), Function.identity());
 
-        final Stream<RejectedMove> multipleMoves = playerToMovesLookup
+        final Stream<Rejection> multipleMoves = playerToMovesLookup
                 .values()
                 .stream()
                 .filter(playerMoves -> playerMoves.size() > 1)
                 .flatMap(playerMoves -> playerMoves.stream())
-                .map(move -> new RejectedMoveImpl(move, String.format("player %1s can only move once per phase", move.getPlayer())));
+                .map(move -> new MoveRejection(move, String.format("player %1s can only move once per phase", move.getPlayer())));
 
         final Map<UUID, Player> playerIdMap = createMap(players, player -> player.getId(), Function.identity());
 
-        final Stream<RejectedMove> unknownPlayer = moves
+        final Stream<Rejection> unknownPlayer = moves
                 .stream()
                 .filter(move -> !playerIdMap.containsKey(move.getPlayer()))
-                .map(move -> new RejectedMoveImpl(move, String.format("player %1s is unknown", move.getPlayer())));
+                .map(move -> new MoveRejection(move, String.format("player %1s is unknown", move.getPlayer())));
 
-        final Stream<RejectedMove> unownedPlayer = moves
+        final Stream<Rejection> unownedPlayer = moves
                 .stream()
                 .filter(move -> playerIdMap.containsKey(move.getPlayer()))
                 .filter(move -> !playerIdMap.get(move.getPlayer()).getOwner().equals(bot.getId()))
-                .map(move -> new RejectedMoveImpl(move, String.format("player %1s is not owned by this bot", move.getPlayer())));
+                .map(move -> new MoveRejection(move, String.format("player %1s is not owned by this bot", move.getPlayer())));
 
-        final List<RejectedMove> rejectedMoves = Stream.concat(Stream.concat(multipleMoves, unknownPlayer), unownedPlayer)
+        final List<Rejection> rejectedMoves = Stream.concat(Stream.concat(multipleMoves, unknownPlayer), unownedPlayer)
                 .collect(Collectors.toList());
 
         return rejectedMoves;
@@ -443,15 +497,6 @@ public class GameEngine {
         return map;
     }
 
-    private <T> void removeIf(final TrackedSetImpl<T> items, final Predicate<T> predicate) {
-        for (final Iterator<T> iterator = items.iterator(); iterator.hasNext(); ) {
-            final T item = iterator.next();
-            if (predicate.test(item)) {
-                iterator.remove();
-            }
-        }
-    }
-
     private <T> void actionOwnerAtItem(final Iterable<? extends T> items, final Function<T, Position> getPosition, final ActionAtItemConsumer<UUID, T> action) throws Exception {
         actionPlayersAtItem(items, getPosition, (players, item) -> {
             final Set<UUID> owners = players.stream()
@@ -483,4 +528,5 @@ public class GameEngine {
     interface ActionAtItemConsumer<TFound, TItem> {
         void accept(TFound found, TItem item) throws Exception;
     }
+
 }

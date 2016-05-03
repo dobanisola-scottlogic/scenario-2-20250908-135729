@@ -3,6 +3,6 @@ package com.scottlogic.hackathon.game;
 import java.util.List;
 
 public interface DisqualifiedBot {
-    List<RejectedMove> getRejectedMoves();
+    List<Rejection> getRejections();
     Bot getBot();
 }
