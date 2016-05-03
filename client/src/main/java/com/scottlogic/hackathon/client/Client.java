@@ -79,8 +79,8 @@ public class Client {
             for (final DisqualifiedBot disqualifiedBot : finalResult.getDisqualifiedBots()) {
                 System.out.printf("\tBot %s was disqualified", disqualifiedBot.getBot().getId())
                         .println();
-                for (final RejectedMove rejectedMove : disqualifiedBot.getRejectedMoves()) {
-                    System.out.printf("\t\tMove %s - Message %s", rejectedMove.getMove(), rejectedMove.getMessage())
+                for (final Rejection rejection : disqualifiedBot.getRejections()) {
+                    System.out.printf("\t\t%s", rejection.getMessage())
                             .println();
                 }
             }

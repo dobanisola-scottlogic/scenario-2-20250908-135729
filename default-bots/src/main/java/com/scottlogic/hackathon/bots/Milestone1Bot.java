@@ -5,9 +5,8 @@ import com.scottlogic.hackathon.game.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Milestone1Bot implements Bot {
+public class Milestone1Bot extends Bot {
     private final List<TimidMove> moves = new LinkedList<>();
-    private UUID id;
 
     @Override
     public List<Move> makeMoves(final GameState gameState) {
@@ -15,18 +14,18 @@ public class Milestone1Bot implements Bot {
             moves.removeIf(move -> move.getPlayer().equals(player.getId()));
         });
 
-        int mapWidth = gameState.getMap().getWidth();
-        int mapHeight = gameState.getMap().getHeight();
+        final int mapWidth = gameState.getMap().getWidth();
+        final int mapHeight = gameState.getMap().getHeight();
 
         final Set<UUID> previousPlayers = moves
                 .stream()
                 .map(move -> move.getPlayer())
                 .collect(Collectors.toSet());
 
-        Set<Position> playerPositions = new HashSet<>();
-        Set<Position> opponentPlayerPositions = new HashSet<>();
+        final Set<Position> playerPositions = new HashSet<>();
+        final Set<Position> opponentPlayerPositions = new HashSet<>();
         gameState.getPlayers().forEach(player -> {
-            if (player.getOwner().equals(id)) {
+            if (player.getOwner().equals(getId())) {
                 playerPositions.add(player.getPosition());
                 if (!previousPlayers.contains(player.getId())) {
                     moves.add(new TimidMove(mapWidth, mapHeight, player));
@@ -42,9 +41,9 @@ public class Milestone1Bot implements Bot {
             }
         });
 
-        Set<Position> outOfBoundsPositions = gameState.getOutOfBoundsPositions().stream().collect(Collectors.toSet());
-        Set<SpawnPoint> spawnPoints = gameState.getSpawnPoints().stream().collect(Collectors.toSet());
-        Set<Collectable> collectables = gameState.getCollectables().stream().collect(Collectors.toSet());
+        final Set<Position> outOfBoundsPositions = gameState.getOutOfBoundsPositions().stream().collect(Collectors.toSet());
+        final Set<SpawnPoint> spawnPoints = gameState.getSpawnPoints().stream().collect(Collectors.toSet());
+        final Set<Collectable> collectables = gameState.getCollectables().stream().collect(Collectors.toSet());
         moves.forEach(move -> {
             move.setPlayersPositions(playerPositions);
             move.setOpponentPlayerPositions(opponentPlayerPositions);
@@ -55,15 +54,5 @@ public class Milestone1Bot implements Bot {
         });
 
         return Collections.unmodifiableList(moves);
-    }
-
-    @Override
-    public UUID getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(final UUID id) {
-        this.id = id;
     }
 }

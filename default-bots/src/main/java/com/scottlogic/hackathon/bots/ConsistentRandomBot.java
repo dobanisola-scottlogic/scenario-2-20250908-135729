@@ -8,9 +8,8 @@ import com.scottlogic.hackathon.game.Move;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ConsistentRandomBot implements Bot {
+public class ConsistentRandomBot extends Bot {
     private final List<DirectionAndDistanceMove> moves = new LinkedList<DirectionAndDistanceMove>();
-    private UUID id;
 
     @Override
     public List<Move> makeMoves(final GameState gameState) {
@@ -23,7 +22,7 @@ public class ConsistentRandomBot implements Bot {
                 .collect(Collectors.toSet());
 
         gameState.getPlayers().forEach(player -> {
-            if (player.getOwner().equals(id) && !previousPlayers.contains(player.getId())) {
+            if (player.getOwner().equals(getId()) && !previousPlayers.contains(player.getId())) {
                 moves.add(new DirectionAndDistanceMove(player.getId()));
             }
         });
@@ -31,16 +30,6 @@ public class ConsistentRandomBot implements Bot {
         moves.forEach(move -> move.phase());
 
         return Collections.unmodifiableList(moves);
-    }
-
-    @Override
-    public UUID getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(final UUID id) {
-        this.id = id;
     }
 
     class DirectionAndDistanceMove implements Move {
