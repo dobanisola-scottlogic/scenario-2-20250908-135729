@@ -21,7 +21,7 @@ public class GameEngine {
     private final PlayableMap map;
     private final int maxPhases = 512;
     private final int spawnPhases = 8;
-    private final int maxVisibleDistance = 3;
+    private final int maxVisibleDistance = 6;
     private final int maxCollectablesSpawnedPerPhase = 4;
     private final int minCollectableDistanceFromSpawn = 8;
     private final double collectablesSpawnFrequency = 0.2;
