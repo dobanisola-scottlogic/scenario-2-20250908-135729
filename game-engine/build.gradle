@@ -1,6 +1,11 @@
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
+def jacksonVersion = "2.6.3"
+
 dependencies {
+    compile group: "com.fasterxml.jackson.core", name: "jackson-core", version: jacksonVersion
+    compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jacksonVersion
+    compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: jacksonVersion
     compile project(":game")
 }

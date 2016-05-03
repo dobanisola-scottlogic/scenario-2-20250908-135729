@@ -46,19 +46,11 @@ public class GameEngine {
     public static GameEngine create(final String mapName, final Set<Bot> bots) throws IllegalArgumentException {
         final PlayableMap map;
         try {
-            map = loadMap(mapName);
+            map = PlayableMap.load(mapName);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("map wasn't found");
         }
         return new GameEngine(map, bots);
-    }
-
-    private static PlayableMap loadMap(final String mapName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        final String packageName = GameEngine.class.getPackage().getName() + ".maps";
-        final String className = packageName + "." + mapName;
-        final Class clazz = Class.forName(className);
-        final PlayableMap map = (PlayableMap) clazz.newInstance();
-        return map;
     }
 
     public GameResult play() throws Exception {
