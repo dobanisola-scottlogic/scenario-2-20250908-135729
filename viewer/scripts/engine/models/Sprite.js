@@ -132,7 +132,12 @@ class Sprite {
         this.setVelocity(0, 0);
         if (dieAnimation && playDeathAnimation) {
             dieAnimation.onComplete.add((sprite) => {
-                if (!leavePhaserSprite) { sprite.destroy(); }
+                if (!leavePhaserSprite) {
+                    sprite.destroy();
+                } else {
+                    this.sprite.width *= 2;
+                    this.sprite.height *= 2;
+                }
             });
             dieAnimation.play();
         } else if (!leavePhaserSprite) {
