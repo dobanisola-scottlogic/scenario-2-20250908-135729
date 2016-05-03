@@ -14,6 +14,7 @@ class Sprite {
         this.colour = colour;
         this.colourMap = staticSprite.COLOUR_MAP[colour.ID];
         this.sprite = this.constructSprite(game, staticSprite, cell);
+        this.pauseCache = null;
     }
     copySpriteToCell(game, cell) {
         let clone = new Sprite(game,
@@ -106,6 +107,25 @@ class Sprite {
     setCell(cell) {
         this.sprite.x = cell.getCentreXPosition();
         this.sprite.y = cell.getCentreYPosition();
+    }
+    setPaused(pause) {
+        if (pause) {
+            this.pauseCache = {
+                velocity: {
+                    x: this.sprite.body ? this.sprite.body.velocity.x : 0,
+                    y: this.sprite.body ? this.sprite.body.velocity.y : 0
+                }
+            };
+            this.sprite.animations.paused = true;
+            this.setVelocity(0, 0);
+        } else if (this.pauseCache) {
+            this.setVelocity(this.pauseCache.velocity.x,
+                             this.pauseCache.velocity.y);
+            this.sprite.animations.paused = false;
+            this.pauseCache = null;
+        } else {
+            console.log('ERROR : Attempted to resume pause state of an item which was never paused.');
+        }
     }
     destroy(playDeathAnimation, leavePhaserSprite) {
         let dieAnimation = this.sprite.animations.getAnimation('die');

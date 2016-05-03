@@ -20,6 +20,9 @@ class Player {
         sprite.playAnimation('run');
         return sprite;
     }
+    setPaused(paused) {
+        this.sprite.setPaused(paused);
+    }
     destroy() {
         this.sprite.destroy(true);
     }
