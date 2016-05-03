@@ -16,6 +16,12 @@ class Engine {
         // Save passed values
         this.gameData = gameData;
 
+        // Create phaser method objects
+        this.phaserPreloader = new PhaserPreloader(this);
+        this.phaserCreator = new PhaserCreator(this);
+        this.phaserRenderer = new PhaserRenderer(this);
+        this.phaserUpdater = new PhaserUpdater(this);
+
         // Construct phaser-game engine
         this.game = new phaser.Phaser.Game(
             gameData.constants.width * PHASER.CELL.WIDTH,
@@ -23,19 +29,21 @@ class Engine {
             Phaser.AUTO,
             'phaserApp',
             {
-                preload: new PhaserPreloader(this).preload,
-                create: new PhaserCreator(this).create,
-                render: new PhaserRenderer(this).render,
-                update: new PhaserUpdater(this).update
+                preload: this.phaserPreloader.preload,
+                create: this.phaserCreator.create,
+                render: this.phaserRenderer.render,
+                update: this.phaserUpdater.update
             });
 
         // Construct map object
         this.map = new Map(this.getColumnCount(), this.getRowCount());
 
-        // Define arrays to hold game objects
+        // Define objects to hold game data
         this.collectables = [];
         this.players = [];
         this.owners = this.createOwners(this.getSpawns());
+        this.paused = false;
+
     }
     createOwners(spawns) {
         let owners = {};
@@ -88,6 +96,13 @@ class Engine {
         this.game.cache.destroy();
         this.game.destroy();
         this.game = null;
+    }
+    setPaused(paused) {
+        this.paused = paused;
+        this.phaserUpdater.setPaused(paused);
+    }
+    isPaused() {
+        return this.paused;
     }
 }
 

@@ -29,9 +29,16 @@ class PhaserUpdater {
         this.update = this.update.bind(this);
     }
     update() {
+
+        // Freeze the game if max phases reached
+        if (this.phaseIndex === this.engine.getPhaseCount()) {
+            this.setPaused(true);
+        }
+        
         // Control rate of phase updates, limiting to PHASE_DELAY
         if (new Date().getTime() - this.lastPhaseTime > PHASER.PHASE_DELAY &&
-            this.phaseIndex < this.engine.getPhaseCount()) {
+            this.phaseIndex < this.engine.getPhaseCount() &&
+            !this.engine.isPaused()) {
 
             this.lastPhaseTime = (new Date()).getTime();
 
@@ -50,6 +57,17 @@ class PhaserUpdater {
 
             this.phaseIndex ++;
         }
+    }
+    setPaused(paused) {
+        this.engine.collectables.forEach(collectable => {
+            collectable.setPaused(paused);
+        });
+        this.engine.map.spawns.forEach(spawn => {
+            spawn.setPaused(paused);
+        });
+        this.engine.players.forEach(player => {
+            player.setPaused(paused);
+        });
     }
     renderPhase(phase) {
         if (phase < this.engine.getPhaseCount()) {

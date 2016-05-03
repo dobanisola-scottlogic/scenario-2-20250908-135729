@@ -25,6 +25,9 @@ class Spawn {
         sprite.playAnimation('active');
         return sprite;
     }
+    setPaused(paused) {
+        this.sprite.setPaused(paused);
+    }
     destroy() {
         this.sprite.destroy(true, true);
     }
