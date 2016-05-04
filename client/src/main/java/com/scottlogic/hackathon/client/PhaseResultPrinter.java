@@ -73,7 +73,7 @@ public class PhaseResultPrinter {
 
         ansi
                 .eraseScreen()
-                .a(String.format("Phase %s", phaseResult.getPhase()))
+                .a(String.format("Phase %s of %s", phaseResult.getPhase(), gameResult.getPhaseResults().size()))
                 .newline();
         printSeperator();
         for (final Tile[] row : tiles) {
