@@ -24,7 +24,7 @@ team.directive('hackTeam', function() {
         restrict: 'E',
         transclude: false,
         scope: {
-            name: '='
+            team: '='
         },
         replace: true,
         template: require('./content/teamListItem.html')

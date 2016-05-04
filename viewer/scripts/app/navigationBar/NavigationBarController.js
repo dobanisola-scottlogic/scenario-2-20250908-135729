@@ -19,12 +19,13 @@ let testParsedGameData = parser(testGameData);
 let engine;
 
 class NavigationBarController {
-    constructor($rootScope, $scope, $http, $interval, navigationBarService) {
+    constructor($rootScope, $scope, $http, $interval, navigationBarService, gameService) {
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$http = $http;
         this.$interval = $interval;
         this.navigationBarService = navigationBarService;
+        this.gameService = gameService;
 
         this.credentials = {
             username: '',
@@ -44,15 +45,15 @@ class NavigationBarController {
         }, 5000);
     }
     getGamesList() {
-        this.navigationBarService.getGamesList(response => {
-            if (response.length) {
+        this.gameService.getGames().then(response => {
+            if (response && response.length) {
                 this.gamesList = response;
             }
         });
     }
     selectGame(gameId) {
         if (gameId !== 'No games found') {
-            this.navigationBarService.getGameData(gameId, response => {
+            this.gameService.getGame(gameId).then(response => {
                 let parsedGameData = parser(response);
                 this.playGame(parsedGameData);
             });
@@ -72,8 +73,12 @@ class NavigationBarController {
         this.state = LOGIN_STATE.INPROGRESS;
 
         this.navigationBarService.login(this.credentials.username, this.credentials.password).then(
-            () => {this.state = LOGIN_STATE.AUTHOURIZED;},
-            () => {this.state = LOGIN_STATE.FAILED;}
+            () => {
+                this.state = LOGIN_STATE.AUTHOURIZED;
+            },
+            () => {
+                this.state = LOGIN_STATE.FAILED;
+            }
         );
     }
     logout() {
@@ -92,15 +97,8 @@ class NavigationBarController {
     get loggedInUserName() {
         return this.navigationBarService.getLoggedInUserName();
     }
-    openTeamDashboard() {
-        this.$scope.teamDashboardController.open();
-    }
-    openBotDashboard() {
-        this.$scope.botDashboardController.open();
-    }
-
 }
 
-NavigationBarController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'NavigationBarService'];
+NavigationBarController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'NavigationBarService', 'GameService'];
 
 module.exports = NavigationBarController;
