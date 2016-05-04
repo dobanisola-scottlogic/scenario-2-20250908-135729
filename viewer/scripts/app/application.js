@@ -25,4 +25,17 @@ let requires = [
 
 let application = angular.module('hackathon', requires);
 
+application.directive('hackTransclude', function() {
+    return {
+        restrict: "AE",
+        replace: false,
+        link: function($scope, $element, attrs, controller, transclude) {
+            var childScope = $scope.$new();
+            transclude(childScope, function(clonedElement, scope) {
+                $element.append(clonedElement);
+            });
+        }
+    };
+});
+
 module.exports = application;

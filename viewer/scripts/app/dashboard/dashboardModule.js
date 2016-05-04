@@ -10,6 +10,7 @@ dashboard.directive('hackDashboard', function() {
         scope: {
             controller: '=',
             show: '=',
+            role: '@',
             title: '@'
         },
         replace: true,

@@ -1,10 +1,9 @@
 <div>
-    <div class="dashboardOverlay" ng-show="controller.isOpen">
-        <div class="content">
+    <div class="dashboardOverlay" ng-show="controller.isOpen" ng-if="controller.isAuthourised">
+        <div class="content" ng-if="controller.hasBeenOpened">
             <div class="close" ng-click="controller.close()">X</div>
             <div class="titleText">{{title}}</div>
-
-            <ng-transclude></<ng-transclude>
-        <div>
+            <hack-transclude></hack-transclude>
+        </div>
     </div>
 </div>

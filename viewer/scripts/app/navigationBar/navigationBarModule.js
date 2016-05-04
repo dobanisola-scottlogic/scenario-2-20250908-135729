@@ -10,17 +10,13 @@ navigationBar.service('NavigationBarService', navigationBarService);
 navigationBar.directive('hackNavigationBar', function() {
     return {
         restrict: 'E',
-        transclude: false,
-        scope: {
-            teamDashboardController: '=',
-            botDashboardController: '='
-        },
+        transclude: true,
+        scope: {},
         replace: true,
-        template: require('./navigationBarTemplate.html'),
+        template: require('./content/navigationBar.html'),
         controller: 'NavigationBarController',
         controllerAs: 'controller'
     };
 });
-
 
 module.exports = navigationBar;

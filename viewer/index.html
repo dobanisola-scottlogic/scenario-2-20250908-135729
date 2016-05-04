@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-      <head>
-            <meta charset="utf-8">
-            <title>Hackathon Viewer</title>
-      </head>
-      <body>
-            <script src="./build/bundle.js"></script>
 
-            <div ng-app="hackathon">
-                  <hack-navigation-bar team-dashboard-controller="teamDashboardController" bot-dashboard-controller="botDashboardController"></hack-navigation-bar>
+<head>
+    <meta charset="utf-8">
+    <title>Hackathon Viewer</title>
+</head>
 
-                  <hack-dashboard controller="teamDashboardController" title="Team Dashboard">
-                        <hack-add-team></hack-add-team>
-                        <hack-team-panel></hack-team-panel>
-                  </hack-dashboard>
+<body>
+    <script src="./build/bundle.js"></script>
 
-                  <hack-dashboard  controller="botDashboardController" title="Bot Dashboard">
-                        <hack-bot-panel></hack-bot-panel>
-                  </hack-dashboard>
+    <div ng-app="hackathon">
+        <hack-navigation-bar>
+            <hack-dashboard controller="$parent.$parent.teamDashboardController" title="Team Dashboard" role="ADMIN">
+                <hack-add-team></hack-add-team>
+                <hack-team-panel></hack-team-panel>
+            </hack-dashboard>
 
-                  <hack-viewer></hack-viewer>
-                  <collectables-chart></collectables-chart>
-            </div>
-      </body>
+            <hack-dashboard controller="$parent.$parent.botDashboardController" title="Bot Dashboard" role="TEAM">
+                <hack-bot-panel></hack-bot-panel>
+            </hack-dashboard>
+        </hack-navigation-bar>
+        <hack-viewer></hack-viewer>
+        <collectables-chart></collectables-chart>
+    </div>
+</body>
 </html>

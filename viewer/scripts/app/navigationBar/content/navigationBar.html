@@ -1,0 +1,43 @@
+<div>
+    <nav id="navbar" class="navbar navbar-default">
+        <div class="container-fluid header-div">
+            <div class="navbar-header col-md-1">
+                <a class="navbar-brand">Hackathon</a>
+            </div>
+            <div class="dropdown games-div col-md-2">
+                <button class="btn btn-default dropdown-toggle games-dropdown" type="button" id="games" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Available Games <span class="caret"></span>
+                </button>
+                <ul id="available-games" class="dropdown-menu" aria-labelledby="games">
+                    <li ng-repeat="game in controller.gamesList" ng-click="controller.selectGame(game)"><a>{{game}}</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-offset-3 login-form" ng-if="!controller.isLoggedIn">
+                <form ng-disabled="controller.isLoggingIn" name="loginForm" ng-submit="controller.login()" novalidate>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" ng-disabled="controller.isLoggingIn" ng-model="controller.credentials.username">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" ng-disabled="controller.isLoggingIn" ng-model="controller.credentials.password">
+                    <button class="btn btn-sm" type="submit" ng-disabled="controller.isLoggingIn">Login</button>
+
+                    <label ng-if="controller.isFailed" class="login-error">Login failed. Please try again.</label>
+                </form>
+            </div>
+
+            <div class="col-md-offset-3 col-md-4 dashboard-open-div" ng-if="controller.isLoggedIn">
+                <button class="btn btn-sm dashboard-open" ng-if="teamDashboardController.isAuthourised" ng-click="teamDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Team Dashboard</button>
+
+                <button class="btn btn-sm dashboard-open" ng-if="botDashboardController.isAuthourised" ng-click="botDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Bot Dashboard</button>
+            </div>
+
+            <div class="logged-in-div" ng-if="controller.isLoggedIn">
+                Logged in as {{controller.loggedInUserName}}
+                <button class="btn btn-sm" ng-click="controller.logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+    <div ng-if="controller.isLoggedIn">
+        <hack-transclude></hack-transclude>
+    </div>
+</div>
