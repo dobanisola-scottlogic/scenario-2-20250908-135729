@@ -1,2 +1,6 @@
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
+
+jar {
+    from sourceSets.main.allSource
+}
