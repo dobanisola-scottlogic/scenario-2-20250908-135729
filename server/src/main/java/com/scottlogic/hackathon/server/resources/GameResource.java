@@ -1,12 +1,14 @@
 package com.scottlogic.hackathon.server.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.HackathonConfiguration;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.GameConfiguration;
 import com.scottlogic.hackathon.server.models.GameResult;
+import com.scottlogic.hackathon.server.models.Views;
 import com.scottlogic.hackathon.server.services.GameService;
 import io.dropwizard.auth.Auth;
 
@@ -33,19 +35,22 @@ public class GameResource {
     @POST
     @Timed
     @RolesAllowed(Authorizer.ROLE_ADMIN)
+    @JsonView(Views.Details.class)
     public GameResult playGame(@Auth final User user, final GameConfiguration gameConfiguration) {
         return gameService.playGame(user, gameConfiguration);
     }
 
     @GET
     @Timed
-    public List<UUID> getGameResults() {
+    @JsonView(Views.List.class)
+    public List<GameResult> getGameResults() {
         return gameService.getGameResults();
     }
 
     @GET
     @Timed
     @Path("/{id}")
+    @JsonView(Views.Details.class)
     public GameResult getGameResult(@PathParam("id") final UUID id) {
         return gameService.getGameResult(id);
     }

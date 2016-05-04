@@ -31,12 +31,11 @@ public class GameStore {
                 ex -> logger.error("Error getting game result from database", ex));
     }
 
-    public List<UUID> getGameResults() {
-        List<UUID> gameResults = Database.accessDatabase(dataAccessor -> {
+    public List<GameResult> getGameResults() {
+        List<GameResult> gameResults = Database.accessDatabase(dataAccessor -> {
                     final EntityCursor<GameResult> items = dataAccessor.gameResultById.entities();
 
-                    final List<UUID> gameResultsIds = StreamSupport.stream(items.spliterator(), false)
-                            .map(item -> item.getId())
+                    final List<GameResult> gameResultsIds = StreamSupport.stream(items.spliterator(), false)
                             .collect(Collectors.toList());
                     items.close();
                     return gameResultsIds;

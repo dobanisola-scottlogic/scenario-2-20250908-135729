@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sleepycat.persist.model.Persistent;
 
 import java.util.Collections;
@@ -10,12 +11,19 @@ import java.util.stream.Collectors;
 
 @Persistent
 public class PhaseResult {
+    @JsonView(Views.List.class)
     private int phase;
+    @JsonView(Views.Details.class)
     private Set<PlayerPosition> playerPositions;
+    @JsonView(Views.Details.class)
     private Set<Player> addedPlayers;
+    @JsonView(Views.Details.class)
     private Set<Collectable> addedCollectables;
+    @JsonView(Views.Details.class)
     private Set<UUID> removedPlayers;
+    @JsonView(Views.Details.class)
     private Set<UUID> removedSpawnPoints;
+    @JsonView(Views.Details.class)
     private Set<UUID> removedCollectables;
 
     public PhaseResult() {

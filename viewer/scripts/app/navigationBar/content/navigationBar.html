@@ -9,7 +9,13 @@
                     Available Games <span class="caret"></span>
                 </button>
                 <ul id="available-games" class="dropdown-menu" aria-labelledby="games">
-                    <li ng-repeat="game in controller.gamesList" ng-click="controller.selectGame(game)"><a>{{game}}</a></li>
+                    <li ng-if="controller.gamesList.length === 0"><a>No games found</a></li>
+                    <li ng-repeat="game in controller.gamesList" ng-click="controller.selectGame(game)">
+                        <a>
+                            <span>Map {{game.game.map.name}} - </span>
+                            <span ng-repeat="team in (game.game.teams|orderBy:team.teamName) track by team.teamId">{{team.teamName}}{{$last ? '' : ' vs '}}</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 

@@ -10,16 +10,19 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 class PlayableMapImpl implements PlayableMap {
+    private final String name;
     private final int width;
     private final int height;
     private final Set<Position> outOfBoundsPositions;
     private final Set<Position> spawnPointPositions;
 
     public PlayableMapImpl(
+            final String name,
             final int width,
             final int height,
             final Set<Position> outOfBoundsPositions,
             final Set<Position> spawnPointPositions) throws Exception {
+        this.name = name;
         this.width = width;
         this.height = height;
         this.outOfBoundsPositions = outOfBoundsPositions;
@@ -47,6 +50,21 @@ class PlayableMapImpl implements PlayableMap {
                 height,
                 spawnPointPositions.size(),
                 outOfBoundsPositions.size());
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 
     @Override
@@ -126,16 +144,6 @@ class PlayableMapImpl implements PlayableMap {
         final int deltaY = Math.min(Math.abs(y1 - y2), getHeight() - Math.abs(y1 - y2));
 
         return (int) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
     }
 
 

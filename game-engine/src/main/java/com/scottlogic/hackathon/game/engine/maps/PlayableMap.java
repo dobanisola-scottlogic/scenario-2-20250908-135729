@@ -34,6 +34,7 @@ public interface PlayableMap {
         }
 
         final PlayableMap playableMap = new PlayableMapImpl(
+                mapName,
                 width,
                 height,
                 outOfBoundsPositions,
@@ -42,6 +43,7 @@ public interface PlayableMap {
         return playableMap;
     }
 
+    String getName();
     int getWidth();
     int getHeight();
     Set<Position> getOutOfBoundsPositions();

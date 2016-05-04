@@ -1,12 +1,15 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sleepycat.persist.model.Persistent;
 
 import java.util.Set;
 
 @Persistent
 public class Game {
+    @JsonView(Views.List.class)
     private Set<GameTeam> teams;
+    @JsonView(Views.List.class)
     private Map map;
 
     public Game() {

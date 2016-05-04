@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 
@@ -12,7 +13,9 @@ public class GameResult {
     private String key;
     private UUID id;
     private Game game;
+    @JsonView(Views.Details.class)
     private Set<SpawnPoint> spawnPoints;
+    @JsonView(Views.Details.class)
     private List<PhaseResult> phaseResults;
 
     public GameResult() {
@@ -66,5 +69,6 @@ public class GameResult {
     public List<PhaseResult> getPhaseResults() {
         return Collections.unmodifiableList(phaseResults);
     }
+
 
 }

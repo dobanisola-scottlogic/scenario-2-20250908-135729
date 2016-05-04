@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
 import com.sleepycat.persist.model.Persistent;
 
@@ -10,9 +11,13 @@ import java.util.stream.Collectors;
 
 @Persistent
 public class Map {
+    @JsonView(Views.List.class)
     private String name;
+    @JsonView(Views.List.class)
     private int width;
+    @JsonView(Views.List.class)
     private int height;
+    @JsonView(Views.Details.class)
     private Set<Position> outOfBoundPositions;
 
     public Map() {
@@ -30,7 +35,7 @@ public class Map {
 
     public static Map create(final PlayableMap playableMap) {
         return new Map(
-                playableMap.getClass().getName(),
+                playableMap.getName(),
                 playableMap.getWidth(),
                 playableMap.getHeight(),
                 playableMap.getOutOfBoundsPositions()

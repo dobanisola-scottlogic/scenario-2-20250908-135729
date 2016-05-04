@@ -1,13 +1,17 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sleepycat.persist.model.Persistent;
 
 import java.util.UUID;
 
 @Persistent
 public class SpawnPoint {
+    @JsonView(Views.List.class)
     private UUID id;
+    @JsonView(Views.List.class)
     private UUID owner;
+    @JsonView(Views.Details.class)
     private Position position;
 
     public SpawnPoint() {

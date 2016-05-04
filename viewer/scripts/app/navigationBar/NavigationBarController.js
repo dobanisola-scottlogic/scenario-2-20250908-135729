@@ -11,11 +11,6 @@ const LOGIN_STATE = {
     FAILED: 3
 };
 
-// Temp for development
-let testGameData = require('json!../../../testData/exampleGame');
-let testParsedGameData = parser(testGameData);
-// End of temp
-
 let engine;
 
 class NavigationBarController {
@@ -32,11 +27,7 @@ class NavigationBarController {
             password: ''
         };
 
-        this.gamesList = ['No games found'];
-
-        // Temp for development
-        this.playGame(testParsedGameData);
-        // End of temp
+        this.gamesList = [];
 
         this.getGamesList();
 
@@ -51,13 +42,11 @@ class NavigationBarController {
             }
         });
     }
-    selectGame(gameId) {
-        if (gameId !== 'No games found') {
-            this.gameService.getGame(gameId).then(response => {
-                let parsedGameData = parser(response);
-                this.playGame(parsedGameData);
-            });
-        }
+    selectGame(game) {
+        this.gameService.getGame(game.id).then(response => {
+            let parsedGameData = parser(response);
+            this.playGame(parsedGameData);
+        });
     }
     playGame(gameData) {
         // Destroy previous engine

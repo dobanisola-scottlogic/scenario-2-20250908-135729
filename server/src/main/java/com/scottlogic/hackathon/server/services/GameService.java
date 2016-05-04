@@ -51,7 +51,7 @@ public class GameService {
         return gameResult;
     }
 
-    public List<UUID> getGameResults() {
+    public List<GameResult> getGameResults() {
         return gameStore.getGameResults();
     }
 
