@@ -1,6 +1,6 @@
 package com.scottlogic.hackathon.client;
 
-import com.scottlogic.hackathon.bots.ConsistentRandomBot;
+import com.scottlogic.hackathon.bots.DefaultBot;
 import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.game.engine.GameEngine;
 import org.fusesource.jansi.AnsiConsole;
@@ -10,43 +10,74 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Client {
+
     public static void main(final String[] args) throws Exception {
         AnsiConsole.systemInstall();
         new Client().run(args);
     }
 
     private void run(final String[] args) {
-        final Set<Bot> bots = new HashSet<Bot>();
-        bots.add(new ConsistentRandomBot());
-        bots.add(new ConsistentRandomBot());
-        bots.add(new ConsistentRandomBot());
-        bots.add(new ConsistentRandomBot());
+        final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(args);
+        final Arguments arguments = argumentsBuilder.create();
 
-        String mapName = "Easy";
-        if (args.length >= 1) {
-            mapName = args[0];
-        }
-        final GameEngine gameEngine = GameEngine.create(mapName, bots);
+        if (arguments != null) {
+            final Bot defaultBot = loadDefaultBot(arguments.getBot());
+            final Bot bot = loadBot(arguments.getClassName());
 
-        try {
-            final GameResult gameResult = gameEngine.play();
 
-            printGameResult(gameResult);
+            if (bot != null && defaultBot != null) {
+                final Set<Bot> bots = new HashSet<Bot>();
 
-            final Scanner scanner = new Scanner(System.in);
-            System.out.println("Type p to play or press enter to quit");
-            if (scanner.hasNext("p")) {
-                for (final PhaseResult phaseResult : gameResult.getPhaseResults()) {
-                    final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameResult, phaseResult);
-                    phaseResultPrinter.print();
-                    System.out.println("Press enter to continue");
-                    scanner.nextLine();
+                bots.add(defaultBot);
+                bots.add(bot);
+
+                GameEngine gameEngine = null;
+                try {
+                    gameEngine = GameEngine.create(arguments.getMap(), bots);
+                } catch (final IllegalArgumentException e) {
+                    System.err.printf("couldn't create map %s", arguments.getMap())
+                            .println();
+                }
+
+                if (gameEngine != null) {
+                    try {
+                        final GameResult gameResult = gameEngine.play();
+
+                        printGameResult(gameResult);
+
+                        final Scanner scanner = new Scanner(System.in);
+                        System.out.println("Type p to play or press enter to quit");
+                        if (scanner.hasNext("p")) {
+                            for (final PhaseResult phaseResult : gameResult.getPhaseResults()) {
+                                final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameResult, phaseResult);
+                                phaseResultPrinter.print();
+                                System.out.println("Press enter to continue");
+                                scanner.nextLine();
+                            }
+                        }
+                    } catch (final Exception ex) {
+                        System.out.println(ex);
+                        ex.printStackTrace(System.out);
+                    }
                 }
             }
-        } catch (final Exception ex) {
-            System.out.println(ex);
-            ex.printStackTrace(System.out);
         }
+    }
+
+    Bot loadDefaultBot(final String botName) {
+        return loadBot(DefaultBot.class.getPackage().getName() + "." + botName + "Bot");
+    }
+
+    Bot loadBot(final String className) {
+        Bot bot = null;
+        try {
+            final Class clazz = Class.forName(className);
+            bot = (Bot) clazz.newInstance();
+        } catch (final Exception e) {
+            System.err.printf("bot %s wasn't found", className)
+                    .println();
+        }
+        return bot;
     }
 
     private void printGameResult(final GameResult gameResult) {
