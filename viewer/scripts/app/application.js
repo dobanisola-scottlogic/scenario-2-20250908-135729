@@ -29,7 +29,7 @@ let application = angular.module('hackathon', requires);
 
 application.directive('hackTransclude', function() {
     return {
-        restrict: "AE",
+        restrict: 'AE',
         replace: false,
         link: function($scope, $element, attrs, controller, transclude) {
             var childScope = $scope.$new();

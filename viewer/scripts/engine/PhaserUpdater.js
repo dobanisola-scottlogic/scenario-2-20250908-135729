@@ -34,7 +34,7 @@ class PhaserUpdater {
         if (this.phaseIndex === this.engine.getPhaseCount()) {
             this.setPaused(true);
         }
-        
+
         // Control rate of phase updates, limiting to PHASE_DELAY
         if (new Date().getTime() - this.lastPhaseTime > PHASER.PHASE_DELAY &&
             this.phaseIndex < this.engine.getPhaseCount() &&
