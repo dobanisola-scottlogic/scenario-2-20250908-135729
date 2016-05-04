@@ -151,15 +151,10 @@ const SPRITE = {
                 .setTileCount(216)
                 .setWidth(48)
                 .setHeight(48)
-                .setAnimations({ DEFAULT: new StaticAnimation('default', 4),
-                                 STAND: new StaticAnimation('stand', 0),
-                                 RUN: new StaticAnimation('run', 4, 11, 10, true),
-                                 SLAM: new StaticAnimation('slam', 12, 15),
-                                 BITE: new StaticAnimation('bite', 16, 19),
-                                 BLOCK: new StaticAnimation('block', 20, 21),
-                                 HIT_AND_DIE: new StaticAnimation('hit_and_die', 22, 27),
-                                 DIE: new StaticAnimation('die', 28, 35) })
-                .setTeamSpriteCount(36)
+                .setAnimations({ DEFAULT: new StaticAnimation('default', 0),
+                                 RUN: new StaticAnimation('run', 0, 7, 10, true),
+                                 DIE: new StaticAnimation('die', 8, 11, 20, false) })
+                .setTeamSpriteCount(12)
                 .get(),
 
     SPAWN: new StaticSpriteBuilder()

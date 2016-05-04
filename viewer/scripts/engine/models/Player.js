@@ -16,6 +16,7 @@ class Player {
     constructSprite(game) {
         let sprite = new Sprite(game, SPRITE.PLAYER, 3, 3, this.cell, this.colour);
         sprite.addAnimation('run');
+        sprite.addAnimation('die');
         sprite.playAnimation('run');
         return sprite;
     }
