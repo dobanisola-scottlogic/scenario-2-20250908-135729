@@ -6,6 +6,7 @@ let botModule = require('./bots/botModule');
 let dashboardModule = require('./dashboard/dashboardModule');
 let navigationBarModule = require('./navigationBar/navigationBarModule');
 let teamModule = require('./team/teamModule');
+let gameModule = require('./game/gameModule');
 let viewerModule = require('./viewer/viewerModule');
 let collectablesChartModule = require('./charts/collectablesChartModule');
 
@@ -20,6 +21,7 @@ let requires = [
     dashboardModule.name,
     navigationBarModule.name,
     teamModule.name,
+    gameModule.name,
     viewerModule.name
 ];
 

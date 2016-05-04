@@ -1,16 +1,9 @@
-
 class NavigationBarService {
     constructor($http, $q, $window, apiPath) {
-        this.apiPath = apiPath;
         this.$http = $http;
         this.$q = $q;
         this.$window = $window;
-    }
-    getGamesList() {
-        return this.$http.get(`${this.apiPath}/game`).then(response => response.data);
-    }
-    getGameData(gameId, callback) {
-        return this.$http.get(`${this.apiPath}/game/` + gameId).then(response => response.data);
+        this.apiPath = apiPath;
     }
     login(username, password) {
         let loginDeferred = this.$q.defer();

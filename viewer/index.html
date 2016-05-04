@@ -12,8 +12,11 @@
     <div ng-app="hackathon">
         <hack-navigation-bar>
             <hack-dashboard controller="$parent.$parent.teamDashboardController" title="Team Dashboard" role="ADMIN">
-                <hack-add-team></hack-add-team>
                 <hack-team-panel></hack-team-panel>
+            </hack-dashboard>
+
+            <hack-dashboard controller="$parent.$parent.gameDashboardController" title="Game Dashboard" role="ADMIN">
+                <hack-game-panel></hack-game-panel>
             </hack-dashboard>
 
             <hack-dashboard controller="$parent.$parent.botDashboardController" title="Bot Dashboard" role="TEAM">
@@ -24,4 +27,5 @@
         <collectables-chart></collectables-chart>
     </div>
 </body>
+
 </html>

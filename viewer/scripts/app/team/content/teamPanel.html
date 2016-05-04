@@ -11,15 +11,16 @@
                ng-model="controller.newTeamDetails.password"
                ng-disabled="controller.userInterfaceDisabled">
         <button ng-disabled="controller.addButtonDisabled"
-                ng-click="controller.addNewTeam()">Add New Team</button>
+                ng-click="controller.addNewTeam()">Add New Team
+        </button>
     </form>
 
     <div class="teamList">
         <hack-team
-            ng-repeat="team in controller.teams track by team.id"
-            ng-click="controller.onTeamSelected(team)"
-            ng-class="{'isSelected': controller.isSelected(team)}"
-            name="team.name"></hack-team>
+                ng-repeat="team in controller.teams track by team.id"
+                ng-click="controller.onTeamSelected(team)"
+                ng-class="{'isSelected': controller.isSelected(team)}"
+                team="team"></hack-team>
     </div>
 
     <div class="teamDetails">
@@ -29,13 +30,15 @@
             <form>
                 <label for="password">Password:</label>
                 <input type="text"
-                        id="password"
-                        ng-model="controller.updatePassword"
-                        ng-disabled="controller.userInterfaceDisabled">
+                       id="password"
+                       ng-model="controller.updatePassword"
+                       ng-disabled="controller.userInterfaceDisabled">
                 <button ng-click="controller.onUpdatePassword()"
-                        ng-disabled="controller.updatePasswordButtonDisabled">Update Password</button>
+                        ng-disabled="controller.updatePasswordButtonDisabled">Update Password
+                </button>
                 <button ng-click="controller.onDelete()"
-                        ng-disabled="controller.deleteButtonDisabled">Delete Team</button>
+                        ng-disabled="controller.deleteButtonDisabled">Delete Team
+                </button>
             </form>
         </div>
     </div>

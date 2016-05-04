@@ -1,21 +1,15 @@
-.teamPanel .teamList {
+.gamePanel .gameList {
     border: 1px solid black;
     padding: 8px;
     margin: 16px;
 }
-
-.teamPanel .teamDetails .div {
-    display: block;
-}
-
-.teamPanel .teamListItem {
+.gamePanel .teamListItem {
     cursor: pointer;
     min-width: 300px;
     padding: 10px;
     border: 2px solid transparent;
 }
-
-.teamPanel .teamListItem.isSelected {
+.gamePanel .teamListItem.isSelected {
     min-width: 300px;
     border: 2px solid blue;
 }

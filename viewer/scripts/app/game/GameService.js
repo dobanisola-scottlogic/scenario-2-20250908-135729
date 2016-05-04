@@ -1,0 +1,23 @@
+class GameService {
+    constructor($http, $q, apiPath) {
+        this.apiPath = apiPath;
+        this.$http = $http;
+        this.$q = $q;
+    }
+
+    getGames() {
+        return this.$http.get(`${this.apiPath}/game`).then(response => response.data);
+    }
+
+    getGame(id) {
+        return this.$http.get(`${this.apiPath}/game/${id}`).then(response => response.data);
+    }
+
+    playGame(game) {
+        return this.$http.post(`${this.apiPath}/game`, game).then(response => response.data);
+    }
+}
+
+GameService.$inject = ['$http', '$q', 'API_PATH'];
+
+module.exports = GameService;

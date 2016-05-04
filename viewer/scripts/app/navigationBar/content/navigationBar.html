@@ -27,7 +27,7 @@
 
             <div class="col-md-offset-3 col-md-4 dashboard-open-div" ng-if="controller.isLoggedIn">
                 <button class="btn btn-sm dashboard-open" ng-if="teamDashboardController.isAuthourised" ng-click="teamDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Team Dashboard</button>
-
+                <button class="btn btn-sm dashboard-open" ng-if="gameDashboardController.isAuthourised" ng-click="gameDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Game Dashboard</button>
                 <button class="btn btn-sm dashboard-open" ng-if="botDashboardController.isAuthourised" ng-click="botDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Bot Dashboard</button>
             </div>
 
