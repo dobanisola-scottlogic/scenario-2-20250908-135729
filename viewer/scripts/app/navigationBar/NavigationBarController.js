@@ -29,6 +29,8 @@ class NavigationBarController {
 
         this.gamesList = [];
 
+        this.teamList = [];
+
         this.getGamesList();
 
         this.gamesListPolling = $interval(() => {
@@ -56,6 +58,12 @@ class NavigationBarController {
 
         // Construct phaser engine
         engine = new Engine(phaser, gameData);
+
+        this.initialiseTeams(gameData);
+
+    }
+    initialiseTeams(gameData) {
+        this.teamList = gameData.constants.teamInfo;
     }
     login() {
         let credentials = this.$scope.credentials;
@@ -85,6 +93,11 @@ class NavigationBarController {
     }
     get loggedInUserName() {
         return this.navigationBarService.getLoggedInUserName();
+    }
+    getColour(botId) {
+        return {
+            color: engine.getTeamColour(botId).HEX
+        };
     }
 }
 

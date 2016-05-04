@@ -19,7 +19,11 @@
                 </ul>
             </div>
 
-            <div class="col-md-offset-3 login-form" ng-if="!controller.isLoggedIn">
+            <div class="col-md-4">
+                <div class="col-md-3 team-list" ng-repeat="team in controller.teamList"><h4 ng-style="controller.getColour(team.botId)">{{team.teamName}}</h4></div>
+            </div>
+
+            <div class="login-form" ng-if="!controller.isLoggedIn">
                 <form ng-disabled="controller.isLoggingIn" name="loginForm" ng-submit="controller.login()" novalidate>
                     <label for="username">Username:</label>
                     <input type="text" id="username" ng-disabled="controller.isLoggingIn" ng-model="controller.credentials.username">
