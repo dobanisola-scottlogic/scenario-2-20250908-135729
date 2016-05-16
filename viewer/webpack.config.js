@@ -11,6 +11,8 @@ const PATHS = {
     NG_FILE_UPLOAD: path.join(__dirname, '/node_modules/ng-file-upload/dist/ng-file-upload.js')
 };
 
+var configuration = process.env.npm_lifecycle_event;
+
 module.exports = {
     entry: './scripts/entry.js',
     output: {
@@ -18,46 +20,65 @@ module.exports = {
         publicPath: PATHS.PUBLIC,
         filename: 'bundle.js'
     },
+    devtool: 'inline-source-map',
     module: {
-        preLoaders: [
-            {
-                test: /\.jsx?$/,
-                exclude: [
-                    /node_modules/,
-                    /pixi\.js/,
-                    /phaser-split\.js$/,
-                    /p2\.js/
-                ],
-                loaders: ['eslint']
+        preLoaders: [{
+            test: /\.jsx?$/,
+            exclude: [
+                /node_modules/,
+                /pixi\.js/,
+                /phaser-split\.js$/,
+                /p2\.js/
+            ],
+            loaders: ['eslint']
+        }],
+        loaders: [{
+            test: /jquery\.js/,
+            loader: 'expose?jQuery'
+        }, {
+            test: /angular\.js/,
+            loader: 'imports?$=jQuery'
+        }, {
+            test: /pixi\.js/,
+            loader: 'expose?PIXI'
+        }, {
+            test: /phaser-split\.js$/,
+            loader: 'expose?Phaser'
+        }, {
+            test: /p2\.js/,
+            loader: 'expose?p2'
+        }, {
+            test: /\.html$/,
+            loaders: ["html"]
+        }, {
+            test: /\.css$/,
+            loader: 'style!css'
+        }, {
+            test: /\.(woff|woff2)$/,
+            loader: "url-loader?limit=10000&mimetype=application/font-woff"
+        }, {
+            test: /\.ttf$/,
+            loader: "file-loader"
+        }, {
+            test: /\.eot$/,
+            loader: "file-loader"
+        }, {
+            test: /\.svg$/,
+            loader: "file-loader"
+        }, {
+            test: /scripts\/\.js$/,
+            exclude: [
+                /pixi\.js/,
+                /phaser-split\.js$/,
+                /p2\.js/,
+                /d3\.js$/,
+                /d3fc\.js$/
+            ],
+            loader: 'babel-loader',
+            query: {
+                presets: ['es2015']
             }
-        ],
-        loaders: [
-            { test: /jquery\.js/, loader: 'expose?jQuery' },
-            { test: /angular\.js/, loader: 'imports?$=jQuery' },
-            { test: /pixi\.js/, loader: 'expose?PIXI' },
-            { test: /phaser-split\.js$/, loader: 'expose?Phaser' },
-            { test: /p2\.js/, loader: 'expose?p2' },
-            { test: /\.html$/, loaders: ["html"] },
-            { test: /\.css$/, loader: 'style!css' },
-            { test: /\.(woff|woff2)$/,  loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-            { test: /\.ttf$/,    loader: "file-loader" },
-            { test: /\.eot$/,    loader: "file-loader" },
-            { test: /\.svg$/,    loader: "file-loader" },
-            {
-                test: /scripts\/\.js$/,
-                exclude: [
-                    /pixi\.js/,
-                    /phaser-split\.js$/,
-                    /p2\.js/,
-                    /d3\.js$/,
-                    /d3fc\.js$/
-                ],
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
-            }
-        ]
+        }]
     },
     plugins: [
         new webpack.IgnorePlugin(/jsdom$/),
@@ -67,6 +88,7 @@ module.exports = {
     ],
     resolve: {
         alias: {
+            'configuration': path.join(__dirname, 'scripts', 'app', 'configuration', configuration),
             'phaser': PATHS.PHASER,
             'pixi': PATHS.PIXI,
             'p2': PATHS.P2,

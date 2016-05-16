@@ -1,8 +1,8 @@
 let angular = require('angular');
 
 let ngfileupload = require('ng-file-upload');
+let configurationModule = require('configuration');
 let botModule = require('./bots/botModule');
-
 let dashboardModule = require('./dashboard/dashboardModule');
 let navigationBarModule = require('./navigationBar/navigationBarModule');
 let teamModule = require('./team/teamModule');
@@ -10,12 +10,9 @@ let gameModule = require('./game/gameModule');
 let viewerModule = require('./viewer/viewerModule');
 let collectablesChartModule = require('./charts/collectablesChartModule');
 
-let api = angular.module('api', []);
-api.constant('API_PATH', `//${window.location.host}/application/api`);
-
 let requires = [
     'ngFileUpload',
-    api.name,
+    configurationModule.name,
     botModule.name,
     collectablesChartModule.name,
     dashboardModule.name,

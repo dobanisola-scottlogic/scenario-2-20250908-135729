@@ -43,9 +43,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "serve": "http-server",
-    "dev": "webpack-dev-server",
-    "start": "npm run build && npm run serve",
+    "dev": "webpack-dev-server --port 8180",
+    "dev-local": "webpack-dev-server --port 8180",
     "test": "jasmine",
     "lint": "eslint . --ext .js --ext .jsx --ignore-path ../.gitignore || true"
   }
