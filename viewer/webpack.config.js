@@ -1,3 +1,4 @@
+var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 
@@ -11,7 +12,13 @@ const PATHS = {
     NG_FILE_UPLOAD: path.join(__dirname, '/node_modules/ng-file-upload/dist/ng-file-upload.js')
 };
 
-var configuration = process.env.npm_lifecycle_event;
+var configurationStat;
+if (process.env.npm_lifecycle_event) {
+    try {
+        configurationStat = fs.statSync(path.join(__dirname, 'scripts/app/configuration', process.env.npm_lifecycle_event + ".js"));
+    } catch (e) {}
+}
+var configuration = (configurationStat && configurationStat.isFile) ? process.env.npm_lifecycle_event : 'default';
 
 module.exports = {
     entry: './scripts/entry.js',
