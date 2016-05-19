@@ -1,53 +1,82 @@
-<div>
-    <nav id="navbar" class="navbar navbar-default">
-        <div class="container-fluid header-div">
-            <div class="navbar-header col-md-1">
-                <a class="navbar-brand">Hackathon</a>
-            </div>
-            <div class="dropdown games-div col-md-2">
-                <button class="btn btn-default dropdown-toggle games-dropdown" type="button" id="games" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Available Games <span class="caret"></span>
-                </button>
-                <ul id="available-games" class="dropdown-menu" aria-labelledby="games">
-                    <li ng-if="controller.gamesList.length === 0"><a>No games found</a></li>
-                    <li ng-repeat="game in controller.gamesList" ng-click="controller.selectGame(game)">
-                        <a>
-                            <span>Map {{game.game.map.name}} - </span>
-                            <span ng-repeat="team in (game.game.teams|orderBy:team.teamName) track by team.teamId">{{team.teamName}}{{$last ? '' : ' vs '}}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-md-4">
-                <div class="col-md-3 team-list" ng-repeat="team in controller.teamList"><h4 ng-style="controller.getColour(team.botId)">{{team.teamName}}</h4></div>
-            </div>
-
-            <div class="login-form" ng-if="!controller.isLoggedIn">
-                <form ng-disabled="controller.isLoggingIn" name="loginForm" ng-submit="controller.login()" novalidate>
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" ng-disabled="controller.isLoggingIn" ng-model="controller.credentials.username">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" ng-disabled="controller.isLoggingIn" ng-model="controller.credentials.password">
-                    <button class="btn btn-sm" type="submit" ng-disabled="controller.isLoggingIn">Login</button>
-
-                    <label ng-if="controller.isFailed" class="login-error">Login failed. Please try again.</label>
-                </form>
-            </div>
-
-            <div class="col-md-offset-3 col-md-4 dashboard-open-div" ng-if="controller.isLoggedIn">
-                <button class="btn btn-sm dashboard-open" ng-if="teamDashboardController.isAuthourised" ng-click="teamDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Team Dashboard</button>
-                <button class="btn btn-sm dashboard-open" ng-if="gameDashboardController.isAuthourised" ng-click="gameDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Game Dashboard</button>
-                <button class="btn btn-sm dashboard-open" ng-if="botDashboardController.isAuthourised" ng-click="botDashboardController.open()" ng-disabled="!controller.isLoggedIn">Open Bot Dashboard</button>
-            </div>
-
-            <div class="logged-in-div" ng-if="controller.isLoggedIn">
-                Logged in as {{controller.loggedInUserName}}
-                <button class="btn btn-sm" ng-click="controller.logout()">Logout</button>
-            </div>
+<div class="header">
+    <img class="sl-brand" src="/assets/scott_logic_logo.png" />
+    <div class="dropdown games-div">
+        <button class="btn btn-default dropdown-toggle games-dropdown" type="button" id="games" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Available Games <span class="caret"></span>
+        </button>
+        <ul id="available-games" class="dropdown-menu" aria-labelledby="games">
+            <li ng-if="controller.gamesList.length === 0"><a>No games found</a></li>
+            <li ng-repeat="game in controller.gamesList" ng-click="controller.selectGame(game)">
+                <a>
+                    <span>Map {{game.game.map.name}} - </span>
+                    <span ng-repeat="team in (game.game.teams|orderBy:team.teamName) track by team.teamId">{{team.teamName}}{{$last ? '' : ' vs '}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="teams col-md-4">
+        <div class="col-md-3 team-list" ng-repeat="team in controller.teamList">
+            <h4 ng-style="controller.getColour(team.botId)">{{team.teamName}}</h4>
         </div>
-    </nav>
+    </div>
+    <form class="login"
+          ng-show="!controller.isLoggedIn"
+          ng-keyup="$event.keyCode === 13 && controller.login() || $event.keyCode !== 13 && controller.updateState()"
+          novalidate>
+        <div class="input-field name"
+             ng-enter="controller.login()"
+             ng-keyup="$event.keyCode !== 13 && controller.updateState()">
+            <input id="team_name"
+                   type="text"
+                   ng-model="controller.credentials.username"
+                   ng-class="controller.state === 3 ? 'invalid' : ''">
+            <label for="team_name">Team Name</label>
+        </div>
+        <div class="input-field password">
+            <input id="team_password"
+                   type="password"
+                   ng-model="controller.credentials.password"
+                   ng-class="controller.state === 3 ? 'invalid' : ''">
+            <label for="team_password">Password</label>
+        </div>
+        <a class="login-btn waves-effect btn"
+           ng-click="controller.login()"
+           ng-class="controller.isLoggingIn ? 'disabled' : ''"
+           ng-disabled="controller.isLoggingIn">Login</a>
+    </form>
     <div ng-if="controller.isLoggedIn">
         <hack-transclude></hack-transclude>
+    </div>
+    <div class="buttons" ng-if="controller.isLoggedIn">
+        <div class="admin-buttons"
+             ng-if="controller.isAdmin">
+            <a class="waves-effect waves-light btn dashboard-open"
+               ng-click="gameDashboardController.open()"
+               ng-disabled="!controller.isLoggedIn"
+               ng-if="controller.isLoggedIn">
+               <span class="glyphicon glyphicon-knight" aria-hidden="true"></span>
+                Game
+            </a>
+            <a class="waves-effect waves-light btn dashboard-open"
+               ng-click="teamDashboardController.open()"
+               ng-disabled="!controller.isLoggedIn"
+               ng-if="controller.isLoggedIn">
+               <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                Team
+            </a>
+        </div>
+        <div class="team-buttons"
+             ng-if="!controller.isAdmin">
+            <a class="waves-effect waves-light btn dashboard-open"
+               ng-click="botDashboardController.open()"
+               ng-disabled="!controller.isLoggedIn"
+               ng-if="controller.isLoggedIn">
+               <span class="glyphicon glyphicon-console" aria-hidden="true"></span>
+                Dashboard
+            </a>
+        </div>
+        <a class="logout-btn waves-effect btn"
+           ng-click="controller.logout()"
+           ng-if="controller.isLoggedIn">Logout</a>
     </div>
 </div>

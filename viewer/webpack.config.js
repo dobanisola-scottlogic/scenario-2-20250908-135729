@@ -72,10 +72,13 @@ module.exports = {
             loader: 'expose?p2'
         }, {
             test: /\.html$/,
-            loaders: ["html"]
+            loaders: ["html?root=" + path.resolve(__dirname, '.')]
         }, {
             test: /\.css$/,
             loader: 'style!css'
+        }, {
+            test: /\.less$/,
+            loader: 'style!css!autoprefixer!less'
         }, {
             test: /\.(woff|woff2)$/,
             loader: "url-loader?limit=10000&mimetype=application/font-woff"
@@ -87,6 +90,9 @@ module.exports = {
             loader: "file-loader"
         }, {
             test: /\.svg$/,
+            loader: "file-loader"
+        }, {
+            test: /\.png$/,
             loader: "file-loader"
         }, {
             test: /scripts\/\.js$/,

@@ -28,6 +28,8 @@ class NavigationBarController {
             password: ''
         };
 
+        this.invalidLogin = false;
+
         this.gamesList = [];
 
         this.teamList = [];
@@ -69,7 +71,6 @@ class NavigationBarController {
         this.teamList = gameData.constants.teamInfo;
     }
     login() {
-        let credentials = this.$scope.credentials;
         this.state = LOGIN_STATE.INPROGRESS;
 
         this.navigationBarService.login(this.credentials.username, this.credentials.password).then(
@@ -85,6 +86,9 @@ class NavigationBarController {
         this.navigationBarService.logout();
         this.state = this.state = LOGIN_STATE.NONE;
     }
+    updateState() {
+        this.state = LOGIN_STATE.NONE;
+    }
     get isLoggedIn() {
         return this.state === LOGIN_STATE.AUTHOURIZED;
     }
@@ -96,6 +100,9 @@ class NavigationBarController {
     }
     get loggedInUserName() {
         return this.navigationBarService.getLoggedInUserName();
+    }
+    get isAdmin() {
+        return this.navigationBarService.getLoggedInUserName() === 'admin';
     }
     getColour(botId) {
         return {

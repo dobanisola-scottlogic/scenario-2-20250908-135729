@@ -1,16 +1,19 @@
 <div class="teamPanel">
     <form>
-        <label for="username">Username:</label>
-        <input type="text"
+        <label class="input-label" for="username">Username:</label>
+        <input class="text-input"
+               type="text"
                id="username"
                ng-model="controller.newTeamDetails.username"
                ng-disabled="controller.userInterfaceDisabled">
-        <label for="password">Password:</label>
-        <input type="password"
+        <label class="input-label" for="password">Password:</label>
+        <input class="text-input"
+               type="password"
                id="password"
                ng-model="controller.newTeamDetails.password"
                ng-disabled="controller.userInterfaceDisabled">
-        <button ng-disabled="controller.addButtonDisabled"
+        <button class="btn btn-default"
+                ng-disabled="controller.addButtonDisabled"
                 ng-click="controller.addNewTeam()">Add New Team
         </button>
     </form>
@@ -28,15 +31,18 @@
         <div>ID: {{controller.selectedTeam.id}}</div>
         <div>
             <form>
-                <label for="password">Password:</label>
-                <input type="text"
+                <label class="input-label" for="password">Password:</label>
+                <input class="text-input"
+                       type="text"
                        id="password"
                        ng-model="controller.updatePassword"
                        ng-disabled="controller.userInterfaceDisabled">
-                <button ng-click="controller.onUpdatePassword()"
+                <button class="btn btn-default"
+                        ng-click="controller.onUpdatePassword()"
                         ng-disabled="controller.updatePasswordButtonDisabled">Update Password
                 </button>
-                <button ng-click="controller.onDelete()"
+                <button class="btn btn-default"
+                        ng-click="controller.onDelete()"
                         ng-disabled="controller.deleteButtonDisabled">Delete Team
                 </button>
             </form>

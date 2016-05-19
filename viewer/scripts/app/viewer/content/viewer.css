@@ -37,3 +37,11 @@
     cursor: pointer;
     color: #999;
 }
+
+.input-label {
+    font-size: 1rem !important;
+}
+
+.text-input {
+    font-size: 1.5rem !important;
+}

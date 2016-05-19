@@ -16,6 +16,7 @@
 
         <button
             ngf-select="controller.onSelectFile($file)"
+            class="btn btn-default"
             name="file"
             ngf-max-size="10MB"
             ng-disabled="controller.userInterfaceDisabled"
@@ -36,9 +37,11 @@
     </div>
 
     <form name="actionForm">
-        <button ng-disabled="controller.editButtonsDisabled"
+        <button class="btn btn-default"
+                ng-disabled="controller.editButtonsDisabled"
                 ng-click="controller.onMakeActive(bot)">Make Active</button>
-        <button ng-disabled="controller.editButtonsDisabled"
+        <button class="btn btn-default"
+                ng-disabled="controller.editButtonsDisabled"
                 ng-click="controller.onDelete(bot)">Delete</button>
     </form>
 </div>

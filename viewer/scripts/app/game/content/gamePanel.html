@@ -1,13 +1,13 @@
 <div class="gamePanel">
     <form>
-        <label for="map">Map:</label>
-        <input type="text" id="map" ng-model="controller.game.map" ng-disabled="controller.userInterfaceDisabled">
+        <label class="input-label" for="map">Map:</label>
+        <input class="text-input" type="text" id="map" ng-model="controller.game.map" ng-disabled="controller.userInterfaceDisabled">
 
         <div class="teamList">
             <hack-team ng-repeat="team in controller.teams track by team.id" ng-click="controller.onTeamSelected(team)" ng-class="{'isSelected': controller.isSelected(team)}" team="team"></hack-team>
         </div>
 
-        <button ng-disabled="controller.addButtonDisabled" ng-click="controller.playGame()">Play Game
+        <button class="btn btn-default" ng-disabled="controller.addButtonDisabled" ng-click="controller.playGame()">Play Game
         </button>
     </form>
 </div>

@@ -1,0 +1,79 @@
+.header {
+    display: flex;
+    height: 60px;
+    background: #506E92;
+    align-items: center;
+
+    .sl-brand {
+        margin-left: 10px;
+    }
+
+    .btn {
+        height: 32px;
+        margin: 0px 10px 0px 10px;
+        background-color: #EEE;
+        color: black;
+        text-transform: none;
+
+        &:hover {
+            background-color: #26a69a;
+        }
+    }
+
+    .login {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 10px;
+        color: #EEE;
+
+        .name {
+            flex-grow: 2;
+        }
+
+        .password {
+            flex-grow: 2;
+        }
+
+        .input-field {
+            margin: 0 5px 0 0;
+            font-weight: 300;
+
+            input {
+                margin-left: 8px;
+                margin-bottom: 0;
+            }
+
+            label {
+                color: white;
+            }
+
+            :not(.active) {
+                font-size: 12px;
+            }
+            .active {
+                font-size: 10px;
+                color: #EEE;
+            }
+        }
+    }
+
+    .buttons, .admin-buttons, .team-buttons {
+        display: flex;
+    }
+
+    .dropdown {
+        padding: 0;
+        flex-grow: 1;
+    }
+
+    .teams {
+        flex-grow: 1;
+
+        .team-list h4 {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+}
