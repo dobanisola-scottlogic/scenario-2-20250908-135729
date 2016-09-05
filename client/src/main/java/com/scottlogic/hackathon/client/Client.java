@@ -24,7 +24,6 @@ public class Client {
             final Bot defaultBot = loadDefaultBot(arguments.getBot());
             final Bot bot = loadBot(arguments.getClassName());
 
-
             if (bot != null && defaultBot != null) {
                 final Set<Bot> bots = new HashSet<Bot>();
 
@@ -47,17 +46,37 @@ public class Client {
 
                         final Scanner scanner = new Scanner(System.in);
                         System.out.println("Type p to play or press enter to quit");
-                        if (scanner.hasNext("p")) {
-                            for (final PhaseResult phaseResult : gameResult.getPhaseResults()) {
-                                final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameResult, phaseResult);
+                        if (scanner.nextLine().equals("p")) {
+                            final List<PhaseResult> phaseResults = gameResult.getPhaseResults();
+                            int phase = 1;
+                            while (phase < phaseResults.size()) {
+                                final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameResult, phaseResults.get(phase));
                                 phaseResultPrinter.print();
-                                System.out.println("Press enter to continue");
-                                scanner.nextLine();
+                                System.out.println("Type q to quit, a number to jump to a phase or press enter to continue");
+
+                                final String input = scanner.nextLine();
+                                if (input.equals("q")) {
+                                    phase = phaseResults.size();
+                                } else {
+                                    try {
+                                        final int nextPhase = Integer.parseInt(input);
+                                        if (nextPhase < 0 || nextPhase >= phaseResults.size()) {
+                                            System.out.println("Phase out of range");
+                                        } else {
+                                            phase = nextPhase + 1;
+                                        }
+                                    } catch (final Exception ex) {
+                                        phase++;
+                                    }
+                                }
                             }
                         }
+                        scanner.close();
+                        System.exit(0);
                     } catch (final Exception ex) {
                         System.out.println(ex);
                         ex.printStackTrace(System.out);
+                        System.exit(1);
                     }
                 }
             }
