@@ -11,6 +11,7 @@ import com.scottlogic.hackathon.server.services.BotService;
 import com.scottlogic.hackathon.server.services.TeamService;
 import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import io.dropwizard.auth.Auth;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -21,7 +22,7 @@ import java.util.UUID;
 
 @Path("/bot")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes("*/*")
+@Consumes(MediaType.APPLICATION_JSON)
 public class BotResource {
     private final BotService botService;
     private final HackathonConfiguration hackathonConfiguration;
@@ -38,12 +39,12 @@ public class BotResource {
 
     @POST
     @Path("{botClassName}")
-    @Consumes("*/*")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(Authorizer.ROLE_TEAM)
     public UploadedBot fileUploaded(@Auth final User user,
                                     @PathParam("botClassName") final String botClassName,
-                                    final InputStream inputStream) {
+                                    @FormDataParam("file") final InputStream inputStream) {
         final Team team = teamService.getTeam(user.getName());
         return botService.addBot(team, botClassName, inputStream);
     }

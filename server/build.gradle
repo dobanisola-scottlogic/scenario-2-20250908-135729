@@ -12,6 +12,7 @@ dependencies {
     compile group: "io.dropwizard", name: "dropwizard-core", version: dropWizardVersion
     compile group: "io.dropwizard", name: "dropwizard-auth", version: dropWizardVersion
     compile group: "io.dropwizard", name: "dropwizard-assets", version: dropWizardVersion
+    compile group: "io.dropwizard", name: "dropwizard-forms", version: dropWizardVersion
     compile group: "com.google.inject", name: "guice", version: "3.0"
     compile group: "com.sleepycat", name: "je", version: "5.0.73"
     compile project(":game")

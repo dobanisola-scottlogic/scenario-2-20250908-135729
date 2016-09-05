@@ -74,9 +74,9 @@ public class UploadedBot {
     public Bot getBot() {
         Bot loadedBot = null;
 
-        final RemoteClassLoader remoteClassLoader = new RemoteClassLoader();
+        final RemoteClassLoader remoteClassLoader = new RemoteClassLoader(data);
         try {
-            loadedBot = (Bot) remoteClassLoader.loadClass(botClassName, data, false).newInstance();
+            loadedBot = (Bot) remoteClassLoader.loadClass(botClassName).newInstance();
         } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

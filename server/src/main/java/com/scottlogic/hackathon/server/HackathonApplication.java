@@ -6,17 +6,14 @@ import com.scottlogic.hackathon.server.authentication.Authenticator;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.healthchecks.HackathonHealthCheck;
-import com.scottlogic.hackathon.server.resources.BotResource;
-import com.scottlogic.hackathon.server.resources.GameResource;
-import com.scottlogic.hackathon.server.resources.HackathonResource;
-import com.scottlogic.hackathon.server.resources.LoginResource;
-import com.scottlogic.hackathon.server.resources.TeamResource;
+import com.scottlogic.hackathon.server.resources.*;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
@@ -39,6 +36,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
     @Override
     public void initialize(final Bootstrap<HackathonConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/assets", "/", "index.html"));
+        bootstrap.addBundle(new MultiPartBundle());
     }
 
     @Override
