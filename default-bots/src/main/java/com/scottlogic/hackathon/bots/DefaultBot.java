@@ -32,6 +32,11 @@ public class DefaultBot extends Bot {
         return Collections.unmodifiableList(moves);
     }
 
+    @Override
+    public String getDisplayName() {
+        return "Default Bot";
+    }
+
     class DirectionAndDistanceMove implements Move {
         private final Direction[] directions = Direction.values();
         private final Random random = new Random();

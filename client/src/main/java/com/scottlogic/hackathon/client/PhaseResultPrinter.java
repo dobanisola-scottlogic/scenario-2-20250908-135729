@@ -75,6 +75,14 @@ public class PhaseResultPrinter {
                 .eraseScreen()
                 .a(String.format("Phase %s of %s", phaseResult.getPhase(), gameResult.getPhaseResults().size()))
                 .newline();
+
+        for (final Bot bot : bots) {
+            ansi
+                    .fg(ownerColors.get(bot.getId()))
+                    .a(String.format(bot.getDisplayName()))
+                    .newline();
+        }
+
         printSeperator();
         for (final Tile[] row : tiles) {
             for (final Tile tile : row) {

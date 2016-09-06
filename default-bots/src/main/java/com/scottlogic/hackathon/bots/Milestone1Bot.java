@@ -56,4 +56,9 @@ public class Milestone1Bot extends Bot {
 
         return Collections.unmodifiableList(moves);
     }
+
+    @Override
+    public String getDisplayName() {
+        return "Milestone 1 Bot";
+    }
 }

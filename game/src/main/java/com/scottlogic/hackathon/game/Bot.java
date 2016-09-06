@@ -14,4 +14,6 @@ public abstract class Bot {
     public UUID getId() {
         return id;
     }
+
+    public abstract  String getDisplayName();
 }

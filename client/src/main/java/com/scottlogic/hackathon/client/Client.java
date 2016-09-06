@@ -42,7 +42,7 @@ public class Client {
                     try {
                         final GameResult gameResult = gameEngine.play();
 
-                        printGameResult(gameResult);
+                        printGameResult(gameResult, bot);
 
                         final Scanner scanner = new Scanner(System.in);
                         System.out.println("Type p to play or press enter to quit");
@@ -101,7 +101,7 @@ public class Client {
         return bot;
     }
 
-    private void printGameResult(final GameResult gameResult) {
+    private void printGameResult(final GameResult gameResult, Bot bot) {
         final PhaseResult finalResult = gameResult.getPhaseResults().get(gameResult.getPhaseResults().size() - 1);
         System.out.printf("Game completed in %s phases", finalResult.getPhase())
                 .println();
@@ -118,10 +118,10 @@ public class Client {
         final Map<UUID, List<Player>> ownerToPlayerLookup = finalResult.getPlayers()
                 .stream()
                 .collect(Collectors.groupingBy(player -> player.getOwner()));
-        for (final Map.Entry<UUID, List<Player>> entry : ownerToPlayerLookup.entrySet()) {
-            System.out.printf("\tBot %s has %s players left",
-                    entry.getKey(),
-                    entry.getValue().size())
+        for (final List<Player> players : ownerToPlayerLookup.values()) {
+            System.out.printf("\t%s has %s players left",
+                    bot.getDisplayName(),
+                    players.size())
                     .println();
         }
 

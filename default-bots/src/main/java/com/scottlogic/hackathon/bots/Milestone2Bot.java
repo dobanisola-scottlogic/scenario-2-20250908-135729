@@ -116,4 +116,8 @@ public class Milestone2Bot extends Bot {
         return Collections.unmodifiableList(moves);
     }
 
+    @Override
+    public String getDisplayName() {
+        return "Milestone 2 Bot";
+    }
 }
