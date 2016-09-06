@@ -31,8 +31,8 @@ class Spawn {
     adjustPlaybackSpeed(phaseDelay, newPhaseDelay) {
         this.sprite.adjustPlaybackSpeed(phaseDelay, newPhaseDelay);
     }
-    destroy() {
-        this.sprite.destroy();
+    destroy(playDeathAnimation, leavePhaserSprite) {
+        this.sprite.destroy(playDeathAnimation, leavePhaserSprite);
     }
 }
 

@@ -1,10 +1,11 @@
 var Cell = require('../engine/models/Cell');
 
 class State {
-    constructor(players, collectables, spawnPoints) {
+    constructor(players, collectables, spawnPoints, teamInfo) {
         this.players = players;
         this.collectables = collectables;
         this.spawnPoints = spawnPoints;
+        this.teamInfo = teamInfo;
     }
 
     static parse(phase, gameData) {
@@ -20,14 +21,22 @@ class State {
     static parseEnumerable(gameData) {
         let states = [];
         for (let i = 0; i < gameData.phaseResults.length; i++) {
+
             let previousState = null;
+            let teamInfo = [ {playerCount: 0, owner: null, spawnCount: 0},
+                             {playerCount: 0, owner: null, spawnCount: 0},
+                             {playerCount: 0, owner: null, spawnCount: 0},
+                             {playerCount: 0, owner: null, spawnCount: 0}];
+
             if (i > 0) {
                 previousState = states[i - 1];
             }
+
             let state = new State(
-                parsePlayerPositions(i, gameData, previousState),
+                parsePlayerPositions(i, gameData, previousState, teamInfo),
                 parseCollectablePositions(i, gameData, previousState),
-                parseSpawnPositions(i, gameData, previousState)
+                parseSpawnPositions(i, gameData, previousState, teamInfo),
+                teamInfo
             );
 
             states.push(state);
@@ -37,12 +46,12 @@ class State {
     }
 }
 
-function parsePlayerPositions(index, gameData, previousState) {
+function parsePlayerPositions(index, gameData, previousState, teamInfo) {
     let players = [];
     let previousPlayers = [];
-    let spawnPoints = [];
 
-    spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => {
+    let spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => {
+        teamInfo[teamIndex].owner = spawnPoint.owner;
         return {
             id: spawnPoint.id,
             owner: spawnPoint.owner,
@@ -55,7 +64,7 @@ function parsePlayerPositions(index, gameData, previousState) {
         previousPlayers = previousState.players.map(previousPlayer => previousPlayer.id);
     }
 
-    gameData.phaseResults[index].playerPositions.forEach((player) => {
+    gameData.phaseResults[index].playerPositions.forEach(player => {
         let teamIndex = -1;
         let owner = null;
 
@@ -63,20 +72,19 @@ function parsePlayerPositions(index, gameData, previousState) {
             // Add owner and teamIndex for players that have just spawned
             let addedPlayerIndex = gameData.phaseResults[index].addedPlayers.map(addedPlayer => addedPlayer.id)
                                                                             .indexOf(player.id);
-            owner = gameData.phaseResults[index].addedPlayers[addedPlayerIndex].owner || null;
 
-            spawnPoints.forEach(spawnPoint => {
-                if (spawnPoint.owner === owner) {
-                    teamIndex = spawnPoint.teamIndex;
-                }
-            });
+            owner = gameData.phaseResults[index].addedPlayers[addedPlayerIndex].owner || null;
+            teamIndex = spawnPoints.find(spawnPoint => spawnPoint.owner === owner).teamIndex;
         } else {
             // Add owner and teamIndex for players that haven't just spawned
             let previousIndex = previousState.players.map(previousPlayer => previousPlayer.id)
                                                          .indexOf(player.id);
+
             owner = previousState.players[previousIndex].owner;
             teamIndex = previousState.players[previousIndex].teamIndex;
         }
+
+        teamInfo[teamIndex].playerCount++;
 
         players.push({
             id: player.id,
@@ -94,13 +102,11 @@ function parseCollectablePositions(index, gameData, previousState) {
 
     // Set current collectables to previous collectables
     if (index > 0) {
-        previousState.collectables.forEach((collectable) => {
-            collectables.push(collectable);
-        });
+        collectables = previousState.collectables.slice(0);
     }
 
     // Add new collectables
-    gameData.phaseResults[index].addedCollectables.forEach((addedCollectable) => {
+    gameData.phaseResults[index].addedCollectables.forEach(addedCollectable => {
         collectables.push({
             id: addedCollectable.id,
             type: addedCollectable.type,
@@ -109,7 +115,7 @@ function parseCollectablePositions(index, gameData, previousState) {
     });
 
     // Remove collected collectables
-    gameData.phaseResults[index].removedCollectables.forEach((removedCollectable) => {
+    gameData.phaseResults[index].removedCollectables.forEach(removedCollectable => {
         let idIndex = collectables.map(collectable => collectable.id).indexOf(removedCollectable);
 
         if (idIndex !== -1) {
@@ -122,7 +128,7 @@ function parseCollectablePositions(index, gameData, previousState) {
     return collectables;
 }
 
-function parseSpawnPositions(index, gameData, previousState) {
+function parseSpawnPositions(index, gameData, previousState, teamInfo) {
     let spawnPoints = [];
 
     // Set the current spawn points to the previous spawn point
@@ -134,23 +140,27 @@ function parseSpawnPositions(index, gameData, previousState) {
                 cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
                 teamIndex: teamIndex
             });
+            teamInfo[teamIndex].spawnCount++;
         });
     } else {
-        previousState.spawnPoints.forEach((spawnPoint) => {
-            spawnPoints.push(spawnPoint);
+        let destroyedSpawns = [];
+        spawnPoints = previousState.spawnPoints.slice(0);
+
+        spawnPoints.forEach(spawnPoint => {
+            teamInfo[spawnPoint.teamIndex].spawnCount = previousState.teamInfo[spawnPoint.teamIndex].spawnCount;
+
+            // Decrement the count if the spawnPoint is in the removedSpawns array
+            if (gameData.phaseResults[index].removedSpawnPoints.indexOf(spawnPoint.id) !== -1) {
+                teamInfo[spawnPoint.teamIndex].spawnCount--;
+                destroyedSpawns.push(spawnPoint.id);
+            }
+        });
+
+        destroyedSpawns.forEach(destroyedSpawn => {
+            let destroyedSpawnIndex = spawnPoints.map(spawnPoint => spawnPoint.id).indexOf(destroyedSpawn);
+            spawnPoints.splice(destroyedSpawnIndex, 1);
         });
     }
-
-    // Remove any destroyed spawn points
-    gameData.phaseResults[index].removedSpawnPoints.forEach((removedSpawnPoint) => {
-        let idIndex = spawnPoints.map(spawn => spawn.id).indexOf(removedSpawnPoint);
-
-        if (idIndex !== -1) {
-            spawnPoints.splice(idIndex, 1);
-        } else {
-            console.log('Tried to remove a spawn point that did not exist with id', removedSpawnPoint);
-        }
-    });
 
     return spawnPoints;
 }

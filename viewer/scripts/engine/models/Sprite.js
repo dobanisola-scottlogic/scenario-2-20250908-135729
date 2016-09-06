@@ -133,12 +133,16 @@ class Sprite {
                 },
                 phaseDelay: phaseDelay
             };
-            this.sprite.animations.paused = true;
+            if (this.sprite.currentAnim) {
+                this.sprite.animations.paused = true;
+            }
             this.setVelocity(0, 0);
         } else if (this.pauseCache) {
             this.adjustPlaybackSpeed(this.pauseCache.phaseDelay, phaseDelay);
             this.adjustVelocity(this.pauseCache.phaseDelay, phaseDelay);
-            this.sprite.animations.paused = false;
+            if (this.sprite.currentAnim) {
+                this.sprite.animations.paused = false;
+            }
             this.pauseCache = null;
         } else {
             console.log('ERROR : Attempted to resume pause state of an item which was never paused.');

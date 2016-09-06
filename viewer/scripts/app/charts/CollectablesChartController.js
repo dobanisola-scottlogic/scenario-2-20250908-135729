@@ -11,8 +11,8 @@ class CollectablesChartController {
         this.initialise();
     }
 
-    getData() {
-        return this.engine.collectables.length;
+    getData(phaseIndex) {
+        return this.engine.getPhaseState(phaseIndex).collectables.length;
     }
 
     initialise() {
@@ -37,11 +37,11 @@ class CollectablesChartController {
             .xValue(this.constants.XDOMAIN[0]);
     }
 
-    update() {
-        this.data = [this.getData()];
+    update(phaseIndex) {
+        this.data = [this.getData(phaseIndex)];
 
         this.bar
-            .yValue(this.getData())
+            .yValue(this.getData(phaseIndex))
             .decorate((selection) => {
                 selection.select('.bar > path')
                     .style('fill', (collectablesCount) => {
@@ -71,8 +71,9 @@ class CollectablesChartController {
         this.chart.plotArea(multi);
     }
 
-    render() {
-        this.update();
+    render(phaseIndex) {
+        this.update(phaseIndex);
+
         d3.select(this.constants.SELECTOR)
             .datum(this.data)
             .call(this.chart);

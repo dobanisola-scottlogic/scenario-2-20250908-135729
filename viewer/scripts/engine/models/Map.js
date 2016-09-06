@@ -62,7 +62,7 @@ class Map {
         let spawnIndex = this.spawns.map(spawn => spawn.id)
                                     .indexOf(spawnId);
         if (spawnIndex !== -1) {
-            this.spawns[spawnIndex].destroy();
+            this.spawns[spawnIndex].destroy(true, true);
             this.spawns.splice(spawnIndex, 1);
         } else {
             console.log('ERROR : Failed to destroy spawn[' + spawnId + '].');

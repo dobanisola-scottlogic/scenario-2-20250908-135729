@@ -21,10 +21,12 @@ class Player {
         return sprite;
     }
     setPaused(paused, resumeSpeed) {
-        this.sprite.setPaused(paused, resumeSpeed);
+        if (this.sprite) {
+            this.sprite.setPaused(paused, resumeSpeed);
+        }
     }
-    destroy() {
-        this.sprite.destroy(true);
+    destroy(playDeathAnimation, leavePhaserSprite) {
+        this.sprite.destroy(playDeathAnimation);
     }
     setCell(cell, direction) {
         this.cell = cell;

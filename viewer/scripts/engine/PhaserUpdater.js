@@ -53,7 +53,7 @@ class PhaserUpdater {
             this.destroyPlayers(deltaPhase.playersDestroyed);
             this.movePlayers(deltaPhase.playerMovement);
 
-            this.chartRenderer.render();
+            this.chartRenderer.render(this.phaseIndex);
 
             this.phaseIndex ++;
         }
@@ -81,28 +81,48 @@ class PhaserUpdater {
             player.adjustPlaybackSpeed(phaseDelay, newPhaseDelay);
         });
     }
-    renderPhase(phase) {
-        if (phase < this.engine.getPhaseCount()) {
-            // Stop the update
-            this.phaseIndex = this.engine.getPhaseCount();
+    renderPhase(phase, force) {
+        // Stop the update
+        this.phaseIndex = this.engine.getPhaseCount();
 
-            // Get the state at the requested phase
-            let state = this.engine.getPhaseState(phase);
+        if (phase < this.engine.getPhaseCount() || force) {
+            if (new Date().getTime() - this.lastPhaseTime > PHASER.PHASE_DELAY || force) {
 
-            // Create copies of the arrays so we don't change the original
-            let stateSpawns = state.spawnPoints.slice();
-            let stateCollectables = state.collectables.slice();
-            let statePlayers = state.players.slice();
+                this.lastPhaseTime = new Date().getTime();
 
-            // Remove items that aren't in this phase
-            this.clearSuperfluousSpawns(stateSpawns);
-            this.clearSuperfluousCollectables(stateCollectables);
-            this.clearSuperfluousPlayers(statePlayers);
+                // Get the state at the requested phase
+                let state = this.engine.getPhaseState(phase);
 
-            // Add items that are in this phase
-            this.engine.addSpawns(state.spawnPoints);
-            this.addCollectables(state.collectables);
-            this.addPlayers(state.players);
+                // Create copies of the arrays so we don't change the original
+                let stateSpawns = state.spawnPoints.slice();
+                let stateCollectables = state.collectables.slice();
+                let statePlayers = state.players.slice();
+
+                // Remove all the phase
+                this.engine.players.forEach(player => {
+                    player.destroy(false, false);
+                });
+                this.engine.map.spawns.forEach(spawn => {
+                    spawn.destroy(false, false);
+                });
+                this.engine.collectables.forEach(collectable => {
+                    collectable.destroy(false, false);
+                });
+                this.engine.players = [];
+                this.engine.map.spawns = [];
+                this.engine.collectables = [];
+
+                // Add items that are in this phase
+                this.engine.addSpawns(stateSpawns);
+                this.addCollectables(stateCollectables);
+                this.addPlayers(statePlayers);
+
+                this.chartRenderer.render(phase);
+
+                if (force) {
+                    this.phaseIndex = phase;
+                }
+            }
         } else {
             console.log('ERROR : Attempted to render a phase outside of the game phase bounds. Max phase:', this.engine.getPhaseCount() - 1);
         }
@@ -120,8 +140,8 @@ class PhaserUpdater {
         destroyedCollectables.forEach(collectable => {
             let collectableIndex = this.engine.collectables.map(gameCollectable => gameCollectable.id)
                                                            .indexOf(collectable.id);
-            if (collectableIndex) {
-                this.engine.collectables[collectableIndex].destroy();
+            if (collectableIndex !== -1) {
+                this.engine.collectables[collectableIndex].destroy(true);
                 this.engine.collectables.splice(collectableIndex, 1);
             } else {
                 console.log('ERROR : Failed to destroy collectable[' + collectable.id + '].');
@@ -151,7 +171,7 @@ class PhaserUpdater {
             let playerIndex = this.engine.players.map(currentPlayer => currentPlayer.id)
                                                  .indexOf(player.id);
             if (playerIndex !== -1) {
-                this.engine.players[playerIndex].destroy();
+                this.engine.players[playerIndex].destroy(true);
                 this.engine.players.splice(playerIndex, 1);
             } else {
                 console.log('ERROR : Failed to destroy player[' + player.id + '].');
@@ -175,51 +195,6 @@ class PhaserUpdater {
                                                               playerShift.rowShift);
             } else {
                 console.log('ERROR : Failed to move player[' + player.id + '].');
-            }
-        });
-    }
-    clearSuperfluousSpawns(stateSpawns) {
-        let spawnPointIds = stateSpawns.map(spawnPoint => spawnPoint.id);
-
-        this.engine.getCurrentSpawns().forEach(currentSpawn => {
-            let index = spawnPointIds.indexOf(currentSpawn.id);
-
-            if (index === -1) {
-                currentSpawn.destroy();
-            } else {
-                stateSpawns.splice(index, 1);
-            }
-        });
-    }
-    clearSuperfluousCollectables(stateCollectables) {
-        let collectableIds = stateCollectables.map(stateCollectable => stateCollectable.id);
-
-        this.engine.collectables.forEach(currentCollectable => {
-            let index = collectableIds.indexOf(currentCollectable.id);
-
-            if (index === -1) {
-                currentCollectable.destroy();
-            } else {
-                stateCollectables.splice(index, 1);
-            }
-        });
-    }
-    clearSuperfluousPlayers(statePlayers) {
-        let playerIds = statePlayers.map(statePlayer => statePlayer.id);
-
-        this.engine.players.forEach(currentPlayer => {
-            let index = playerIds.indexOf(currentPlayer.id);
-
-            if (index === -1) {
-                currentPlayer.destroy();
-            } else {
-                currentPlayer.setCell(statePlayers[index].cell);
-
-                if (currentPlayer.sprite.body) {
-                    currentPlayer.sprite.body.velocity.setTo(0, 0);
-                }
-
-                statePlayers.splice(index, 1);
             }
         });
     }

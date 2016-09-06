@@ -9,12 +9,14 @@ let teamModule = require('./team/teamModule');
 let gameModule = require('./game/gameModule');
 let viewerModule = require('./viewer/viewerModule');
 let collectablesChartModule = require('./charts/collectablesChartModule');
+let phaseChartModule = require('./charts/phaseChartModule');
 
 let requires = [
     'ngFileUpload',
     configurationModule.name,
     botModule.name,
     collectablesChartModule.name,
+    phaseChartModule.name,
     dashboardModule.name,
     navigationBarModule.name,
     teamModule.name,

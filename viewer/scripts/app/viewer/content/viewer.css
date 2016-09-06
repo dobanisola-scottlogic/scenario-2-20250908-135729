@@ -1,7 +1,9 @@
 
 .control-overlay {
-    position: relative;
-    bottom: 80px;
+    position: absolute;
+    bottom: 20px;
+    left: 0px;
+    right: 90px;
     margin: auto;
     padding: 6px;
     border-radius: 15px;

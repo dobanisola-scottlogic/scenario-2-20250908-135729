@@ -21,13 +21,15 @@ class Collectable {
         return sprite;
     }
     setPaused(paused, resumeSpeed) {
-        this.sprite.setPaused(paused, resumeSpeed);
+        if (this.sprite) {
+            this.sprite.setPaused(paused, resumeSpeed);
+        }
     }
     adjustPlaybackSpeed(phaseDelay, newPhaseDelay) {
         this.sprite.adjustPlaybackSpeed(phaseDelay, newPhaseDelay);
     }
-    destroy() {
-        this.sprite.destroy(true);
+    destroy(playDeathAnimation, leavePhaserSprite) {
+        this.sprite.destroy(playDeathAnimation, leavePhaserSprite);
     }
 }
 

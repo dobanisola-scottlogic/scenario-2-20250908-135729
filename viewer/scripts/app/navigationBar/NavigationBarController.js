@@ -37,6 +37,7 @@ class NavigationBarController {
         this.gamesListPolling = $interval(() => {
             this.getGamesList();
         }, 5000);
+
     }
     getGamesList() {
         this.gameService.getGames().then(response => {

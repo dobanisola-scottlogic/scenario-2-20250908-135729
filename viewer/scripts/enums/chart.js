@@ -12,6 +12,12 @@ const CHART = {
             BAD: '#f00',
             NEUTRAL: 'inherit'
         }
+    },
+    PHASE: {
+        SELECTOR: '#phase-chart',
+        MARGIN: { TOP: 10, RIGHT: 10, BOTTOM: 20, LEFT: 30 },
+        WIDTH: 1280,
+        HEIGHT: 200
     }
 };
 

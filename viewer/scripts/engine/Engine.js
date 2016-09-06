@@ -17,6 +17,8 @@ class Engine {
         // Save passed values
         this.gameData = gameData;
 
+        this.teams = this.createTeams();
+
         // Create phaser method objects
         this.phaserPreloader = new PhaserPreloader(this);
         this.phaserCreator = new PhaserCreator(this);
@@ -43,7 +45,6 @@ class Engine {
         // Define objects to hold game data
         this.collectables = [];
         this.players = [];
-        this.teams = this.createTeams();
         this.paused = false;
         this.speed = {
             index: PHASER.SPEED.DEFAULT_INDEX,
@@ -97,8 +98,14 @@ class Engine {
     getCurrentSpawns() {
         return this.map.spawns;
     }
+    getPhaseTeamInfo(index) {
+        return this.gameData.state[index].teamInfo;
+    }
+    renderPhase(phaseIndex, force) {
+        this.phaserUpdater.renderPhase(phaseIndex, force);
+    }
     addSpawns(spawns) {
-        this.map.addSpawns(this.game, spawns, this.getOwners());
+        this.map.addSpawns(this.game, spawns, this.getTeams());
     }
     destroyAndCleanup() {
         this.game.input.enabled = false;
