@@ -1,11 +1,14 @@
+let JSzip = require('jszip');
+
 class BotPanelController {
-    constructor($scope, navigationBarService, botService, Upload) {
+    constructor($scope, navigationBarService, botService, Upload, contestantBotNamespace) {
         this.$scope = $scope;
         this.navigationBarService = navigationBarService;
         this.botService = botService;
         this.Upload = Upload;
+        this.contestantBotNamespace = contestantBotNamespace;
 
-        this.uploadBotClassName = '';
+        this.botsInCurrentFile = [];
 
         this.refresh();
     }
@@ -41,13 +44,36 @@ class BotPanelController {
         this.selectedBot = bot;
     }
 
-    onUpload() {
+    onLoad() {
+        const fr = new FileReader();
+
+        fr.onload = () => {
+            const zip = new JSzip();
+
+            zip.loadAsync(fr.result)
+                .then(result => {
+                    this.botsInCurrentFile = Object.keys(result.files)
+                        .filter(key => key.startsWith(this.contestantBotNamespace) && key.endsWith('.class'))
+                        .map(className => ({
+                            className: className.split('.')[0].split('/').join('.'),
+                            displayName: className.split('/').pop().split('.')[0]
+                        }));
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        };
+
+        fr.readAsArrayBuffer(this.file);
+    }
+
+    uploadBot(className) {
         this.makingCall = true;
 
-        this.botService.uploadBot(this.uploadBotClassName, this.file).then(
+        this.botService.uploadBot(className, this.file).then(
             () => {
                 this.file = null;
-                this.uploadBotClassName = '';
+                this.botsInCurrentFile = [];
                 this.refresh();
             },
             () => {
@@ -81,8 +107,8 @@ class BotPanelController {
         );
     }
 
-    get uploadButtonDisabled() {
-        return !this.isTeamUser || this.makingCall || !this.file || this.uploadBotClassName.length === 0;
+    get loadButtonDisabled() {
+        return !this.isTeamUser || this.makingCall || !this.file;
     }
 
     get userInterfaceDisabled() {
@@ -102,6 +128,6 @@ class BotPanelController {
     }
 }
 
-BotPanelController.$inject = ['$scope', 'NavigationBarService', 'BotService', 'Upload'];
+BotPanelController.$inject = ['$scope', 'NavigationBarService', 'BotService', 'Upload', 'CONTESTANT_BOT_NAMESPACE'];
 
 module.exports = BotPanelController;

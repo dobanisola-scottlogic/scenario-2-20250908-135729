@@ -1,10 +1,18 @@
 <div class="botPanel">
     <form name="uploadForm">
-        <label for="className">Class name:</label>
-        <input type="text"
-            id="className"
-            ng-disabled="controller.userInterfaceDisabled"
-            ng-model="controller.uploadBotClassName">
+        <div class="dropdown col-md-2">
+            <button class="btn btn-default dropdown-toggle class-name-dropdown" ng-disabled="controller.botsInCurrentFile.length === 0" type="button" data-toggle="dropdown">
+                Bots In Current File <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-if="controller.botsInCurrentFile.length === 0"><a>No bots found</a></li>
+                <li ng-repeat="bot in controller.botsInCurrentFile" ng-click="controller.uploadBot(bot.className)">
+                    <a>
+                        <span>{{bot.displayName}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
         <button
             ngf-select
@@ -15,8 +23,8 @@
             >Select File</button>
 
         <button type="submit"
-            ng-disabled="controller.uploadButtonDisabled"
-            ng-click="controller.onUpload()">Upload</button>
+            ng-disabled="controller.loadButtonDisabled"
+            ng-click="controller.onLoad()">Load</button>
     </form>
 
     <div class="uploadedFileName">

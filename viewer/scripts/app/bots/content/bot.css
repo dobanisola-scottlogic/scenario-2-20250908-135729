@@ -14,3 +14,13 @@
     min-width: 300px;
     border: 2px solid blue;
 }
+
+.botPanel form {
+    display: flex;
+    align-items: center;
+}
+
+.botPanel form .dropdown {
+    flex: 1;
+    padding: 0;
+}
