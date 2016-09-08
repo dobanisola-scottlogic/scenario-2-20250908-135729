@@ -77,6 +77,8 @@ public class Client {
                         System.out.println(ex);
                         ex.printStackTrace(System.out);
                         System.exit(1);
+                    } finally {
+                        gameEngine.dispose();
                     }
                 }
             }

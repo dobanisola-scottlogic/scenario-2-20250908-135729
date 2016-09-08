@@ -46,6 +46,8 @@ public class GameService {
                 gameStore.addGameResult(gameResult);
             } catch (final Exception ex) {
                 logger.error("Error playing game", ex);
+            } finally {
+                gameEngine.dispose();
             }
         }
         return gameResult;

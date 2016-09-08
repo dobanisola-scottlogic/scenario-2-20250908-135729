@@ -29,7 +29,6 @@ public class GameEngine {
     private final int initialiseTimeoutSeconds = 30;
     private final int makeMovesTimeoutSeconds = 5;
     private final TimedConsumer<Bot> timedConsumer = new TimedConsumer<Bot>();
-    Map<Bot, GameStateImpl> gamesStates = new HashMap<Bot, GameStateImpl>();
     private TrackedSetImpl<PlayerImpl> players;
     private TrackedSetImpl<CollectableImpl> collectables;
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
@@ -84,6 +83,10 @@ public class GameEngine {
         } while (cutoffCondition == null);
 
         return new GameResultImpl(phaseResults, new MapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
+    }
+
+    public void dispose() {
+        timedConsumer.dispose();
     }
 
     private void initialiseBots() throws InterruptedException, ExecutionException {

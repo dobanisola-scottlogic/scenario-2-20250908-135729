@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class TimedConsumer<T> {
-    private final ExecutorService executorService = Executors.newFixedThreadPool(200);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(16);
 
     public Set<Result<T>> consume(final Consumer<T> consumer, final Set<T> items, final long timeout, final TimeUnit timeUnit) throws InterruptedException, ExecutionException {
         final CompletionService<Result<T>> completionService = new ExecutorCompletionService<Result<T>>(executorService);
@@ -24,6 +24,8 @@ public class TimedConsumer<T> {
                 } catch (final Exception e) {
                     future.cancel(true);
                     completed = false;
+                } finally {
+                    consumerExecutorService.shutdownNow();
                 }
                 return new Result<T>(item, completed);
             });
@@ -55,5 +57,9 @@ public class TimedConsumer<T> {
         public boolean isCompleted() {
             return completed;
         }
+    }
+
+    public void dispose() {
+        executorService.shutdown();
     }
 }
