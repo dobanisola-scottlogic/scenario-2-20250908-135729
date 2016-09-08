@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class TimedConsumer<T> {
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(200);
 
     public Set<Result<T>> consume(final Consumer<T> consumer, final Set<T> items, final long timeout, final TimeUnit timeUnit) throws InterruptedException, ExecutionException {
         final CompletionService<Result<T>> completionService = new ExecutorCompletionService<Result<T>>(executorService);
