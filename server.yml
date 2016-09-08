@@ -1,5 +1,6 @@
 server:
   type: simple
+  maxThreads: 200
   connector:
     type: http
     port: 8080
