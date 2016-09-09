@@ -29,7 +29,7 @@ jar {
     }
     from('../viewer') {
         include 'index.html'
-        include 'build/bundle.js'
+        include 'build/*'
         include 'assets/*.png'
         into "assets"
     }
@@ -39,7 +39,7 @@ jar {
 shadowJar {
     from('../viewer') {
         include 'index.html'
-        include 'build/bundle.js'
+        include 'build/*'
         include 'assets/*.png'
         into "assets"
     }
