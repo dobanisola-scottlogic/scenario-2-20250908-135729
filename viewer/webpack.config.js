@@ -4,7 +4,7 @@ var webpack = require('webpack');
 
 const PATHS = {
     BUILD: path.join(__dirname, '/build/'),
-    PUBLIC: '/build/',
+    PUBLIC: '/application/build/',
     PHASER: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),
     PIXI: path.join(__dirname, '/node_modules/phaser/build/custom/pixi.js'),
     P2: path.join(__dirname, '/node_modules/phaser/build/custom/p2.js'),
