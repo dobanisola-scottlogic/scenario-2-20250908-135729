@@ -1,6 +1,6 @@
 package com.scottlogic.hackathon.bots.state;
 
-import com.scottlogic.hackathon.bots.move.*;
+import com.scottlogic.hackathon.bots.move.MoveBase;
 import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Player;
 
@@ -11,25 +11,13 @@ import java.util.Map;
 
 public class ProportionalTransitionSelector {
 
-    private final HashMap<Class, Integer> desiredProportionsMap = createDesiredProportionsMap();
-
-    private static HashMap<Class, Integer> createDesiredProportionsMap() {
-        HashMap<Class, Integer> desiredProportionsMap = new HashMap<>();
-        desiredProportionsMap.put(AttackMove.class, 20);
-        desiredProportionsMap.put(CollectableMove.class, 80);
-        desiredProportionsMap.put(DefendMove.class, 0);
-        desiredProportionsMap.put(HunterMove.class, 10);
-        desiredProportionsMap.put(TimidMove.class, 0);
-        return desiredProportionsMap;
-    }
-
     private MoveBase move;
 
-    public ProportionalTransitionSelector(Map<Class, Integer> moveCounts, MoveBase move, int mapWidth, int mapHeight, Player player) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        this.move = findMinimumSquaresSolution(moveCounts, desiredProportionsMap, move, mapWidth, mapHeight, player);
+    public ProportionalTransitionSelector(Map<Class, Integer> moveCounts, HashMap<Class, Integer> transitionProfile, int mapWidth, int mapHeight, MoveBase move, Player player) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        this.move = findMinimumSquaresSolution(moveCounts, transitionProfile, mapWidth, mapHeight, move, player);
     }
 
-    private MoveBase findMinimumSquaresSolution(Map<Class, Integer> moveCounts, HashMap<Class, Integer> desiredProportionsMap, MoveBase move, int mapWidth, int mapHeight, Player player) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    private MoveBase findMinimumSquaresSolution(Map<Class, Integer> moveCounts, HashMap<Class, Integer> desiredProportionsMap, int mapWidth, int mapHeight, MoveBase move, Player player) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         double minimumSquaresValue = 0;
         Class moveClass = null;
         for (Class clazz : desiredProportionsMap.keySet()) {

@@ -1,6 +1,5 @@
 package com.scottlogic.hackathon.bots.state;
 
-import com.scottlogic.hackathon.bots.move.MoveBase;
 import com.scottlogic.hackathon.bots.move.*;
 import com.scottlogic.hackathon.game.Player;
 

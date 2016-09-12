@@ -1,6 +1,6 @@
 package com.scottlogic.hackathon.bots;
 
-import com.scottlogic.hackathon.bots.move.MoveBase;
+import com.scottlogic.hackathon.bots.move.*;
 import com.scottlogic.hackathon.bots.state.ProportionalStateSelector;
 import com.scottlogic.hackathon.bots.state.ProportionalTransitionSelector;
 import com.scottlogic.hackathon.game.*;
@@ -12,6 +12,18 @@ import java.util.stream.Collectors;
 
 public class Milestone2Bot extends Bot {
     private final List<MoveBase> moves = new LinkedList<>();
+    private final HashMap<Class, Integer> spawnProfile = createDesiredProportionsMap();
+    private final HashMap<Class, Integer> transitionProfile = createDesiredProportionsMap();
+
+    private static HashMap<Class, Integer> createDesiredProportionsMap() {
+        HashMap<Class, Integer> desiredProportionsMap = new HashMap<>();
+        desiredProportionsMap.put(AttackMove.class, 20);
+        desiredProportionsMap.put(CollectableMove.class, 80);
+        desiredProportionsMap.put(DefendMove.class, 0);
+        desiredProportionsMap.put(HunterMove.class, 10);
+        desiredProportionsMap.put(TimidMove.class, 0);
+        return desiredProportionsMap;
+    }
 
     @Override
     public List<Move> makeMoves(final GameState gameState) {
@@ -40,7 +52,7 @@ public class Milestone2Bot extends Bot {
                     // Determines which bot is selected
                     ProportionalStateSelector proportionalStateSelector = null;
                     try {
-                        proportionalStateSelector = new ProportionalStateSelector(moveCounts, mapWidth, mapHeight, player);
+                        proportionalStateSelector = new ProportionalStateSelector(moveCounts, spawnProfile, mapWidth, mapHeight, player);
                     } catch (final InvocationTargetException e) {
                         e.printStackTrace();
                     } catch (final NoSuchMethodException e) {
@@ -88,7 +100,7 @@ public class Milestone2Bot extends Bot {
                     .get(0);
             ProportionalTransitionSelector proportionalTransitionSelector = null;
             try {
-                proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, move, mapWidth, mapHeight, movePlayer);
+                proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, transitionProfile, mapWidth, mapHeight, move, movePlayer);
             } catch (final InvocationTargetException e) {
                 e.printStackTrace();
             } catch (final NoSuchMethodException e) {
@@ -103,4 +115,5 @@ public class Milestone2Bot extends Bot {
 
         return Collections.unmodifiableList(moves);
     }
+
 }
