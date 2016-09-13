@@ -41,9 +41,9 @@ class ArgumentsBuilder {
 
     public static void printUsage() {
         System.err.println("usage [-m|map MapName] [-b|bot Bot] [-c|className] ClassName");
-        System.err.println("\tMapName: a map name (Easy, Medium, Hard, etc.)");
+        System.err.println("\tMapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard)");
         System.err.println("\t\tdefault: Easy");
-        System.err.println("\tBot: a bot name to play against (Milestone1, Milestone2, etc.)");
+        System.err.println("\tBot: a bot name to play against (Default, Milestone1, Milestone2, Milestone3)");
         System.err.println("\t\tdefault: Milestone1");
         System.err.println("\tClassName: full class name (include package) of your bot");
         System.err.println("\t\tdefault: your file name + .Bot");
