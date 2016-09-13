@@ -3,10 +3,21 @@ class GamePanelController {
         this.teamService = teamService;
         this.gameService = gameService;
 
+        // These map names are a direct analogue of the file names found in the 'game-engine/src/resources/maps' directory.
+        // Hard-coded for now as there is currently no map service.
+        function MapOption(display, value, isDefault) {
+            return {display, value, isDefault};
+        }
+        this.maps = [new MapOption('Very Easy', 'VeryEasy'),
+            new MapOption('Easy', 'Easy', true),
+            new MapOption('Medium', 'Medium'),
+            new MapOption('Large Medium', 'LargeMedium'),
+            new MapOption('Hard', 'Hard')];
+
         this.teams = [];
 
         this.game = {
-            map: '',
+            map: this.maps.find(map => { return map.isDefault; }).value,
             teams: []
         };
 
@@ -19,6 +30,7 @@ class GamePanelController {
         this.teamService.getTeams().then(
             newTeams => {
                 this.teams = newTeams;
+
                 this.makingCall = false;
             },
             () => {
@@ -41,7 +53,7 @@ class GamePanelController {
         this.makingCall = true;
         this.gameService.playGame(this.game).then(
             success => {
-                this.game.map = '';
+                this.game.map = this.maps.find(map => { return map.isDefault; }).value;
                 this.game.teams = [];
                 this.makingCall = false;
             },
