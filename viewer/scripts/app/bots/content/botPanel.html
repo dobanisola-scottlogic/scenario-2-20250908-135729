@@ -15,16 +15,11 @@
         </div>
 
         <button
-            ngf-select
-            ng-model="controller.file"
+            ngf-select="controller.onSelectFile($file)"
             name="file"
             ngf-max-size="10MB"
             ng-disabled="controller.userInterfaceDisabled"
             >Select File</button>
-
-        <button type="submit"
-            ng-disabled="controller.loadButtonDisabled"
-            ng-click="controller.onLoad()">Load</button>
     </form>
 
     <div class="uploadedFileName">
