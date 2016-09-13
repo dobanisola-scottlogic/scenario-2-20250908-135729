@@ -44,7 +44,8 @@ class BotPanelController {
         this.selectedBot = bot;
     }
 
-    onLoad() {
+    onSelectFile(file) {
+        this.file = file;
         const fr = new FileReader();
 
         fr.onload = () => {
@@ -64,7 +65,7 @@ class BotPanelController {
                 });
         };
 
-        fr.readAsArrayBuffer(this.file);
+        fr.readAsArrayBuffer(file);
     }
 
     uploadBot(className) {
@@ -105,10 +106,6 @@ class BotPanelController {
                 this.makingCall = false;
             }
         );
-    }
-
-    get loadButtonDisabled() {
-        return !this.isTeamUser || this.makingCall || !this.file;
     }
 
     get userInterfaceDisabled() {
