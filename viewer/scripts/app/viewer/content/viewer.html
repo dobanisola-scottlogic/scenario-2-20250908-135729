@@ -2,6 +2,10 @@
      ng-mouseenter="controller.mouseEnter()"
      ng-mouseleave="controller.mouseLeave()"
      ng-mousemove="controller.mouseMove()">
+    <div ng-show="controller.showLive()" class="live">
+        Live
+        <div class="circle blink"></div>
+    </div>
     <div id="phaserApp"></div>
     <div class="control-overlay"
          ng-if="controller.isLoaded()"

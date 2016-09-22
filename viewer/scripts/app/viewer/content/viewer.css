@@ -45,3 +45,28 @@
 .text-input {
     font-size: 1.5rem !important;
 }
+
+.live {
+    position: absolute;
+    font-size: 3rem;
+    font-weight: bold;
+    color: red;
+    margin-left: 10px;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: red;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.blink {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% { opacity: 0.0; }
+}

@@ -8,6 +8,8 @@ import java.util.Set;
 @Persistent
 public class Game {
     @JsonView(Views.List.class)
+    private Long gameTime;
+    @JsonView(Views.List.class)
     private Set<GameTeam> teams;
     @JsonView(Views.List.class)
     private Map map;
@@ -16,6 +18,7 @@ public class Game {
     }
 
     public Game(final Set<GameTeam> teams, final Map map) {
+        this.gameTime = System.currentTimeMillis();
         this.teams = teams;
         this.map = map;
     }

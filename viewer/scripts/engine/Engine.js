@@ -12,7 +12,7 @@ let Team = require('./models/Team.js');
 
 // Define engine constructor
 class Engine {
-    constructor(phaser, gameData) {
+    constructor(phaser, gameData, looped) {
 
         // Save passed values
         this.gameData = gameData;
@@ -46,6 +46,7 @@ class Engine {
         this.collectables = [];
         this.players = [];
         this.paused = false;
+        this.looped = looped;
         this.speed = {
             index: PHASER.SPEED.DEFAULT_INDEX,
             value: PHASER.SPEED.VALUES[PHASER.SPEED.DEFAULT_INDEX]
@@ -119,6 +120,9 @@ class Engine {
     }
     isPaused() {
         return this.paused;
+    }
+    setLooped(looped) {
+        this.looped = looped;
     }
     setSpeedIndex(speedIndex) {
         let phaseDelay = this.getSpeedValue();

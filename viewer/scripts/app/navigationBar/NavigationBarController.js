@@ -34,22 +34,60 @@ class NavigationBarController {
 
         this.teamList = [];
 
+        this.sharedPropertiesService.setLiveMode(true);
+
         this.getGamesList();
 
-        this.gamesListPolling = $interval(() => {
-            this.getGamesList();
-        }, 5000);
+        this.gamesListPolling = $interval(() => this.getGamesList(), 5000);
 
     }
     getGamesList() {
         this.gameService.getGames().then(response => {
-            if (response && response.length) {
-                this.gamesList = response;
+            this.setGamesList(response);
+
+            if (this.sharedPropertiesService.getLiveMode()) {
+                this.selectMostRecentGame();
             }
         });
     }
+    getLatestGame() {
+        return this.gamesList.reduce((prevGame, currGame) => (
+            currGame.game.gameTime > prevGame.game.gameTime ? currGame : prevGame
+        ));
+    }
+    selectMostRecentGame() {
+        if (this.gamesList.length) {
+            const nextGame = this.getLatestGame();
+
+            if (!this.selectedGame || nextGame.id !== this.selectedGame.id) {
+                this.selectGame(nextGame);
+            }
+        }
+    }
+    enableLiveMode() {
+        if (!this.sharedPropertiesService.getLiveMode()) {
+            this.sharedPropertiesService.setLiveMode(true);
+
+            // If latest game is already selected, restart it but now in live mode
+            if (this.getLatestGame().id === this.selectedGame.id) {
+                this.selectGame(this.selectedGame);
+            } else {
+                this.selectMostRecentGame();
+            }
+        }
+    }
+    setGamesList(gamesList) {
+        if (gamesList && gamesList.length) {
+            this.gamesList = gamesList;
+        }
+    }
+    gameSelectedInDropdown(game) {
+        this.sharedPropertiesService.setLiveMode(false);
+        this.selectGame(game);
+    }
     selectGame(game) {
         this.gameService.getGame(game.id).then(response => {
+            this.selectedGame = game;
             let parsedGameData = parser(response);
             this.playGame(parsedGameData);
         });
@@ -61,7 +99,7 @@ class NavigationBarController {
         }
 
         // Construct phaser engine
-        engine = new Engine(phaser, gameData);
+        engine = new Engine(phaser, gameData, this.sharedPropertiesService.getLiveMode());
         this.sharedPropertiesService.setEngine(engine);
 
         this.initialiseTeams(gameData);

@@ -30,9 +30,13 @@ class PhaserUpdater {
     }
     update() {
 
-        // Freeze the game if max phases reached
+        // Freeze/loop the game if max phases reached
         if (this.phaseIndex === this.engine.getPhaseCount()) {
-            this.setPaused(true);
+            if (this.engine.looped) {
+                this.renderPhase(0, true);
+            } else {
+                this.setPaused(true);
+            }
         }
 
         // Control rate of phase updates, limiting to PHASE_DELAY
@@ -120,7 +124,7 @@ class PhaserUpdater {
                 this.chartRenderer.render(phase);
 
                 if (force) {
-                    this.phaseIndex = phase;
+                    this.phaseIndex = phase + 1;
                 }
             }
         } else {

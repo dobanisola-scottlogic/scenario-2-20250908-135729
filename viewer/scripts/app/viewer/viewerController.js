@@ -58,6 +58,9 @@ class ViewerController {
         let engine = this.sharedPropertiesService.getEngine();
         return engine ? engine.getSpeedMultipliers() : [];
     }
+    showLive() {
+        return this.sharedPropertiesService.getLiveMode() && this.isPlaying && this.isLoaded();
+    }
 }
 
 ViewerController.$inject = ['$scope', 'SharedPropertiesService'];

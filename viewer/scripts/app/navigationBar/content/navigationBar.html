@@ -7,11 +7,12 @@
             Available Games <span class="caret"></span>
         </button>
         <ul id="available-games" class="dropdown-menu" aria-labelledby="games">
+            <li><a ng-click="controller.enableLiveMode()" ng-class="{'selected': controller.sharedPropertiesService.getLiveMode()}">Live</a></li>
             <li ng-if="controller.gamesList.length === 0"><a>No games found</a></li>
-            <li ng-repeat="game in controller.gamesList" ng-click="controller.selectGame(game)">
+            <li ng-repeat="game in controller.gamesList | orderBy:'-game.gameTime' track by game.id" ng-click="controller.gameSelectedInDropdown(game)" ng-class="{'selected': game.id === controller.selectedGame.id}">
                 <a>
                     <span>Map {{game.game.map.name}} - </span>
-                    <span ng-repeat="team in (game.game.teams|orderBy:team.teamName) track by team.teamId">{{team.teamName}}{{$last ? '' : ' vs '}}</span>
+                    <span ng-repeat="team in game.game.teams | orderBy:'teamName' track by team.teamId">{{team.teamName}}{{$last ? '' : ' vs '}}</span>
                 </a>
             </li>
         </ul>
