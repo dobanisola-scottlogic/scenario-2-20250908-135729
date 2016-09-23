@@ -1,3 +1,6 @@
+const { Success, Error } = require('../alert/Alert');
+const AlertTypes = require('../alert/AlertTypes');
+
 class GamePanelController {
     constructor(teamService, gameService) {
         this.teamService = teamService;
@@ -22,6 +25,10 @@ class GamePanelController {
         };
 
         this.refreshTeams();
+    }
+
+    refreshAlerts() {
+        this.alert = null;
     }
 
     refreshTeams() {
@@ -51,20 +58,31 @@ class GamePanelController {
 
     playGame() {
         this.makingCall = true;
+
         this.gameService.playGame(this.game).then(
             success => {
                 this.game.map = this.maps.find(map => { return map.isDefault; }).value;
                 this.game.teams = [];
                 this.makingCall = false;
+                this.alert = Success;
             },
-            () => {
+            error => {
                 this.makingCall = false;
+                this.alert = Error;
             }
         );
     }
 
     isSelected(team) {
         return this.game.teams.indexOf(team.name) !== -1;
+    }
+
+    alertIsSuccess() {
+        return this.alert && this.alert.type === AlertTypes.SUCCESS;
+    }
+
+    alertIsError() {
+        return this.alert && this.alert.type === AlertTypes.ERROR;
     }
 
     get addButtonDisabled() {

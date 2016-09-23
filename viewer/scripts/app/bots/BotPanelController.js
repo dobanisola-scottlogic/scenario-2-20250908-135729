@@ -1,3 +1,5 @@
+const { Success, Error } = require('../alert/Alert');
+const AlertTypes = require('../alert/AlertTypes');
 let JSzip = require('jszip');
 
 class BotPanelController {
@@ -11,6 +13,10 @@ class BotPanelController {
         this.botsInCurrentFile = [];
 
         this.refresh();
+    }
+
+    refreshAlerts() {
+        this.alert = null;
     }
 
     refresh() {
@@ -70,42 +76,59 @@ class BotPanelController {
 
     uploadBot(className) {
         this.makingCall = true;
+        this.refreshAlerts();
 
         this.botService.uploadBot(className, this.file).then(
             () => {
                 this.file = null;
                 this.botsInCurrentFile = [];
                 this.refresh();
+                this.alert = Success;
             },
             () => {
                 this.makingCall = false;
+                this.alert = Error;
             }
         );
     }
 
     onDelete() {
         this.makingCall = true;
+        this.refreshAlerts();
         this.botService.deleteBot(this.selectedBot).then(
             () => {
                 this.selectedBot = undefined;
                 this.refresh();
+                this.alert = Success;
             },
             () => {
                 this.makingCall = false;
+                this.alert = Error;
             }
         );
     }
 
     onMakeActive() {
         this.makingCall = true;
+        this.refreshAlerts();
         this.botService.makeActive(this.selectedBot).then(
             () => {
                 this.refresh();
+                this.alert = Success;
             },
             () => {
                 this.makingCall = false;
+                this.alert = Error;
             }
         );
+    }
+
+    alertIsSuccess() {
+        return this.alert && this.alert.type === AlertTypes.SUCCESS;
+    }
+
+    alertIsError() {
+        return this.alert && this.alert.type === AlertTypes.ERROR;
     }
 
     get userInterfaceDisabled() {

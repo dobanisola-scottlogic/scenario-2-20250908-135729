@@ -12,6 +12,12 @@
                id="password"
                ng-model="controller.newTeamDetails.password"
                ng-disabled="controller.userInterfaceDisabled">
+        <alert ng-show="controller.addTeamAlert"
+               is-error="controller.alertIsError(controller.addTeamAlert)"
+               is-success="controller.alertIsSuccess(controller.addTeamAlert)"
+               close-alert="controller.refreshAlerts()"
+               alert="controller.addTeamAlert">
+        </alert>
         <button class="btn btn-default"
                 ng-disabled="controller.addButtonDisabled"
                 ng-click="controller.addNewTeam()">Add New Team
@@ -37,6 +43,12 @@
                        id="password"
                        ng-model="controller.updatePassword"
                        ng-disabled="controller.userInterfaceDisabled">
+                <alert ng-show="controller.editTeamAlert"
+                      is-error="controller.alertIsError(controller.editTeamAlert)"
+                      is-success="controller.alertIsSuccess(controller.editTeamAlert)"
+                      close-alert="controller.refreshAlerts()"
+                      alert="controller.editTeamAlert">
+                </alert>
                 <button class="btn btn-default"
                         ng-click="controller.onUpdatePassword()"
                         ng-disabled="controller.updatePasswordButtonDisabled">Update Password

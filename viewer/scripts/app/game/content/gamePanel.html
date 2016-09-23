@@ -6,7 +6,13 @@
         <div class="teamList">
             <hack-team ng-repeat="team in controller.teams track by team.id" ng-click="controller.onTeamSelected(team)" ng-class="{'isSelected': controller.isSelected(team)}" team="team"></hack-team>
         </div>
-
+        <alert
+            ng-show="controller.alert"
+            is-error="controller.alertIsError()"
+            is-success="controller.alertIsSuccess()"
+            close-alert="controller.refreshAlerts()"
+            alert="controller.alert">
+        </alert>
         <button class="btn btn-default" ng-disabled="controller.addButtonDisabled" ng-click="controller.playGame()">Play Game
         </button>
     </form>

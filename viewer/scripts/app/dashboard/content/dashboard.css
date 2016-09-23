@@ -26,7 +26,7 @@
     margin-bottom: 20px;
     text-align: center;
 }
-.dashboardOverlay .close {
+.dashboardOverlay > .close {
     position: absolute;
     right: 20px;
     top: 20px;

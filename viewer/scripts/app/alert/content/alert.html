@@ -1,0 +1,4 @@
+<div class="alert" ng-class="{'alert-success': isSuccess(), 'alert-danger': isError()}" role="alert">
+    <button type="button" class="close" ng-click="closeAlert()"><span aria-hidden="true">×</span></button>
+    <strong>{{alert.type}}!</strong> {{alert.message}}
+</div>

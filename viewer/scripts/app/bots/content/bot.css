@@ -28,3 +28,7 @@
 .botPanel .open .dropdown-menu {
     margin-left: 10px;
 }
+
+.botPanel .alert {
+    margin-top: 8px;
+}

@@ -41,4 +41,19 @@ application.directive('hackTransclude', function() {
     };
 });
 
+application.directive('alert', function() {
+    return {
+        restrict: 'E',
+        transclude: false,
+        scope: {
+            alert: '=',
+            isSuccess: '&',
+            isError: '&',
+            closeAlert: '&'
+        },
+        replace: true,
+        template: require('./alert/content/alert.html')
+    };
+});
+
 module.exports = application;

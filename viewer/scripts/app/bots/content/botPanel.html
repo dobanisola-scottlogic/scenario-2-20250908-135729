@@ -36,6 +36,14 @@
             bot="bot"></hack-bot>
     </div>
 
+    <alert
+        ng-show="controller.alert"
+        is-error="controller.alertIsError()"
+        is-success="controller.alertIsSuccess()"
+        close-alert="controller.refreshAlerts()"
+        alert="controller.alert">
+    </alert>
+
     <form name="actionForm">
         <button class="btn btn-default"
                 ng-disabled="controller.editButtonsDisabled"
