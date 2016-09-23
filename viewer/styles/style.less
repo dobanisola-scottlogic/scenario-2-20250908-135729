@@ -1,4 +1,85 @@
 @import './variables.less';
-
+@import '../scripts/app/navigationBar/content/navigationBar.less';
+@import '../scripts/app/team/content/teamPanel.less';
+@import '../scripts/app/game/content/gamePanel.less';
+@import '../scripts/app/bots/content/botPanel.less';
+@import '../scripts/app/viewer/content/viewer.less';
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+@import '../scripts/app/hackathon/content/hackathonPanel.less';
 @import '../scripts/app/scoreboard/content/scoreboard.less';
-@import '../scripts/app/navigationBar/navigationBar.less';
+
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    min-width: @canvas-width + @collectables-chart-width;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+.chart {
+    margin: 10px 0;
+}
+
+.chart>svg {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gridline.x {
+    display: none;
+}
+
+.annotation .right-handle {
+    display: none;
+}
+
+.title text {
+    font-size: 15pt;
+}
+
+.bar path {
+    stroke-width: 0;
+}
+
+.modal .modal-body {
+    position: initial;
+}
+
+.spinner-container {
+    position: absolute;
+    background-color: black;
+    opacity: 0.5;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    z-index: @z-index-top;
+}
+
+.spinner {
+    border-top: @spinner-thickness solid fade(@spinner-colour, 20%);
+    border-right: @spinner-thickness solid fade(@spinner-colour, 20%);
+    border-bottom: @spinner-thickness solid fade(@spinner-colour, 20%);
+    border-left: @spinner-thickness solid fade(@spinner-colour, 100%);
+    transform: translateZ(0);
+    animation: spin @spinner-animation-duration infinite linear;
+    border-radius: 50%;
+    width: @spinner-size;
+    height: @spinner-size;
+    margin: auto;
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform :rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

@@ -1,5 +1,3 @@
-require('./content/bot.css');
-
 let angular = require('angular');
 let botService = require('./BotService');
 
@@ -26,7 +24,9 @@ bot.directive('hackBotUpload', function() {
         transclude: false,
         scope: {
             onUpload: '&',
+            setAlert: '&',
             isAdminUser: '=',
+            selectFileDisabled: '&',
             teamName: '@'
         },
         replace: true,

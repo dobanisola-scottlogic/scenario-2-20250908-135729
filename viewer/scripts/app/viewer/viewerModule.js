@@ -1,5 +1,3 @@
-require('./content/viewer.css');
-
 let angular = require('angular');
 let viewer = angular.module('hackathon.viewer', []);
 
@@ -13,6 +11,5 @@ viewer.directive('hackViewer', function() {
         controllerAs: 'controller'
     };
 });
-
 
 module.exports = viewer;

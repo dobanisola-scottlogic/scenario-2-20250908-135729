@@ -1,33 +1,15 @@
 class DashboardController {
-    constructor($scope, navigationBarService) {
+    constructor($scope) {
         this.$scope = $scope;
-        this.navigationBarService = navigationBarService;
         DashboardController.instances.push(this);
     }
 
-    get isLoggedIn() {
-        return this.navigationBarService.isLoggedIn;
-    }
-
-    get isAuthourised() {
-        return this.isLoggedIn && (!this.$scope.role || this.navigationBarService.isAuthourised(this.$scope.role));
-    }
-
-    open() {
-        DashboardController.instances.forEach(instance => {
-            instance.close();
-        });
-
-        this.isOpen = true;
-        this.hasBeenOpened = true;
-    }
-
-    close() {
-        this.isOpen = false;
+    getId() {
+        return this.$scope.$id;
     }
 }
 
-DashboardController.$inject = ['$scope', 'NavigationBarService'];
+DashboardController.$inject = ['$scope'];
 DashboardController.instances = [];
 
 module.exports = DashboardController;

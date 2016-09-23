@@ -6,8 +6,8 @@ class TeamPanelController {
         this.$scope = $scope;
         this.teamService = teamService;
         this.hackathonService = hackathonService;
-		this.botService = botService;
-		
+        this.botService = botService;
+
         this.teams = [];
         this.hackathons = [];
 
@@ -26,9 +26,7 @@ class TeamPanelController {
     }
 
     refreshAlerts() {
-        this.addTeamAlert = null;
-        this.editTeamAlert = null;
-        this.editBotAlert = null;
+        this.alert = null;
     }
 
     refreshTeams() {
@@ -48,6 +46,7 @@ class TeamPanelController {
 
     refreshBots() {
         this.makingCall = true;
+
         this.botService.getBotsByTeamName(this.selectedTeam.name).then(
             currentTeamBots => {
                 this.currentTeamBots = currentTeamBots;
@@ -67,6 +66,7 @@ class TeamPanelController {
 
     onTeamSelected(selectedTeam) {
         this.selectedTeam = selectedTeam;
+        this.selectedBot = null;
         this.refreshBots();
     }
 
@@ -106,6 +106,10 @@ class TeamPanelController {
     }
 
     onHackathonSelected() {
+        this.selectedTeam = null;
+        this.selectedBot = null;
+        this.teams = [];
+        this.currentTeamBots = [];
         this.refreshTeams();
     }
 
@@ -115,10 +119,9 @@ class TeamPanelController {
             () => {
                 this.selectedTeam = undefined;
                 this.refreshTeams();
-                this.editTeamAlert = Success;
             },
             () => {
-                this.editTeamAlert = Error;
+                this.alert = Error;
             }
         );
     }
@@ -129,12 +132,13 @@ class TeamPanelController {
         this.teamService.updatePassword(this.selectedTeam, this.updatePassword).then(
             success => {
                 this.updatePassword = '';
+                this.selectedTeam = null;
                 this.makingCall = false;
-                this.editTeamAlert = Success;
+                this.alert = Success;
             },
             () => {
                 this.makingCall = false;
-                this.editTeamAlert = Error;
+                this.alert = Error;
             });
     }
 
@@ -146,21 +150,20 @@ class TeamPanelController {
                 this.newTeamDetails.name = '';
                 this.newTeamDetails.password = '';
                 this.refreshTeams();
-                this.addTeamAlert = Success;
             },
             () => {
                 this.makingCall = false;
-                this.addTeamAlert = Error;
+                this.alert = Error;
             }
         );
     }
 
-    alertIsSuccess(alert) {
-        return alert && alert.type === AlertTypes.SUCCESS;
+    alertIsSuccess() {
+        return this.alert && this.alert.type === AlertTypes.SUCCESS;
     }
 
-    alertIsError(alert) {
-        return alert && alert.type === AlertTypes.ERROR;
+    alertIsError() {
+        return this.alert && this.alert.type === AlertTypes.ERROR;
     }
 
     isSelected(team) {
@@ -182,11 +185,10 @@ class TeamPanelController {
             () => {
                 this.selectedBot = undefined;
                 this.refreshBots();
-                this.editBotAlert = Success;
             },
             () => {
                 this.makingCall = false;
-                this.editBotAlert = Error;
+                this.alert = Error;
             }
         );
     }
@@ -197,18 +199,19 @@ class TeamPanelController {
         this.botService.makeActive(this.selectedBot).then(
             () => {
                 this.refreshBots();
-                this.editBotAlert = Success;
             },
             () => {
                 this.makingCall = false;
-                this.editBotAlert = Error;
+                this.alert = Error;
             }
         );
     }
 
     get addButtonDisabled() {
         return (this.newTeamDetails.name.length === 0) ||
-        (this.newTeamDetails.password.length === 0) || this.userInterfaceDisabled;
+        (this.newTeamDetails.password.length === 0) ||
+        (this.newTeamDetails.hackathonId.length === 0) ||
+        this.userInterfaceDisabled;
     }
 
     get userInterfaceDisabled() {
@@ -216,11 +219,21 @@ class TeamPanelController {
     }
 
     get updatePasswordButtonDisabled() {
-        return this.updatePassword.length === 0 || this.userInterfaceDisabled;
+        return this.updatePassword.length === 0 ||
+        !this.selectedTeam ||
+        this.userInterfaceDisabled;
     }
 
     get deleteButtonDisabled() {
         return this.userInterfaceDisabled || !this.selectedTeam;
+    }
+
+    get selectFileDisabled() {
+        return this.userInterfaceDisabled || !this.selectedTeam;
+    }
+
+    get editButtonsDisabled() {
+        return this.userInterfaceDisabled || !this.selectedBot;
     }
 }
 

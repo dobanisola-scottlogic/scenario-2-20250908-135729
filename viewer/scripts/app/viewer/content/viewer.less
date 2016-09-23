@@ -1,0 +1,102 @@
+.phaser-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    #phaser-app {
+        align-self: center;
+
+        #collectables-chart {
+            width: @collectables-chart-width;
+            height: @collectables-chart-height;
+            float: right;
+        }
+    }
+
+    #phase-chart {
+        width: @phase-chart-width;
+        height: @phase-chart-height;
+        margin-right: @collectables-chart-width;
+        align-self: center;
+    }
+
+    .control-overlay {
+        position: absolute;
+        padding: 6px;
+        border-radius: 15px;
+        height: 70px;
+        width: 500px;
+        color: #ddd;
+        background-color: #333;
+        font-size: 50px;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: @collectables-chart-width;
+        bottom: @phase-chart-height + 20px;
+
+        .play-pause-icon:hover {
+            cursor: pointer;
+            color: #999;
+        }
+
+        .speed-change {
+            display: inline-block;
+            margin-left: 15px;
+            margin-top: 10px;
+            font-size: 30px;
+            vertical-align: top;
+        }
+
+        .speed-change-disabled {
+            cursor: not-allowed;
+            color: #222;
+        }
+
+        .speed-change-enabled:hover {
+            cursor: pointer;
+            color: #999;
+        }
+    }
+
+    #cutoffCondition {
+        color: white;
+        width: @canvas-width;
+        text-align: center;
+        margin-top: 200px;
+
+        & > ul {
+            list-style: none;
+        }
+    }
+
+    .live, #cutoffCondition {
+        position: absolute;
+        font-size: 3rem;
+    }
+
+    .live {
+        font-weight: bold;
+        color: red;
+        margin-left: 10px;
+    }
+
+    .circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        background-color: red;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .blink {
+        animation: blinker 1s linear infinite;
+    }
+
+    @keyframes blinker {
+        50% { opacity: 0.0; }
+    }
+}

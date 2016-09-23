@@ -30,7 +30,7 @@ class Engine {
             gameData.constants.width * PHASER.CELL.WIDTH,
             gameData.constants.height * PHASER.CELL.HEIGHT,
             Phaser.AUTO,
-            'phaserApp',
+            'phaser-app',
             {
                 preload: this.phaserPreloader.preload,
                 create: this.phaserCreator.create,

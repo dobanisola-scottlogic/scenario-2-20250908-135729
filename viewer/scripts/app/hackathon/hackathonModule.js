@@ -1,5 +1,3 @@
-require('./content/hackathon.css');
-
 let angular = require('angular');
 let hackathonService = require('./HackathonService');
 
