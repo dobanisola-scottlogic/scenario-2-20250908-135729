@@ -9,6 +9,10 @@ class GameService {
         return this.$http.get(`${this.apiPath}/game`).then(response => response.data);
     }
 
+    getGamesByHackathon(hackathonId) {
+        return this.$http.get(`${this.apiPath}/game?hackathonId=` + hackathonId).then(response => response.data);
+    }
+
     getGame(id) {
         return this.$http.get(`${this.apiPath}/game/${id}`).then(response => response.data);
     }

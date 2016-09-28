@@ -53,6 +53,13 @@
     <div class="buttons" ng-if="controller.isLoggedIn">
         <div class="admin-buttons"
              ng-if="controller.isAdmin">
+             <a class="waves-effect waves-light btn dashboard-open"
+                ng-click="hackathonDashboardController.open()"
+                ng-disabled="!controller.isLoggedIn"
+                ng-if="controller.isLoggedIn">
+                <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+                 Hackathon
+             </a>
             <a class="waves-effect waves-light btn dashboard-open"
                ng-click="gameDashboardController.open()"
                ng-disabled="!controller.isLoggedIn"

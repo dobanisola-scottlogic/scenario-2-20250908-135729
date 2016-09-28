@@ -48,4 +48,27 @@ public class GameStore {
 
         return Collections.unmodifiableList(gameResults);
     }
+
+    public List<GameResult> getGameResultsByHackathon(final UUID hackathonId) {
+        List<GameResult> gameResults = Database.accessDatabase(dataAccessor -> {
+                    final EntityCursor<GameResult> items = dataAccessor.gameResultByHackathonId.subIndex(hackathonId.toString()).entities();
+
+                    final List<GameResult> gameResultsIds = StreamSupport.stream(items.spliterator(), false)
+                            .collect(Collectors.toList());
+                    items.close();
+                    return gameResultsIds;
+                },
+                ex -> logger.error("Error retrieving game results from database for hackathon", ex));
+
+        if (gameResults == null) {
+            gameResults = new ArrayList<>();
+        }
+
+        return Collections.unmodifiableList(gameResults);
+    }
+
+    public boolean deleteGameResult(final UUID id) {
+        return Database.accessDatabase(dataAccessor -> dataAccessor.gameResultById.delete(id.toString()),
+                ex -> logger.error("Error deleting game result from database", ex));
+    }
 }

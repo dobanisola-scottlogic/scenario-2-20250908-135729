@@ -26,6 +26,10 @@ public class TeamService {
         return teamStore.getTeams();
     }
 
+    public List<Team> getTeamsByHackathon(final UUID hackathonId) {
+        return teamStore.getTeamsByHackathon(hackathonId);
+    }
+
     public Team getTeam(final UUID id) {
         return teamStore.getTeam(id);
     }

@@ -1,6 +1,7 @@
 package com.scottlogic.hackathon.server.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.HackathonConfiguration;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
@@ -50,7 +51,10 @@ public class TeamResource {
     @GET
     @Timed
     @RolesAllowed(Authorizer.ROLE_ADMIN)
-    public List<Team> getTeams() {
+    public List<Team> getTeams(@QueryParam("hackathonId") Optional<UUID> hackathonId) {
+        if(hackathonId.isPresent()) {
+            return teamService.getTeamsByHackathon(hackathonId.orNull());
+        }
         return teamService.getTeams();
     }
 

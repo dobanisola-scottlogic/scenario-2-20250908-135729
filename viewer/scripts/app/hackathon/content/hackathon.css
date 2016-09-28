@@ -1,0 +1,21 @@
+.hackathonPanel .hackathonList {
+    border: 1px solid black;
+    padding: 8px;
+    margin: 16px;
+}
+
+.hackathonPanel .hackathonDetails .div {
+    display: block;
+}
+
+.hackathonPanel .hackathonListItem {
+    cursor: pointer;
+    min-width: 300px;
+    padding: 10px;
+    border: 2px solid transparent;
+}
+
+.hackathonPanel .hackathonListItem.isSelected {
+    min-width: 300px;
+    border: 2px solid blue;
+}

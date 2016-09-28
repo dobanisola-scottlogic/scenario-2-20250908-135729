@@ -2,6 +2,7 @@ package com.scottlogic.hackathon.server.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.HackathonConfiguration;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
@@ -43,7 +44,10 @@ public class GameResource {
     @GET
     @Timed
     @JsonView(Views.List.class)
-    public List<GameResult> getGameResults() {
+    public List<GameResult> getGameResults(@QueryParam("hackathonId") Optional<UUID> hackathonId) {
+        if(hackathonId.isPresent()) {
+            return gameService.getGameResultsByHackathon(hackathonId.orNull());
+        }
         return gameService.getGameResults();
     }
 

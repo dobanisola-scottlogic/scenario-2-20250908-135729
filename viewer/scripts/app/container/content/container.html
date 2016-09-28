@@ -1,0 +1,33 @@
+<div id="hackathonContainer">
+    <hack-navigation-bar>
+        <hack-dashboard controller="$parent.$parent.teamDashboardController"
+                        title="Team Dashboard"
+                        role="ADMIN">
+            <hack-team-panel></hack-team-panel>
+        </hack-dashboard>
+
+        <hack-dashboard controller="$parent.$parent.gameDashboardController"
+                        title="Game Dashboard"
+                        role="ADMIN">
+            <hack-game-panel></hack-game-panel>
+        </hack-dashboard>
+
+        <hack-dashboard controller="$parent.$parent.hackathonDashboardController"
+                        title="Hackathon Dashboard"
+                        role="ADMIN">
+            <hack-hackathon-panel></hack-hackathon-panel>
+        </hack-dashboard>
+
+        <hack-dashboard controller="$parent.$parent.botDashboardController"
+                        title="Bot Dashboard"
+                        role="TEAM">
+            <hack-bot-panel></hack-bot-panel>
+        </hack-dashboard>
+    </hack-navigation-bar>
+    <hack-viewer>
+        <hack-viewer-game></hack-viewer-game>
+        <hack-viewer-controls></hack-viewer-controls>
+    </hack-viewer>
+    <collectables-chart></collectables-chart>
+    <phase-chart></phase-chart>
+</div>

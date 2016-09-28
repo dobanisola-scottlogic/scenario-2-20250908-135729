@@ -14,13 +14,14 @@ const LOGIN_STATE = {
 let engine;
 
 class NavigationBarController {
-    constructor($rootScope, $scope, $http, $interval, navigationBarService, gameService, sharedPropertiesService) {
+    constructor($rootScope, $scope, $http, $interval, navigationBarService, gameService, hackathonService, sharedPropertiesService) {
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$http = $http;
         this.$interval = $interval;
         this.navigationBarService = navigationBarService;
         this.gameService = gameService;
+        this.hackathonService = hackathonService;
         this.sharedPropertiesService = sharedPropertiesService;
 
         this.credentials = {
@@ -36,19 +37,34 @@ class NavigationBarController {
 
         this.sharedPropertiesService.setLiveMode(true);
 
-        this.getGamesList();
-
-        this.gamesListPolling = $interval(() => this.getGamesList(), 5000);
-
+        this.initialiseHackathons();
     }
-    getGamesList() {
-        this.gameService.getGames().then(response => {
-            this.setGamesList(response);
 
-            if (this.sharedPropertiesService.getLiveMode()) {
-                this.selectMostRecentGame();
+    initialiseHackathons() {
+        this.makingCall = true;
+        this.hackathonService.getHackathonFromPath().then(
+            hackathon => {
+                this.selectedHackathon = hackathon;
+                this.makingCall = false;
+                this.getGamesList();
+                this.$interval.cancel(this.gamesListPolling);
+                this.gamesListPolling = this.$interval(() => {
+                    this.getGamesList();
+                }, 5000);
+            },
+            () => {
+                this.selectedHackathon = null;
+                this.makingCall = false;
             }
-        });
+        );
+    }
+
+    getGamesList() {
+        if (this.selectedHackathon.id) {
+            this.gameService.getGamesByHackathon(this.selectedHackathon.id).then(response => {
+                this.setGamesList(response);
+            });
+        }
     }
     getLatestGame() {
         return this.gamesList.reduce((prevGame, currGame) => (
@@ -149,6 +165,6 @@ class NavigationBarController {
     }
 }
 
-NavigationBarController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'NavigationBarService', 'GameService', 'SharedPropertiesService'];
+NavigationBarController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'NavigationBarService', 'GameService', 'HackathonService', 'SharedPropertiesService'];
 
 module.exports = NavigationBarController;

@@ -9,16 +9,15 @@ class TeamService {
         return this.$http.get(`${this.apiPath}/team`).then(response => response.data);
     }
 
+    getTeamsByHackathon(hackathonId) {
+        return this.$http.get(`${this.apiPath}/team?hackathonId=` + hackathonId).then(response => response.data);
+    }
+
     deleteTeam(team) {
         return this.$http.delete(`${this.apiPath}/team/${team.id}`).then(response => response.data);
     }
 
-    addTeam(username, password) {
-        let team = {
-            name: username,
-            password: password
-        };
-
+    addTeam(team) {
         return this.$http.post(`${this.apiPath}/team`, team).then(response => response.data);
     }
 

@@ -20,6 +20,10 @@ public class Team {
     private String name;
     private String password;
 
+    @SecondaryKey(relate = Relationship.MANY_TO_ONE)
+    private String hackathonKey;
+    private UUID hackathonId;
+
     public UUID getId() {
         return id;
     }
@@ -43,5 +47,14 @@ public class Team {
 
     public boolean authenticate(final BasicCredentials credentials) {
         return credentials.getUsername().equals(name) && credentials.getPassword().equals(password);
+    }
+
+    public UUID getHackathonId() {
+        return hackathonId;
+    }
+
+    public void setHackathonId(final UUID hackathonId) {
+        this.hackathonId = hackathonId;
+        this.hackathonKey = hackathonId.toString();
     }
 }

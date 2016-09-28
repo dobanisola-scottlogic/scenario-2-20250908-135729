@@ -74,7 +74,25 @@ public class TeamStore {
 
     public boolean deleteTeam(final UUID id) {
         return Database.accessDatabase(dataAccessor -> dataAccessor.teamById.delete(id.toString()),
-                ex -> logger.error("Error getting team from database", ex));
+                ex -> logger.error("Error deleting team from database", ex));
+    }
+
+    public List<Team> getTeamsByHackathon(final UUID hackathonId) {
+        List<Team> teams = Database.accessDatabase(dataAccessor -> {
+                    final EntityCursor<Team> items = dataAccessor.teamsByHackathonId.subIndex(hackathonId.toString()).entities();
+
+                    final List<Team> teamIds = StreamSupport.stream(items.spliterator(), false)
+                            .collect(Collectors.toList());
+                    items.close();
+                    return teamIds;
+                },
+                ex -> logger.error("Error retrieving teams from database for hackathon", ex));
+
+        if (teams == null) {
+            teams = new ArrayList<>();
+        }
+
+        return Collections.unmodifiableList(teams);
     }
 
     public Team update(final UUID id, final TeamUpdate update) {

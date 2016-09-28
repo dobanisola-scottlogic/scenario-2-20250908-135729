@@ -1,10 +1,21 @@
 <div class="gamePanel">
     <form>
+        <label class="input-label" for="hackathon">Hackathon:</label>
+        <select
+            class="browser-default" id="hackathon"
+            ng-model="controller.game.hackathonId"
+            ng-options="hackathon.id as hackathon.name for hackathon in controller.hackathons"
+            ng-disabled="controller.userInterfaceDisabled"
+            ng-change="controller.onHackathonSelected()">
+        </select>
+
         <label class="input-label" for="map">Map:</label>
         <select class="browser-default mapSelect" id="map"  ng-model="controller.game.map" ng-options="map.value as map.display for map in controller.maps" ng-disabled="controller.userInterfaceDisabled"></select>
 
         <div class="teamList">
-            <hack-team ng-repeat="team in controller.teams track by team.id" ng-click="controller.onTeamSelected(team)" ng-class="{'isSelected': controller.isSelected(team)}" team="team"></hack-team>
+            <label class="input-label" for="teams">Teams:</label>
+            <hack-team ng-if="controller.teams.length > 0" ng-repeat="team in controller.teams track by team.id" ng-click="controller.onTeamSelected(team)" ng-class="{'isSelected': controller.isTeamSelected(team)}" team="team"></hack-team>
+            <span ng-if="controller.teams.length === 0">No teams found.</span>
         </div>
         <alert
             ng-show="controller.alert"

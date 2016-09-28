@@ -57,7 +57,15 @@ public class GameService {
         return gameStore.getGameResults();
     }
 
+    public List<GameResult> getGameResultsByHackathon(final UUID hackathonId) {
+        return gameStore.getGameResultsByHackathon(hackathonId);
+    }
+
     public GameResult getGameResult(final UUID id) {
         return gameStore.getGameResult(id);
+    }
+
+    public boolean deleteGameResult(final UUID id) {
+        return gameStore.deleteGameResult(id);
     }
 }

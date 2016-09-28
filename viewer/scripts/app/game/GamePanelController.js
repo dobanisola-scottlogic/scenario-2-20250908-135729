@@ -2,8 +2,9 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class GamePanelController {
-    constructor(teamService, gameService) {
+    constructor(teamService, hackathonService, gameService) {
         this.teamService = teamService;
+        this.hackathonService = hackathonService;
         this.gameService = gameService;
 
         // These map names are a direct analogue of the file names found in the 'game-engine/src/resources/maps' directory.
@@ -18,13 +19,15 @@ class GamePanelController {
             new MapOption('Hard', 'Hard')];
 
         this.teams = [];
+        this.hackathons = [];
 
         this.game = {
             map: this.maps.find(map => { return map.isDefault; }).value,
-            teams: []
+            teams: [],
+            hackathonId: ''
         };
 
-        this.refreshTeams();
+        this.initialiseHackathons();
     }
 
     refreshAlerts() {
@@ -34,10 +37,9 @@ class GamePanelController {
     refreshTeams() {
         this.makingCall = true;
 
-        this.teamService.getTeams().then(
+        this.teamService.getTeamsByHackathon(this.game.hackathonId).then(
             newTeams => {
                 this.teams = newTeams;
-
                 this.makingCall = false;
             },
             () => {
@@ -54,6 +56,42 @@ class GamePanelController {
         } else {
             this.game.teams.splice(index, 1);
         }
+    }
+
+    initialiseHackathons() {
+        this.makingCall = true;
+        this.hackathonService.getHackathonFromPath().then(
+            hackathon => {
+                this.selectedHackathon = hackathon;
+                this.game.hackathonId = hackathon.id;
+                this.refreshTeams();
+                this.makingCall = false;
+            },
+            () => {
+                this.makingCall = false;
+            }
+        );
+        this.refreshHackathons();
+    }
+
+
+    refreshHackathons() {
+        this.makingCall = true;
+
+        this.hackathonService.getHackathons().then(
+            newHackathons => {
+                this.hackathons = newHackathons;
+                this.makingCall = false;
+            },
+            () => {
+                this.hackathons = [];
+                this.makingCall = false;
+            }
+        );
+    }
+
+    onHackathonSelected() {
+        this.refreshTeams();
     }
 
     playGame() {
@@ -73,7 +111,7 @@ class GamePanelController {
         );
     }
 
-    isSelected(team) {
+    isTeamSelected(team) {
         return this.game.teams.indexOf(team.name) !== -1;
     }
 
@@ -85,6 +123,10 @@ class GamePanelController {
         return this.alert && this.alert.type === AlertTypes.ERROR;
     }
 
+    isHackathonSelected(hackathon) {
+        return this.game.hackathonId && this.game.hackathonId === hackathon.id;
+    }
+
     get addButtonDisabled() {
         return (this.game.map.length === 0) || (this.game.teams.length <= 1) || this.userInterfaceDisabled;
     }
@@ -94,6 +136,6 @@ class GamePanelController {
     }
 }
 
-GamePanelController.$inject = ['TeamService', 'GameService'];
+GamePanelController.$inject = ['TeamService', 'HackathonService', 'GameService'];
 
 module.exports = GamePanelController;

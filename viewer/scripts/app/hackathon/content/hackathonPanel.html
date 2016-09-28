@@ -1,0 +1,38 @@
+<div class="hackathonPanel">
+    <form>
+        <label class="input-label" for="map">Hackathon Name:</label>
+        <input class="text-input" type="text" id="name" ng-model="controller.hackathon.name" ng-disabled="controller.userInterfaceDisabled">
+        <alert
+            ng-show="controller.alert"
+            is-error="controller.alertIsError()"
+            is-success="controller.alertIsSuccess()"
+            close-alert="controller.refreshAlerts()"
+            alert="controller.alert">
+        </alert>
+        <button class="btn btn-default" ng-disabled="controller.addButtonDisabled" ng-click="controller.createHackathon()">Create Hackathon
+        </button>
+    </form>
+
+    <div class="hackathonList">
+        <hack-hackathon
+                ng-repeat="hackathon in controller.hackathons track by hackathon.id"
+                ng-click="controller.onHackathonSelected(hackathon)"
+                ng-class="{'isSelected': controller.isSelected(hackathon)}"
+                hackathon="hackathon">
+        </hack-hackathon>
+    </div>
+
+    <div class="hackathonDetails">
+        <div>Selected Hackathon: {{controller.selectedHackathon.name}}</div>
+        <div>ID: {{controller.selectedHackathon.id}}</div>
+        <div>Link: <a href="/application/?{{controller.selectedHackathon.id}}">{{controller.selectedHackathon.name}}</a></div>
+        <div>
+            <form>
+                <button class="btn btn-default"
+                        ng-click="controller.onDelete()"
+                        ng-disabled="controller.deleteButtonDisabled">Delete Hackathon
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

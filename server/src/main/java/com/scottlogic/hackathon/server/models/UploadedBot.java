@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.io.ByteStreams;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.server.services.RemoteClassLoader;
+import com.sleepycat.persist.model.DeleteAction;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 @Entity
 public class UploadedBot {
-    @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Team.class)
+    @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Team.class, onRelatedEntityDelete=DeleteAction.CASCADE)
     String teamId;
     @PrimaryKey()
     private String key;

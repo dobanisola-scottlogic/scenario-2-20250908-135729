@@ -3,6 +3,8 @@ package com.scottlogic.hackathon.server.models;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +19,9 @@ public class GameResult {
     private Set<SpawnPoint> spawnPoints;
     @JsonView(Views.Details.class)
     private List<PhaseResult> phaseResults;
+    @SecondaryKey(relate = Relationship.MANY_TO_ONE)
+    private String hackathonKey;
+    private UUID hackathonId;
 
     public GameResult() {
     }
@@ -24,12 +29,15 @@ public class GameResult {
     GameResult(final UUID id,
                final Game game,
                final Set<SpawnPoint> spawnPoints,
-               final List<PhaseResult> phaseResults) {
+               final List<PhaseResult> phaseResults,
+               final UUID hackathonId) {
         this.key = id.toString();
         this.id = id;
         this.game = game;
         this.spawnPoints = new HashSet<>(spawnPoints);
         this.phaseResults = new ArrayList<>(phaseResults);
+        this.hackathonId = hackathonId;
+        this.hackathonKey = hackathonId.toString();
     }
 
     public static GameResult create(final Game game, final com.scottlogic.hackathon.game.GameResult gameResult) {
@@ -46,7 +54,8 @@ public class GameResult {
                         .getPhaseResults()
                         .stream()
                         .map(PhaseResult::create)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                game.getHackathonId()
         );
     }
 

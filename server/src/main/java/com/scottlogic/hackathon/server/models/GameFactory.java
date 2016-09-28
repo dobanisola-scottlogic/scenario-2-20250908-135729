@@ -91,7 +91,7 @@ public class GameFactory {
                         .stream()
                         .map(entry -> new GameTeam(entry.getKey().getId(), entry.getKey().getName(), entry.getValue().getId()))
                         .collect(Collectors.toSet());
-                game = new Game(gameTeams, map);
+                game = new Game(gameTeams, map, gameConfiguration.getHackathonId());
             }
         }
         return game;

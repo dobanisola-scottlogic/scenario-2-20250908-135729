@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import com.scottlogic.hackathon.server.authentication.Authenticator;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
-import com.scottlogic.hackathon.server.healthchecks.HackathonHealthCheck;
 import com.scottlogic.hackathon.server.resources.*;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.Application;
@@ -58,8 +57,6 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         environment.jersey().register(injector.getInstance(TeamResource.class));
         environment.jersey().register(injector.getInstance(BotResource.class));
         environment.jersey().register(injector.getInstance(LoginResource.class));
-
-        environment.healthChecks().register("hackathon", injector.getInstance(HackathonHealthCheck.class));
     }
 
     private void setupCrossOriginHeaders(final Environment environment) {

@@ -1,10 +1,18 @@
 <div class="teamPanel">
     <form>
+        <label class="input-label" for="hackathon">Hackathon:</label>
+        <select
+            class="browser-default" id="hackathon"
+            ng-model="controller.newTeamDetails.hackathonId"
+            ng-options="hackathon.id as hackathon.name for hackathon in controller.hackathons"
+            ng-disabled="controller.userInterfaceDisabled"
+            ng-change="controller.onHackathonSelected()"
+        ></select>
         <label class="input-label" for="username">Username:</label>
         <input class="text-input"
                type="text"
                id="username"
-               ng-model="controller.newTeamDetails.username"
+               ng-model="controller.newTeamDetails.name"
                ng-disabled="controller.userInterfaceDisabled">
         <label class="input-label" for="password">Password:</label>
         <input class="text-input"
@@ -26,15 +34,18 @@
 
     <div class="teamList">
         <hack-team
+                ng-if="controller.teams.length > 0"
                 ng-repeat="team in controller.teams track by team.id"
                 ng-click="controller.onTeamSelected(team)"
                 ng-class="{'isSelected': controller.isSelected(team)}"
                 team="team"></hack-team>
+        <span ng-if="controller.teams.length === 0">No teams found.</span>
     </div>
 
     <div class="teamDetails">
         <div>Selected Team: {{controller.selectedTeam.name}}</div>
         <div>ID: {{controller.selectedTeam.id}}</div>
+        <div>HackathonID: {{controller.selectedTeam.hackathonId}}</div>
         <div>
             <form>
                 <label class="input-label" for="password">Password:</label>

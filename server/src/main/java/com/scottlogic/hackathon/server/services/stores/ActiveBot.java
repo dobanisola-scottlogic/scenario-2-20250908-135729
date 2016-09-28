@@ -1,6 +1,7 @@
 package com.scottlogic.hackathon.server.services.stores;
 
 import com.scottlogic.hackathon.server.models.UploadedBot;
+import com.sleepycat.persist.model.DeleteAction;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class ActiveBot {
     @PrimaryKey()
     private String teamId;
-    @SecondaryKey(relate = Relationship.ONE_TO_ONE, relatedEntity = UploadedBot.class)
+    @SecondaryKey(relate = Relationship.ONE_TO_ONE, relatedEntity = UploadedBot.class, onRelatedEntityDelete= DeleteAction.CASCADE)
     private String botId;
 
     ActiveBot() {
