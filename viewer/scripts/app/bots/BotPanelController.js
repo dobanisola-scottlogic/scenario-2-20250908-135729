@@ -1,6 +1,5 @@
 const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
-let JSzip = require('jszip');
 
 class BotPanelController {
     constructor($scope, navigationBarService, botService, Upload, contestantBotNamespace) {
@@ -48,48 +47,6 @@ class BotPanelController {
 
     onBotSelected(bot) {
         this.selectedBot = bot;
-    }
-
-    onSelectFile(file) {
-        this.file = file;
-        const fr = new FileReader();
-
-        fr.onload = () => {
-            const zip = new JSzip();
-
-            zip.loadAsync(fr.result)
-                .then(result => {
-                    this.botsInCurrentFile = Object.keys(result.files)
-                        .filter(key => key.startsWith(this.contestantBotNamespace) && key.endsWith('.class'))
-                        .map(className => ({
-                            className: className.split('.')[0].split('/').join('.'),
-                            displayName: className.split('/').pop().split('.')[0]
-                        }));
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        };
-
-        fr.readAsArrayBuffer(file);
-    }
-
-    uploadBot(className) {
-        this.makingCall = true;
-        this.refreshAlerts();
-
-        this.botService.uploadBot(className, this.file).then(
-            () => {
-                this.file = null;
-                this.botsInCurrentFile = [];
-                this.refresh();
-                this.alert = Success;
-            },
-            () => {
-                this.makingCall = false;
-                this.alert = Error;
-            }
-        );
     }
 
     onDelete() {

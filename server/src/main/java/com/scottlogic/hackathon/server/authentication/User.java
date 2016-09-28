@@ -19,6 +19,10 @@ public class User implements Principal {
         return role;
     }
 
+    public boolean isAdmin() { return role == Role.ADMIN; }
+
+    public boolean isTeam() { return role == Role.TEAM; }
+
     public enum Role {
         ADMIN,
         TEAM

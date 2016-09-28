@@ -14,6 +14,7 @@
 
         <div class="teamList">
             <label class="input-label" for="teams">Teams:</label>
+			<button class="btn btn-default" ng-click="controller.refreshTeams()">Refresh Teams</button>
             <hack-team ng-if="controller.teams.length > 0" ng-repeat="team in controller.teams track by team.id" ng-click="controller.onTeamSelected(team)" ng-class="{'isSelected': controller.isTeamSelected(team)}" team="team"></hack-team>
             <span ng-if="controller.teams.length === 0">No teams found.</span>
         </div>

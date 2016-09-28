@@ -49,14 +49,19 @@ public class BotService {
 
     public List<UploadedBot> getUploadedBots(final User user) {
         final List<UploadedBot> allVisibleBots;
-        if (user.getRole() == User.Role.ADMIN) {
+        if (user.isAdmin()) {
             allVisibleBots = botStore.getUploadedBots();
         } else {
-            final Team team = teamService.getTeam(user.getName());
-            allVisibleBots = botStore.getUploadedBots(team);
+            allVisibleBots = this.getUploadedBots(user.getName());
         }
         return allVisibleBots;
     }
+
+    public List<UploadedBot> getUploadedBots(final String userName) {
+        final Team team = teamService.getTeam(userName);
+        return botStore.getUploadedBots(team);
+    }
+
 
     public boolean deleteUploadedBot(final User user, final UUID id) {
         boolean result = false;
@@ -71,9 +76,9 @@ public class BotService {
     private boolean userCanAccessBot(final User user, final UUID id) {
         boolean result = false;
 
-        if (user.getRole() == User.Role.ADMIN) {
+        if (user.isAdmin()) {
             result = true;
-        } else if (user.getRole() == User.Role.TEAM) {
+        } else if (user.isTeam()) {
             final Team team = teamService.getTeam(user.getName());
             final UploadedBot uploadedBot = botStore.getBot(id);
 
@@ -88,7 +93,7 @@ public class BotService {
     public List<UploadedBot> getActiveBots(final User user) {
         List<UploadedBot> visibleActiveBots = botStore.getActiveBots();
 
-        if (user.getRole() == User.Role.TEAM) {
+        if (user.isTeam()) {
             final UUID teamId = teamService.getTeam(user.getName()).getId();
 
             visibleActiveBots = visibleActiveBots.stream()
@@ -103,7 +108,7 @@ public class BotService {
         UploadedBot result = null;
         Team team = null;
 
-        if (user.getRole() == User.Role.ADMIN) {
+        if (user.isAdmin()) {
             team = teamService.getTeam(activeBot.getTeamId());
         } else {
             final Team usersTeam = teamService.getTeam(user.getName());

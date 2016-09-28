@@ -20,6 +20,22 @@ bot.directive('hackBot', function() {
     };
 });
 
+bot.directive('hackBotUpload', function() {
+    return {
+        restrict: 'E',
+        transclude: false,
+        scope: {
+            onUpload: '&',
+            isAdminUser: '=',
+            teamName: '@'
+        },
+        replace: true,
+        template: require('./content/botUploadForm.html'),
+        controller: require('./BotUploadController'),
+        controllerAs: 'controller'
+    };
+});
+
 bot.directive('hackBotPanel', function() {
     return {
         restrict: 'E',

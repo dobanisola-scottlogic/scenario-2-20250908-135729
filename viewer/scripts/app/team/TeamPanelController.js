@@ -2,13 +2,17 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class TeamPanelController {
-    constructor($scope, teamService, hackathonService) {
+    constructor($scope, teamService, hackathonService, botService) {
         this.$scope = $scope;
         this.teamService = teamService;
         this.hackathonService = hackathonService;
-
+		this.botService = botService;
+		
         this.teams = [];
         this.hackathons = [];
+
+        this.currentTeamBots = [];
+        this.activeBots = [];
 
         this.newTeamDetails = {
             name: '',
@@ -24,6 +28,7 @@ class TeamPanelController {
     refreshAlerts() {
         this.addTeamAlert = null;
         this.editTeamAlert = null;
+        this.editBotAlert = null;
     }
 
     refreshTeams() {
@@ -41,8 +46,32 @@ class TeamPanelController {
         );
     }
 
+    refreshBots() {
+        this.makingCall = true;
+        this.botService.getBotsByTeamName(this.selectedTeam.name).then(
+            currentTeamBots => {
+                this.currentTeamBots = currentTeamBots;
+                this.botService.getActiveBots().then(
+                    activeBots => {
+                        this.activeBots = activeBots;
+                        this.makingCall = false;
+                    },
+                    () => {this.makingCall = false;}
+                );
+            },
+            () => {
+                this.makingCall = false;
+            }
+        );
+    }
+
     onTeamSelected(selectedTeam) {
         this.selectedTeam = selectedTeam;
+        this.refreshBots();
+    }
+
+    isActive(bot) {
+        return this.activeBots && this.activeBots.some(activeBot => activeBot.id === bot.id);
     }
 
     initialiseHackathons() {
@@ -138,6 +167,45 @@ class TeamPanelController {
         return this.selectedTeam && this.selectedTeam.id === team.id;
     }
 
+    onBotSelected(bot) {
+        this.selectedBot = bot;
+    }
+
+    isBotSelected(bot) {
+        return this.selectedBot && this.selectedBot.id === bot.id;
+    }
+
+    onBotDelete() {
+        this.makingCall = true;
+        this.refreshAlerts();
+        this.botService.deleteBot(this.selectedBot).then(
+            () => {
+                this.selectedBot = undefined;
+                this.refreshBots();
+                this.editBotAlert = Success;
+            },
+            () => {
+                this.makingCall = false;
+                this.editBotAlert = Error;
+            }
+        );
+    }
+
+    onMakeActive() {
+        this.makingCall = true;
+        this.refreshAlerts();
+        this.botService.makeActive(this.selectedBot).then(
+            () => {
+                this.refreshBots();
+                this.editBotAlert = Success;
+            },
+            () => {
+                this.makingCall = false;
+                this.editBotAlert = Error;
+            }
+        );
+    }
+
     get addButtonDisabled() {
         return (this.newTeamDetails.name.length === 0) ||
         (this.newTeamDetails.password.length === 0) || this.userInterfaceDisabled;
@@ -156,6 +224,6 @@ class TeamPanelController {
     }
 }
 
-TeamPanelController.$inject = ['$scope', 'TeamService', 'HackathonService'];
+TeamPanelController.$inject = ['$scope', 'TeamService', 'HackathonService', 'BotService'];
 
 module.exports = TeamPanelController;

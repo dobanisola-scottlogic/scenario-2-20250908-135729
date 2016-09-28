@@ -46,6 +46,39 @@
         <div>Selected Team: {{controller.selectedTeam.name}}</div>
         <div>ID: {{controller.selectedTeam.id}}</div>
         <div>HackathonID: {{controller.selectedTeam.hackathonId}}</div>
+        <div class="botList">
+            Bots:
+            <div ng-if="controller.currentTeamBots.length > 0">
+                <hack-bot
+                        ng-repeat="bot in controller.currentTeamBots track by bot.id"
+                        ng-click="controller.onBotSelected(bot)"
+                        is-active="controller.isActive(bot)"
+                        ng-class="{'isSelected': controller.isBotSelected(bot)}"
+                        bot="bot"></hack-bot>
+                <form name="actionForm">
+                    <alert ng-show="controller.editBotAlert"
+                           is-error="controller.alertIsError(controller.editBotAlert)"
+                           is-success="controller.alertIsSuccess(controller.editBotAlert)"
+                           close-alert="controller.refreshAlerts()"
+                           alert="controller.editBotAlert">
+                    </alert>
+                    <button class="btn btn-default"
+                            ng-disabled="controller.editButtonsDisabled"
+                            ng-click="controller.onMakeActive(bot)">Make Active</button>
+                    <button class="btn btn-default"
+                            ng-disabled="controller.editButtonsDisabled"
+                            ng-click="controller.onBotDelete()">Delete Bot</button>
+                </form>
+            </div>
+            <div ng-if="controller.currentTeamBots.length === 0">
+                No Bots Currently Uploaded
+            </div>
+            <hack-bot-upload
+                on-upload="controller.refreshBots()"
+                is-admin-user="true"
+                team-name="{{controller.selectedTeam.name}}">
+            </hack-bot-upload>
+        </div>
         <div>
             <form>
                 <label class="input-label" for="password">Password:</label>

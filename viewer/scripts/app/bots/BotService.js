@@ -10,6 +10,10 @@ class BotService {
         return this.$http.get(`${this.apiPath}/bot`).then(response => response.data);
     }
 
+    getBotsByTeamName(teamName) {
+        return this.$http.get(`${this.apiPath}/bot/?teamName=${teamName}`).then(response => response.data);
+    }
+
     getActiveBots() {
         return this.$http.get(`${this.apiPath}/bot/active`).then(response => response.data);
     }
@@ -18,6 +22,16 @@ class BotService {
         return this.Upload.upload({
             url: `${this.apiPath}/bot/${className}`,
             data: {file: file}
+        }).then(response => response.data);
+    }
+
+    uploadBotAsAdmin(className, teamName, file) {
+        return this.Upload.upload({
+            url: `${this.apiPath}/bot/${className}`,
+            data: {
+                file: file,
+                teamName: teamName.trim()
+            }
         }).then(response => response.data);
     }
 

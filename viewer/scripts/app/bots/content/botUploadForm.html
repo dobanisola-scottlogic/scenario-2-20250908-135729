@@ -1,0 +1,35 @@
+<div class="botUploadForm">
+    <alert
+        ng-show="controller.alert"
+        is-error="controller.alertIsError()"
+        is-success="controller.alertIsSuccess()"
+        close-alert="controller.refreshAlerts()"
+        alert="controller.alert">
+    </alert>
+    <form name="botUploadForm">
+        <div class="dropdown col-md-6">
+            <button class="btn btn-default dropdown-toggle class-name-dropdown" ng-disabled="controller.botsInCurrentFile.length === 0" type="button" data-toggle="dropdown">
+                Bots In Current File <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-if="controller.botsInCurrentFile.length === 0"><a>No bots found</a></li>
+                <li ng-repeat="bot in controller.botsInCurrentFile" ng-click="controller.upload(bot.className)">
+                    <a>
+                        <span>{{bot.displayName}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <button
+            ngf-select="controller.onSelectFile($file)"
+            class="btn btn-default"
+            name="file"
+            ngf-max-size="10MB"
+            ng-disabled="controller.userInterfaceDisabled"
+            >Select File</button>
+    </form>
+    <div class="uploadedFileName">
+        {{controller.uploadedFileName}}
+    </div>
+</div>

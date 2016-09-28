@@ -9,9 +9,9 @@ public class Authorizer implements io.dropwizard.auth.Authorizer<User> {
         boolean authorized = false;
 
         if (role.equals(ROLE_ADMIN)) {
-            authorized = user.getRole() == User.Role.ADMIN;
+            authorized = user.isAdmin();
         } else if (role.equals(ROLE_TEAM)) {
-            authorized = user.getRole() == User.Role.TEAM;
+            authorized = user.isTeam();
         }
 
         return authorized;
