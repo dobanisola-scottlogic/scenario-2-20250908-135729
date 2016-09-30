@@ -46,12 +46,22 @@
     font-size: 1.5rem !important;
 }
 
-.live {
+.live, #cutoffCondition{
     position: absolute;
     font-size: 3rem;
-    font-weight: bold;
+}
+
+.live {
     color: red;
     margin-left: 10px;
+    font-weight: bold;
+}
+
+#cutoffCondition {
+    color: white;
+    width: 1280px;
+    text-align: center;
+    margin-top: 200px;
 }
 
 .circle {

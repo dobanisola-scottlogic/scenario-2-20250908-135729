@@ -132,6 +132,7 @@ class PhaseChartController {
     }
     brushingStarted() {
         this.brushed = true;
+        this.engine.setPaused(true);
     }
     brushing() {
         let leftBrushPosition = this.brush.extent()[1] < this.maxPhase ? this.brush.extent()[1] : this.maxPhase;
@@ -147,6 +148,7 @@ class PhaseChartController {
         this.engine.renderPhase(Math.round(leftBrushPosition), true);
         this.renderChartToPhase(Math.round(leftBrushPosition));
         this.brushed = false;
+        this.engine.setPaused(false);
     }
     initialiseChart() {
         d3.select(CHART.PHASE.SELECTOR)

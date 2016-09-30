@@ -6,27 +6,35 @@
         Live
         <div class="circle blink"></div>
     </div>
+    <div id="cutoffCondition" ng-if="controller.sharedPropertiesService.getGameOver()">
+        <h1>Game Over. {{controller.sharedPropertiesService.endState.cutoffCondition}}</h1>
+        <ul>
+            <li ng-repeat="teamStat in controller.sharedPropertiesService.endState.teamStats | orderBy:['-players','-spawnPoint','name']">
+                <span ng-style="controller.getColour(teamStat.botId)">{{teamStat.name}}</span> - <span>{{teamStat.players}}</span> players remaining.
+            </li>
+        </ul>
+    </div>
     <div id="phaserApp"></div>
     <div class="control-overlay"
-         ng-if="controller.isLoaded()"
+         ng-if="controller.isLoaded() && !controller.sharedPropertiesService.getGameOver()"
          ng-show="controller.isControlsVisible"
          ng-mouseenter="controller.mouseControlsEnter()"
          ng-mouseleave="controller.mouseControlsLeave()"
          ng-mousedown="controller.mouseDown()">
-    <icon class="play-pause-icon glyphicon"
-          ng-class="{
-              'glyphicon-pause': controller.isPlaying,
-              'glyphicon-play': !controller.isPlaying
-          }"
-          ng-click="controller.playToggleClick()"></icon>
-    <div class="speed-change"
-         ng-repeat="speedMultiplier in controller.getSpeedMultipliers()"
-         ng-class="{
-             'speed-change-disabled': controller.getSpeedMultiplier() === speedMultiplier,
-             'speed-change-enabled': controller.getSpeedMultiplier() !== speedMultiplier
-         }"
-         ng-click="controller.setSpeedMultiplier(speedMultiplier)">
-        x{{speedMultiplier}}
+        <icon class="play-pause-icon glyphicon"
+              ng-class="{
+                  'glyphicon-pause': controller.isPlaying,
+                  'glyphicon-play': !controller.isPlaying
+              }"
+              ng-click="controller.playToggleClick()"></icon>
+        <div class="speed-change"
+             ng-repeat="speedMultiplier in controller.getSpeedMultipliers()"
+             ng-class="{
+                 'speed-change-disabled': controller.getSpeedMultiplier() === speedMultiplier,
+                 'speed-change-enabled': controller.getSpeedMultiplier() !== speedMultiplier
+             }"
+             ng-click="controller.setSpeedMultiplier(speedMultiplier)">
+            x{{speedMultiplier}}
+        </div>
     </div>
-</div>
 </div>

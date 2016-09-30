@@ -2,6 +2,7 @@ class SharedPropertiesService {
     constructor() {
         this.engine = null;
         this.liveMode = null;
+        this.endState = null;
     }
     setEngine(engine) {
         this.engine = engine;
@@ -14,6 +15,13 @@ class SharedPropertiesService {
     }
     getLiveMode() {
         return this.liveMode;
+    }
+    getGameOver() {
+        let gameOver = this.engine && this.engine.getGameOver();
+        if (gameOver && this.endState !== this.engine.gameEndState) {
+            this.endState = this.engine.gameEndState;
+        }
+        return gameOver;
     }
 }
 
