@@ -1,6 +1,7 @@
 package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.scottlogic.hackathon.game.CutoffCondition;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
@@ -22,6 +23,7 @@ public class GameResult {
     @SecondaryKey(relate = Relationship.MANY_TO_ONE)
     private String hackathonKey;
     private UUID hackathonId;
+    private CutoffCondition cutoffCondition;
 
     public GameResult() {
     }
@@ -30,7 +32,8 @@ public class GameResult {
                final Game game,
                final Set<SpawnPoint> spawnPoints,
                final List<PhaseResult> phaseResults,
-               final UUID hackathonId) {
+               final UUID hackathonId,
+               final CutoffCondition cutoffCondition) {
         this.key = id.toString();
         this.id = id;
         this.game = game;
@@ -38,6 +41,7 @@ public class GameResult {
         this.phaseResults = new ArrayList<>(phaseResults);
         this.hackathonId = hackathonId;
         this.hackathonKey = hackathonId.toString();
+        this.cutoffCondition = cutoffCondition;
     }
 
     public static GameResult create(final Game game, final com.scottlogic.hackathon.game.GameResult gameResult) {
@@ -55,7 +59,8 @@ public class GameResult {
                         .stream()
                         .map(PhaseResult::create)
                         .collect(Collectors.toList()),
-                game.getHackathonId()
+                game.getHackathonId(),
+                gameResult.getCutoffCondition()
         );
     }
 
@@ -79,5 +84,7 @@ public class GameResult {
         return Collections.unmodifiableList(phaseResults);
     }
 
-
+    public CutoffCondition getCutoffCondition() {
+        return cutoffCondition;
+    }
 }

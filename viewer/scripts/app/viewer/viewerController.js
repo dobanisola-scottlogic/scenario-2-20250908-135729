@@ -61,6 +61,11 @@ class ViewerController {
     showLive() {
         return this.sharedPropertiesService.getLiveMode() && this.isPlaying && this.isLoaded();
     }
+    getColour(botId) {
+        return {
+            color: this.sharedPropertiesService.getEngine().getTeamColour(botId).HEX
+        };
+    }
 }
 
 ViewerController.$inject = ['$scope', 'SharedPropertiesService'];

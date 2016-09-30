@@ -102,6 +102,19 @@ class Engine {
     getPhaseTeamInfo(index) {
         return this.gameData.state[index].teamInfo;
     }
+    getCutoffCondition() {
+        return this.gameData.constants.cutoffCondition;
+    }
+    onGameEnd() {
+        this.setGameOver(true);
+        this.gameEndState = this.getGameEndState();
+    }
+    setGameOver(gameOver) {
+        this.gameOver = gameOver;
+    }
+    getGameOver() {
+        return this.gameOver;
+    }
     renderPhase(phaseIndex, force) {
         this.phaserUpdater.renderPhase(phaseIndex, force);
     }
@@ -154,6 +167,27 @@ class Engine {
     }
     getSpeedMultiplier() {
         return PHASER.SPEED.VALUES[PHASER.SPEED.DEFAULT_INDEX] / this.speed.value;
+    }
+    getGameEndState() {
+        let finalState = this.gameData.state[this.gameData.state.length - 1];
+        let endState = {
+            cutoffCondition: '',
+            teamStats: []
+        };
+
+        endState.cutoffCondition = this.gameData.constants.cutoffCondition;
+
+        endState.teamStats = this.gameData.constants.teamInfo.map(team => {
+            let teamInfo = finalState.teamInfo.find(t => t.owner === team.botId);
+            return {
+                name: team.teamName,
+                players: teamInfo.playerCount,
+                spawnPoint: teamInfo.spawnCount === 1,
+                botId: team.botId
+            };
+        });
+
+        return endState;
     }
 }
 
