@@ -1,6 +1,5 @@
 const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
-let JSzip = require('jszip');
 
 class BotUploadController {
     constructor($scope, botService, Upload, contestantBotNamespace) {
@@ -13,13 +12,10 @@ class BotUploadController {
     }
 
     onSelectFile(file) {
-        this.file = file;
-        const fr = new FileReader();
+        if (file) {
+            this.file = file;
 
-        fr.onload = () => {
-            const zip = new JSzip();
-
-            zip.loadAsync(fr.result)
+            this.botService.loadZip(file)
                 .then(result => {
                     this.botsInCurrentFile = Object.keys(result.files)
                         .filter(key => key.startsWith(this.contestantBotNamespace) && key.endsWith('.class'))
@@ -28,12 +24,8 @@ class BotUploadController {
                             displayName: className.split('/').pop().split('.')[0]
                         }));
                 })
-                .catch(err => {
-                    console.log(err);
-                });
-        };
-
-        fr.readAsArrayBuffer(file);
+                .catch(() => { this.alert = Error; });
+        }
     }
 
     upload(className) {

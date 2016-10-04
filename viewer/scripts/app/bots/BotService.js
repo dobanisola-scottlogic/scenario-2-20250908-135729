@@ -1,3 +1,5 @@
+let JSzip = require('jszip');
+
 class BotService {
     constructor($http, $q, apiPath, Upload) {
         this.apiPath = apiPath;
@@ -46,6 +48,22 @@ class BotService {
 
     deleteBot(bot) {
         return this.$http.delete(`${this.apiPath}/bot/${bot.id}`).then(response => response.data);
+    }
+
+    loadZip(file) {
+        return this.$q((resolve, reject) => {
+            const fr = new FileReader();
+
+            fr.onload = () => {
+                const zip = new JSzip();
+
+                zip.loadAsync(fr.result)
+                    .then(resolve)
+                    .catch(reject);
+            };
+
+            fr.readAsArrayBuffer(file);
+        });
     }
 }
 
