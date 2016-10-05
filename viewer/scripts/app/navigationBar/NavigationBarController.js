@@ -104,6 +104,7 @@ class NavigationBarController {
     selectGame(game) {
         this.gameService.getGame(game.id).then(response => {
             this.selectedGame = game;
+            this.sharedPropertiesService.setSelectedGame(game);
             let parsedGameData = parser(response);
             this.playGame(parsedGameData);
         });

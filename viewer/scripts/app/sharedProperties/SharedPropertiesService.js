@@ -16,6 +16,12 @@ class SharedPropertiesService {
     getLiveMode() {
         return this.liveMode;
     }
+    setSelectedGame(game) {
+        this.selectedGame = game;
+    }
+    getSelectedGame() {
+        return this.selectedGame;
+    }
     getGameOver() {
         let gameOver = this.engine && this.engine.getGameOver();
         if (gameOver && this.endState !== this.engine.gameEndState) {
