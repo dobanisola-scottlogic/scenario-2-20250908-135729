@@ -1,15 +1,13 @@
-const { Success, Error } = require('../alert/Alert');
+let JSzip = require('jszip');
+const { Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class BotPanelController {
-    constructor($scope, navigationBarService, botService, Upload, contestantBotNamespace) {
+    constructor($scope, navigationBarService, botService) {
         this.$scope = $scope;
         this.navigationBarService = navigationBarService;
         this.botService = botService;
-        this.Upload = Upload;
-        this.contestantBotNamespace = contestantBotNamespace;
-
-        this.botsInCurrentFile = [];
+        this.setAlert = this.setAlert.bind(this);
 
         this.refresh();
     }
@@ -20,6 +18,7 @@ class BotPanelController {
 
     refresh() {
         this.makingCall = true;
+        this.selectedBot = null;
 
         this.botService.getBots().then(
             allBots => {
@@ -56,7 +55,6 @@ class BotPanelController {
             () => {
                 this.selectedBot = undefined;
                 this.refresh();
-                this.alert = Success;
             },
             () => {
                 this.makingCall = false;
@@ -71,13 +69,16 @@ class BotPanelController {
         this.botService.makeActive(this.selectedBot).then(
             () => {
                 this.refresh();
-                this.alert = Success;
             },
             () => {
                 this.makingCall = false;
                 this.alert = Error;
             }
         );
+    }
+
+    setAlert(alert) {
+        this.alert = alert;
     }
 
     alertIsSuccess() {
@@ -105,6 +106,6 @@ class BotPanelController {
     }
 }
 
-BotPanelController.$inject = ['$scope', 'NavigationBarService', 'BotService', 'Upload', 'CONTESTANT_BOT_NAMESPACE'];
+BotPanelController.$inject = ['$scope', 'NavigationBarService', 'BotService'];
 
 module.exports = BotPanelController;

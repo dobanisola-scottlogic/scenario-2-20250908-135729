@@ -21,7 +21,6 @@ class HackathonPanelController {
                 this.hackathon.name = '';
                 this.refreshHackathons();
                 this.makingCall = false;
-                this.alert = Success;
             },
             error => {
                 this.makingCall = false;
@@ -44,6 +43,7 @@ class HackathonPanelController {
             () => {
                 this.hackathons = [];
                 this.makingCall = false;
+                this.alert = Error;
             }
         );
     }
@@ -64,6 +64,10 @@ class HackathonPanelController {
                     this.selectedHackathon = undefined;
                     this.refreshHackathons();
                     this.makingCall = false;
+                },
+                () => {
+                    this.makingCall = false;
+                    this.alert = Error;
                 }
             );
         }
@@ -71,6 +75,10 @@ class HackathonPanelController {
 
     get addButtonDisabled() {
         return (this.hackathon.name.length === 0) || this.userInterfaceDisabled;
+    }
+
+    get deleteButtonDisabled() {
+        return !this.selectedHackathon || this.userInterfaceDisabled;
     }
 
     get userInterfaceDisabled() {

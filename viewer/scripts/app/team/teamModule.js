@@ -1,5 +1,3 @@
-require('./content/team.css');
-
 let angular = require('angular');
 let teamService = require('./TeamService');
 

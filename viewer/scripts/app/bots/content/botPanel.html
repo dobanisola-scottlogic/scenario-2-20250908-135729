@@ -1,29 +1,28 @@
 <div class="botPanel">
-    <hack-bot-upload on-upload='controller.refresh()'></hack-bot-upload>
-
-    <div class="botList">
+    <alert
+            ng-show="controller.alert"
+            is-error="controller.alertIsError()"
+            is-success="controller.alertIsSuccess()"
+            close-alert="controller.refreshAlerts()"
+            alert="controller.alert">
+    </alert>
+    <hack-bot-upload on-upload="controller.refresh()" set-alert="controller.setAlert"></hack-bot-upload>
+    <div class="list-group">
+        <div class="list-group-item" ng-if="controller.bots.length === 0">No bots found.</div>
         <hack-bot
             ng-repeat="bot in controller.bots track by bot.id"
             ng-click="controller.onBotSelected(bot)"
-            ng-class="{'isSelected': controller.isSelected(bot)}"
+            ng-class="{'active': controller.isSelected(bot)}"
             is-active="controller.isActive(bot)"
             bot="bot"></hack-bot>
     </div>
-
-    <alert
-        ng-show="controller.alert"
-        is-error="controller.alertIsError()"
-        is-success="controller.alertIsSuccess()"
-        close-alert="controller.refreshAlerts()"
-        alert="controller.alert">
-    </alert>
-
-    <form name="actionForm">
-        <button class="btn btn-default"
-                ng-disabled="controller.editButtonsDisabled"
-                ng-click="controller.onMakeActive(bot)">Make Active</button>
-        <button class="btn btn-default"
-                ng-disabled="controller.editButtonsDisabled"
-                ng-click="controller.onDelete(bot)">Delete</button>
-    </form>
+    <button class="btn btn-default"
+            ng-disabled="controller.editButtonsDisabled"
+            ng-click="controller.onMakeActive(bot)">Make Active</button>
+    <button class="btn btn-danger pull-right"
+            ng-disabled="controller.editButtonsDisabled"
+            ng-click="controller.onDelete(bot)">Delete</button>
+    <div class="spinner-container" ng-show="controller.makingCall">
+        <div class="spinner"></div>
+    </div>
 </div>

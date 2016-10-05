@@ -1,5 +1,3 @@
-require('./content/game.css');
-
 let angular = require('angular');
 let gameService = require('./GameService');
 let teamModule = require('../team/teamModule');

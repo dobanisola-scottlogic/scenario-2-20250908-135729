@@ -1,14 +1,19 @@
-const { Success, Error } = require('../alert/Alert');
+const { Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class BotUploadController {
-    constructor($scope, botService, Upload, contestantBotNamespace) {
+    constructor($scope, botService, contestantBotNamespace) {
         this.$scope = $scope;
+        this.setAlert = $scope.setAlert();
         this.botService = botService;
-        this.Upload = Upload;
         this.contestantBotNamespace = contestantBotNamespace;
 
         this.botsInCurrentFile = [];
+    }
+
+    clearUpload() {
+        this.botsInCurrentFile = [];
+        this.file = null;
     }
 
     onSelectFile(file) {
@@ -37,16 +42,32 @@ class BotUploadController {
         }
     }
 
-    uploadBot(className) {
+    uploadBot() {
         this.makingCall = true;
         this.refreshAlerts();
-        this.botService.uploadBot(className, this.file).then(
+        this.botService.uploadBot(this.selectedBotInCurrentFile, this.file).then(
             () => {
                 this.file = null;
                 this.botsInCurrentFile = [];
                 this.$scope.onUpload();
                 this.makingCall = false;
-                this.alert = Success;
+            },
+            () => {
+                this.makingCall = false;
+                this.setAlert(Error);
+            }
+        );
+    }
+
+    uploadBotAsAdmin() {
+        this.makingCall = true;
+        this.refreshAlerts();
+        this.botService.uploadBotAsAdmin(this.selectedBotInCurrentFile, this.$scope.teamName, this.file).then(
+            () => {
+                this.file = null;
+                this.botsInCurrentFile = [];
+                this.$scope.onUpload();
+                this.makingCall = false;
             },
             () => {
                 this.makingCall = false;
@@ -55,22 +76,8 @@ class BotUploadController {
         );
     }
 
-    uploadBotAsAdmin(className) {
-        this.makingCall = true;
-        this.refreshAlerts();
-        this.botService.uploadBotAsAdmin(className, this.$scope.teamName, this.file).then(
-            () => {
-                this.file = null;
-                this.botsInCurrentFile = [];
-                this.$scope.onUpload();
-                this.makingCall = false;
-                this.alert = Success;
-            },
-            () => {
-                this.makingCall = false;
-                this.alert = Error;
-            }
-        );
+    get selectBotDisabled() {
+        return this.botsInCurrentFile.length === 0;
     }
 
     get userInterfaceDisabled() {
@@ -84,6 +91,7 @@ class BotUploadController {
     refreshAlerts() {
         this.alert = null;
     }
+
     alertIsSuccess() {
         return this.alert && this.alert.type === AlertTypes.SUCCESS;
     }
@@ -93,6 +101,6 @@ class BotUploadController {
     }
 }
 
-BotUploadController.$inject = ['$scope', 'BotService', 'Upload', 'CONTESTANT_BOT_NAMESPACE'];
+BotUploadController.$inject = ['$scope', 'BotService', 'CONTESTANT_BOT_NAMESPACE'];
 
 module.exports = BotUploadController;

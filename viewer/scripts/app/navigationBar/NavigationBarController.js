@@ -159,6 +159,9 @@ class NavigationBarController {
     get isAdmin() {
         return this.navigationBarService.getLoggedInUserName() === 'admin';
     }
+    get showAvailableGames() {
+        return this.selectedHackathon;
+    }
     getColour(botId) {
         return {
             color: engine.getTeamColour(botId).HEX

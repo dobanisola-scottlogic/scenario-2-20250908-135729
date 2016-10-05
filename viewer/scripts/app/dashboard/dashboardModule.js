@@ -1,5 +1,3 @@
-require('./content/dashboard.css');
-
 let angular = require('angular');
 let dashboard = angular.module('hackathon.dashboard', []);
 
@@ -9,8 +7,6 @@ dashboard.directive('hackDashboard', function() {
         transclude: true,
         scope: {
             controller: '=',
-            show: '=',
-            role: '@',
             title: '@'
         },
         replace: true,

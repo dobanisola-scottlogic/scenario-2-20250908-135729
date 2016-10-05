@@ -1,6 +1,5 @@
-<div class="botListItem">
-    <div>ID: {{bot.id}}</div>
+<button type="button" class="list-group-item">
     <div>Timestamp: {{bot.timeStamp | date : 'MMM d, y h:mm:ss'}}</div>
-    <div>ClassName: {{bot.botClassName}}</div>
+    <div>Name: {{bot.botClassName.split('.').pop()}}</div>
     <div>Active: {{isActive ? 'Yes' : 'No'}}</div>
-</div>
+</button>
