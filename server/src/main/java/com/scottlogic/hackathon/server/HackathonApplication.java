@@ -56,6 +56,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         environment.jersey().register(injector.getInstance(GameResource.class));
         environment.jersey().register(injector.getInstance(TeamResource.class));
         environment.jersey().register(injector.getInstance(BotResource.class));
+        environment.jersey().register(injector.getInstance(MilestoneResource.class));
         environment.jersey().register(injector.getInstance(LoginResource.class));
     }
 

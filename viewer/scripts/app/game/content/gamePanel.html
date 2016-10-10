@@ -31,14 +31,26 @@
             ng-disabled="controller.userInterfaceDisabled">
         </select>
     </div>
-    <hr></hr>
+    <h4>Teams</h4>
+    <div class="list-group-item" ng-if="controller.teams.length === 0">No teams found.</div>
     <div class="list-group">
         <button
             type="button"
             class="list-group-item"
             ng-class="{'active': controller.isTeamSelected(team)}"
-            ng-repeat="team in controller.teams track by team.id"
-            ng-click="controller.onTeamSelected(team)">{{team.name}}
+            ng-repeat="team in controller.teams"
+            ng-click="controller.onTeamSelected(team)">{{team.name.replace(controller.milestoneBotPrefix, '')}}
+        </button>
+    </div>
+    <h4>Milestones</h4>
+    <div class="list-group-item" ng-if="controller.milestoneTeams.length === 0">No milestones found.</div>
+    <div class="list-group">
+        <button
+            type="button"
+            class="list-group-item"
+            ng-class="{'active': controller.isTeamSelected(team)}"
+            ng-repeat="team in controller.milestoneTeams"
+            ng-click="controller.onTeamSelected(team)">{{team.name.replace(controller.milestoneBotPrefix, '')}}
         </button>
     </div>
     <button class="btn btn-default" ng-click="controller.refreshTeams()">Refresh Teams</button>

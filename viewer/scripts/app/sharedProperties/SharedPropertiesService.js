@@ -1,5 +1,6 @@
 class SharedPropertiesService {
-    constructor() {
+    constructor(milestoneBotPrefix) {
+        this.milestoneBotPrefix = milestoneBotPrefix;
         this.engine = null;
         this.liveMode = null;
         this.endState = null;
@@ -31,6 +32,6 @@ class SharedPropertiesService {
     }
 }
 
-SharedPropertiesService.$inject = [];
+SharedPropertiesService.$inject = ['MILESTONE_BOT_PREFIX'];
 
 module.exports = SharedPropertiesService;

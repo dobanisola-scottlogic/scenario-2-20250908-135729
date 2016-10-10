@@ -8,6 +8,7 @@ class ViewerController {
     constructor($scope, sharedPropertiesService) {
         this.$scope = $scope;
         this.sharedPropertiesService = sharedPropertiesService;
+        this.milestoneBotPrefix = sharedPropertiesService.milestoneBotPrefix;
         this.hideControlsTimeout = null;
         this.isPlaying = true;
         this.isControlsVisible = false;

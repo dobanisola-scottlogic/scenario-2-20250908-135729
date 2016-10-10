@@ -3,6 +3,7 @@ let angular = require('angular');
 let ngfileupload = require('ng-file-upload');
 let configurationModule = require('configuration');
 let botModule = require('./bots/botModule');
+let milestoneModule = require('./milestones/milestoneModule');
 let dashboardModule = require('./dashboard/dashboardModule');
 let navigationBarModule = require('./navigationBar/navigationBarModule');
 let containerModule = require('./container/containerModule');
@@ -18,6 +19,7 @@ let requires = [
     'ngFileUpload',
     configurationModule.name,
     botModule.name,
+    milestoneModule.name,
     collectablesChartModule.name,
     phaseChartModule.name,
     dashboardModule.name,

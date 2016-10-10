@@ -5,6 +5,7 @@ class ScoreboardController {
         this.$http = $http;
         this.$interval = $interval;
         this.sharedPropertiesService = sharedPropertiesService;
+        this.milestoneBotPrefix = sharedPropertiesService.milestoneBotPrefix;
     }
     getMapName() {
         const selectedGame = this.sharedPropertiesService.getSelectedGame();
