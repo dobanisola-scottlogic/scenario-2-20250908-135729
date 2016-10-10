@@ -74,7 +74,7 @@ public class BotStore {
 
     public boolean deleteUploadedBot(final UUID id) {
         return Database.accessDatabase(dataAccessor -> dataAccessor.botById.delete(id.toString()),
-                ex -> logger.error("Error getting bot from database", ex));
+                ex -> logger.error("Error deleting bot from database", ex));
     }
 
     public List<UploadedBot> getActiveBots() {

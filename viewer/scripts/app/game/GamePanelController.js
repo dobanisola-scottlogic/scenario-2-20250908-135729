@@ -2,10 +2,12 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class GamePanelController {
-    constructor(teamService, hackathonService, gameService) {
+    constructor(teamService, gameService, milestoneService, hackathonService, milestoneBotPrefix) {
         this.teamService = teamService;
         this.hackathonService = hackathonService;
         this.gameService = gameService;
+        this.milestoneService = milestoneService;
+        this.milestoneBotPrefix = milestoneBotPrefix;
 
         // These map names are a direct analogue of the file names found in the 'game-engine/src/resources/maps' directory.
         // Hard-coded for now as there is currently no map service.
@@ -20,6 +22,7 @@ class GamePanelController {
 
         this.teams = [];
         this.hackathons = [];
+        this.milestoneTeams = [];
 
         this.game = {
             map: this.maps.find(map => { return map.isDefault; }).value,
@@ -40,7 +43,18 @@ class GamePanelController {
         this.teamService.getTeamsByHackathon(this.game.hackathonId).then(
             newTeams => {
                 this.teams = newTeams;
-                this.makingCall = false;
+                this.milestoneService.getMilestones().then(activeMilestones => {
+                    if (activeMilestones && activeMilestones.length) {
+                        const milestoneNames = activeMilestones.map(milestone => {
+                            return {name: milestone.milestoneClassName.replace('.class', '')};
+                        });
+                        this.milestoneTeams.push(...milestoneNames);
+                    }
+                    this.makingCall = false;
+                },
+                () => {
+                    this.makingCall = false;
+                });
             },
             () => {
                 this.teams = [];
@@ -136,6 +150,6 @@ class GamePanelController {
     }
 }
 
-GamePanelController.$inject = ['TeamService', 'HackathonService', 'GameService'];
+GamePanelController.$inject = ['TeamService', 'GameService', 'MilestoneService', 'HackathonService', 'MILESTONE_BOT_PREFIX'];
 
 module.exports = GamePanelController;

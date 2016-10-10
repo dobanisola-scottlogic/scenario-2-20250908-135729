@@ -23,6 +23,7 @@ class NavigationBarController {
         this.gameService = gameService;
         this.hackathonService = hackathonService;
         this.sharedPropertiesService = sharedPropertiesService;
+        this.milestoneBotPrefix = sharedPropertiesService.milestoneBotPrefix;
 
         this.credentials = {
             username: '',
@@ -58,7 +59,6 @@ class NavigationBarController {
             }
         );
     }
-
     getGamesList() {
         if (this.selectedHackathon.id) {
             this.gameService.getGamesByHackathon(this.selectedHackathon.id).then(response => {
@@ -74,7 +74,6 @@ class NavigationBarController {
     selectMostRecentGame() {
         if (this.gamesList.length) {
             const nextGame = this.getLatestGame();
-
             if (!this.selectedGame || nextGame.id !== this.selectedGame.id) {
                 this.selectGame(nextGame);
             }
