@@ -7,6 +7,7 @@ import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.services.BotService;
 import com.scottlogic.hackathon.server.services.MilestoneService;
 import com.scottlogic.hackathon.server.services.TeamService;
+import com.scottlogic.hackathon.server.models.MilestoneBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +21,6 @@ public class GameFactory {
     private final BotService botService;
     private final MilestoneService milestoneService;
     private final Logger logger;
-
-    private final static String MILESTONE_BOT_PREFIX = "com.scottlogic.hackathon.bots.";
 
     @Inject
     public GameFactory(
@@ -49,7 +48,7 @@ public class GameFactory {
                 .getTeams()
                 .stream()
                 .collect(Collectors.toMap(Function.identity(), teamName -> {
-                    if (teamName.startsWith(MILESTONE_BOT_PREFIX)) {
+                    if (teamName.startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
                         Team adminTeam = new Team();
                         adminTeam.setName(teamName);
                         return adminTeam;
@@ -62,7 +61,7 @@ public class GameFactory {
                 .stream()
                 .filter(team -> team != null)
                 .collect(Collectors.toMap(Function.identity(), team -> {
-                    if (team.getName().startsWith(MILESTONE_BOT_PREFIX)) {
+                    if (team.getName().startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
                         final MilestoneBot milestoneBot = milestoneBots.get(team.getName());
                         return milestoneBot.getBot();
                     } else {
@@ -80,7 +79,7 @@ public class GameFactory {
                 .getTeams()
                 .stream()
                 .collect(Collectors.toMap(Function.identity(), teamName -> {
-                    if (teamName.contains(MILESTONE_BOT_PREFIX)) {
+                    if (teamName.contains(MilestoneBot.MILESTONE_BOT_PREFIX)) {
                         Team adminTeam = new Team();
                         adminTeam.setName("ADMIN");
                         return adminTeam;

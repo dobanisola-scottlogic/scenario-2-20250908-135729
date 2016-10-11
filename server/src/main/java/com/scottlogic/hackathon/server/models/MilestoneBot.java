@@ -18,6 +18,8 @@ public class MilestoneBot {
     private String milestoneClassName;
     private Date timeStamp;
 
+    public final static String MILESTONE_BOT_PREFIX = "com.scottlogic.hackathon.bots.";
+
     public MilestoneBot() {}
 
     public MilestoneBot(Bot bot) {
@@ -58,5 +60,4 @@ public class MilestoneBot {
         }
         return milestoneBot;
     }
-
 }

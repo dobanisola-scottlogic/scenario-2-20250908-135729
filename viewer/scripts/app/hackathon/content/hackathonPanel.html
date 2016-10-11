@@ -20,7 +20,18 @@
     </div>
     <button class="btn btn-danger"
         ng-click="controller.onDelete()"
-        ng-disabled="controller.deleteButtonDisabled">Delete Hackathon
+        ng-disabled="controller.updateButtonDisabled">Delete Hackathon
+    </button>
+    <h4>Current Milestone</h4>
+    <select
+        class="form-control"
+        ng-model="controller.selectedHackathon.currentMilestoneClassName"
+        ng-options="milestone.name as milestone.name.replace(controller.milestoneBotPrefix, '') for milestone in controller.milestoneTeams"
+        ng-disabled="controller.userInterfaceDisabled">
+    </select>
+    <button class="btn btn-default"
+        ng-click="controller.onUpdate()"
+        ng-disabled="controller.updateButtonDisabled">Update Hackathon
     </button>
     <div class="spinner-container" ng-show="controller.makingCall">
         <div class="spinner"></div>

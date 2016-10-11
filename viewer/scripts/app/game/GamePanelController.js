@@ -24,6 +24,8 @@ class GamePanelController {
         this.hackathons = [];
         this.milestoneTeams = [];
 
+        this.currentMilestone = '';
+
         this.game = {
             map: this.maps.find(map => { return map.isDefault; }).value,
             teams: [],
@@ -43,6 +45,7 @@ class GamePanelController {
         this.teamService.getTeamsByHackathon(this.game.hackathonId).then(
             newTeams => {
                 this.teams = newTeams;
+                this.milestoneTeams = [];
                 this.milestoneService.getMilestones().then(activeMilestones => {
                     if (activeMilestones && activeMilestones.length) {
                         const milestoneNames = activeMilestones.map(milestone => {
@@ -78,6 +81,7 @@ class GamePanelController {
             hackathon => {
                 this.selectedHackathon = hackathon;
                 this.game.hackathonId = hackathon.id;
+                this.currentMilestone = hackathon.currentMilestoneClassName;
                 this.refreshTeams();
                 this.makingCall = false;
             },
@@ -87,7 +91,6 @@ class GamePanelController {
         );
         this.refreshHackathons();
     }
-
 
     refreshHackathons() {
         this.makingCall = true;
@@ -105,7 +108,14 @@ class GamePanelController {
     }
 
     onHackathonSelected() {
+        this.game.hackathonId = this.selectedHackathon.id;
+        this.currentMilestone = this.selectedHackathon.currentMilestoneClassName;
         this.refreshTeams();
+    }
+
+    playAgainstCurrentMilestone() {
+        this.game.teams.push(this.selectedHackathon.currentMilestoneClassName);
+        this.playGame();
     }
 
     playGame() {
@@ -119,6 +129,7 @@ class GamePanelController {
                 this.alert = Success;
             },
             error => {
+                this.game.teams = [];
                 this.makingCall = false;
                 this.alert = Error;
             }
@@ -141,8 +152,12 @@ class GamePanelController {
         return this.game.hackathonId && this.game.hackathonId === hackathon.id;
     }
 
-    get addButtonDisabled() {
-        return (this.game.map.length === 0) || (this.game.teams.length <= 1) || this.userInterfaceDisabled;
+    isCurrentMilestone(milestone) {
+        return this.currentMilestone && this.currentMilestone === milestone;
+    }
+
+    isButtonDisabled(minTeams) {
+        return (this.game.map.length === 0) || (this.game.teams.length < minTeams) || this.userInterfaceDisabled;
     }
 
     get userInterfaceDisabled() {

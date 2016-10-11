@@ -10,17 +10,12 @@
         <span class="input-group-addon">Hackathon</span>
         <select
             class="form-control"
-            ng-model="controller.game.hackathonId"
-            ng-options="hackathon.id as hackathon.name for hackathon in controller.hackathons"
+            ng-model="controller.selectedHackathon"
+            ng-options="hackathon as hackathon.name for hackathon in controller.hackathons track by hackathon.id"
             ng-disabled="controller.userInterfaceDisabled"
             ng-change="controller.onHackathonSelected()">
         </select>
     </div>
-    <hack-hackathon-selector
-        ng-model="controller.game.hackathonId"
-        ng-disabled="controller.userInterfaceDisabled"
-        on-change="controller.onHackathonSelected()">
-    </hack-hackathon-selector>
     <hr></hr>
     <div class="input-group">
         <span class="input-group-addon">Map</span>
@@ -39,9 +34,14 @@
             class="list-group-item"
             ng-class="{'active': controller.isTeamSelected(team)}"
             ng-repeat="team in controller.teams"
-            ng-click="controller.onTeamSelected(team)">{{team.name.replace(controller.milestoneBotPrefix, '')}}
+            ng-click="controller.onTeamSelected(team)">{{team.name}}
         </button>
     </div>
+    <button
+        class="btn btn-primary btn-block"
+        ng-disabled="controller.isButtonDisabled(1)"
+        ng-click="controller.playAgainstCurrentMilestone()">Play Against Current Milestone
+    </button>
     <h4>Milestones</h4>
     <div class="list-group-item" ng-if="controller.milestoneTeams.length === 0">No milestones found.</div>
     <div class="list-group">
@@ -50,13 +50,15 @@
             class="list-group-item"
             ng-class="{'active': controller.isTeamSelected(team)}"
             ng-repeat="team in controller.milestoneTeams"
-            ng-click="controller.onTeamSelected(team)">{{team.name.replace(controller.milestoneBotPrefix, '')}}
+            ng-click="controller.onTeamSelected(team)">
+            {{team.name.replace(controller.milestoneBotPrefix, '')}}
+            <span ng-if="controller.isCurrentMilestone(team.name)" class="glyphicon glyphicon-map-marker pull-right"></span>
         </button>
     </div>
     <button class="btn btn-default" ng-click="controller.refreshTeams()">Refresh Teams</button>
     <button
         class="btn btn-primary pull-right"
-        ng-disabled="controller.addButtonDisabled"
+        ng-disabled="controller.isButtonDisabled(2)"
         ng-click="controller.playGame()">Play Game
     </button>
     <div class="spinner-container" ng-show="controller.makingCall">
