@@ -53,4 +53,15 @@ public class HackathonStore {
         return Database.accessDatabase(dataAccessor -> dataAccessor.hackathonById.delete(id.toString()),
                 ex -> logger.error("Error deleting hackathon from database", ex));
     }
+
+    public Hackathon update(final UUID id, final String currentMilestoneClassName) {
+        Hackathon hackathon = getHackathon(id);
+        if (hackathon != null) {
+            if (currentMilestoneClassName != null) {
+                hackathon.setCurrentMilestoneClassName(currentMilestoneClassName);
+            }
+            hackathon = addHackathon(hackathon);
+        }
+        return hackathon;
+    }
 }

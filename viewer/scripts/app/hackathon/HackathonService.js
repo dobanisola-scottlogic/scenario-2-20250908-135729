@@ -40,6 +40,10 @@ class HackathonService {
     deleteHackathon(hackathon) {
         return this.$http.delete(`${this.apiPath}/hackathon/${hackathon.id}`).then(response => response.data);
     }
+
+    updateCurrentMilestone(hackathon, milestone) {
+        return this.$http.put(`${this.apiPath}/hackathon/${hackathon.id}`, milestone).then(response => response.data);
+    }
 }
 
 HackathonService.$inject = ['$http', '$q', 'API_PATH'];

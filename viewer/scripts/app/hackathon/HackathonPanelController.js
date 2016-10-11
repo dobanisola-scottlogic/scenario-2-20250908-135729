@@ -2,16 +2,20 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class HackathonPanelController {
-    constructor(hackathonService) {
+    constructor(hackathonService, milestoneService, milestoneBotPrefix) {
         this.hackathonService = hackathonService;
+        this.milestoneService = milestoneService;
+        this.milestoneBotPrefix = milestoneBotPrefix;
 
         this.hackathon = {
             name: ''
         };
 
         this.hackathons = [];
+        this.milestoneTeams = [];
 
         this.refreshHackathons();
+        this.refreshMilestones();
     }
 
     createHackathon() {
@@ -48,12 +52,42 @@ class HackathonPanelController {
         );
     }
 
+    refreshMilestones() {
+        this.makingCall = true;
+        this.milestoneService.getMilestones().then(activeMilestones => {
+            if (activeMilestones && activeMilestones.length) {
+                const milestoneNames = activeMilestones.map(milestone => {
+                    return {name: milestone.milestoneClassName.replace('.class', '')};
+                });
+                this.milestoneTeams.push(...milestoneNames);
+            }
+            this.makingCall = false;
+        },
+        () => {
+            this.makingCall = false;
+        });
+    }
+
     onHackathonSelected(selectedHackathon) {
         this.selectedHackathon = selectedHackathon;
     }
 
     isSelected(hackathon) {
         return this.selectedHackathon && this.selectedHackathon.id === hackathon.id;
+    }
+
+    onUpdate() {
+        this.makingCall = true;
+        this.hackathonService.updateCurrentMilestone(this.selectedHackathon, this.selectedHackathon.currentMilestoneClassName).then(
+            success => {
+                this.makingCall = false;
+                this.alert = Success;
+            },
+            () => {
+                this.makingCall = false;
+                this.alert = Error;
+            }
+        );
     }
 
     onDelete() {
@@ -77,7 +111,7 @@ class HackathonPanelController {
         return (this.hackathon.name.length === 0) || this.userInterfaceDisabled;
     }
 
-    get deleteButtonDisabled() {
+    get updateButtonDisabled() {
         return !this.selectedHackathon || this.userInterfaceDisabled;
     }
 
@@ -98,6 +132,6 @@ class HackathonPanelController {
     }
 }
 
-HackathonPanelController.$inject = ['HackathonService'];
+HackathonPanelController.$inject = ['HackathonService', 'MilestoneService', 'MILESTONE_BOT_PREFIX'];
 
 module.exports = HackathonPanelController;

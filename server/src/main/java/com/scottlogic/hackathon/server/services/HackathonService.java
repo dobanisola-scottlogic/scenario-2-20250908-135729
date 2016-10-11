@@ -25,6 +25,10 @@ public class HackathonService {
         return hackathonStore.addHackathon(new Hackathon(hackathon.getName()));
     }
 
+    public Hackathon updateHackathon(final UUID id, final String currentMilestoneClassName) {
+        return hackathonStore.update(id, currentMilestoneClassName);
+    }
+
     public List<Hackathon> getHackathons() {
         return hackathonStore.getHackathons();
     }

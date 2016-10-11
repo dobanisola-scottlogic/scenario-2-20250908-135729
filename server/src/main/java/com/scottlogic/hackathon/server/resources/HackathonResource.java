@@ -49,6 +49,16 @@ public class HackathonResource {
         return hackathonService.createHackathon(user, hackathon);
     }
 
+    @PUT
+    @Timed
+    @Path("/{id}")
+    @RolesAllowed(Authorizer.ROLE_ADMIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Hackathon updateHackathon(@PathParam("id") final UUID id, final String currentMilestoneClassName) {
+        return hackathonService.updateHackathon(id, currentMilestoneClassName);
+    }
+
     @GET
     @Timed
     @JsonView(Views.List.class)
