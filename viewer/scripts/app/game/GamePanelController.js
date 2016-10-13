@@ -2,7 +2,9 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class GamePanelController {
-    constructor(teamService, gameService, milestoneService, hackathonService, milestoneBotPrefix) {
+    constructor($scope, $rootScope, teamService, gameService, milestoneService, hackathonService, milestoneBotPrefix) {
+        this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.teamService = teamService;
         this.hackathonService = hackathonService;
         this.gameService = gameService;
@@ -32,7 +34,21 @@ class GamePanelController {
             hackathonId: ''
         };
 
+        this.initialiseWatchers();
         this.initialiseHackathons();
+    }
+
+    initialiseWatchers() {
+        let self = this;
+        this.$scope.$on('team:created', function(event, data) {
+            self.refreshTeams();
+        });
+        this.$scope.$on('hackathon:created', function(event, data) {
+            self.refreshHackathons();
+        });
+        this.$scope.$on('hackathon:updated', function(event, data) {
+            self.initialiseHackathons();
+        });
     }
 
     refreshAlerts() {
@@ -95,6 +111,8 @@ class GamePanelController {
     refreshHackathons() {
         this.makingCall = true;
 
+        this.hackathons = [];
+
         this.hackathonService.getHackathons().then(
             newHackathons => {
                 this.hackathons = newHackathons;
@@ -108,9 +126,11 @@ class GamePanelController {
     }
 
     onHackathonSelected() {
-        this.game.hackathonId = this.selectedHackathon.id;
-        this.currentMilestone = this.selectedHackathon.currentMilestoneClassName;
-        this.refreshTeams();
+        if (this.selectedHackathon) {
+            this.game.hackathonId = this.selectedHackathon.id;
+            this.currentMilestone = this.selectedHackathon.currentMilestoneClassName;
+            this.refreshTeams();
+        }
     }
 
     playAgainstCurrentMilestone() {
@@ -123,6 +143,7 @@ class GamePanelController {
 
         this.gameService.playGame(this.game).then(
             success => {
+                this.$rootScope.$broadcast('game:created', this.game);
                 this.game.map = this.maps.find(map => { return map.isDefault; }).value;
                 this.game.teams = [];
                 this.makingCall = false;
@@ -165,6 +186,6 @@ class GamePanelController {
     }
 }
 
-GamePanelController.$inject = ['TeamService', 'GameService', 'MilestoneService', 'HackathonService', 'MILESTONE_BOT_PREFIX'];
+GamePanelController.$inject = ['$scope', '$rootScope', 'TeamService', 'GameService', 'MilestoneService', 'HackathonService', 'MILESTONE_BOT_PREFIX'];
 
 module.exports = GamePanelController;

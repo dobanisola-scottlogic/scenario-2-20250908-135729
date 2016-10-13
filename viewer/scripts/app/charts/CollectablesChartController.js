@@ -3,16 +3,27 @@ let d3 = require('d3');
 let CHART = require('../../enums/chart.js');
 
 class CollectablesChartController {
-    constructor(engine) {
-        this.engine = engine;
+    constructor($rootScope, $scope, sharedPropertiesService) {
+        this.$rootScope = $rootScope;
+        this.$scope = $scope;
+        this.sharedPropertiesService = sharedPropertiesService;
+
         this.constants = CHART.COLLECTABLES;
         this.annotations = this.constants.ANNOTATIONS;
         this.colors = this.constants.COLORS;
         this.initialise();
+        this.initialiseWatchers();
+    }
+
+    initialiseWatchers() {
+        let self = this;
+        this.$scope.$on('phaseIndex:changed', function(event, data) {
+            self.render(data);
+        });
     }
 
     getData(phaseIndex) {
-        return this.engine.getPhaseState(phaseIndex).collectables.length;
+        return this.sharedPropertiesService.getEngine().getPhaseState(phaseIndex).collectables.length;
     }
 
     initialise() {
@@ -79,5 +90,7 @@ class CollectablesChartController {
             .call(this.chart);
     }
 }
+
+CollectablesChartController.$inject = ['$rootScope', '$scope', 'SharedPropertiesService'];
 
 module.exports = CollectablesChartController;

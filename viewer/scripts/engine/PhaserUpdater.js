@@ -8,8 +8,6 @@ let Cell = require('./models/Cell.js');
 
 let cellShifter = require('./utils/CellShifter.js');
 
-let ChartRenderer = require('../app/charts/ChartRenderer.js');
-
 /*
  * Phaser Update function:
  *
@@ -21,9 +19,9 @@ let ChartRenderer = require('../app/charts/ChartRenderer.js');
  *
  */
 class PhaserUpdater {
-    constructor(engine) {
+    constructor(engine, sharedPropertiesService) {
         this.engine = engine;
-        this.chartRenderer = new ChartRenderer(engine);
+        this.sharedPropertiesService = sharedPropertiesService;
         this.phaseIndex = 0;
         this.lastPhaseTime = new Date().getTime() - PHASER.SPEED.VALUES[PHASER.SPEED.DEFAULT_INDEX];
         this.update = this.update.bind(this);
@@ -32,15 +30,15 @@ class PhaserUpdater {
         // Freeze/loop the game if max phases reached
         if (this.phaseIndex === this.engine.getPhaseCount()) {
             if (this.engine.looped) {
-                this.engine.setGameOver(false);
+                this.sharedPropertiesService.setGameOver(false);
                 this.renderPhase(0, true);
             } else {
                 this.setPaused(true);
-                this.engine.onGameEnd();
+                this.sharedPropertiesService.onGameEnd();
             }
         }
         else {
-            this.engine.setGameOver(false);
+            this.sharedPropertiesService.setGameOver(false);
         }
 
         // Control rate of phase updates, limiting to PHASE_DELAY
@@ -61,7 +59,7 @@ class PhaserUpdater {
             this.destroyPlayers(deltaPhase.playersDestroyed);
             this.movePlayers(deltaPhase.playerMovement);
 
-            this.chartRenderer.render(this.phaseIndex);
+            this.sharedPropertiesService.setPhaseIndex(this.phaseIndex);
 
             this.phaseIndex ++;
         }
@@ -121,8 +119,6 @@ class PhaserUpdater {
                 this.engine.addSpawns(stateSpawns);
                 this.addCollectables(stateCollectables);
                 this.addPlayers(statePlayers);
-
-                this.chartRenderer.render(phase);
 
                 if (force) {
                     this.phaseIndex = phase + 1;

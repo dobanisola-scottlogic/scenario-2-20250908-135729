@@ -3,9 +3,9 @@ const { Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class BotPanelController {
-    constructor($scope, navigationBarService, botService) {
+    constructor($scope, loginService, botService) {
         this.$scope = $scope;
-        this.navigationBarService = navigationBarService;
+        this.loginService = loginService;
         this.botService = botService;
         this.setAlert = this.setAlert.bind(this);
 
@@ -102,10 +102,10 @@ class BotPanelController {
     }
 
     get isTeamUser() {
-        return this.navigationBarService.isAuthourised('TEAM');
+        return this.loginService.isAuthourised('TEAM');
     }
 }
 
-BotPanelController.$inject = ['$scope', 'NavigationBarService', 'BotService'];
+BotPanelController.$inject = ['$scope', 'LoginService', 'BotService'];
 
 module.exports = BotPanelController;

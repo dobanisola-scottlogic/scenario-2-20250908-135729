@@ -1,4 +1,4 @@
-class NavigationBarService {
+class LoginService {
     constructor($http, $q, $window, apiPath) {
         this.$http = $http;
         this.$q = $q;
@@ -37,6 +37,6 @@ class NavigationBarService {
     }
 }
 
-NavigationBarService.$inject = ['$http', '$q', '$window', 'API_PATH'];
+LoginService.$inject = ['$http', '$q', '$window', 'API_PATH'];
 
-module.exports = NavigationBarService;
+module.exports = LoginService;

@@ -1,5 +1,4 @@
 // Styles
-require('../styles/style.css');
 require('../styles/style.less');
 
 // JS
