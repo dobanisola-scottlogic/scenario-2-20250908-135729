@@ -13,6 +13,14 @@ class ViewerController {
         this.isPlaying = true;
         this.isControlsVisible = false;
         this.mouseOverControls = false;
+        this.endState = null;
+        this.initialiseWatchers();
+    }
+    initialiseWatchers() {
+        let self = this;
+        this.$scope.$on('gameOver', function(event, data) {
+            self.endState = self.sharedPropertiesService.getEngine().getGameEndState();
+        });
     }
     isLoaded() {
         return this.sharedPropertiesService.getEngine() !== null;

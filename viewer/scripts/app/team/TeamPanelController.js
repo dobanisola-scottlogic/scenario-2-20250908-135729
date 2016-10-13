@@ -2,8 +2,9 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class TeamPanelController {
-    constructor($scope, teamService, hackathonService, botService) {
+    constructor($scope, $rootScope, teamService, hackathonService, botService) {
         this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.teamService = teamService;
         this.hackathonService = hackathonService;
         this.botService = botService;
@@ -22,7 +23,15 @@ class TeamPanelController {
 
         this.updatePassword = '';
 
+        this.initialiseWatchers();
         this.initialiseHackathons();
+    }
+
+    initialiseWatchers() {
+        let self = this;
+        this.$scope.$on('hackathon:created', function(event, data) {
+            self.refreshHackathons();
+        });
     }
 
     refreshAlerts() {
@@ -147,6 +156,7 @@ class TeamPanelController {
         this.refreshAlerts();
         this.teamService.addTeam(this.newTeamDetails).then(
             success => {
+                this.$rootScope.$broadcast('team:created', this.newTeamDetails);
                 this.newTeamDetails.name = '';
                 this.newTeamDetails.password = '';
                 this.refreshTeams();
@@ -237,6 +247,6 @@ class TeamPanelController {
     }
 }
 
-TeamPanelController.$inject = ['$scope', 'TeamService', 'HackathonService', 'BotService'];
+TeamPanelController.$inject = ['$scope', '$rootScope', 'TeamService', 'HackathonService', 'BotService'];
 
 module.exports = TeamPanelController;

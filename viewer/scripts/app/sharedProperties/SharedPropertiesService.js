@@ -1,18 +1,23 @@
 class SharedPropertiesService {
-    constructor(milestoneBotPrefix) {
+    constructor($rootScope, milestoneBotPrefix) {
         this.milestoneBotPrefix = milestoneBotPrefix;
+        this.$rootScope = $rootScope;
         this.engine = null;
         this.liveMode = null;
         this.endState = null;
+        this.phaseIndex = null;
+        this.gameOver = null;
     }
     setEngine(engine) {
         this.engine = engine;
+        this.$rootScope.$broadcast('engine:set', engine);
     }
     getEngine() {
         return this.engine;
     }
     setLiveMode(liveMode) {
         this.liveMode = liveMode;
+        this.$rootScope.$broadcast('liveMode:set', liveMode);
     }
     getLiveMode() {
         return this.liveMode;
@@ -23,15 +28,22 @@ class SharedPropertiesService {
     getSelectedGame() {
         return this.selectedGame;
     }
+    setPhaseIndex(phaseIndex) {
+        this.phaseIndex = phaseIndex;
+        this.$rootScope.$broadcast('phaseIndex:changed', phaseIndex);
+    }
+    setGameOver(gameOver) {
+        this.gameOver = gameOver;
+    }
     getGameOver() {
-        let gameOver = this.engine && this.engine.getGameOver();
-        if (gameOver && this.endState !== this.engine.gameEndState) {
-            this.endState = this.engine.gameEndState;
-        }
-        return gameOver;
+        return this.gameOver;
+    }
+    onGameEnd() {
+        this.setGameOver(true);
+        this.$rootScope.$broadcast('gameOver');
     }
 }
 
-SharedPropertiesService.$inject = ['MILESTONE_BOT_PREFIX'];
+SharedPropertiesService.$inject = ['$rootScope', 'MILESTONE_BOT_PREFIX'];
 
 module.exports = SharedPropertiesService;

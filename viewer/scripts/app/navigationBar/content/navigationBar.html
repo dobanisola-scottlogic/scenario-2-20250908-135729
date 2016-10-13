@@ -4,38 +4,17 @@
       <a class="navbar-brand" href="#">Hackathon</a>
     </div>
     <div class="collapse navbar-collapse">
-      <ul ng-if="controller.showAvailableGames" class="nav navbar-nav">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Available Games <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-              <li><a ng-click="controller.enableLiveMode()" ng-class="{'selected': controller.sharedPropertiesService.getLiveMode()}">Live</a></li>
-              <li ng-if="controller.gamesList.length === 0"><a>No games found</a></li>
-              <li ng-repeat="game in controller.gamesList | orderBy:'-game.gameTime'" ng-click="controller.gameSelectedInDropdown(game)" ng-class="{'selected': game.id === controller.selectedGame.id}">
-                  <a href="#">
-                      <span>Map {{game.game.map.name}} - </span>
-                      <span ng-repeat="team in game.game.teams | orderBy: 'teamName'">{{team.teamName.replace(controller.milestoneBotPrefix, '')}}{{$last ? '' : ' vs '}}</span>
-                  </a>
-              </li>
-          </ul>
-        </li>
-      </ul>
-      <form class="login navbar-form navbar-right" ng-show="!controller.isLoggedIn" ng-submit="controller.login()">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Team name" ng-model="controller.credentials.username">
-          <input type="password" class="form-control" placeholder="Password" ng-model="controller.credentials.password">
-        </div>
-        <button type="submit" class="btn btn-default">Login</button>
-      </form>
-      <div ng-if="controller.isLoggedIn">
-        <hack-transclude></hack-transclude>
-      </div>
+      <hack-game-selector></hack-game-selector>
+      <hack-login></hack-login>
       <ul class="nav navbar-nav navbar-right" ng-if="controller.isLoggedIn">
         <li ng-if="controller.isAdmin"><a ng-href="#modal_{{hackathonDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-certificate" aria-hidden="true"></span> Hackathon</a></li>
         <li ng-if="controller.isAdmin"><a ng-href="#modal_{{gameDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-knight" aria-hidden="true"></span> Game</a></li>
         <li ng-if="controller.isAdmin"><a ng-href="#modal_{{teamDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Team</a></li>
         <li ng-if="!controller.isAdmin"><a ng-href="#modal_{{botDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Dashboard</a></li>
-        <li><a href="#" ng-click="controller.logout()">Log Out</a></li>
       </ul>
+      <div ng-if="controller.isLoggedIn">
+        <hack-transclude></hack-transclude>
+      </div>
     </div>
   </div>
 </nav>

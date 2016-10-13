@@ -2,7 +2,9 @@ const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
 class HackathonPanelController {
-    constructor(hackathonService, milestoneService, milestoneBotPrefix) {
+    constructor($scope, $rootScope, hackathonService, milestoneService, milestoneBotPrefix) {
+        this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.hackathonService = hackathonService;
         this.milestoneService = milestoneService;
         this.milestoneBotPrefix = milestoneBotPrefix;
@@ -22,6 +24,7 @@ class HackathonPanelController {
         this.makingCall = true;
         this.hackathonService.createHackathon(this.hackathon).then(
             success => {
+                this.$rootScope.$broadcast('hackathon:created');
                 this.hackathon.name = '';
                 this.refreshHackathons();
                 this.makingCall = false;
@@ -80,6 +83,7 @@ class HackathonPanelController {
         this.makingCall = true;
         this.hackathonService.updateCurrentMilestone(this.selectedHackathon, this.selectedHackathon.currentMilestoneClassName).then(
             success => {
+                this.$rootScope.$broadcast('hackathon:updated');
                 this.makingCall = false;
                 this.alert = Success;
             },
@@ -132,6 +136,6 @@ class HackathonPanelController {
     }
 }
 
-HackathonPanelController.$inject = ['HackathonService', 'MilestoneService', 'MILESTONE_BOT_PREFIX'];
+HackathonPanelController.$inject = ['$scope', '$rootScope', 'HackathonService', 'MilestoneService', 'MILESTONE_BOT_PREFIX'];
 
 module.exports = HackathonPanelController;

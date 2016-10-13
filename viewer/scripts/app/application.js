@@ -9,6 +9,8 @@ let navigationBarModule = require('./navigationBar/navigationBarModule');
 let containerModule = require('./container/containerModule');
 let hackathonModule = require('./hackathon/hackathonModule');
 let teamModule = require('./team/teamModule');
+let loginModule = require('./login/loginModule');
+let gameSelectorModule = require('./gameSelector/gameSelectorModule');
 let gameModule = require('./game/gameModule');
 let viewerModule = require('./viewer/viewerModule');
 let collectablesChartModule = require('./charts/collectablesChartModule');
@@ -29,7 +31,9 @@ let requires = [
     gameModule.name,
     viewerModule.name,
     scoreboardModule.name,
-    containerModule.name
+    containerModule.name,
+    loginModule.name,
+    gameSelectorModule.name
 ];
 
 let application = angular.module('hackathon', requires);

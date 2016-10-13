@@ -12,7 +12,7 @@ let Team = require('./models/Team.js');
 
 // Define engine constructor
 class Engine {
-    constructor(phaser, gameData, looped) {
+    constructor(phaser, gameData, looped, sharedPropertiesService) {
 
         // Save passed values
         this.gameData = gameData;
@@ -23,7 +23,7 @@ class Engine {
         this.phaserPreloader = new PhaserPreloader(this);
         this.phaserCreator = new PhaserCreator(this);
         this.phaserRenderer = new PhaserRenderer(this);
-        this.phaserUpdater = new PhaserUpdater(this);
+        this.phaserUpdater = new PhaserUpdater(this, sharedPropertiesService);
 
         // Construct phaser-game engine
         this.game = new phaser.Phaser.Game(
@@ -104,16 +104,6 @@ class Engine {
     }
     getCutoffCondition() {
         return this.gameData.constants.cutoffCondition;
-    }
-    onGameEnd() {
-        this.setGameOver(true);
-        this.gameEndState = this.getGameEndState();
-    }
-    setGameOver(gameOver) {
-        this.gameOver = gameOver;
-    }
-    getGameOver() {
-        return this.gameOver;
     }
     renderPhase(phaseIndex, force) {
         this.phaserUpdater.renderPhase(phaseIndex, force);

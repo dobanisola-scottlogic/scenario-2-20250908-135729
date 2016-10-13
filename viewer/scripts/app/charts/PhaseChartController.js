@@ -3,9 +3,25 @@ let fc = require('d3fc');
 let CHART = require('../../enums/chart.js');
 
 class PhaseChartController {
-    constructor(engine) {
-        this.engine = engine;
+    constructor($rootScope, $scope, sharedPropertiesService) {
+        this.$rootScope = $rootScope;
+        this.$scope = $scope;
+        this.sharedPropertiesService = sharedPropertiesService;
 
+        this.initialiseWatchers();
+    }
+
+    initialiseWatchers() {
+        let self = this;
+        this.$scope.$on('engine:set', function(event, engine) {
+            self.resetVariables(engine);
+            self.initialiseChart();
+        });
+        this.$scope.$on('phaseIndex:changed', function(event, data) {
+            self.render(data);
+        });
+    }
+    resetVariables(engine) {
         // Chart variables
         this.chart = null;
         this.xScale = null;
@@ -31,19 +47,17 @@ class PhaseChartController {
         this.highestPhaseRendered = 0;
 
         this.maxPhase = engine.getPhaseCount() - 1;
-
-        this.initialiseChart();
     }
     updatePhaseData(phaseIndex, forceUpdate) {
         if (phaseIndex === 0) {
             for (let index = 0; index < this.teamCount; index++) {
-                this.teamColours.push(this.engine.getTeamColour(this.phaseData[phaseIndex][index].owner).HEX);
+                this.teamColours.push(this.sharedPropertiesService.getEngine().getTeamColour(this.phaseData[phaseIndex][index].owner).HEX);
             }
 
             this.spawnDestroys.forEach(spawnDestroy => {
                 this.phaseData[phaseIndex].forEach(player => {
                     if (player.owner === spawnDestroy.owner) {
-                        spawnDestroy.HEX = this.engine.getTeamColour(player.owner).HEX;
+                        spawnDestroy.HEX = this.sharedPropertiesService.getEngine().getTeamColour(player.owner).HEX;
                     }
                 });
             });
@@ -132,12 +146,12 @@ class PhaseChartController {
     }
     brushingStarted() {
         this.brushed = true;
-        this.engine.setPaused(true);
+        this.sharedPropertiesService.getEngine().setPaused(true);
     }
     brushing() {
         let leftBrushPosition = this.brush.extent()[1] < this.maxPhase ? this.brush.extent()[1] : this.maxPhase;
         this.brush.extent([-1, leftBrushPosition]);
-        this.engine.renderPhase(Math.round(leftBrushPosition));
+        this.sharedPropertiesService.getEngine().renderPhase(Math.round(leftBrushPosition));
         this.renderChartToPhase(Math.round(leftBrushPosition));
     }
     brushingEnded() {
@@ -145,10 +159,10 @@ class PhaseChartController {
         let leftBrushPosition = this.brush.extent()[1] < this.maxPhase ? this.brush.extent()[1] : this.maxPhase;
         leftBrushPosition = this.brush.extent()[1] > minPhase ? this.brush.extent()[1] : minPhase;
         this.brush.extent([-1, leftBrushPosition]);
-        this.engine.renderPhase(Math.round(leftBrushPosition), true);
+        this.sharedPropertiesService.getEngine().renderPhase(Math.round(leftBrushPosition), true);
         this.renderChartToPhase(Math.round(leftBrushPosition));
         this.brushed = false;
-        this.engine.setPaused(false);
+        this.sharedPropertiesService.getEngine().setPaused(false);
     }
     initialiseChart() {
         d3.select(CHART.PHASE.SELECTOR)
@@ -232,11 +246,11 @@ class PhaseChartController {
             });
     }
     initialiseData() {
-        this.teamCount = Object.keys(this.engine.getTeams()).length;
+        this.teamCount = Object.keys(this.sharedPropertiesService.getEngine().getTeams()).length;
 
         // Get all the phase data
         for (let index = 0; index <= this.maxPhase; index++) {
-            let teamInfo = this.engine.getPhaseTeamInfo(index);
+            let teamInfo = this.sharedPropertiesService.getEngine().getPhaseTeamInfo(index);
             this.phaseData.push(teamInfo);
 
             if (index > 0) {
@@ -308,5 +322,7 @@ class PhaseChartController {
             .attr('y', 0);
     }
 }
+
+PhaseChartController.$inject = ['$rootScope', '$scope', 'SharedPropertiesService'];
 
 module.exports = PhaseChartController;

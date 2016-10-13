@@ -10,9 +10,9 @@
             <div class="circle blink"></div>
         </div>
         <div id="cutoffCondition" ng-if="controller.sharedPropertiesService.getGameOver()">
-            <h1>Game Over. {{controller.sharedPropertiesService.endState.cutoffCondition}}</h1>
+            <h1>Game Over. {{controller.endState.cutoffCondition}}</h1>
             <ul>
-                <li ng-repeat="teamStat in controller.sharedPropertiesService.endState.teamStats | orderBy:['-players','-spawnPoint','name']">
+                <li ng-repeat="teamStat in controller.endState.teamStats | orderBy:['-players','-spawnPoint','name']">
                     <span ng-style="controller.getColour(teamStat.botId)">{{teamStat.name.replace(controller.milestoneBotPrefix, '')}}</span> - <span>{{teamStat.players}}</span> players remaining.
                 </li>
             </ul>
