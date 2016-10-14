@@ -53,6 +53,10 @@ class TeamPanelController {
         );
     }
 
+    onBotUpload(bot) {
+        this.refreshBots();
+    }
+
     refreshBots() {
         this.makingCall = true;
 

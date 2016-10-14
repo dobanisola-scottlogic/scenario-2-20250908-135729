@@ -53,7 +53,12 @@ public class BotResource {
             name = teamName.orNull();
         }
         final Team team = teamService.getTeam(name);
-        return botService.addBot(team, botClassName, inputStream);
+        if (user.isAdmin()) {
+            return botService.addBot(team, botClassName, inputStream);
+        }
+        else {
+            return botService.addTeamBot(user, team, botClassName, inputStream);
+        }
     }
 
     @GET

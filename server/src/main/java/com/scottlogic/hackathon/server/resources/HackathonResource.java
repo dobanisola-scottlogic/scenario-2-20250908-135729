@@ -8,6 +8,7 @@ import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.GameResult;
 import com.scottlogic.hackathon.server.models.Hackathon;
+import com.scottlogic.hackathon.server.models.HackathonUpdate;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.Views;
 import com.scottlogic.hackathon.server.services.GameService;
@@ -55,8 +56,8 @@ public class HackathonResource {
     @RolesAllowed(Authorizer.ROLE_ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Hackathon updateHackathon(@PathParam("id") final UUID id, final String currentMilestoneClassName) {
-        return hackathonService.updateHackathon(id, currentMilestoneClassName);
+    public Hackathon updateHackathon(@PathParam("id") final UUID id, final HackathonUpdate hackathonUpdate) {
+        return hackathonService.updateHackathon(id, hackathonUpdate);
     }
 
     @GET

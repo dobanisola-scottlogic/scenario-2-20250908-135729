@@ -3,6 +3,9 @@ package com.scottlogic.hackathon.server.services;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.server.authentication.User;
+import com.scottlogic.hackathon.server.models.GameConfiguration;
+import com.scottlogic.hackathon.server.models.Hackathon;
+import com.scottlogic.hackathon.server.models.MilestoneBot;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.UploadedBot;
 import com.scottlogic.hackathon.server.services.stores.ActiveBot;
@@ -11,21 +14,57 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BotService {
     private final Logger logger;
     private final BotStore botStore;
     private final TeamService teamService;
+    private final GameService gameService;
+    private final MilestoneService milestoneService;
+    private final HackathonService hackathonService;
 
     @Inject
-    public BotService(final BotStore botStore, final TeamService teamService) {
+    public BotService(final BotStore botStore,
+                      final TeamService teamService,
+                      final GameService gameService,
+                      final MilestoneService milestoneService,
+                      final HackathonService hackathonService) {
         logger = LoggerFactory.getLogger(this.getClass().getName());
         this.botStore = botStore;
         this.teamService = teamService;
+        this.gameService = gameService;
+        this.milestoneService = milestoneService;
+        this.hackathonService = hackathonService;
+    }
+
+    public UploadedBot addTeamBot(final User user, final Team team, final String botClassName, final InputStream inputStream) {
+        UploadedBot uploadedBot = this.addBot(team, botClassName, inputStream);
+        UploadedBot result = null;
+
+        if (uploadedBot != null) {
+            if (botStore.setActiveBot(uploadedBot) != null) {
+                result = uploadedBot;
+            }
+
+            Hackathon hackathon = hackathonService.getHackathon(team.getHackathonId());
+
+            GameConfiguration gameConfiguration = new GameConfiguration(
+                    new HashSet<String>(Arrays.asList(team.getName(), hackathon.getCurrentMilestoneClassName())),
+                    hackathon.getCurrentMilestoneMap(),
+                    hackathon.getId()
+            );
+
+            gameService.playGame(user, gameConfiguration, createTeamBotMap(user, gameConfiguration));
+        }
+
+        return result;
     }
 
     public UploadedBot addBot(final Team team, final String botClassName, final InputStream inputStream) {
@@ -129,5 +168,46 @@ public class BotService {
         }
 
         return result;
+    }
+
+    public java.util.Map<Team, Bot> createTeamBotMap(final User user, final GameConfiguration gameConfiguration) {
+        final java.util.Map<UUID, UploadedBot> activeUploadedBots = this
+                .getActiveBots(user)
+                .stream()
+                .collect(Collectors.toMap(uploadedBot -> uploadedBot.getTeamId(), Function.identity()));
+
+        final java.util.Map<String, MilestoneBot> milestoneBots = milestoneService
+                .getMilestones()
+                .stream()
+                .collect(Collectors.toMap(milestoneBot -> milestoneBot.getMilestoneClassName(), Function.identity()));
+
+        final java.util.Map<String, Team> teams = gameConfiguration
+                .getTeams()
+                .stream()
+                .collect(Collectors.toMap(Function.identity(), teamName -> {
+                    if (teamName.startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
+                        Team adminTeam = new Team();
+                        adminTeam.setName(teamName);
+                        return adminTeam;
+                    } else {
+                        return teamService.getTeam(teamName);
+                    }
+                }));
+
+        final java.util.Map<Team, Bot> teamBots = teams.values()
+                .stream()
+                .filter(team -> team != null)
+                .collect(Collectors.toMap(Function.identity(), team -> {
+                    if (team.getName().startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
+                        final MilestoneBot milestoneBot = milestoneBots.get(team.getName());
+                        return milestoneBot.getBot();
+                    } else {
+                        final UploadedBot uploadedBot = activeUploadedBots.get(team.getId());
+                        return uploadedBot.getBot();
+                    }
+                }));
+
+
+        return teamBots;
     }
 }

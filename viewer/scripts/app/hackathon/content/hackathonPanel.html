@@ -23,12 +23,27 @@
         ng-disabled="controller.updateButtonDisabled">Delete Hackathon
     </button>
     <h4>Current Milestone</h4>
-    <select
-        class="form-control"
-        ng-model="controller.selectedHackathon.currentMilestoneClassName"
-        ng-options="milestone.name as milestone.name.replace(controller.milestoneBotPrefix, '') for milestone in controller.milestoneTeams"
-        ng-disabled="controller.userInterfaceDisabled">
-    </select>
+    <br>
+    <div class="input-group">
+        <span class="input-group-addon">Map</span>
+        <select
+            class="form-control"
+            ng-model="controller.selectedHackathon.currentMilestoneClassName"
+            ng-options="milestone.name as milestone.name.replace(controller.milestoneBotPrefix, '') for milestone in controller.milestoneTeams"
+            ng-disabled="controller.userInterfaceDisabled">
+        </select>
+    </div>
+    <br>
+    <div class="input-group">
+        <span class="input-group-addon">Bot</span>
+        <select
+            class="form-control"
+            ng-model="controller.selectedHackathon.currentMilestoneMap"
+            ng-options="map.value as map.display for map in controller.maps"
+            ng-disabled="controller.userInterfaceDisabled">
+        </select>
+    </div>
+    <br>
     <button class="btn btn-default"
         ng-click="controller.onUpdate()"
         ng-disabled="controller.updateButtonDisabled">Update Hackathon

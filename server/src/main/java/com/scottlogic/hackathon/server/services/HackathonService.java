@@ -3,6 +3,7 @@ package com.scottlogic.hackathon.server.services;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.Hackathon;
+import com.scottlogic.hackathon.server.models.HackathonUpdate;
 import com.scottlogic.hackathon.server.services.stores.HackathonStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,8 @@ public class HackathonService {
         return hackathonStore.addHackathon(new Hackathon(hackathon.getName()));
     }
 
-    public Hackathon updateHackathon(final UUID id, final String currentMilestoneClassName) {
-        return hackathonStore.update(id, currentMilestoneClassName);
+    public Hackathon updateHackathon(final UUID id, final HackathonUpdate hackathonUpdate) {
+        return hackathonStore.update(id, hackathonUpdate);
     }
 
     public List<Hackathon> getHackathons() {

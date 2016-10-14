@@ -1,5 +1,6 @@
 const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
+const Maps = require('../maps/MapOptions');
 
 class GamePanelController {
     constructor($scope, $rootScope, teamService, gameService, milestoneService, hackathonService, milestoneBotPrefix) {
@@ -11,16 +12,7 @@ class GamePanelController {
         this.milestoneService = milestoneService;
         this.milestoneBotPrefix = milestoneBotPrefix;
 
-        // These map names are a direct analogue of the file names found in the 'game-engine/src/resources/maps' directory.
-        // Hard-coded for now as there is currently no map service.
-        function MapOption(display, value, isDefault) {
-            return {display, value, isDefault};
-        }
-        this.maps = [new MapOption('Very Easy', 'VeryEasy'),
-            new MapOption('Easy', 'Easy', true),
-            new MapOption('Medium', 'Medium'),
-            new MapOption('Large Medium', 'LargeMedium'),
-            new MapOption('Hard', 'Hard')];
+        this.maps = Maps;
 
         this.teams = [];
         this.hackathons = [];

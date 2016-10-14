@@ -29,9 +29,7 @@ public class GameService {
         this.gameFactory = gameFactory;
     }
 
-
-    public GameResult playGame(final User user, final GameConfiguration gameConfiguration) {
-        final Map<Team, Bot> teamBotMap = gameFactory.createTeamBots(user, gameConfiguration);
+    public GameResult playGame(final User user, final GameConfiguration gameConfiguration, Map<Team, Bot> teamBotMap) {
         final Game game = gameFactory.create(teamBotMap, gameConfiguration);
         GameResult gameResult = null;
         if (game != null) {

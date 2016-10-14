@@ -39,8 +39,8 @@ class BotService {
 
     makeActive(bot) {
         let activeBot = {
-            teamId: bot.teamId,
-            botId: bot.id
+            teamId: bot ? bot.teamId : null,
+            botId: bot ? bot.id : null
         };
 
         return this.$http.put(`${this.apiPath}/bot/active`, activeBot).then(response => response.data);

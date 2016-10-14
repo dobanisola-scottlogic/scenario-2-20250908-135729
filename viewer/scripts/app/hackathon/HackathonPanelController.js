@@ -1,5 +1,6 @@
 const { Success, Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
+const Maps = require('../maps/MapOptions');
 
 class HackathonPanelController {
     constructor($scope, $rootScope, hackathonService, milestoneService, milestoneBotPrefix) {
@@ -12,6 +13,8 @@ class HackathonPanelController {
         this.hackathon = {
             name: ''
         };
+
+        this.maps = Maps;
 
         this.hackathons = [];
         this.milestoneTeams = [];
@@ -81,7 +84,11 @@ class HackathonPanelController {
 
     onUpdate() {
         this.makingCall = true;
-        this.hackathonService.updateCurrentMilestone(this.selectedHackathon, this.selectedHackathon.currentMilestoneClassName).then(
+        let milestoneUpdate = {
+            milestoneClassName: this.selectedHackathon.currentMilestoneClassName,
+            milestoneMap: this.selectedHackathon.currentMilestoneMap
+        };
+        this.hackathonService.updateCurrentMilestone(this.selectedHackathon, milestoneUpdate).then(
             success => {
                 this.$rootScope.$broadcast('hackathon:updated');
                 this.makingCall = false;
