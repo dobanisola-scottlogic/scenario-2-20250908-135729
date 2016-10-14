@@ -44,6 +44,10 @@ class BotPanelController {
         return this.selectedBot && this.selectedBot.id === bot.id;
     }
 
+    onBotUpload(bot) {
+        this.refresh();
+    }
+
     onBotSelected(bot) {
         this.selectedBot = bot;
     }

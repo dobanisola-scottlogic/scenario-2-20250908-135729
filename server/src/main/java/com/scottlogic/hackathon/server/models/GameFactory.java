@@ -3,75 +3,27 @@ package com.scottlogic.hackathon.server.models;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
-import com.scottlogic.hackathon.server.authentication.User;
-import com.scottlogic.hackathon.server.services.BotService;
 import com.scottlogic.hackathon.server.services.MilestoneService;
 import com.scottlogic.hackathon.server.services.TeamService;
-import com.scottlogic.hackathon.server.models.MilestoneBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GameFactory {
     private final TeamService teamService;
-    private final BotService botService;
     private final MilestoneService milestoneService;
     private final Logger logger;
 
     @Inject
     public GameFactory(
             final TeamService teamService,
-            final BotService botService,
             final MilestoneService milestoneService) {
         this.teamService = teamService;
-        this.botService = botService;
         this.milestoneService = milestoneService;
         logger = LoggerFactory.getLogger(this.getClass().getName());
-    }
-
-    public java.util.Map<Team, Bot> createTeamBots(final User user, final GameConfiguration gameConfiguration) {
-        final java.util.Map<UUID, UploadedBot> activeUploadedBots = botService
-                .getActiveBots(user)
-                .stream()
-                .collect(Collectors.toMap(uploadedBot -> uploadedBot.getTeamId(), Function.identity()));
-
-        final java.util.Map<String, MilestoneBot> milestoneBots = milestoneService
-                .getMilestones()
-                .stream()
-                .collect(Collectors.toMap(milestoneBot -> milestoneBot.getMilestoneClassName(), Function.identity()));
-
-        final java.util.Map<String, Team> teams = gameConfiguration
-                .getTeams()
-                .stream()
-                .collect(Collectors.toMap(Function.identity(), teamName -> {
-                    if (teamName.startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
-                        Team adminTeam = new Team();
-                        adminTeam.setName(teamName);
-                        return adminTeam;
-                    } else {
-                        return teamService.getTeam(teamName);
-                    }
-                }));
-
-        final java.util.Map<Team, Bot> teamBots = teams.values()
-                .stream()
-                .filter(team -> team != null)
-                .collect(Collectors.toMap(Function.identity(), team -> {
-                    if (team.getName().startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
-                        final MilestoneBot milestoneBot = milestoneBots.get(team.getName());
-                        return milestoneBot.getBot();
-                    } else {
-                        final UploadedBot uploadedBot = activeUploadedBots.get(team.getId());
-                        return uploadedBot.getBot();
-                    }
-                }));
-
-
-        return teamBots;
     }
 
     public Game create(final java.util.Map<Team, Bot> teamBotMap, final GameConfiguration gameConfiguration) {

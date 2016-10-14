@@ -38,7 +38,7 @@
     </form>
     <hr></hr>
     <hack-bot-upload
-        on-upload="controller.refreshBots()"
+        on-upload="controller.onBotUpload(bot)"
         is-admin-user="true"
         select-file-disabled="controller.selectFileDisabled"
         team-name="{{controller.selectedTeam.name}}">

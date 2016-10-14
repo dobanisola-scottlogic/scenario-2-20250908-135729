@@ -33,12 +33,14 @@ class BotUploadController {
         }
     }
 
-    upload(className) {
-        if (this.$scope.isAdminUser) {
-            this.uploadBotAsAdmin(className);
-        }
-        else {
-            this.uploadBot(className);
+    upload() {
+        if (this.selectedBotInCurrentFile) {
+            if (this.$scope.isAdminUser) {
+                this.uploadBotAsAdmin();
+            }
+            else {
+                this.uploadBot();
+            }
         }
     }
 
@@ -46,10 +48,10 @@ class BotUploadController {
         this.makingCall = true;
         this.refreshAlerts();
         this.botService.uploadBot(this.selectedBotInCurrentFile, this.file).then(
-            () => {
+            bot => {
                 this.file = null;
                 this.botsInCurrentFile = [];
-                this.$scope.onUpload();
+                this.$scope.onUpload({bot});
                 this.makingCall = false;
             },
             () => {
@@ -63,10 +65,10 @@ class BotUploadController {
         this.makingCall = true;
         this.refreshAlerts();
         this.botService.uploadBotAsAdmin(this.selectedBotInCurrentFile, this.$scope.teamName, this.file).then(
-            () => {
+            bot => {
                 this.file = null;
                 this.botsInCurrentFile = [];
-                this.$scope.onUpload();
+                this.$scope.onUpload({bot});
                 this.makingCall = false;
             },
             () => {

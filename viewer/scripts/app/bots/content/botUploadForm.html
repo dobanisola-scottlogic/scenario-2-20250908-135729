@@ -16,5 +16,8 @@
                 ng-disabled="selectFileDisabled()">Select File
             </button>
         </span>
+    </div>
+    <h5 class="uploadedFileName"><small>{{controller.uploadedFileName}}</small></h5>
+    <div class="spinner-container" ng-show="controller.makingCall">
+        <div class="spinner"></div>
 </div>
-<h5 class="uploadedFileName"><small>{{controller.uploadedFileName}}</small></h5></div>

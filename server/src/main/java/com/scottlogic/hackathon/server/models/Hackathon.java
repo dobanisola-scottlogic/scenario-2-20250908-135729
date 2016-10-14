@@ -19,6 +19,7 @@ public class Hackathon {
     @JsonView(Views.List.class)
     private List<Team> teams;
     private String currentMilestoneClassName;
+    private String currentMilestoneMap;
 
     public Hackathon() {
     }
@@ -28,6 +29,7 @@ public class Hackathon {
         this.key = this.id.toString();
         this.name = name;
         this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "DefaultBot";
+        this.currentMilestoneMap = "Easy";
     }
 
     public String getName() {
@@ -60,5 +62,13 @@ public class Hackathon {
 
     public void setCurrentMilestoneClassName(String milestoneClassName){
         this.currentMilestoneClassName = milestoneClassName;
+    }
+
+    public String getCurrentMilestoneMap() {
+        return currentMilestoneMap;
+    }
+
+    public void setCurrentMilestoneMap(String map) {
+        this.currentMilestoneMap = map;
     }
 }

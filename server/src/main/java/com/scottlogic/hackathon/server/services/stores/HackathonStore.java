@@ -2,6 +2,7 @@ package com.scottlogic.hackathon.server.services.stores;
 
 import com.scottlogic.hackathon.server.database.Database;
 import com.scottlogic.hackathon.server.models.Hackathon;
+import com.scottlogic.hackathon.server.models.HackathonUpdate;
 import com.sleepycat.persist.EntityCursor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +55,14 @@ public class HackathonStore {
                 ex -> logger.error("Error deleting hackathon from database", ex));
     }
 
-    public Hackathon update(final UUID id, final String currentMilestoneClassName) {
+    public Hackathon update(final UUID id, final HackathonUpdate hackathonUpdate) {
         Hackathon hackathon = getHackathon(id);
         if (hackathon != null) {
-            if (currentMilestoneClassName != null) {
-                hackathon.setCurrentMilestoneClassName(currentMilestoneClassName);
+            if (hackathonUpdate.getMilestoneClassName() != null) {
+                hackathon.setCurrentMilestoneClassName(hackathonUpdate.getMilestoneClassName());
+            }
+            if (hackathonUpdate.getMilestoneMap() != null) {
+                hackathon.setCurrentMilestoneMap(hackathonUpdate.getMilestoneMap());
             }
             hackathon = addHackathon(hackathon);
         }
