@@ -10,6 +10,7 @@ import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.UploadedBot;
 import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import com.scottlogic.hackathon.server.services.stores.BotStore;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BotService {
     private final Logger logger;
@@ -76,20 +78,20 @@ public class BotService {
 
         final Bot validBot = uploadedBot.getBot();
         if (validBot != null) {
-            result = botStore.saveBot(uploadedBot);
+            result = botStore.saveOrUpdate(uploadedBot);
         }
 
         return result;
     }
 
     public UploadedBot getBot(final UUID id) {
-        return botStore.getBot(id);
+        return botStore.get(id);
     }
 
     public List<UploadedBot> getUploadedBots(final User user) {
         final List<UploadedBot> allVisibleBots;
         if (user.isAdmin()) {
-            allVisibleBots = botStore.getUploadedBots();
+            allVisibleBots = botStore.list();
         } else {
             allVisibleBots = this.getUploadedBots(user.getName());
         }
@@ -98,7 +100,7 @@ public class BotService {
 
     public List<UploadedBot> getUploadedBots(final String userName) {
         final Team team = teamService.getTeam(userName);
-        return botStore.getUploadedBots(team);
+        return botStore.list(Restrictions.eq("teamId", team.getId().toString()));
     }
 
 
@@ -106,7 +108,7 @@ public class BotService {
         boolean result = false;
 
         if (userCanAccessBot(user, id)) {
-            result = botStore.deleteUploadedBot(id);
+            result = botStore.delete(id);
         }
 
         return result;
@@ -119,7 +121,7 @@ public class BotService {
             result = true;
         } else if (user.isTeam()) {
             final Team team = teamService.getTeam(user.getName());
-            final UploadedBot uploadedBot = botStore.getBot(id);
+            final UploadedBot uploadedBot = botStore.get(id);
 
             if (uploadedBot != null && team.getId().equals(uploadedBot.getTeamId())) {
                 result = true;
@@ -130,17 +132,19 @@ public class BotService {
     }
 
     public List<UploadedBot> getActiveBots(final User user) {
-        List<UploadedBot> visibleActiveBots = botStore.getActiveBots();
+        Stream<UploadedBot> activeBots = botStore.list(Restrictions.eq("active", true)).stream();
 
         if (user.isTeam()) {
             final UUID teamId = teamService.getTeam(user.getName()).getId();
 
-            visibleActiveBots = visibleActiveBots.stream()
-                    .filter(uploadedBot -> uploadedBot.getTeamId().equals(teamId))
-                    .collect(Collectors.toList());
+            activeBots = activeBots
+                    .filter(activeBot -> activeBot.getTeamId().equals(teamId));
         }
 
-        return Collections.unmodifiableList(visibleActiveBots);
+        final List<UploadedBot> bots = activeBots
+                .collect(Collectors.toList());
+
+        return Collections.unmodifiableList(bots);
     }
 
     public UploadedBot setActiveBot(final User user, final ActiveBot activeBot) {

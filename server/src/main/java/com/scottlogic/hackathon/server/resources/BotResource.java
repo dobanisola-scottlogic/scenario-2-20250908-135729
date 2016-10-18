@@ -12,6 +12,7 @@ import com.scottlogic.hackathon.server.services.BotService;
 import com.scottlogic.hackathon.server.services.TeamService;
 import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import io.dropwizard.auth.Auth;
+import io.dropwizard.hibernate.UnitOfWork;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
@@ -40,6 +41,7 @@ public class BotResource {
     }
 
     @POST
+    @UnitOfWork
     @Path("{botClassName}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,6 +64,7 @@ public class BotResource {
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
     public List<UploadedBot> getUploadedBots(@Auth final User user,
@@ -77,6 +80,7 @@ public class BotResource {
     }
 
     @DELETE
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
@@ -85,6 +89,7 @@ public class BotResource {
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @Path("/active")
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
@@ -93,6 +98,7 @@ public class BotResource {
     }
 
     @PUT
+    @UnitOfWork
     @Timed
     @Path("/active")
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})

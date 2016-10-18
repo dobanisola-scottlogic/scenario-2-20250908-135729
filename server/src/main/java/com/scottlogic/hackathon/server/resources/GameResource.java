@@ -15,6 +15,7 @@ import com.scottlogic.hackathon.server.models.Views;
 import com.scottlogic.hackathon.server.services.BotService;
 import com.scottlogic.hackathon.server.services.GameService;
 import io.dropwizard.auth.Auth;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -41,15 +42,17 @@ public class GameResource {
     }
 
     @POST
+    @UnitOfWork
     @Timed
     @RolesAllowed(Authorizer.ROLE_ADMIN)
-    @JsonView(Views.Details.class)
+    @JsonView(Views.List.class)
     public GameResult playGame(@Auth final User user, final GameConfiguration gameConfiguration) {
         final Map<Team, Bot> teamBotMap = botService.createTeamBotMap(user, gameConfiguration);
         return gameService.playGame(user, gameConfiguration, teamBotMap);
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @JsonView(Views.List.class)
     public List<GameResult> getGameResults(@QueryParam("hackathonId") Optional<UUID> hackathonId) {
@@ -60,6 +63,7 @@ public class GameResource {
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @JsonView(Views.Details.class)

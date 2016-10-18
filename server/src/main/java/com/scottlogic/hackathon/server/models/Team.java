@@ -1,28 +1,28 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
 import io.dropwizard.auth.basic.BasicCredentials;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
 public class Team {
-    @PrimaryKey
-    private String key;
+    @Id
     private UUID id;
 
-    @SecondaryKey(relate = Relationship.ONE_TO_ONE)
     @NotNull
+    @Column(unique = true)
     private String name;
     private String password;
-
-    @SecondaryKey(relate = Relationship.MANY_TO_ONE)
-    private String hackathonKey;
     private UUID hackathonId;
+
+    public Team() {
+    }
+
+    public Team(final UUID id) {
+        this.id = id;
+    }
 
     public UUID getId() {
         return id;
@@ -30,7 +30,6 @@ public class Team {
 
     public void setId(final UUID id) {
         this.id = id;
-        this.key = id.toString();
     }
 
     public String getName() {
@@ -55,6 +54,5 @@ public class Team {
 
     public void setHackathonId(final UUID hackathonId) {
         this.hackathonId = hackathonId;
-        this.hackathonKey = hackathonId.toString();
     }
 }

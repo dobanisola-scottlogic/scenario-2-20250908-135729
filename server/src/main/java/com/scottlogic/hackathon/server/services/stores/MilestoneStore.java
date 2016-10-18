@@ -1,59 +1,40 @@
 package com.scottlogic.hackathon.server.services.stores;
 
-import com.scottlogic.hackathon.server.database.Database;
+import com.google.inject.Inject;
+import com.scottlogic.hackathon.server.HackathonConfiguration;
 import com.scottlogic.hackathon.server.models.MilestoneBot;
-import com.sleepycat.persist.EntityCursor;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.context.internal.ManagedSessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-public class MilestoneStore {
+public class MilestoneStore extends AbstractStore<MilestoneBot> {
     private final Logger logger;
+    SessionFactory sessionFactory;
 
-    public MilestoneStore() {
-        logger = LoggerFactory.getLogger(this.getClass().getName());
+    @Inject
+    public MilestoneStore(final SessionFactory sessionFactory,
+                          final HackathonConfiguration hackathonConfiguration) {
+        super(sessionFactory);
+        this.logger = LoggerFactory.getLogger(this.getClass().getName());
+        this.sessionFactory = sessionFactory;
+        initialise(hackathonConfiguration.getMilestoneBots());
     }
 
-    public MilestoneBot saveMilestone(final MilestoneBot milestoneBot) {
-        return Database.accessDatabase(dataAccessor -> {
-                    dataAccessor.milestoneById.put(milestoneBot);
-                    return milestoneBot;
-                },
-                ex -> logger.error("Error saving Milestone to database", ex));
-    }
-
-    public MilestoneBot getMilestone(final UUID id) {
-        return Database.accessDatabase(dataAccessor -> dataAccessor.milestoneById.get(id.toString()),
-                ex -> logger.error("Error getting Milestone from database", ex));
-    }
-
-    public List<MilestoneBot> getMilestones() {
-        List<MilestoneBot> milestoneResults = Database.accessDatabase(dataAccessor -> {
-                    final EntityCursor<MilestoneBot> items = dataAccessor.milestoneById.entities();
-
-                    final List<MilestoneBot> itemsList = StreamSupport.stream(items.spliterator(), false)
-                            .collect(Collectors.toList());
-                    items.close();
-                    return itemsList;
-                },
-                ex -> logger.error("Error retrieving uploaded milestones from database", ex));
-
-        if (milestoneResults == null) {
-            milestoneResults = new ArrayList<>();
-        }
-
-        return Collections.unmodifiableList(milestoneResults);
-    }
-
-    public boolean deleteMilestone(final UUID id) {
-        return Database.accessDatabase(dataAccessor -> dataAccessor.milestoneById.delete(id.toString()),
-                ex -> logger.error("Error deleting milestone from database", ex));
+    public void initialise(List<MilestoneBot> milestoneBots) {
+        Session currentSession = sessionFactory.openSession();
+        ManagedSessionContext.bind(currentSession);
+        currentSession.beginTransaction();
+        list().forEach(milestoneBot -> delete(milestoneBot.getId()));
+        milestoneBots.forEach(milestoneBot -> saveOrUpdate(milestoneBot));
+        ManagedSessionContext.unbind(sessionFactory);
+        currentSession.getTransaction().commit();
+        currentSession.close();
     }
 
 }

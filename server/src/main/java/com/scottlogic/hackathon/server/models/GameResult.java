@@ -1,27 +1,34 @@
 package com.scottlogic.hackathon.server.models;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scottlogic.hackathon.game.CutoffCondition;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
 
-import java.util.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
 public class GameResult {
-    @PrimaryKey
-    private String key;
+    @Id
     private UUID id;
-    private Game game;
+    @JsonRawValue
+    @Column(columnDefinition = "TEXT")
+    private String game;
     @JsonView(Views.Details.class)
-    private Set<SpawnPoint> spawnPoints;
+    @JsonRawValue
+    @Column(columnDefinition = "TEXT")
+    private String spawnPoints;
     @JsonView(Views.Details.class)
-    private List<PhaseResult> phaseResults;
-    @SecondaryKey(relate = Relationship.MANY_TO_ONE)
-    private String hackathonKey;
+    @JsonRawValue
+    @Column(columnDefinition = "TEXT")
+    private String phaseResults;
     private UUID hackathonId;
     private CutoffCondition cutoffCondition;
 
@@ -29,59 +36,71 @@ public class GameResult {
     }
 
     GameResult(final UUID id,
-               final Game game,
-               final Set<SpawnPoint> spawnPoints,
-               final List<PhaseResult> phaseResults,
+               final String game,
+               final String spawnPoints,
+               final String phaseResults,
                final UUID hackathonId,
                final CutoffCondition cutoffCondition) {
-        this.key = id.toString();
         this.id = id;
         this.game = game;
-        this.spawnPoints = new HashSet<>(spawnPoints);
-        this.phaseResults = new ArrayList<>(phaseResults);
+        this.spawnPoints = spawnPoints;
+        this.phaseResults = phaseResults;
         this.hackathonId = hackathonId;
-        this.hackathonKey = hackathonId.toString();
         this.cutoffCondition = cutoffCondition;
     }
 
     public static GameResult create(final Game game, final com.scottlogic.hackathon.game.GameResult gameResult) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Set<SpawnPoint> spawnPoints = gameResult.getPhaseResults()
+                .stream()
+                .flatMap(phaseResult -> phaseResult.getSpawnPoints().stream())
+                .distinct()
+                .map(SpawnPoint::create)
+                .collect(Collectors.toSet());
+
+        List<PhaseResult> phaseResults = gameResult
+                .getPhaseResults()
+                .stream()
+                .map(PhaseResult::create)
+                .collect(Collectors.toList());
+
+        String gameStr = "";
+        String spawnPointsStr = "";
+        String phaseResultsStr = "";
+
+        try {
+            gameStr = objectMapper.writeValueAsString(game);
+            spawnPointsStr = objectMapper.writeValueAsString(spawnPoints);
+            phaseResultsStr = objectMapper.writeValueAsString(phaseResults);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
         return new GameResult(
                 gameResult.getId(),
-                game,
-                gameResult.getPhaseResults()
-                        .stream()
-                        .flatMap(phaseResult -> phaseResult.getSpawnPoints().stream())
-                        .distinct()
-                        .map(SpawnPoint::create)
-                        .collect(Collectors.toSet()),
-                gameResult
-                        .getPhaseResults()
-                        .stream()
-                        .map(PhaseResult::create)
-                        .collect(Collectors.toList()),
+                gameStr,
+                spawnPointsStr,
+                phaseResultsStr,
                 game.getHackathonId(),
                 gameResult.getCutoffCondition()
         );
-    }
-
-    public String getKey() {
-        return key;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public Game getGame() {
+    public String getGame() {
         return game;
     }
 
-    public Set<SpawnPoint> getSpawnPoints() {
-        return Collections.unmodifiableSet(spawnPoints);
+    public String getSpawnPoints() {
+        return spawnPoints;
     }
 
-    public List<PhaseResult> getPhaseResults() {
-        return Collections.unmodifiableList(phaseResults);
+    public String getPhaseResults() {
+        return phaseResults;
     }
 
     public CutoffCondition getCutoffCondition() {

@@ -6,6 +6,7 @@ import com.scottlogic.hackathon.game.engine.GameEngine;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.*;
 import com.scottlogic.hackathon.server.services.stores.GameStore;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class GameService {
             try {
                 final com.scottlogic.hackathon.game.GameResult engineGameResult = gameEngine.play();
                 gameResult = GameResult.create(game, engineGameResult);
-                gameStore.addGameResult(gameResult);
+                gameStore.saveOrUpdate(gameResult);
             } catch (final Exception ex) {
                 logger.error("Error playing game", ex);
             } finally {
@@ -52,18 +53,18 @@ public class GameService {
     }
 
     public List<GameResult> getGameResults() {
-        return gameStore.getGameResults();
+        return gameStore.list();
     }
 
     public List<GameResult> getGameResultsByHackathon(final UUID hackathonId) {
-        return gameStore.getGameResultsByHackathon(hackathonId);
+        return gameStore.list(Restrictions.eq("hackathonId", hackathonId));
     }
 
     public GameResult getGameResult(final UUID id) {
-        return gameStore.getGameResult(id);
+        return gameStore.get(id);
     }
 
     public boolean deleteGameResult(final UUID id) {
-        return gameStore.deleteGameResult(id);
+        return gameStore.delete(id);
     }
 }

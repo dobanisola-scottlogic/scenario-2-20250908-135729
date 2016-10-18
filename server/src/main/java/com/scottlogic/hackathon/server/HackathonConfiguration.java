@@ -4,14 +4,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.scottlogic.hackathon.bots.*;
 import com.scottlogic.hackathon.server.models.MilestoneBot;
 import io.dropwizard.Configuration;
+import io.dropwizard.db.DataSourceFactory;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HackathonConfiguration extends Configuration {
+    @Valid
+    @NotNull
+    private DataSourceFactory database = new DataSourceFactory();
+
     @NotEmpty
     private String name = "Code Challenge";
+
+    @JsonProperty("database")
+    public void setDataSourceFactory(final DataSourceFactory factory) {
+        this.database = factory;
+    }
+
+    @JsonProperty("database")
+    public DataSourceFactory getDataSourceFactory() {
+        return database;
+    }
 
     @JsonProperty
     public String getName() {

@@ -23,7 +23,7 @@ public class HackathonService {
     }
 
     public Hackathon createHackathon(final User user, final Hackathon hackathon) {
-        return hackathonStore.addHackathon(new Hackathon(hackathon.getName()));
+        return hackathonStore.saveOrUpdate(new Hackathon(hackathon.getName()));
     }
 
     public Hackathon updateHackathon(final UUID id, final HackathonUpdate hackathonUpdate) {
@@ -31,15 +31,15 @@ public class HackathonService {
     }
 
     public List<Hackathon> getHackathons() {
-        return hackathonStore.getHackathons();
+        return hackathonStore.list();
     }
 
     public Hackathon getHackathon(final UUID id) {
-        return hackathonStore.getHackathon(id);
+        return hackathonStore.get(id);
     }
 
     public boolean deleteHackathon(final UUID id) {
-        return hackathonStore.deleteHackathon(id);
+        return hackathonStore.delete(id);
     }
 
 }

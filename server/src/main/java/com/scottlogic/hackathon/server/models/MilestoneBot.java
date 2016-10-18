@@ -2,18 +2,17 @@ package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scottlogic.hackathon.game.Bot;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
 public class MilestoneBot {
-    @PrimaryKey()
-    private String key;
+    @Id
     private UUID id;
     private String milestoneClassName;
     private Date timeStamp;
@@ -34,7 +33,6 @@ public class MilestoneBot {
 
     public void setId(final UUID id) {
         this.id = id;
-        this.key = id.toString();
     }
 
     public Date getTimeStamp() {

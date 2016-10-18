@@ -1,13 +1,11 @@
 package com.scottlogic.hackathon.server.services;
 
 import com.google.inject.Inject;
-import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.server.models.MilestoneBot;
 import com.scottlogic.hackathon.server.services.stores.MilestoneStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,15 +20,15 @@ public class MilestoneService {
     }
 
     public void addMilestone(final MilestoneBot milestoneBot) {
-        milestoneStore.saveMilestone(milestoneBot);
+        milestoneStore.saveOrUpdate(milestoneBot);
     }
 
     public List<MilestoneBot> getMilestones() {
-        return milestoneStore.getMilestones();
+        return milestoneStore.list();
     }
 
     public boolean deleteMilestone(final UUID id) {
-        return milestoneStore.deleteMilestone(id);
+        return milestoneStore.delete(id);
     }
 
 }

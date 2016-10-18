@@ -15,6 +15,7 @@ import com.scottlogic.hackathon.server.services.GameService;
 import com.scottlogic.hackathon.server.services.HackathonService;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.auth.Auth;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -43,6 +44,7 @@ public class HackathonResource {
     }
 
     @POST
+    @UnitOfWork
     @Timed
     @RolesAllowed(Authorizer.ROLE_ADMIN)
     @JsonView(Views.Details.class)
@@ -51,6 +53,7 @@ public class HackathonResource {
     }
 
     @PUT
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @RolesAllowed(Authorizer.ROLE_ADMIN)
@@ -61,29 +64,26 @@ public class HackathonResource {
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @JsonView(Views.List.class)
     public List<Hackathon> getHackathons() {
         List<Hackathon> hackathons = hackathonService.getHackathons();
-        for (Hackathon hackathon:hackathons) {
-            hackathon.setGames(gameService.getGameResultsByHackathon(hackathon.getId()));
-            hackathon.setTeams(teamService.getTeamsByHackathon(hackathon.getId()));
-        }
         return hackathons;
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @JsonView(Views.Details.class)
     public Hackathon getHackathon(@PathParam("id") final UUID id) {
         Hackathon hackathon = hackathonService.getHackathon(id);
-        hackathon.setGames(gameService.getGameResultsByHackathon(id));
-        hackathon.setTeams(teamService.getTeamsByHackathon(id));
         return hackathon;
     }
 
     @DELETE
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @RolesAllowed(Authorizer.ROLE_ADMIN)
