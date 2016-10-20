@@ -8,6 +8,7 @@ import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.services.TeamService;
 import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -30,6 +31,7 @@ public class TeamResource {
     }
 
     @POST
+    @UnitOfWork
     @Timed
     @RolesAllowed(Authorizer.ROLE_ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -39,6 +41,7 @@ public class TeamResource {
     }
 
     @PUT
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @RolesAllowed(Authorizer.ROLE_ADMIN)
@@ -49,6 +52,7 @@ public class TeamResource {
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @RolesAllowed(Authorizer.ROLE_ADMIN)
     public List<Team> getTeams(@QueryParam("hackathonId") Optional<UUID> hackathonId) {
@@ -59,6 +63,7 @@ public class TeamResource {
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @RolesAllowed(Authorizer.ROLE_ADMIN)
@@ -67,6 +72,7 @@ public class TeamResource {
     }
 
     @DELETE
+    @UnitOfWork
     @Timed
     @Path("/{id}")
     @RolesAllowed(Authorizer.ROLE_ADMIN)

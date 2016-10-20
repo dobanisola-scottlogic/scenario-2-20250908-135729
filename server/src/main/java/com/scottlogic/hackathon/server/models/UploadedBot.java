@@ -4,14 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.io.ByteStreams;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.server.services.RemoteClassLoader;
-import com.sleepycat.persist.model.DeleteAction;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -19,14 +17,13 @@ import java.util.UUID;
 
 @Entity
 public class UploadedBot {
-    @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Team.class, onRelatedEntityDelete=DeleteAction.CASCADE)
-    String teamId;
-    @PrimaryKey()
-    private String key;
+    @Id
     private UUID id;
+    String teamId;
     private byte[] data;
     private String botClassName;
     private Date timeStamp;
+    private boolean active = false;
 
     public UploadedBot() {
 
@@ -44,7 +41,6 @@ public class UploadedBot {
 
     public void setId(final UUID id) {
         this.id = id;
-        this.key = id.toString();
     }
 
     public UUID getTeamId() {
@@ -83,5 +79,13 @@ public class UploadedBot {
         }
 
         return loadedBot;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 }

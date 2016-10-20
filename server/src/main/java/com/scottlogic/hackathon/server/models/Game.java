@@ -1,13 +1,12 @@
 package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sleepycat.persist.model.Persistent;
 
 import java.util.Set;
 import java.util.UUID;
 
-@Persistent
 public class Game {
+    private UUID id;
     @JsonView(Views.List.class)
     private Long gameTime;
     @JsonView(Views.List.class)
@@ -20,6 +19,7 @@ public class Game {
     }
 
     public Game(final Set<GameTeam> teams, final Map map, final UUID hackathonId) {
+        this.id = UUID.randomUUID();
         this.gameTime = System.currentTimeMillis();
         this.teams = teams;
         this.map = map;

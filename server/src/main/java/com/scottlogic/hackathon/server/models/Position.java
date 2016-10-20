@@ -1,8 +1,8 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.sleepycat.persist.model.Persistent;
+import javax.persistence.Embeddable;
 
-@Persistent
+@Embeddable
 public class Position {
     private int x;
     private int y;

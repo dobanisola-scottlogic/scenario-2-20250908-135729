@@ -1,22 +1,23 @@
 package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-import com.scottlogic.hackathon.server.models.MilestoneBot;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 public class Hackathon {
-    @PrimaryKey
-    private String key;
+    @Id
     private UUID id;
     private String name;
     @JsonView(Views.List.class)
+    @OneToMany
     private List<GameResult> games;
     @JsonView(Views.List.class)
+    @OneToMany
     private List<Team> teams;
     private String currentMilestoneClassName;
     private String currentMilestoneMap;
@@ -26,7 +27,6 @@ public class Hackathon {
 
     public Hackathon(final String name) {
         this.id = UUID.randomUUID();
-        this.key = this.id.toString();
         this.name = name;
         this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "DefaultBot";
         this.currentMilestoneMap = "Easy";

@@ -2,14 +2,12 @@ package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
-import com.sleepycat.persist.model.Persistent;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Persistent
 public class Map {
     @JsonView(Views.List.class)
     private String name;

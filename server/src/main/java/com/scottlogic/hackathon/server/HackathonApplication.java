@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.scottlogic.hackathon.server.authentication.Authenticator;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
+import com.scottlogic.hackathon.server.models.*;
 import com.scottlogic.hackathon.server.resources.*;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.Application;
@@ -12,7 +13,10 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.forms.MultiPartBundle;
+import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
@@ -36,16 +40,36 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
     public void initialize(final Bootstrap<HackathonConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/assets", "/", "index.html"));
         bootstrap.addBundle(new MultiPartBundle());
+        bootstrap.addBundle(hibernateBundle);
     }
+
+    private final HibernateBundle<HackathonConfiguration> hibernateBundle = new HibernateBundle<HackathonConfiguration>(
+            GameTeam.class,
+            GameResult.class,
+            Team.class,
+            UploadedBot.class,
+            Hackathon.class,
+            MilestoneBot.class
+    ) {
+        @Override
+        public DataSourceFactory getDataSourceFactory(final HackathonConfiguration configuration) {
+            return configuration.getDataSourceFactory();
+        }
+    };
 
     @Override
     public void run(final HackathonConfiguration configuration, final Environment environment) {
-        final Injector injector = Guice.createInjector(new HackathonModule(configuration, environment));
+        final Injector injector = Guice.createInjector(new HackathonModule(configuration, environment, hibernateBundle));
+
+        hibernateBundle.getSessionFactory().openSession().createQuery("from GameResult").list();
 
         setupCrossOriginHeaders(environment);
 
+        final Authenticator authenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
+            .create(Authenticator.class, TeamService.class, injector.getInstance(TeamService.class));
+
         environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(new Authenticator(injector.getInstance(TeamService.class)))
+                .setAuthenticator(authenticator)
                 .setAuthorizer(new Authorizer())
                 .setRealm("Restricted Access")
                 .buildAuthFilter()));

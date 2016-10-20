@@ -1,10 +1,7 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.sleepycat.persist.model.Persistent;
-
 import java.util.UUID;
 
-@Persistent
 public class Collectable {
     private UUID id;
     private int type;

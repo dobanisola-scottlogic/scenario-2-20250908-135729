@@ -8,39 +8,29 @@ import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.MilestoneBot;
 import com.scottlogic.hackathon.server.services.MilestoneService;
 import io.dropwizard.auth.Auth;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import io.dropwizard.hibernate.UnitOfWork;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 @Path("/milestone")
 @Produces(MediaType.APPLICATION_JSON)
 public class MilestoneResource {
     private final MilestoneService milestoneService;
-    private final HackathonConfiguration hackathonConfiguration;
 
     @Inject
-    MilestoneResource(final HackathonConfiguration hackathonConfiguration,
-                      final MilestoneService milestoneService) {
-        this.hackathonConfiguration = hackathonConfiguration;
+    MilestoneResource(final MilestoneService milestoneService) {
         this.milestoneService = milestoneService;
-        this.addMilestones(hackathonConfiguration.getMilestoneBots());
-    }
-
-    private void addMilestones(final List<MilestoneBot> milestoneBots) {
-        milestoneService.getMilestones().forEach(milestoneBot -> milestoneService.deleteMilestone(milestoneBot.getId()));
-        milestoneBots.forEach(milestoneBot -> addMilestone(milestoneBot));
-    }
-
-    public void addMilestone(final MilestoneBot milestoneBot) {
-        milestoneService.addMilestone(milestoneBot);
     }
 
     @GET
+    @UnitOfWork
     @Timed
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
     public List<MilestoneBot> getUploadedMilestones(@Auth final User user) {

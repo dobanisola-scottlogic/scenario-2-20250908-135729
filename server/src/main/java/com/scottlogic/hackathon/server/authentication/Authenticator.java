@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.hibernate.UnitOfWork;
 
 public class Authenticator implements io.dropwizard.auth.Authenticator<BasicCredentials, User> {
     private final TeamService teamService;
@@ -13,6 +14,7 @@ public class Authenticator implements io.dropwizard.auth.Authenticator<BasicCred
     }
 
     @Override
+    @UnitOfWork
     public Optional<User> authenticate(final BasicCredentials credentials) throws AuthenticationException {
         Optional<User> authenticatedUser = Optional.absent();
 

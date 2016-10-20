@@ -13,8 +13,10 @@ dependencies {
     compile group: "io.dropwizard", name: "dropwizard-auth", version: dropWizardVersion
     compile group: "io.dropwizard", name: "dropwizard-assets", version: dropWizardVersion
     compile group: "io.dropwizard", name: "dropwizard-forms", version: dropWizardVersion
+    compile group: "io.dropwizard", name: "dropwizard-hibernate", version: dropWizardVersion
     compile group: "com.google.inject", name: "guice", version: "3.0"
-    compile group: "com.sleepycat", name: "je", version: "5.0.73"
+    runtime group: "org.postgresql", name: "postgresql", version: "9.4.1211"
+    runtime group: "com.h2database", name: "h2", version: "1.4.192"
     compile project(":game")
     compile project(":game-engine")
     compile project(":default-bots")
@@ -56,6 +58,5 @@ run {
     args "server"
     args "..\\server.yml"
 }
-
 
 build.dependsOn ":viewer:build"

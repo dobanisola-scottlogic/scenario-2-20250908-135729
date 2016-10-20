@@ -5,6 +5,7 @@ import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.services.stores.TeamStore;
 import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
 import io.dropwizard.auth.basic.BasicCredentials;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,23 +20,23 @@ public class TeamService {
 
     public Team addTeam(final Team team) {
         team.setId(UUID.randomUUID());
-        return teamStore.saveTeam(team);
+        return teamStore.saveOrUpdate(team);
     }
 
     public List<Team> getTeams() {
-        return teamStore.getTeams();
+        return teamStore.list();
     }
 
     public List<Team> getTeamsByHackathon(final UUID hackathonId) {
-        return teamStore.getTeamsByHackathon(hackathonId);
+        return teamStore.list(Restrictions.eq("hackathonId", hackathonId));
     }
 
     public Team getTeam(final UUID id) {
-        return teamStore.getTeam(id);
+        return teamStore.get(id);
     }
 
     public Team getTeam(final String name) {
-        return teamStore.getTeam(name);
+        return teamStore.get(Restrictions.eq("name", name));
     }
 
     public Team updateTeam(final UUID id, final TeamUpdate teamUpdate) {
@@ -43,10 +44,11 @@ public class TeamService {
     }
 
     public boolean deleteTeam(final UUID id) {
-        return teamStore.deleteTeam(id);
+        return teamStore.delete(id);
     }
 
     public boolean authenticate(final BasicCredentials credentials) {
-        return getTeam(credentials.getUsername()).authenticate(credentials);
+        final Team team = getTeam(credentials.getUsername());
+        return team != null && team.authenticate(credentials);
     }
 }
