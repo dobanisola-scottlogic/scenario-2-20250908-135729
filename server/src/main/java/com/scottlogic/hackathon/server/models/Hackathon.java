@@ -28,7 +28,7 @@ public class Hackathon {
     public Hackathon(final String name) {
         this.id = UUID.randomUUID();
         this.name = name;
-        this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "DefaultBot";
+        this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "Milestone1Bot";
         this.currentMilestoneMap = "Easy";
     }
 
