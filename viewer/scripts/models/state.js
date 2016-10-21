@@ -23,10 +23,7 @@ class State {
         for (let i = 0; i < gameData.phaseResults.length; i++) {
 
             let previousState = null;
-            let teamInfo = [ {playerCount: 0, owner: null, spawnCount: 0},
-                             {playerCount: 0, owner: null, spawnCount: 0},
-                             {playerCount: 0, owner: null, spawnCount: 0},
-                             {playerCount: 0, owner: null, spawnCount: 0}];
+            let teamInfo = gameData.game.teams.map(() => ({playerCount: 0, owner: null, spawnCount: 0}));
 
             if (i > 0) {
                 previousState = states[i - 1];
