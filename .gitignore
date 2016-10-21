@@ -46,3 +46,6 @@ gradle-app.setting
 # Node
 node_modules
 npm-debug.log
+
+# DB
+data
