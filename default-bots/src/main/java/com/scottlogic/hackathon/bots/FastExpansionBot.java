@@ -40,7 +40,7 @@ public class FastExpansionBot extends Bot {
 
     @Override
     public String getDisplayName() {
-        return "Fast Expansion Bot";
+        return "Fast Expansion";
     }
 
     @Override
