@@ -12,7 +12,7 @@
     <hr></hr>
     <div class="list-group">
         <hack-hackathon
-                ng-repeat="hackathon in controller.hackathons track by hackathon.id"
+                ng-repeat="hackathon in controller.hackathons | orderBy:'name' track by hackathon.id "
                 ng-click="controller.onHackathonSelected(hackathon)"
                 ng-class="{'active': controller.isSelected(hackathon)}"
                 hackathon="hackathon">

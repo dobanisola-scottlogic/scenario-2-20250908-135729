@@ -11,7 +11,7 @@
         <select
             class="form-control"
             ng-model="controller.selectedHackathon"
-            ng-options="hackathon as hackathon.name for hackathon in controller.hackathons track by hackathon.id"
+            ng-options="hackathon as hackathon.name for hackathon in controller.hackathons | orderBy:'name' track by hackathon.id"
             ng-disabled="controller.userInterfaceDisabled"
             ng-change="controller.onHackathonSelected()">
         </select>
