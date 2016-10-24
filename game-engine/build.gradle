@@ -2,8 +2,10 @@ group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
 def jacksonVersion = "2.6.3"
+def dropWizardVersion = "0.9.2"
 
 dependencies {
+    compile group: "io.dropwizard", name: "dropwizard-core", version: dropWizardVersion
     compile group: "com.fasterxml.jackson.core", name: "jackson-core", version: jacksonVersion
     compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jacksonVersion
     compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: jacksonVersion

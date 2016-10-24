@@ -40,7 +40,7 @@ public class GameFactory {
                     }
                 }));
 
-        final Set<String> unknowTeams = teams
+        final Set<String> unknownTeams = teams
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() == null)
@@ -49,8 +49,8 @@ public class GameFactory {
 
 
         Game game = null;
-        if (unknowTeams.size() > 0) {
-            logger.error(String.format("Team(s) unknown, %s", String.join(",", unknowTeams)));
+        if (unknownTeams.size() > 0) {
+            logger.error(String.format("Team(s) unknown, %s", String.join(",", unknownTeams)));
         } else {
             final Set<String> teamsWithoutBots = teamBotMap
                     .entrySet()

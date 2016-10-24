@@ -8,15 +8,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BattleSystem {
     private final int battleRadius;
     private final TrackedSet<PlayerImpl> players;
     private final PlayableMap map;
+    private final Logger logger;
 
     BattleSystem(final TrackedSet<PlayerImpl> players, final PlayableMap map, final int battleRadius) {
         this.players = players;
         this.map = map;
         this.battleRadius = battleRadius;
+        logger = LoggerFactory.getLogger(this.getClass().getName());
     }
 
     public Set<PlayerImpl> runBattle() {
@@ -28,9 +33,13 @@ public class BattleSystem {
 
     private boolean outnumbered(final PlayerImpl player) {
         final List<PlayerImpl> enemiesInRangeOfPlayer = enemiesInRange(player);
-        return enemiesInRangeOfPlayer
+        boolean result = enemiesInRangeOfPlayer
                 .stream()
                 .anyMatch(enemy -> enemiesInRangeOfPlayer.size() >= enemiesInRange(enemy).size());
+        if (result) {
+            logger.info("Battle Occurred. Player Outnumbered: " + player + " by: " + enemiesInRangeOfPlayer);
+        }
+        return result;
     }
 
     private List<PlayerImpl> enemiesInRange(final PlayerImpl of) {

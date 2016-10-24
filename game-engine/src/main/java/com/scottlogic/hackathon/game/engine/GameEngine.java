@@ -16,6 +16,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GameEngine {
     private final Set<Bot> bots;
     private final PlayableMap map;
@@ -34,10 +37,12 @@ public class GameEngine {
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase;
+    private final Logger logger;
 
     public GameEngine(final PlayableMap map, final Set<Bot> bots) throws IllegalArgumentException {
         this.map = map;
         this.bots = bots;
+        logger = LoggerFactory.getLogger(this.getClass().getName());
 
         if (bots.size() <= 1) {
             throw new IllegalArgumentException("must have at least 2 bots");
@@ -65,6 +70,8 @@ public class GameEngine {
         disqualifiedBots = new TrackedSetImpl<DisqualifiedBotImpl>();
         phase = 0;
 
+        logger.info("Game Started");
+
         initialiseBots();
         createSpawnPoints();
 
@@ -81,6 +88,8 @@ public class GameEngine {
             phaseResults.add(phaseResult);
             cutoffCondition = getCutoffCondition();
         } while (cutoffCondition == null);
+
+        logger.info("Cut Off Condition: " + cutoffCondition);
 
         return new GameResultImpl(phaseResults, new MapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
     }
@@ -113,6 +122,7 @@ public class GameEngine {
         removeIf(players, player -> player.getOwner().equals(bot.getId()));
         removeIf(players, player -> player.getOwner().equals(bot.getId()));
         removeIf(spawnPoints, spawnPoint -> spawnPoint.getOwner().equals(bot.getId()));
+        logger.info("Bot Disqualified: " + bot + " Due To: " + rejectedMoves.toString());
     }
 
     private <T> void removeIf(final TrackedSetImpl<T> items, final Predicate<T> predicate) {
@@ -171,6 +181,7 @@ public class GameEngine {
         final PhaseResult phaseResult = createPhaseResult();
 
         phase++;
+        logger.info("Phase Number: " + phase);
 
         return phaseResult;
     }
@@ -381,6 +392,7 @@ public class GameEngine {
     private PlayerImpl spawnPlayer(final SpawnPoint spawnPoint) {
         final PlayerImpl player = new PlayerImpl(spawnPoint.getOwner(), spawnPoint.getPosition());
         players.add(player);
+        logger.info("Player Spawned: " + player.toString());
         return player;
     }
 
@@ -431,6 +443,7 @@ public class GameEngine {
         actionOwnerAtItem(spawnPoints, (spawnPoint) -> spawnPoint.getPosition(), (owner, spawnPoint) -> {
             if (owner != spawnPoint.getOwner()) {
                 spawnPointsToRemove.add(spawnPoint);
+                logger.info("Spawn point captured: " + spawnPoint);
             }
         });
         if (spawnPoints.size() > 0) {
@@ -444,6 +457,7 @@ public class GameEngine {
             boolean collected = false;
             if (collectable.getType() == Collectable.Type.PLAYER) {
                 collected = collectPlayer(owner, collectable);
+                logger.info("Collectable Gathered By: " + owner);
             }
 
             if (collected) {
