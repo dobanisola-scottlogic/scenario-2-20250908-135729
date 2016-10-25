@@ -163,6 +163,6 @@ public class Milestone3Bot extends Bot {
 
     @Override
     public String getDisplayName() {
-        return "Milestone 3 Bot";
+        return "Milestone 3";
     }
 }

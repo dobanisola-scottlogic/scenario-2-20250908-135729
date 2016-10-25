@@ -29,7 +29,7 @@
         <select
             class="form-control"
             ng-model="controller.selectedHackathon.currentMilestoneClassName"
-            ng-options="milestone.name as milestone.name.replace(controller.milestoneBotPrefix, '') for milestone in controller.milestoneTeams"
+            ng-options="milestone.name as milestone.name.replace(controller.milestoneBotPrefix, '').replace('Bot', '') for milestone in controller.milestoneTeams"
             ng-disabled="controller.userInterfaceDisabled">
         </select>
     </div>

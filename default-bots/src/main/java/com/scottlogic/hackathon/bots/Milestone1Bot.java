@@ -59,6 +59,6 @@ public class Milestone1Bot extends Bot {
 
     @Override
     public String getDisplayName() {
-        return "Milestone 1 Bot";
+        return "Milestone 1";
     }
 }

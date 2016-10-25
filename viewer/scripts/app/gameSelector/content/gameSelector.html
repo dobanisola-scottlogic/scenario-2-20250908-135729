@@ -9,7 +9,9 @@
             <li ng-repeat="game in controller.gamesList | orderBy:'-game.gameTime'" ng-click="controller.gameSelectedInDropdown(game)" ng-class="{'selected': game.id === controller.selectedGame.id}">
                 <a href="#">
                     <span>Map {{game.game.map.name}} - </span>
-                    <span ng-repeat="team in game.game.teams | orderBy:'teamName'">{{team.teamName.replace(controller.milestoneBotPrefix, '')}}{{$last ? '' : ' vs '}}</span>
+                    <span ng-repeat="team in game.game.teams | orderBy:'teamName'">
+                        {{team.teamName.replace(controller.milestoneBotPrefix, '').replace('Bot', '')}}{{$last ? '' : ' vs '}}
+                    </span>
                 </a>
             </li>
         </ul>

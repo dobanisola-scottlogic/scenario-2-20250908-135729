@@ -34,7 +34,7 @@ public class DefaultBot extends Bot {
 
     @Override
     public String getDisplayName() {
-        return "Default Bot";
+        return "Default";
     }
 
     class DirectionAndDistanceMove implements Move {
