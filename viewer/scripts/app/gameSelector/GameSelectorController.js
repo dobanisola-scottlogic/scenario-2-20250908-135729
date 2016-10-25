@@ -21,8 +21,6 @@ class GameSelectorController {
 
         this.teamList = [];
 
-        this.sharedPropertiesService.setLiveMode(true);
-
         this.initialiseHackathon();
     }
 
@@ -35,7 +33,12 @@ class GameSelectorController {
                 this.getGamesList();
                 let self = this;
                 this.$scope.$on('game:created', function(event, data) {
-                    self.getGamesList();
+                    self.gameService.getGamesByHackathon(self.selectedHackathon.id).then(response => {
+                        self.setGamesList(response);
+                        if(self.sharedPropertiesService.getLiveMode()){
+                            self.selectMostRecentGame();
+                        }
+                    });
                 });
                 this.$interval.cancel(this.gamesListPolling);
                 this.gamesListPolling = this.$interval(() => {
@@ -71,15 +74,13 @@ class GameSelectorController {
         }
     }
     enableLiveMode() {
-        if (!this.sharedPropertiesService.getLiveMode()) {
-            this.sharedPropertiesService.setLiveMode(true);
+        this.sharedPropertiesService.setLiveMode(true);
 
-            // If latest game is already selected, restart it but now in live mode
-            if (this.getLatestGame().id === this.selectedGame.id) {
-                this.selectGame(this.selectedGame);
-            } else {
-                this.selectMostRecentGame();
-            }
+        // If latest game is already selected, restart it but now in live mode
+        if (this.selectedGame && this.getLatestGame().id === this.selectedGame.id) {
+            this.selectGame(this.selectedGame);
+        } else {
+            this.selectMostRecentGame();
         }
     }
     setGamesList(gamesList) {
