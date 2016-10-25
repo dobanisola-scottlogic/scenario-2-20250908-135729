@@ -7,10 +7,11 @@ let Engine = require('../../engine/Engine.js');
 let engine;
 
 class GameSelectorController {
-    constructor($rootScope, $scope, $http, gameService, hackathonService, sharedPropertiesService) {
+    constructor($rootScope, $scope, $http, $interval, gameService, hackathonService, sharedPropertiesService) {
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$http = $http;
+        this.$interval = $interval;
         this.gameService = gameService;
         this.hackathonService = hackathonService;
         this.sharedPropertiesService = sharedPropertiesService;
@@ -36,6 +37,10 @@ class GameSelectorController {
                 this.$scope.$on('game:created', function(event, data) {
                     self.getGamesList();
                 });
+                this.$interval.cancel(this.gamesListPolling);
+                this.gamesListPolling = this.$interval(() => {
+                    this.getGamesList();
+                }, 30000);
             },
             () => {
                 this.selectedHackathon = null;
@@ -115,6 +120,6 @@ class GameSelectorController {
     }
 }
 
-GameSelectorController.$inject = ['$rootScope', '$scope', '$http', 'GameService', 'HackathonService', 'SharedPropertiesService'];
+GameSelectorController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'GameService', 'HackathonService', 'SharedPropertiesService'];
 
 module.exports = GameSelectorController;
