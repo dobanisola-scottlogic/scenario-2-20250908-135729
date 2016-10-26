@@ -85,14 +85,6 @@ class BotPanelController {
         this.alert = alert;
     }
 
-    alertIsSuccess() {
-        return this.alert && this.alert.type === AlertTypes.SUCCESS;
-    }
-
-    alertIsError() {
-        return this.alert && this.alert.type === AlertTypes.ERROR;
-    }
-
     get userInterfaceDisabled() {
         return this.makingCall;
     }

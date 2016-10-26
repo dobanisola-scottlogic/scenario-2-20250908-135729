@@ -2,7 +2,8 @@ let angular = require('angular');
 
 let ngfileupload = require('ng-file-upload');
 let configurationModule = require('configuration');
-let botModule = require('./bots/botModule');
+let alertModule = require('./bots/botModule');
+let botModule = require('./alert/alertModule');
 let milestoneModule = require('./milestones/milestoneModule');
 let dashboardModule = require('./dashboard/dashboardModule');
 let navigationBarModule = require('./navigationBar/navigationBarModule');
@@ -20,6 +21,7 @@ let scoreboardModule = require('./scoreboard/scoreboardModule');
 let requires = [
     'ngFileUpload',
     configurationModule.name,
+    alertModule.name,
     botModule.name,
     milestoneModule.name,
     collectablesChartModule.name,
@@ -50,21 +52,6 @@ application.directive('hackTransclude', function() {
                 $element.append(clonedElement);
             });
         }
-    };
-});
-
-application.directive('alert', function() {
-    return {
-        restrict: 'E',
-        transclude: false,
-        scope: {
-            alert: '=',
-            isSuccess: '&',
-            isError: '&',
-            closeAlert: '&'
-        },
-        replace: true,
-        template: require('./alert/content/alert.html')
     };
 });
 

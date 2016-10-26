@@ -1,10 +1,8 @@
 <div class="hackathonPanel">
-    <alert ng-show="controller.alert"
-           is-error="controller.alertIsError()"
-           is-success="controller.alertIsSuccess()"
+    <hack-alert ng-show="controller.alert"
            close-alert="controller.refreshAlerts()"
            alert="controller.alert">
-    </alert>
+    </hack-alert>
     <form ng-submit="controller.createHackathon()">
         <input type="text" class="form-control" placeholder="Name" ng-model="controller.hackathon.name" ng-disabled="controller.userInterfaceDisabled">
         <button type="submit" class="btn btn-success" ng-disabled="controller.addButtonDisabled">Add New Hackathon</button>

@@ -153,14 +153,6 @@ class GamePanelController {
         return this.game.teams.indexOf(team.name) !== -1;
     }
 
-    alertIsSuccess() {
-        return this.alert && this.alert.type === AlertTypes.SUCCESS;
-    }
-
-    alertIsError() {
-        return this.alert && this.alert.type === AlertTypes.ERROR;
-    }
-
     isHackathonSelected(hackathon) {
         return this.game.hackathonId && this.game.hackathonId === hackathon.id;
     }

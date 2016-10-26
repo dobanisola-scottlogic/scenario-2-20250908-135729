@@ -1,11 +1,9 @@
 <div class="gamePanel">
-    <alert
+    <hack-alert
         ng-show="controller.alert"
-        is-error="controller.alertIsError()"
-        is-success="controller.alertIsSuccess()"
         close-alert="controller.refreshAlerts()"
         alert="controller.alert">
-    </alert>
+    </hack-alert>
     <div class="input-group">
         <span class="input-group-addon">Hackathon</span>
         <select

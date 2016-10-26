@@ -24,6 +24,11 @@
         </span>
     </div>
     <h5 class="uploadedFileName"><small>{{controller.uploadedFileName}}</small></h5>
+    <hack-alert
+            ng-show="controller.alert"
+            close-alert="controller.refreshAlerts()"
+            alert="controller.alert">
+    </hack-alert>
     <div class="spinner-container" ng-show="controller.makingCall">
         <div class="spinner"></div>
 </div>

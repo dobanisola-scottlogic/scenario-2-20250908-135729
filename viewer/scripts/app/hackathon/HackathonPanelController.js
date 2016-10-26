@@ -133,14 +133,6 @@ class HackathonPanelController {
     refreshAlerts() {
         this.alert = null;
     }
-
-    alertIsSuccess() {
-        return this.alert && this.alert.type === AlertTypes.SUCCESS;
-    }
-
-    alertIsError() {
-        return this.alert && this.alert.type === AlertTypes.ERROR;
-    }
 }
 
 HackathonPanelController.$inject = ['$scope', '$rootScope', 'HackathonService', 'MilestoneService', 'MILESTONE_BOT_PREFIX'];

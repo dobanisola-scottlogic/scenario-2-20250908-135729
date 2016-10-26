@@ -172,14 +172,6 @@ class TeamPanelController {
         );
     }
 
-    alertIsSuccess() {
-        return this.alert && this.alert.type === AlertTypes.SUCCESS;
-    }
-
-    alertIsError() {
-        return this.alert && this.alert.type === AlertTypes.ERROR;
-    }
-
     isSelected(team) {
         return this.selectedTeam && this.selectedTeam.id === team.id;
     }

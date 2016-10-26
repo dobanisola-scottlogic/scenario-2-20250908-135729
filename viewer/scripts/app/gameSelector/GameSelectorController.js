@@ -35,7 +35,7 @@ class GameSelectorController {
                 this.$scope.$on('game:created', function(event, data) {
                     self.gameService.getGamesByHackathon(self.selectedHackathon.id).then(response => {
                         self.setGamesList(response);
-                        if(self.sharedPropertiesService.getLiveMode()){
+                        if (self.sharedPropertiesService.getLiveMode()) {
                             self.selectMostRecentGame();
                         }
                     });

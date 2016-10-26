@@ -4,11 +4,15 @@ const AlertTypes = require('../alert/AlertTypes');
 class BotUploadController {
     constructor($scope, botService, contestantBotNamespace) {
         this.$scope = $scope;
-        this.setAlert = $scope.setAlert();
+        this.setAlert = this.setAlert.bind(this);
         this.botService = botService;
         this.contestantBotNamespace = contestantBotNamespace;
 
         this.botsInCurrentFile = [];
+    }
+
+    setAlert(alert) {
+        this.alert = alert;
     }
 
     clearUpload() {
@@ -17,20 +21,37 @@ class BotUploadController {
     }
 
     onSelectFile(file) {
-        if (file) {
+        let alert = null;
+        if (file && file.name.endsWith('.jar')) {
             this.file = file;
 
             this.botService.loadZip(file)
                 .then(result => {
-                    this.botsInCurrentFile = Object.keys(result.files)
-                        .filter(key => key.startsWith(this.contestantBotNamespace) && key.endsWith('.class'))
-                        .map(className => ({
-                            className: className.split('.')[0].split('/').join('.'),
-                            displayName: className.split('/').pop().split('.')[0]
-                        }));
+                    if (result.files.length < 1) {
+                        alert = {
+                            type: AlertTypes.ERROR,
+                            message: 'Select a Jar file with at least one class that extends com.scottlogic.hackathon.game.Bot'
+                        };
+                    }
+                    else {
+                        alert = null;
+                        this.botsInCurrentFile = Object.keys(result.files)
+                            .filter(key => key.startsWith(this.contestantBotNamespace) && key.endsWith('.class'))
+                            .map(className => ({
+                                className: className.split('.')[0].split('/').join('.'),
+                                displayName: className.split('/').pop().split('.')[0]
+                            }));
+                    }
                 })
                 .catch(() => { this.alert = Error; });
         }
+        else {
+            alert = {
+                type: AlertTypes.ERROR,
+                message: 'Select a Jar file with at least one class that extends com.scottlogic.hackathon.game.Bot'
+            };
+        }
+        this.setAlert(alert);
     }
 
     upload() {
@@ -92,14 +113,6 @@ class BotUploadController {
 
     refreshAlerts() {
         this.alert = null;
-    }
-
-    alertIsSuccess() {
-        return this.alert && this.alert.type === AlertTypes.SUCCESS;
-    }
-
-    alertIsError() {
-        return this.alert && this.alert.type === AlertTypes.ERROR;
     }
 }
 

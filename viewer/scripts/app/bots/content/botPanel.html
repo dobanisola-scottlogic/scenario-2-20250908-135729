@@ -1,11 +1,9 @@
 <div class="botPanel">
-    <alert
+    <hack-alert
             ng-show="controller.alert"
-            is-error="controller.alertIsError()"
-            is-success="controller.alertIsSuccess()"
             close-alert="controller.refreshAlerts()"
             alert="controller.alert">
-    </alert>
+    </hack-alert>
     <hack-bot-upload on-upload="controller.onBotUpload(bot)" set-alert="controller.setAlert"></hack-bot-upload>
     <div class="list-group">
         <div class="list-group-item" ng-if="controller.bots.length === 0">No bots found.</div>
