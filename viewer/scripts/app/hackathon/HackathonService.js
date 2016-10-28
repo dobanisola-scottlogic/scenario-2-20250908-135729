@@ -5,24 +5,9 @@ class HackathonService {
         this.$q = $q;
     }
 
-    getHackathonIdFromPath() {
-        let pathName = window.location.pathname;
-        let pathParts = pathName.split('/');
-        return pathParts[2];
-    }
-
-    getHackathonIdFromQueryString() {
-        let query = window.location.search;
-        let queryParts = query.split('?');
-        return queryParts[1];
-    }
-
     getHackathonFromPath() {
-        let hackId = this.getHackathonIdFromPath();
-        if (!hackId) {
-            hackId = this.getHackathonIdFromQueryString();
-        }
-        return this.getHackathon(hackId);
+        const searchParams = new URLSearchParams(window.location.search);
+        return this.getHackathon(searchParams.get('hackathonId'));
     }
 
     getHackathons() {

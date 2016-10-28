@@ -16,12 +16,14 @@ class GameSelectorController {
         this.hackathonService = hackathonService;
         this.sharedPropertiesService = sharedPropertiesService;
         this.milestoneBotPrefix = sharedPropertiesService.milestoneBotPrefix;
+        this.selectGame = this.selectGame.bind(this);
 
         this.gamesList = [];
 
         this.teamList = [];
 
         this.initialiseHackathon();
+        this.initialiseGame();
     }
 
     initialiseHackathon() {
@@ -47,6 +49,20 @@ class GameSelectorController {
             },
             () => {
                 this.selectedHackathon = null;
+                this.makingCall = false;
+            }
+        );
+    }
+
+    initialiseGame() {
+        this.makingCall = true;
+        this.gameService.getGameFromPath().then(
+            game => {
+                this.makingCall = false;
+                this.selectGame(game);
+            },
+            () => {
+                this.selectedGame = null;
                 this.makingCall = false;
             }
         );
@@ -96,9 +112,15 @@ class GameSelectorController {
         this.gameService.getGame(game.id).then(response => {
             this.selectedGame = game;
             this.sharedPropertiesService.setSelectedGame(game);
+            this.setGameQueryString(game.id);
             let parsedGameData = parser(response);
             this.playGame(parsedGameData);
         });
+    }
+    setGameQueryString(gameId) {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('gameId', gameId);
+        window.history.pushState({}, '', '?' + searchParams.toString());
     }
     playGame(gameData) {
         // Destroy previous engine
