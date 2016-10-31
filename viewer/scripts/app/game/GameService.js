@@ -5,6 +5,11 @@ class GameService {
         this.$q = $q;
     }
 
+    getGameFromPath() {
+        const searchParams = new URLSearchParams(window.location.search);
+        return this.getGame(searchParams.get('gameId'));
+    }
+
     getGames() {
         return this.$http.get(`${this.apiPath}/game`).then(response => response.data);
     }
