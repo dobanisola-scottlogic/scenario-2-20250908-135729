@@ -7,7 +7,6 @@ server:
   rootPath: '/api/*'
 database:
   driverClass: org.postgresql.Driver
-  url: jdbc:postgresql://ec2-23-21-234-218.compute-1.amazonaws.com:5432/ddvsjbof8jvfo8?user=kwdcejvpvkdxij&password=airNIlcgOrqZsWL7p6-8dmIE2i&sslmode=require
   properties:
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate.hbm2ddl.auto: update

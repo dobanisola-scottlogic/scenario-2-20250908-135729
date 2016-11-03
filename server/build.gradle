@@ -22,6 +22,12 @@ dependencies {
     compile project(":default-bots")
 }
 
+task loadProperties {
+    Properties props = new Properties();
+    props.load(new FileInputStream(file("../.env")));
+    applicationDefaultJvmArgs = ["-Ddw.database.url=" + props["JDBC_DATABASE_URL"]];
+}
+
 jar {
     manifest {
         attributes(
