@@ -7,6 +7,7 @@ import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.*;
 import com.scottlogic.hackathon.server.resources.*;
+import com.scottlogic.hackathon.server.services.AdminService;
 import com.scottlogic.hackathon.server.services.TeamService;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -50,7 +51,8 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
             UploadedBot.class,
             Hackathon.class,
             MilestoneBot.class,
-            UploadedJar.class
+            UploadedJar.class,
+            AdminUser.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(final HackathonConfiguration configuration) {
@@ -67,7 +69,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         setupCrossOriginHeaders(environment);
 
         final Authenticator authenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
-            .create(Authenticator.class, TeamService.class, injector.getInstance(TeamService.class));
+            .create(Authenticator.class, new Class<?>[]{TeamService.class, AdminService.class}, new Object[]{injector.getInstance(TeamService.class), injector.getInstance(AdminService.class)});
 
         environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
                 .setAuthenticator(authenticator)
@@ -78,6 +80,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         environment.jersey().register(RolesAllowedDynamicFeature.class);
 
         environment.jersey().register(injector.getInstance(HackathonResource.class));
+        environment.jersey().register(injector.getInstance(AdminResource.class));
         environment.jersey().register(injector.getInstance(GameResource.class));
         environment.jersey().register(injector.getInstance(TeamResource.class));
         environment.jersey().register(injector.getInstance(BotResource.class));

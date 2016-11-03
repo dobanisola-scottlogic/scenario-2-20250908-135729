@@ -10,6 +10,7 @@
         <li ng-if="controller.isAdmin"><a ng-href="#modal_{{hackathonDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-certificate" aria-hidden="true"></span> Hackathon</a></li>
         <li ng-if="controller.isAdmin"><a ng-href="#modal_{{gameDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-knight" aria-hidden="true"></span> Game</a></li>
         <li ng-if="controller.isAdmin"><a ng-href="#modal_{{teamDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Team</a></li>
+        <li ng-if="controller.isAdmin"><a ng-href="#modal_{{adminDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span> Admin</a></li>
         <li ng-if="!controller.isAdmin"><a ng-href="#modal_{{botDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Dashboard</a></li>
       </ul>
       <div ng-if="controller.isLoggedIn">

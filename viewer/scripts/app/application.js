@@ -10,6 +10,7 @@ let navigationBarModule = require('./navigationBar/navigationBarModule');
 let containerModule = require('./container/containerModule');
 let hackathonModule = require('./hackathon/hackathonModule');
 let teamModule = require('./team/teamModule');
+let adminModule = require('./admin/adminModule');
 let loginModule = require('./login/loginModule');
 let gameSelectorModule = require('./gameSelector/gameSelectorModule');
 let gameModule = require('./game/gameModule');
@@ -23,6 +24,7 @@ let requires = [
     configurationModule.name,
     alertModule.name,
     botModule.name,
+    adminModule.name,
     milestoneModule.name,
     collectablesChartModule.name,
     phaseChartModule.name,

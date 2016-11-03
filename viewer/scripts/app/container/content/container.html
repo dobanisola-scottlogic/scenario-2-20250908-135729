@@ -18,6 +18,12 @@
             <hack-hackathon-panel></hack-hackathon-panel>
         </hack-dashboard>
 
+        <hack-dashboard controller="$parent.$parent.adminDashboardController"
+                        title="Admin Dashboard"
+                        role="ADMIN">
+            <hack-admin-panel></hack-admin-panel>
+        </hack-dashboard>
+
         <hack-dashboard controller="$parent.$parent.botDashboardController"
                         title="Bot Dashboard"
                         role="TEAM">

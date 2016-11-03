@@ -1,0 +1,14 @@
+<div class="adminPanel">
+    <hack-alert ng-show="controller.alert"
+           close-alert="controller.refreshAlerts()"
+           alert="controller.alert">
+    </hack-alert>
+    <form ng-submit="controller.onUpdatePassword()">
+        <input type="text" class="form-control" placeholder="New Password" ng-model="controller.updatePassword">
+        <br>
+        <button type="submit" class="btn btn-default" ng-disabled="controller.updatePasswordButtonDisabled">Update Password</button>
+    </form>
+    <div class="spinner-container" ng-show="controller.makingCall">
+        <div class="spinner"></div>
+    </div>
+</div>

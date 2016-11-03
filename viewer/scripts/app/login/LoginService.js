@@ -7,9 +7,9 @@ class LoginService {
     }
     login(username, password) {
         let loginDeferred = this.$q.defer();
-        let authenticationData = this.$window.btoa(username + ':' + password);
 
-        this.$http.defaults.headers.common.Authorization = 'Basic ' + authenticationData;
+        this.setAuthenticationData(username, password);
+
         this.loggedInUser = null;
 
         this.$http.post(`${this.apiPath}/login`).then(
@@ -34,6 +34,10 @@ class LoginService {
     }
     isAuthourised(role) {
         return this.loggedInUser && this.loggedInUser.role === role;
+    }
+    setAuthenticationData(username, password) {
+        let authenticationData = this.$window.btoa(username + ':' + password);
+        this.$http.defaults.headers.common.Authorization = 'Basic ' + authenticationData;
     }
 }
 
