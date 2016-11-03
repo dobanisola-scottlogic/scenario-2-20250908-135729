@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.context.internal.ManagedSessionContext;
 import org.hibernate.criterion.Criterion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,5 +89,15 @@ public class AbstractStore<T> {
             entities = Collections.emptyList();
         }
         return Collections.unmodifiableList(entities);
+    }
+
+    public void runInSession(Runnable runnable) {
+        Session currentSession = sessionFactory.openSession();
+        ManagedSessionContext.bind(currentSession);
+        currentSession.beginTransaction();
+        runnable.run();
+        ManagedSessionContext.unbind(sessionFactory);
+        currentSession.getTransaction().commit();
+        currentSession.close();
     }
 }

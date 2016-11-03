@@ -63,13 +63,8 @@ class TeamPanelController {
         this.botService.getBotsByTeamName(this.selectedTeam.name).then(
             currentTeamBots => {
                 this.currentTeamBots = currentTeamBots;
-                this.botService.getActiveBots().then(
-                    activeBots => {
-                        this.activeBots = activeBots;
-                        this.makingCall = false;
-                    },
-                    () => {this.makingCall = false;}
-                );
+                this.activeBots = currentTeamBots.filter(bot => bot.active);
+                this.makingCall = false;
             },
             () => {
                 this.makingCall = false;

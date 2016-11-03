@@ -49,7 +49,8 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
             Team.class,
             UploadedBot.class,
             Hackathon.class,
-            MilestoneBot.class
+            MilestoneBot.class,
+            UploadedJar.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(final HackathonConfiguration configuration) {

@@ -1,4 +1,3 @@
-let JSzip = require('jszip');
 const { Error } = require('../alert/Alert');
 const AlertTypes = require('../alert/AlertTypes');
 
@@ -23,14 +22,8 @@ class BotPanelController {
         this.botService.getBots().then(
             allBots => {
                 this.bots = allBots;
-
-                this.botService.getActiveBots().then(
-                    activeBots => {
-                        this.activeBots = activeBots;
-                        this.makingCall = false;
-                    },
-                    () => {this.makingCall = false;}
-                );
+                this.activeBots = allBots.filter(bot => bot.active);
+                this.makingCall = false;
             },
             () => {this.makingCall = false;}
         );

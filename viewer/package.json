@@ -24,7 +24,6 @@
     "imports-loader": "^0.6.5",
     "jQuery": "^1.7.4",
     "less": "^2.7.1",
-    "jszip": "^3.1.2",
     "less-loader": "^2.2.3",
     "ng-file-upload": "^12.0.4",
     "p2": "^0.7.1",

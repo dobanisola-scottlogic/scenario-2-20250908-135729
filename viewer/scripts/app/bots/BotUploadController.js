@@ -21,59 +21,71 @@ class BotUploadController {
     }
 
     onSelectFile(file) {
-        let alert = null;
-        if (file && file.name.endsWith('.jar')) {
-            this.file = file;
+        if (file) {
+            if (file.name.endsWith('.jar')) {
+                this.makingCall = true;
 
-            this.botService.loadZip(file)
-                .then(result => {
-                    if (result.files.length < 1) {
-                        alert = {
-                            type: AlertTypes.ERROR,
-                            message: 'Select a Jar file with at least one class that extends com.scottlogic.hackathon.game.Bot'
-                        };
-                    }
-                    else {
-                        alert = null;
-                        this.botsInCurrentFile = Object.keys(result.files)
-                            .filter(key => key.startsWith(this.contestantBotNamespace) && key.endsWith('.class'))
-                            .map(className => ({
-                                className: className.split('.')[0].split('/').join('.'),
-                                displayName: className.split('/').pop().split('.')[0]
-                            }));
-                    }
-                })
-                .catch(() => { this.alert = Error; });
-        }
-        else {
-            alert = {
-                type: AlertTypes.ERROR,
-                message: 'Select a Jar file with at least one class that extends com.scottlogic.hackathon.game.Bot'
-            };
-        }
-        this.setAlert(alert);
-    }
-
-    upload() {
-        if (this.selectedBotInCurrentFile) {
-            if (this.$scope.isAdminUser) {
-                this.uploadBotAsAdmin();
+                this.botService.getValidBotsFromJar(file)
+                    .then(result => {
+                        if (result.contestantBots.length < 1) {
+                            this.setAlert({
+                                type: AlertTypes.ERROR,
+                                message: 'Select a Jar file with at least one class that extends com.scottlogic.hackathon.game.Bot'
+                            });
+                        }
+                        else {
+                            this.file = file;
+                            this.uploadedJarId = result.id;
+                            this.botsInCurrentFile = result.contestantBots
+                                .map(className => ({
+                                    className: className.split('.')[0].split('/').join('.'),
+                                    displayName: className.split('/').pop().split('.')[0]
+                                }));
+                        }
+                        this.makingCall = false;
+                    })
+                    .catch(() => {
+                        this.setAlert(Error);
+                        this.makingCall = false;
+                    });
             }
             else {
-                this.uploadBot();
+                this.setAlert({
+                    type: AlertTypes.ERROR,
+                    message: 'Select a Jar file with at least one class that extends com.scottlogic.hackathon.game.Bot'
+                });
             }
         }
     }
 
-    uploadBot() {
+    addBot() {
+        if (this.selectedBotInCurrentFile) {
+            if (this.$scope.isAdminUser) {
+                this.addBotAsAdmin();
+            }
+            else {
+                this.addBotAsTeam();
+            }
+        }
+    }
+
+    addBotAsTeam() {
         this.makingCall = true;
         this.refreshAlerts();
-        this.botService.uploadBot(this.selectedBotInCurrentFile, this.file).then(
+        this.botService.addBot(this.selectedBotInCurrentFile, this.uploadedJarId).then(
             bot => {
                 this.file = null;
                 this.botsInCurrentFile = [];
-                this.$scope.onUpload({bot});
                 this.makingCall = false;
+
+                if (bot === '') {
+                    this.setAlert({
+                        type: AlertTypes.ERROR,
+                        message: 'Jar file not found, it may have timed out.'
+                    });
+                } else {
+                    this.$scope.onUpload({bot});
+                }
             },
             () => {
                 this.makingCall = false;
@@ -82,15 +94,23 @@ class BotUploadController {
         );
     }
 
-    uploadBotAsAdmin() {
+    addBotAsAdmin() {
         this.makingCall = true;
         this.refreshAlerts();
-        this.botService.uploadBotAsAdmin(this.selectedBotInCurrentFile, this.$scope.teamName, this.file).then(
+        this.botService.addBotAsAdmin(this.selectedBotInCurrentFile, this.$scope.teamName, this.uploadedJarId).then(
             bot => {
                 this.file = null;
                 this.botsInCurrentFile = [];
-                this.$scope.onUpload({bot});
                 this.makingCall = false;
+
+                if (bot === '') {
+                    this.setAlert({
+                        type: AlertTypes.ERROR,
+                        message: 'Jar file not found, it may have timed out.'
+                    });
+                } else {
+                    this.$scope.onUpload({bot});
+                }
             },
             () => {
                 this.makingCall = false;

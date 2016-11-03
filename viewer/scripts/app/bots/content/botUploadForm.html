@@ -12,14 +12,14 @@
                 ngf-select="controller.onSelectFile($file)"
                 class="btn btn-default"
                 name="file"
-                ngf-max-size="10MB"
+                ngf-max-size="20MB"
                 ng-disabled="selectFileDisabled()">Select File
             </button>
             <button
                 ng-if="controller.file"
                 class="btn btn-success"
-                ng-click="controller.upload()"
-                ng-disabled="!controller.selectedBotInCurrentFile">Upload Bot
+                ng-click="controller.addBot()"
+                ng-disabled="!controller.selectedBotInCurrentFile">Add Bot
             </button>
         </span>
     </div>
