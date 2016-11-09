@@ -1,21 +1,29 @@
 <nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Hackathon</a>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Hackathon</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <div ng-show="controller.selectedHackathon" id="games" class="nav navbar-nav navbar-left navbar-form">
+                <ul class="nav navbar-nav navbar-left">
+                    <li>
+                        <button class="btn btn-default" ng-click="controller.toggleGameGrid()">
+                            Available Games
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <hack-login></hack-login>
+            <ul class="nav navbar-nav navbar-right" ng-if="controller.isLoggedIn">
+                <li ng-if="controller.isAdmin"><a ng-href="#modal_{{hackathonDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-certificate" aria-hidden="true"></span> Hackathon</a></li>
+                <li ng-if="controller.isAdmin"><a ng-href="#modal_{{gameDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-knight" aria-hidden="true"></span> Game</a></li>
+                <li ng-if="controller.isAdmin"><a ng-href="#modal_{{teamDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Team</a></li>
+				<li ng-if="controller.isAdmin"><a ng-href="#modal_{{adminDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span> Admin</a></li>
+                <li ng-if="!controller.isAdmin"><a ng-href="#modal_{{botDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Dashboard</a></li>
+            </ul>
+            <div ng-if="controller.isLoggedIn">
+                <hack-transclude></hack-transclude>
+            </div>
+        </div>
     </div>
-    <div class="collapse navbar-collapse">
-      <hack-game-selector></hack-game-selector>
-      <hack-login></hack-login>
-      <ul class="nav navbar-nav navbar-right" ng-if="controller.isLoggedIn">
-        <li ng-if="controller.isAdmin"><a ng-href="#modal_{{hackathonDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-certificate" aria-hidden="true"></span> Hackathon</a></li>
-        <li ng-if="controller.isAdmin"><a ng-href="#modal_{{gameDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-knight" aria-hidden="true"></span> Game</a></li>
-        <li ng-if="controller.isAdmin"><a ng-href="#modal_{{teamDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Team</a></li>
-        <li ng-if="controller.isAdmin"><a ng-href="#modal_{{adminDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span> Admin</a></li>
-        <li ng-if="!controller.isAdmin"><a ng-href="#modal_{{botDashboardController.getId()}}" data-toggle="modal"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Dashboard</a></li>
-      </ul>
-      <div ng-if="controller.isLoggedIn">
-        <hack-transclude></hack-transclude>
-      </div>
-    </div>
-  </div>
 </nav>

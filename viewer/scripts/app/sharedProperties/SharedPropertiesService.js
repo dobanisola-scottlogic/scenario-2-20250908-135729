@@ -7,6 +7,7 @@ class SharedPropertiesService {
         this.endState = null;
         this.phaseIndex = null;
         this.gameOver = null;
+        this.showGameGrid = false;
     }
     setEngine(engine) {
         this.engine = engine;
@@ -41,6 +42,12 @@ class SharedPropertiesService {
     onGameEnd() {
         this.setGameOver(true);
         this.$rootScope.$broadcast('gameOver');
+    }
+    getShowGameGrid() {
+        return this.showGameGrid;
+    }
+    toggleShowGameGrid() {
+        this.showGameGrid = !this.showGameGrid;
     }
 }
 

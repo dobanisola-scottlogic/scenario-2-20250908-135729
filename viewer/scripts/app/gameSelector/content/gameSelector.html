@@ -1,19 +1,6 @@
-<ul ng-show="controller.selectedHackathon" id="gameSelector" class="nav navbar-nav">
-    <li class="dropdown">
-        <a class="dropdown-toggle games-dropdown" role="button" id="games" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Available Games <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a ng-click="controller.enableLiveMode()" ng-class="{'selected': controller.sharedPropertiesService.getLiveMode()}">Live</a></li>
-            <li ng-if="controller.gamesList.length === 0"><a>No games found</a></li>
-            <li ng-repeat="game in controller.gamesList | orderBy:'-game.gameTime'" ng-click="controller.gameSelectedInDropdown(game)" ng-class="{'selected': game.id === controller.selectedGame.id}">
-                <a href="#">
-                    <span>Map {{game.game.map.name}} - </span>
-                    <span ng-repeat="team in game.game.teams | orderBy:'teamName'">
-                        {{team.teamName.replace(controller.milestoneBotPrefix, '').replace('Bot', '')}}{{$last ? '' : ' vs '}}
-                    </span>
-                </a>
-            </li>
-        </ul>
-    </li>
-</ul>
+<div ng-show="controller.selectedHackathon" id="gameSelector">
+    <div id="game-grid-container" ng-if="controller.showGrid()">
+        <div id="grid1" ui-grid="controller.gridOptions"  ui-grid-selection class="grid"></div>
+        <button class="btn btn-danger" id="live-mode-btn" ng-click="controller.enableLiveMode()">Live</button>
+    </div>
+</div>

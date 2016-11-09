@@ -9,7 +9,7 @@ class ScoreboardController {
     }
     getMapName() {
         const selectedGame = this.sharedPropertiesService.getSelectedGame();
-        return selectedGame ? selectedGame.game.map.name : '';
+        return selectedGame ? selectedGame.map : '';
     }
     getTeams() {
         const engine = this.sharedPropertiesService.getEngine();
@@ -22,7 +22,7 @@ class ScoreboardController {
     }
     getGameTime() {
         const selectedGame = this.sharedPropertiesService.getSelectedGame();
-        return selectedGame ? selectedGame.game.gameTime : null;
+        return selectedGame ? selectedGame.time : null;
     }
 }
 
