@@ -5,6 +5,7 @@
   "main": "build/bundle.js",
   "dependencies": {
     "angular": "^1.5.5",
+    "angular-ui-grid": "^3.2.9",
     "autoprefixer-loader": "^3.2.0",
     "babel-core": "^6.7.4",
     "babel-eslint": "^6.0.2",

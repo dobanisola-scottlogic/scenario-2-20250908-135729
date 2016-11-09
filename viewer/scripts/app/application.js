@@ -21,6 +21,8 @@ let scoreboardModule = require('./scoreboard/scoreboardModule');
 
 let requires = [
     'ngFileUpload',
+    'ui.grid',
+    'ui.grid.selection',
     configurationModule.name,
     alertModule.name,
     botModule.name,

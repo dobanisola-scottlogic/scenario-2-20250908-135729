@@ -7,7 +7,7 @@ let Engine = require('../../engine/Engine.js');
 let engine;
 
 class GameSelectorController {
-    constructor($rootScope, $scope, $http, $interval, gameService, hackathonService, sharedPropertiesService) {
+    constructor($rootScope, $scope, $http, $interval, gameService, hackathonService, sharedPropertiesService, uiGridConstants) {
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.$http = $http;
@@ -24,6 +24,48 @@ class GameSelectorController {
 
         this.initialiseHackathon();
         this.initialiseGame();
+        this.setupGameGrid(uiGridConstants);
+    }
+
+    setupGameGrid(uiGridConstants) {
+        this.gridOptions = {
+            enableSorting: true,
+            enableFiltering: true,
+            columnDefs: [
+                { name: 'Teams', field: 'name'},
+                { field: 'map',
+                filter: {
+                    type: uiGridConstants.filter.SELECT,
+                    condition: uiGridConstants.filter.EXACT,
+                    selectOptions: [
+                        { value: 'VeryEasy', label: 'Very Easy' },
+                        { value: 'Easy', label: 'Easy' },
+                        { value: 'Medium', label: 'Medium'},
+                        { value: 'LargeMedium', label: 'Large Medium' },
+                        { value: 'Hard', label: 'Hard' }
+                    ]}
+                },
+                { name: 'Game Time', field: 'timeString', type: 'date'}
+            ],
+            enableRowSelection: true,
+            enableRowHeaderSelection: false,
+            multiSelect: false,
+            data: this.gamesList
+        };
+
+        let self = this;
+
+        this.gridOptions.onRegisterApi = (gridApi) => {
+            self.$scope.gridApi = gridApi;
+            gridApi.selection.on.rowSelectionChanged(self.$scope, (row) => {
+                this.sharedPropertiesService.setLiveMode(false);
+                self.selectGame(row.entity);
+            });
+        };
+    }
+
+    showGrid() {
+        return this.sharedPropertiesService.getShowGameGrid();
     }
 
     initialiseHackathon() {
@@ -59,13 +101,36 @@ class GameSelectorController {
         this.gameService.getGameFromPath().then(
             game => {
                 this.makingCall = false;
-                this.selectGame(game);
+                this.selectGame(this.mapGame(game));
             },
             () => {
                 this.selectedGame = null;
                 this.makingCall = false;
             }
         );
+    }
+
+    mapGame(game) {
+        return {
+            name: game.game.teams.map(team => {
+                return team.teamName.replace(this.milestoneBotPrefix, '').replace('Bot', '');
+            }).sort(function(a, b) {
+                let teamA = a.toUpperCase();
+                let teamB = b.toUpperCase();
+                let comparison = 0;
+                if (teamA < teamB) {
+                    comparison = -1;
+                }
+                if (teamA > teamB) {
+                    comparison = 1;
+                }
+                return comparison;
+            }).join(' vs '),
+            map: game.game.map.name,
+            timeString: new Date(game.game.gameTime).toUTCString(),
+            time: game.game.gameTime,
+            id: game.id
+        };
     }
 
     getGamesList() {
@@ -77,7 +142,7 @@ class GameSelectorController {
     }
     getLatestGame() {
         return this.gamesList.reduce((prevGame, currGame) => (
-            currGame.game.gameTime > prevGame.game.gameTime ? currGame : prevGame
+            currGame.time > prevGame.time ? currGame : prevGame
         ));
     }
     selectMostRecentGame() {
@@ -101,12 +166,11 @@ class GameSelectorController {
     }
     setGamesList(gamesList) {
         if (gamesList && gamesList.length) {
-            this.gamesList = gamesList;
+            this.gamesList = gamesList.map(game => {
+                return this.mapGame(game);
+            });
         }
-    }
-    gameSelectedInDropdown(game) {
-        this.sharedPropertiesService.setLiveMode(false);
-        this.selectGame(game);
+        this.gridOptions.data = this.gamesList;
     }
     selectGame(game) {
         this.gameService.getGame(game.id).then(response => {
@@ -143,6 +207,6 @@ class GameSelectorController {
     }
 }
 
-GameSelectorController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'GameService', 'HackathonService', 'SharedPropertiesService'];
+GameSelectorController.$inject = ['$rootScope', '$scope', '$http', '$interval', 'GameService', 'HackathonService', 'SharedPropertiesService', 'uiGridConstants'];
 
 module.exports = GameSelectorController;
