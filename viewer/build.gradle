@@ -1,20 +1,9 @@
-group "com.scottlogic.hackathon"
-version "1.0-SNAPSHOT"
-
-
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-
-    dependencies {
-        classpath "com.moowork.gradle:gradle-node-plugin:0.12"
-    }
+plugins {
+    id "com.moowork.node" version "1.2.0"
 }
 
-apply plugin: 'com.moowork.node'
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"
 
 node {
     download = true
