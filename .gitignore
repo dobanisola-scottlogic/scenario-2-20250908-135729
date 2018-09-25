@@ -19,6 +19,8 @@ gradle-app.setting
 # Idea
 *.iml
 .idea/*
+*.ipr
+*.iws
 
 
 # Eclipse
