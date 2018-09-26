@@ -1,5 +1,4 @@
 # Java
-
 *.class
 *.jar
 *.war
@@ -9,7 +8,6 @@
 *.orig
 
 # Gradle
-
 .gradle
 build/
 gradle-app.setting
@@ -18,9 +16,10 @@ gradle-app.setting
 
 # Idea
 *.iml
-.idea/*
 *.ipr
 *.iws
+.idea/
+out/
 
 
 # Eclipse
