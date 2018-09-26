@@ -78,4 +78,3 @@ gradlew :client:shadowJar
 
 ### Run ###
 java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar
->>>>>>> develop
