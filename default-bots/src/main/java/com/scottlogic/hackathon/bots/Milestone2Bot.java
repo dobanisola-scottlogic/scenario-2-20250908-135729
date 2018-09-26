@@ -31,9 +31,6 @@ public class Milestone2Bot extends Bot {
             moves.removeIf(move -> move.getPlayer().equals(player.getId()));
         });
 
-        final int mapWidth = gameState.getMap().getWidth();
-        final int mapHeight = gameState.getMap().getHeight();
-
         final Set<UUID> previousPlayers = moves
                 .stream()
                 .map(move -> move.getPlayer())
@@ -52,7 +49,7 @@ public class Milestone2Bot extends Bot {
                     // Determines which bot is selected
                     ProportionalStateSelector proportionalStateSelector = null;
                     try {
-                        proportionalStateSelector = new ProportionalStateSelector(moveCounts, spawnProfile, mapWidth, mapHeight, player);
+                        proportionalStateSelector = new ProportionalStateSelector(moveCounts, spawnProfile, gameState.getMap(), player);
                     } catch (final InvocationTargetException e) {
                         e.printStackTrace();
                     } catch (final NoSuchMethodException e) {
@@ -100,7 +97,7 @@ public class Milestone2Bot extends Bot {
                     .get(0);
             ProportionalTransitionSelector proportionalTransitionSelector = null;
             try {
-                proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, transitionProfile, mapWidth, mapHeight, move, movePlayer);
+                proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, transitionProfile, gameState.getMap(), move, movePlayer);
             } catch (final InvocationTargetException e) {
                 e.printStackTrace();
             } catch (final NoSuchMethodException e) {

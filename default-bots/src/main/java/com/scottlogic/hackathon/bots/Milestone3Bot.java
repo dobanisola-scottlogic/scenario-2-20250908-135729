@@ -22,9 +22,6 @@ public class Milestone3Bot extends Bot {
             moves.removeIf(move -> move.getPlayer().equals(player.getId()));
         });
 
-        final int mapWidth = gameState.getMap().getWidth();
-        final int mapHeight = gameState.getMap().getHeight();
-
         final Set<UUID> previousPlayers = moves
                 .stream()
                 .map(move -> move.getPlayer())
@@ -53,9 +50,7 @@ public class Milestone3Bot extends Bot {
                 this.outOfBoundsPositions,
                 spawnPoint,
                 opponentSpawnPoints,
-                collectables,
-                mapWidth,
-                mapHeight);
+                collectables);
         Map<Class, Integer> initialMoveCounts = moves
                 .stream()
                 .collect(Collectors.toMap(move -> move.getClass(), move -> 1, (count, moveCount) -> count + moveCount));

@@ -15,9 +15,6 @@ public class Milestone1Bot extends Bot {
             moves.removeIf(move -> move.getPlayer().equals(player.getId()));
         });
 
-        final int mapWidth = gameState.getMap().getWidth();
-        final int mapHeight = gameState.getMap().getHeight();
-
         final Set<UUID> previousPlayers = moves
                 .stream()
                 .map(move -> move.getPlayer())
@@ -29,7 +26,7 @@ public class Milestone1Bot extends Bot {
             if (player.getOwner().equals(getId())) {
                 playerPositions.add(player.getPosition());
                 if (!previousPlayers.contains(player.getId())) {
-                    moves.add(new TimidMove(mapWidth, mapHeight, player));
+                    moves.add(new TimidMove(gameState.getMap(), player));
                 } else {
                     moves.forEach(move -> {
                         if (move.getPlayer().equals(player.getId())) {

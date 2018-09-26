@@ -2,22 +2,26 @@ package com.scottlogic.hackathon.bots.state;
 
 import com.scottlogic.hackathon.bots.move.MoveBase;
 import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ProportionalTransitionSelector {
 
     private MoveBase move;
 
-    public ProportionalTransitionSelector(Map<Class, Integer> moveCounts, HashMap<Class, Integer> transitionProfile, int mapWidth, int mapHeight, MoveBase move, Player player) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        this.move = findMinimumSquaresSolution(moveCounts, transitionProfile, mapWidth, mapHeight, move, player);
+    public ProportionalTransitionSelector(java.util.Map<Class, Integer> moveCounts,
+            HashMap<Class, Integer> transitionProfile, Map map, MoveBase move, Player player)
+            throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        this.move = findMinimumSquaresSolution(moveCounts, transitionProfile, map, move, player);
     }
 
-    private MoveBase findMinimumSquaresSolution(Map<Class, Integer> moveCounts, HashMap<Class, Integer> desiredProportionsMap, int mapWidth, int mapHeight, MoveBase move, Player player) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    private static MoveBase findMinimumSquaresSolution(java.util.Map<Class, Integer> moveCounts,
+            HashMap<Class, Integer> desiredProportionsMap, Map map, MoveBase move, Player player)
+            throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         double minimumSquaresValue = 0;
         Class moveClass = null;
         for (Class clazz : desiredProportionsMap.keySet()) {
@@ -41,10 +45,10 @@ public class ProportionalTransitionSelector {
         }
 
         if (moveClass != null) {
-            Constructor constructor = moveClass.getConstructor(Direction.class, int.class, int.class, int.class, Player.class);
-            return (MoveBase) constructor.newInstance(move.getDirection(), move.getDistance(), mapWidth, mapHeight, player);
+            Constructor constructor = moveClass.getConstructor(Direction.class, int.class, Map.class, Player.class);
+            return (MoveBase) constructor.newInstance(move.getDirection(), move.getDistance(), map, player);
         } else {
-            RandomStateSelector randomStateSelector = new RandomStateSelector(mapWidth, mapHeight, player);
+            RandomStateSelector randomStateSelector = new RandomStateSelector(map, player);
             return randomStateSelector.getMove();
         }
     }

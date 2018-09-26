@@ -2,16 +2,19 @@ package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Collectable;
 import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
+
+import java.util.stream.Stream;
 
 public class CollectableMove extends MoveBase {
 
-    public CollectableMove(final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(mapWidth, mapHeight, fullPlayer);
+    public CollectableMove(Map map, final Player fullPlayer) {
+        super(map, fullPlayer);
     }
 
-    public CollectableMove(Direction direction, int distance, final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(direction, distance, mapWidth, mapHeight, fullPlayer);
+    public CollectableMove(Direction direction, int distance, Map map, final Player fullPlayer) {
+        super(direction, distance, map, fullPlayer);
     }
 
     @Override
@@ -27,10 +30,10 @@ public class CollectableMove extends MoveBase {
             }
             if (nearestCollectable != null) {
                 distance = 0;
-                direction = util.findBestDirectionFirstPositionToAnother(playerPosition, nearestCollectable.getPosition());
-                while (util.playersCollideInThisMove(2, direction, playerPosition, playersPositions)) {
-                    direction = util.randomDirection();
-                }
+                direction = Stream.concat(getMap().directionsTowards(playerPosition, nearestCollectable.getPosition()), util.randomDirections())
+                        .filter(d -> util.playersCollideInThisMove(2, d, playerPosition, playersPositions))
+                        .findFirst()
+                        .get();
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

@@ -23,26 +23,29 @@ public class MoveBase implements Move {
     Set<SpawnPoint> opponentSpawnPoints = new HashSet<>();
     Set<Collectable> collectables;
 
+    private final Map map;
     Util util;
 
     static final int MINIMUM_RANDOM_DISTANCE = 16;
     static final int MAXIMUM_RANDOM_DISTANCE = 64;
     static final int ACTIVE_RADIUS_SQUARED = 50;
 
-    public MoveBase(final int mapWidth, final int mapHeight, final Player fullPlayer) {
+    public MoveBase(Map map, final Player fullPlayer) {
         this.owner = fullPlayer.getOwner();
         this.playerPosition = fullPlayer.getPosition();
         this.player = fullPlayer.getId();
-        this.util = new Util(mapWidth, mapHeight);
+        this.map = map;
+        this.util = new Util(map.getWidth(), map.getHeight());
     }
 
-    public MoveBase(Direction direction, int distance, final int mapWidth, final int mapHeight, final Player fullPlayer) {
+    public MoveBase(Direction direction, int distance, Map map, final Player fullPlayer) {
+        this(map, fullPlayer);
         this.direction = direction;
         this.distance = distance;
-        this.owner = fullPlayer.getOwner();
-        this.playerPosition = fullPlayer.getPosition();
-        this.player = fullPlayer.getId();
-        this.util = new Util(mapWidth, mapHeight);
+    }
+
+    protected Map getMap() {
+        return map;
     }
 
     public UUID getPlayer() {
