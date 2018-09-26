@@ -44,28 +44,6 @@ public interface Map {
     }
 
     /**
-     * Determines the distance by which one position is South of another.
-     * This is defined as the smallest number of {@linkplain Direction#isSouthward() southward} moves it would take
-     * for a player to move from the first position until it had the same y-coordinate as the second position.
-     * If the second position is North of the first, the result will be negative.
-     * @param from The position to measure the northward distance from
-     * @param to The position to measure the northward distance to
-     * @return The distance in number of phases; will be negative <b>to</b> is North of <b>from</b>
-     */
-    int southDistance(Position from, Position to);
-
-    /**
-     * Determines the distance by which one position is West of another.
-     * This is defined as the smallest number of {@linkplain Direction#isWestward() westward} moves it would take
-     * for a player to move from the first position until it had the same x-coordinate as the second position.
-     * If the second position is East of the first, the result will be negative.
-     * @param from The position to measure the northward distance from
-     * @param to The position to measure the northward distance to
-     * @return The distance in number of phases; will be negative <b>to</b> is East of <b>from</b>
-     */
-    int westDistance(Position from, Position to);
-
-    /**
      * Determines the absolute horizontal distance between two positions.
      * This is defined as smallest number of phases it would take for a player to move from one position until
      * it had the same x-coordinate as the other position,
@@ -75,9 +53,7 @@ public interface Map {
      * @param b The other of the positions to find the distance between
      * @return The horizontal distance in number of phases
      */
-    default int xDistance(Position a, Position b) {
-        return Math.abs(westDistance(a, b));
-    }
+    int xDistance(Position a, Position b);
 
     /**
      * Determines the absolute vertical distance between two positions.
@@ -89,9 +65,7 @@ public interface Map {
      * @param b The other of the positions to find the distance between
      * @return The vertical distance in number of phases
      */
-    default int yDistance(Position a, Position b) {
-        return Math.abs(southDistance(a, b));
-    }
+    int yDistance(Position a, Position b);
 
     /**
      * Determines the distance between two positions.

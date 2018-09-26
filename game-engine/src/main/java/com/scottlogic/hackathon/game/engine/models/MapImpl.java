@@ -45,25 +45,19 @@ public class MapImpl implements Map {
     }
 
     @Override
-    public int westDistance(Position from, Position to) {
-        return directedDistance(from.getX(), to.getX(), getWidth());
+    public int xDistance(Position a, Position b) {
+        return directedDistance(a.getX(), b.getX(), getWidth());
     }
 
     @Override
-    public int southDistance(Position from, Position to) {
-        return directedDistance(from.getY(), to.getY(), getHeight());
+    public int yDistance(Position a, Position b) {
+        return directedDistance(a.getY(), b.getY(), getHeight());
     }
 
 
-    private int directedDistance(int from, int to, int extent) {
-        int d = to - from;
-        int halfExtent = extent/2;
-        if(d > halfExtent) {
-            d -= extent;
-        } else if(d < -halfExtent) {
-            d += extent;
-        }
-        return d;
+    private int directedDistance(int a, int b, int extent) {
+        int d = Math.abs(b - a);
+        return d > extent/2 ? extent-d : d;
     }
 
     /**
