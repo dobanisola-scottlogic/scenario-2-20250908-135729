@@ -22,6 +22,6 @@ public class MoveRejection implements Rejection {
 
     @Override
     public String getMessage() {
-        return String.format("Move %s - %2", move, moveMessage);
+        return String.format("Move %s - %s", move, moveMessage);
     }
 }
