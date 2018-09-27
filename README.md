@@ -66,18 +66,26 @@
 ## Server ##
 
 ### Build ###
-`gradlew :server:shadowJar`
+```
+gradlew :server:shadowJar
+```
 
 ### Run ###
-`heroku local -f Procfile.windows`
+```
+heroku local -f Procfile.windows
+```
 
 ## Client ##
 
 ### Build ###
-`gradlew :client:shadowJar`
+```
+gradlew :client:shadowJar
+```
 
 ### Run ###
-`java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar`
+```
+java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar
+```
 
 ## Contestant Dependencies ##
 The contestant project has a runtime dependency on the `client` project, to support
@@ -88,11 +96,15 @@ There is also a compile time dependency on the `game` project, this dependency i
 by the standard jar built by the `game` project.
 
 ### Build ###
-`gradlew :client:shadowJar`
-`gradlew :game`
+From a command prompt in the root directory of the project:
+```
+gradlew :client:shadowJar
+gradlew :game
+```
 
 ### Install ###
 Copy the following jar files to the `libs` folder in the contestant project.
-
-`client\build\libs\client-1.0-SNAPSHOT-all.jar`
-`game\build\libs\game-1.0-SNAPSHOT.jar`
+```
+client\build\libs\client-1.0-SNAPSHOT-all.jar
+game\build\libs\game-1.0-SNAPSHOT.jar
+```
