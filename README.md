@@ -50,7 +50,7 @@
 
 * Install
 * Import the top level gradle project
-** Use the task wrapper configuration
+* Use the task wrapper configuration
 * Ensure Code Style is using the project configuration
 
 ### Extensions ###
@@ -66,15 +66,33 @@
 ## Server ##
 
 ### Build ###
-gradlew :server:shadowJar
+`gradlew :server:shadowJar`
 
 ### Run ###
-heroku local -f Procfile.windows
+`heroku local -f Procfile.windows`
 
 ## Client ##
 
 ### Build ###
-gradlew :client:shadowJar
+`gradlew :client:shadowJar`
 
 ### Run ###
-java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar
+`java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar`
+
+## Contestant Dependencies ##
+The contestant project has a runtime dependency on the `client` project, to support
+this the `client` project defines a shadowJar configuration containing the relevant
+projects and dependencies.
+
+There is also a compile time dependency on the `game` project, this dependency is satisfied
+by the standard jar built by the `game` project.
+
+### Build ###
+`gradlew :client:shadowJar`
+`gradlew :game`
+
+### Install ###
+Copy the following jar files to the `libs` folder in the contestant project.
+
+`client\build\libs\client-1.0-SNAPSHOT-all.jar`
+`game\build\libs\game-1.0-SNAPSHOT.jar`
