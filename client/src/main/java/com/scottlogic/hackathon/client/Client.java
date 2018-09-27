@@ -7,6 +7,7 @@ import org.fusesource.jansi.AnsiConsole;
 import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Client {
 
@@ -19,13 +20,14 @@ public class Client {
         final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(args);
         final Arguments arguments = argumentsBuilder.create();
         if (arguments != null) {
-            final Bot defaultBot = loadDefaultBot(arguments.getBot());
+
+            final List<Bot> defaultBot = Stream.of(arguments.getBot()).map(this::loadDefaultBot).collect(Collectors.toList());
             final Bot bot = loadBot(arguments.getClassName());
 
             if (bot != null && defaultBot != null) {
                 final Set<Bot> bots = new HashSet<Bot>();
 
-                bots.add(defaultBot);
+                bots.addAll(defaultBot);
                 bots.add(bot);
 
                 GameEngine gameEngine = null;

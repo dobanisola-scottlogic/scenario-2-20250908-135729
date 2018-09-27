@@ -1,6 +1,11 @@
 package com.scottlogic.hackathon.client;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +17,7 @@ class ArgumentsBuilder {
     private final String[] arguments;
     private final boolean parsed = false;
     private String map;
-    private String bot;
+    private String[] bots;
     private String className;
     private Options options;
     private Option mapOption;
@@ -39,7 +44,7 @@ class ArgumentsBuilder {
             } else {
                 arguments = new Arguments(
                         map == null ? DEFAULT_MAP : map,
-                        bot == null ? DEFAULT_BOT : bot,
+                        bots == null ? new String[]{DEFAULT_BOT} : bots,
                         className);
             }
         }
@@ -54,15 +59,16 @@ class ArgumentsBuilder {
                 .build();
 
         botOption = Option.builder("b")
-                .hasArg()
+                .hasArgs()
                 .longOpt("bot")
-                .desc("Bot: a bot name to play against (Default, Milestone1, Milestone2, Milestone3)\t\tdefault: Milestone1")
+                .desc("Bot: a bots name to play against (Default, Milestone1, Milestone2, Milestone3)\t\tdefault: Milestone1. " +
+                        "Can set multiple E.G -b Milestone1 Milestone2 Milestone3")
                 .build();
 
         classOption = Option.builder("c")
                 .hasArg()
                 .longOpt("className")
-                .desc("ClassName: full class name (include package) of your bot e.g. com.contestantbots.team.ExampleBot")
+                .desc("ClassName: full class name (include package) of your bots e.g. com.contestantbots.team.ExampleBot")
                 .build();
 
         options.addOption(mapOption);
@@ -94,12 +100,10 @@ class ArgumentsBuilder {
             }
 
             if (cmd.hasOption(botOption.getOpt())) {
-                bot = cmd.getOptionValue(botOption.getOpt());
+                bots = cmd.getOptionValues(botOption.getOpt());
             }
 
             if (cmd.hasOption(classOption.getOpt())) {
-                System.out.println(cmd.getOptionValue(classOption.getOpt()));
-
                 className = cmd.getOptionValue(classOption.getOpt());
             } else {
                 List<String> additionalArgs = cmd.getArgList();
