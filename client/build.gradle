@@ -43,4 +43,8 @@ shadowJar {
         include(dependency("com.fasterxml.jackson.core:jackson-annotations"))
         include(dependency("org.slf4j:slf4j-api"))
     }
+    exclude "com/scottlogic/hackathon/bots/BasicAgent.class"
+    exclude "com/scottlogic/hackathon/bots/FastExpansionBot.class"
+    exclude "com/scottlogic/hackathon/bots/Node.class"
+    exclude "com/scottlogic/hackathon/bots/NodeType.class"
 }
