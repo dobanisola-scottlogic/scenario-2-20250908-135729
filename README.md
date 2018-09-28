@@ -99,7 +99,7 @@ by the standard jar built by the `game` project.
 From a command prompt in the root directory of the project:
 ```
 gradlew :client:shadowJar
-gradlew :game
+gradlew :game:build
 ```
 
 ### Install ###
