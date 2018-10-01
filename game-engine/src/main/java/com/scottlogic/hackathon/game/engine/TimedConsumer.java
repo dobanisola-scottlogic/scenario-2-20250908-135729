@@ -18,16 +18,18 @@ public class TimedConsumer<T> {
                     consumer.accept(item);
                 });
                 boolean completed;
+                Exception exception = null;
                 try {
                     future.get(timeout, timeUnit);
                     completed = true;
                 } catch (final Exception e) {
                     future.cancel(true);
                     completed = false;
+                    exception = e;
                 } finally {
                     consumerExecutorService.shutdownNow();
                 }
-                return new Result<T>(item, completed);
+                return new Result<T>(item, completed, exception);
             });
         });
 
@@ -40,14 +42,19 @@ public class TimedConsumer<T> {
         return consumeResults;
     }
 
+    public void dispose() {
+        executorService.shutdown();
+    }
+
     static class Result<T> {
         private final T item;
         private final boolean completed;
+        private final Exception exception;
 
-        Result(final T item, final boolean completed) {
-
+        Result(final T item, final boolean completed, final Exception exception) {
             this.item = item;
             this.completed = completed;
+            this.exception = exception;
         }
 
         public T getItem() {
@@ -57,9 +64,9 @@ public class TimedConsumer<T> {
         public boolean isCompleted() {
             return completed;
         }
-    }
 
-    public void dispose() {
-        executorService.shutdown();
+        public Exception getException() {
+            return exception;
+        }
     }
 }
