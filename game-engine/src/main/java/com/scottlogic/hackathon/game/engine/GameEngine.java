@@ -112,7 +112,7 @@ public class GameEngine {
         consumeResults.stream()
                 .filter(consumeResult -> !consumeResult.isCompleted())
                 .forEach(consumeResult -> {
-                    disqualifyBot(consumeResult.getItem(), Arrays.asList(new BotRejection("initialise took too long")));
+                    disqualifyBot(consumeResult.getItem(), Arrays.asList(new SimpleRejection("initialise took too long")));
                 });
     }
 
@@ -122,7 +122,7 @@ public class GameEngine {
         removeIf(players, player -> player.getOwner().equals(bot.getId()));
         removeIf(players, player -> player.getOwner().equals(bot.getId()));
         removeIf(spawnPoints, spawnPoint -> spawnPoint.getOwner().equals(bot.getId()));
-        logger.info("Bot Disqualified: " + bot + " Due To: " + rejectedMoves.toString());
+        logger.info("Bot Disqualified: {} Due to: {}", bot.getDisplayName(), rejectedMoves);
     }
 
     private <T> void removeIf(final TrackedSetImpl<T> items, final Predicate<T> predicate) {
@@ -161,9 +161,10 @@ public class GameEngine {
                     final Bot bot = consumeResult.getItem();
                     final Exception exception = consumeResult.getException();
                     if (exception != null) {
-                        disqualifyBot(bot, Arrays.asList(new BotRejection("bot threw exception: " + exception.getMessage())));
+                        logger.info("Bot threw exception.", exception);
+                        disqualifyBot(bot, Arrays.asList(new BotExceptionRejection(exception)));
                     } else if (!consumeResult.isCompleted()) {
-                        disqualifyBot(bot, Arrays.asList(new BotRejection("makeMoves took too long")));
+                        disqualifyBot(bot, Arrays.asList(new SimpleRejection("makeMoves took too long")));
                     } else {
                         final List<Move> moves = botMoves.get(bot);
                         final List<Rejection> rejectedMoves = getRejectedMoves(bot, moves);
