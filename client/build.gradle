@@ -35,16 +35,6 @@ runShadow {
 }
 
 shadowJar {
-    dependencies {
-        include(project(":game"))
-        include(project(":game-engine"))
-        include(project(":default-bots"))
-        include(dependency("org.fusesource.jansi:jansi"))
-        include(dependency("com.fasterxml.jackson.core:jackson-core"))
-        include(dependency("com.fasterxml.jackson.core:jackson-databind"))
-        include(dependency("com.fasterxml.jackson.core:jackson-annotations"))
-        include(dependency("org.slf4j:slf4j-api"))
-    }
     exclude "com/scottlogic/hackathon/bots/BasicAgent.class"
     exclude "com/scottlogic/hackathon/bots/FastExpansionBot.class"
     exclude "com/scottlogic/hackathon/bots/Node.class"
