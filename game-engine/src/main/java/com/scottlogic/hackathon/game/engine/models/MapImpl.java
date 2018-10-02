@@ -30,9 +30,9 @@ public class MapImpl implements Map {
         int y = from.getY();
 
         if(direction.isEastward()) {
-            x -= distance;
-        } else if(direction.isWestward()) {
             x += distance;
+        } else if(direction.isWestward()) {
+            x -= distance;
         }
 
         if(direction.isNorthward()) {
