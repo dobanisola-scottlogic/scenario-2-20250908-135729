@@ -97,7 +97,6 @@ The contestant project has the following dependencies:
 The `game` project dependency is satisfied by the standard jar configuration.  However, the `client` project dependency
 has to be managed using a custom shadowJar configuration to exclude some of the more advanced bot algorithms.
 
-
 ### Build ###
 From a command prompt in the root directory of the project:
 ```
