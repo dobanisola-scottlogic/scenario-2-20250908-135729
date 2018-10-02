@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.game;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -129,6 +130,31 @@ public interface Map {
 
         return Stream.of(Direction.values())
                 .filter(d -> distance(getNeighbour(from, d), awayFrom) > distance);
+    }
+
+    /**
+     * Creates a {@linkplain Route} through this map, starting from the given position and taking a single step
+     * in each of the given directions.
+     *
+     * @param start The starting position of the route
+     * @param route The sequence of steps determining the route
+     * @return The resulting route
+     */
+    default Route route(Position start, List<Direction> route) {
+        return new ListRoute(this, start, route);
+    }
+
+    /**
+     * Creates a {@linkplain Route} through this map, starting from the given position and taking the given number of
+     * steps in the given direction.
+     *
+     * @param start The starting position of the route
+     * @param direction The direction to move in from the starting position
+     * @param length The numper of steps to move
+     * @return The resulting route
+     */
+    default Route straightLineRoute(Position start, Direction direction, int length) {
+        return new StraightLineRoute(this, start, direction, length);
     }
 
 }
