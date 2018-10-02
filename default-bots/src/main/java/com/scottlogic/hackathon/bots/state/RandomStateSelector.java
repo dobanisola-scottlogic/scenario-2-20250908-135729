@@ -1,6 +1,7 @@
 package com.scottlogic.hackathon.bots.state;
 
 import com.scottlogic.hackathon.bots.move.*;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 
 import java.util.Random;
@@ -17,20 +18,20 @@ public class RandomStateSelector {
 
     private MoveBase move;
 
-    public RandomStateSelector(int mapWidth, int mapHeight, Player player) {
+    public RandomStateSelector(Map map, Player player) {
         // Determines which bot is selected
         int stateProportionsSum = IntStream.of(STATEPROPORTIONS).sum();
         int randomState = new Random().nextInt(stateProportionsSum);
         if (randomState < STATEPROPORTIONS[0]) {
-            this.move = new AttackMove(mapWidth, mapHeight, player);
+            this.move = new AttackMove(map, player);
         } else if (randomState < STATEPROPORTIONS[0] + STATEPROPORTIONS[1]) {
-            this.move = new CollectableMove(mapWidth, mapHeight, player);
+            this.move = new CollectableMove(map, player);
         } else if (randomState < STATEPROPORTIONS[0] + STATEPROPORTIONS[1] + STATEPROPORTIONS[2]) {
-            this.move = new DefendMove(mapWidth, mapHeight, player);
+            this.move = new DefendMove(map, player);
         } else if (randomState < STATEPROPORTIONS[0] + STATEPROPORTIONS[1] + STATEPROPORTIONS[2] + STATEPROPORTIONS[3]) {
-            this.move = new HunterMove(mapWidth, mapHeight, player);
+            this.move = new HunterMove(map, player);
         } else {
-            this.move = new TimidMove(mapWidth, mapHeight, player);
+            this.move = new TimidMove(map, player);
         }
     }
 

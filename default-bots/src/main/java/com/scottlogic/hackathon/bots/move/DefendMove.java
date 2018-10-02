@@ -1,6 +1,7 @@
 package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 
 import java.util.Random;
@@ -13,14 +14,14 @@ public class DefendMove extends MoveBase {
     private static final int MAXIMUM_SPAWN_POINT_TETHER = 6;
     private static final int RANDOM_MOVEMENT_PERCENTAGE = 25;
 
-    public DefendMove(final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(mapWidth, mapHeight, fullPlayer);
+    public DefendMove(Map map, final Player fullPlayer) {
+        super(map, fullPlayer);
         // Tether distance is how far it aims to stay to the spawn point
         this.tetherDistance = new Random().nextInt(MINIMUM_SPAWN_POINT_TETHER) + MAXIMUM_SPAWN_POINT_TETHER - MINIMUM_SPAWN_POINT_TETHER;
     }
 
-    public DefendMove(Direction direction, int distance, final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(direction, distance, mapWidth, mapHeight, fullPlayer);
+    public DefendMove(Direction direction, int distance, Map map, final Player fullPlayer) {
+        super(direction, distance, map, fullPlayer);
         // Tether distance is how far it aims to stay to the spawn point
         this.tetherDistance = new Random().nextInt(MINIMUM_SPAWN_POINT_TETHER) + MAXIMUM_SPAWN_POINT_TETHER - MINIMUM_SPAWN_POINT_TETHER;
     }

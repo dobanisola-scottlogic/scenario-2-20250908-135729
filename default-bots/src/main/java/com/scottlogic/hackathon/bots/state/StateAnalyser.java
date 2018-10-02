@@ -5,26 +5,23 @@ import com.scottlogic.hackathon.game.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class StateAnalyser {
 
-    private final int mapWidth;
-    private final int mapHeight;
+    private final Map map;
 
     private Player player;
     private ProportionalTransitionSelector proportionalTransitionSelector = null;
     private ProportionalStateSelector proportionalStateSelector = null;
     private HashMap<Class, Integer> spawnProfile;
     private HashMap<Class, Integer> transitionProfile;
-    private Map<Class, Integer> moveCounts;
+    private java.util.Map<Class, Integer> moveCounts;
 
     public StateAnalyser(GameState gameState, Set<Position> playerPositions, Set<Position> opponentPlayerPositions,
                          Set<Position> outOfBoundsPositions, SpawnPoint spawnPoint, Set<SpawnPoint> opponentSpawnPoints,
-                         Set<Collectable> collectables, final int mapWidth, final int mapHeight) {
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
+                         Set<Collectable> collectables) {
+        this.map = gameState.getMap();
         setProfilesFromGamestate(gameState,
                 playerPositions,
                 opponentPlayerPositions,
@@ -158,10 +155,10 @@ public class StateAnalyser {
     public void setMove(MoveBase move) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         if (move == null) {
             proportionalTransitionSelector = null;
-            proportionalStateSelector = new ProportionalStateSelector(moveCounts, spawnProfile, mapWidth, mapHeight, player);
+            proportionalStateSelector = new ProportionalStateSelector(moveCounts, spawnProfile, map, player);
         } else {
             proportionalStateSelector = null;
-            proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, transitionProfile, mapWidth, mapHeight, move, player);
+            proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, transitionProfile, map, move, player);
         }
     }
 

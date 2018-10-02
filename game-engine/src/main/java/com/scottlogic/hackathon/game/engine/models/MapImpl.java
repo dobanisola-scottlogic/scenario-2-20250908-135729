@@ -1,8 +1,11 @@
 package com.scottlogic.hackathon.game.engine.models;
 
+import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.Position;
 
 public class MapImpl implements Map {
+
     private final int width;
     private final int height;
 
@@ -19,5 +22,63 @@ public class MapImpl implements Map {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public Position getRelativePosition(Position from, Direction direction, int distance) {
+        int x = from.getX();
+        int y = from.getY();
+
+        if(direction.isEastward()) {
+            x += distance;
+        } else if(direction.isWestward()) {
+            x -= distance;
+        }
+
+        if(direction.isNorthward()) {
+            y -= distance;
+        } else if(direction.isSouthward()) {
+            y += distance;
+        }
+
+        return createCanonicalPosition(x, y);
+    }
+
+    @Override
+    public int xDistance(Position a, Position b) {
+        return directedDistance(a.getX(), b.getX(), getWidth());
+    }
+
+    @Override
+    public int yDistance(Position a, Position b) {
+        return directedDistance(a.getY(), b.getY(), getHeight());
+    }
+
+
+    private int directedDistance(int a, int b, int extent) {
+        int d = Math.abs(b - a);
+        return d > extent/2 ? extent-d : d;
+    }
+
+    /**
+     * Creates a {@linkplain Position} whose x and y coordinates are the minimum non-negative equivalents to the
+     * given values for this map. Essentially, this takes care of the wrapping nature of this map's coordinate system.
+     *
+     * @param x The x-coordinate of the position to create, which may be negative or greater than this map's
+     *          {@linkplain #getWidth() width}
+     * @param y The y-coordinate of the position to create, which may be negative or greater than this map's
+     *          {@linkplain #getHeight() height}
+     * @return A new Position, whose x and y coordinates have been canonicalised
+     */
+    public Position createCanonicalPosition(int x, int y) {
+        return new Position(mod(x, getWidth()), mod(y, getHeight()));
+    }
+
+    private int mod(int val, int mod) {
+        val %= mod;
+        if(val < 0) {
+            val += mod;
+        }
+        return val;
     }
 }
