@@ -1,17 +1,20 @@
 package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
+import java.util.stream.Stream;
+
 public class TimidMove extends MoveBase {
 
-    public TimidMove(final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(mapWidth, mapHeight, fullPlayer);
+    public TimidMove(Map map, final Player fullPlayer) {
+        super(map, fullPlayer);
     }
 
-    public TimidMove(Direction direction, int distance, final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(direction, distance, mapWidth, mapHeight, fullPlayer);
+    public TimidMove(Direction direction, int distance, Map map, final Player fullPlayer) {
+        super(direction, distance, map, fullPlayer);
     }
 
     @Override
@@ -27,10 +30,10 @@ public class TimidMove extends MoveBase {
             }
             if (nearestOpponentPosition != null) {
                 distance = 0;
-                direction = util.findBestDirectionFirstPositionFromAnother(playerPosition, nearestOpponentPosition);
-                while (util.playersCollideInThisMove(2, direction, playerPosition, playersPositions)) {
-                    direction = util.randomDirection();
-                }
+                direction = Stream.concat(getMap().directionsAwayFrom(playerPosition, nearestOpponentPosition), util.randomDirections())
+                        .filter(d -> util.playersCollideInThisMove(2, d, playerPosition, playersPositions))
+                        .findFirst()
+                        .get();
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

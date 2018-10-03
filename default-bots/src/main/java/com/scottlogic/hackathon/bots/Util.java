@@ -3,14 +3,14 @@ package com.scottlogic.hackathon.bots;
 import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Position;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class Util {
 
-    public Util(final int mapWidth, final int mapHeight) {
+    public Util(int mapWidth, int mapHeight) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.xDirectionModifiers = createXDirectionModifiersMap();
@@ -85,34 +85,6 @@ public class Util {
         return modifiedY;
     }
 
-    public Direction findBestDirectionFirstPositionToAnother(Position myPosition, Position desiredPosition) {
-        int xDifference = getMinimumXDifference(desiredPosition.getX(), myPosition.getX());
-        int yDifference = getMinimumYDifference(desiredPosition.getY(), myPosition.getY());
-        // returns radian angle between -pi and +pi
-        // y decrements as we go north REMEMBER
-        double theta = Math.atan2((double) -yDifference, (double) xDifference);
-        // HARD CODED Method BASED ON THE 8 DIRECTION VALUES (
-        int modifiedTheta = (int) Math.round(2 - 4 * theta / Math.PI);
-        if (modifiedTheta < 0) {
-            modifiedTheta += directions.length;
-        }
-        return directions[modifiedTheta];
-    }
-
-    public Direction findBestDirectionFirstPositionFromAnother(Position myPosition, Position avoidedPosition) {
-        int xDifference = getMinimumXDifference(avoidedPosition.getX(), myPosition.getX());
-        int yDifference = getMinimumYDifference(avoidedPosition.getY(), myPosition.getY());
-        // returns radian angle between -pi and +pi
-        // y decrements as we go north REMEMBER
-        double theta = Math.atan2((double) -yDifference, (double) xDifference);
-        // HARD CODED Method BASED ON THE 8 DIRECTION VALUES (
-        int modifiedTheta = (int) Math.round(6 - 4 * theta / Math.PI);
-        if (modifiedTheta >= directions.length) {
-            modifiedTheta -= directions.length;
-        }
-        return directions[modifiedTheta];
-    }
-
     public Direction findBestTetherDirectionOnePositionToAnother(Position myPosition, Position desiredTether, int distance) {
         int minDistanceToTether = distance * distance;
         int index = new Random().nextInt(directions.length);
@@ -138,17 +110,12 @@ public class Util {
         return new Random().nextInt(maxDistance - minDistance) + minDistance;
     }
 
-    public Direction getOppositeDirection(Direction direction) {
-        int directionIndex = Arrays.asList(directions).indexOf(direction);
-        directionIndex += directions.length / 2;
-        if (directionIndex >= directions.length) {
-            directionIndex -= directions.length;
-        }
-        return directions[directionIndex];
-    }
-
     public Direction randomDirection() {
         return directions[new Random().nextInt(directions.length)];
+    }
+
+    public Stream<Direction> randomDirections() {
+        return Stream.generate(this::randomDirection);
     }
 
     public boolean playersCollideInThisMove(int distance, Direction direction, Position playerPosition, Set<Position> myPlayersPositions) {

@@ -1,24 +1,30 @@
 package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HunterMove extends MoveBase {
 
     private int largestMapRadius;
 
-    public HunterMove(final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(mapWidth, mapHeight, fullPlayer);
-        this.largestMapRadius = (int) Math.pow(Math.max(mapWidth, mapHeight), 2);
+    public HunterMove(Map map, final Player fullPlayer) {
+        super(map, fullPlayer);
+        this.largestMapRadius = determineLargestMapRadius(map);
     }
 
-    public HunterMove(Direction direction, int distance, final int mapWidth, final int mapHeight, final Player fullPlayer) {
-        super(direction, distance, mapWidth, mapHeight, fullPlayer);
-        this.largestMapRadius = (int) Math.pow(Math.max(mapWidth, mapHeight), 2);
+    public HunterMove(Direction direction, int distance, Map map, final Player fullPlayer) {
+        super(direction, distance, map, fullPlayer);
+        this.largestMapRadius = determineLargestMapRadius(map);
+    }
+
+    private static int determineLargestMapRadius(Map map) {
+        return (int) Math.pow(Math.max(map.getWidth(), map.getHeight()), 2);
     }
 
     @Override
@@ -38,10 +44,10 @@ public class HunterMove extends MoveBase {
             }
             if (nearestOpponentSpawnPointPosition != null) {
                 distance = 0;
-                direction = util.findBestDirectionFirstPositionToAnother(playerPosition, nearestOpponentSpawnPointPosition);
-                while (util.playersCollideInThisMove(2, direction, playerPosition, playersPositions)) {
-                    direction = util.randomDirection();
-                }
+                direction = Stream.concat(getMap().directionsTowards(playerPosition, nearestOpponentSpawnPointPosition), util.randomDirections())
+                        .filter(d -> util.playersCollideInThisMove(2, d, playerPosition, playersPositions))
+                        .findFirst()
+                        .get();
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

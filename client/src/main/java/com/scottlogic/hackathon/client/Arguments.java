@@ -3,12 +3,12 @@ package com.scottlogic.hackathon.client;
 
 class Arguments {
     private final String map;
-    private final String bot;
+    private final String[] bots;
     private final String className;
 
-    Arguments(final String map, final String bot, final String className) {
+    Arguments(final String map, final String[] bots, final String className) {
         this.map = map;
-        this.bot = bot;
+        this.bots = bots;
         this.className = className;
     }
 
@@ -16,8 +16,8 @@ class Arguments {
         return map;
     }
 
-    public String getBot() {
-        return bot;
+    public String[] getBots() {
+        return bots;
     }
 
     public String getClassName() {

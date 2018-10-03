@@ -4,10 +4,10 @@ import com.scottlogic.hackathon.bots.DefaultBot;
 import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.game.engine.GameEngine;
 import org.fusesource.jansi.AnsiConsole;
-
 import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Client {
 
@@ -19,15 +19,15 @@ public class Client {
     private void run(final String[] args) {
         final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(args);
         final Arguments arguments = argumentsBuilder.create();
-
         if (arguments != null) {
-            final Bot defaultBot = loadDefaultBot(arguments.getBot());
+
+            final List<Bot> defaultBot = Stream.of(arguments.getBots()).map(this::loadDefaultBot).collect(Collectors.toList());
             final Bot bot = loadBot(arguments.getClassName());
 
             if (bot != null && defaultBot != null) {
                 final Set<Bot> bots = new HashSet<Bot>();
 
-                bots.add(defaultBot);
+                bots.addAll(defaultBot);
                 bots.add(bot);
 
                 GameEngine gameEngine = null;

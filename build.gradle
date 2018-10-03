@@ -1,6 +1,8 @@
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
+ext.slf4jVersion = '1.7.12'
+
 allprojects {
     repositories {
         mavenCentral()
@@ -11,7 +13,6 @@ allprojects {
         distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
     }
 }
-
 
 buildscript {
     repositories {

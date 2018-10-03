@@ -8,11 +8,13 @@ apply plugin: "application"
 mainClassName = mainClass
 
 dependencies {
+    compile files('../default-bots/build/libs/milestone-bots-obfuscated.jar')
     compile project(":game")
     compile project(":game-engine")
     compile project(":default-bots")
+    compile group: "commons-cli", name: "commons-cli", version: "1.4"
     compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
-    compile files('../default-bots/build/libs/milestone-bots-obfuscated.jar')
+    compile group: "org.slf4j", name: "slf4j-simple", version: rootProject.slf4jVersion
 }
 
 jar {
@@ -35,16 +37,6 @@ runShadow {
 
 shadowJar {
     dependsOn ":default-bots:shadowJar"
-    dependencies {
-        include(project(":game"))
-        include(project(":game-engine"))
-        include(project(":default-bots"))
-        include(dependency("org.fusesource.jansi:jansi"))
-        include(dependency("com.fasterxml.jackson.core:jackson-core"))
-        include(dependency("com.fasterxml.jackson.core:jackson-databind"))
-        include(dependency("com.fasterxml.jackson.core:jackson-annotations"))
-        include(dependency("org.slf4j:slf4j-api"))
-    }
     exclude "com/scottlogic/hackathon/bots/BasicAgent.class"
     exclude "com/scottlogic/hackathon/bots/FastExpansionBot.class"
     exclude "com/scottlogic/hackathon/bots/Node.class"

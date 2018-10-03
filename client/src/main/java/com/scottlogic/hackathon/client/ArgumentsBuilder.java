@@ -1,28 +1,40 @@
 package com.scottlogic.hackathon.client;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 class ArgumentsBuilder {
     private static final String DEFAULT_MAP = "Easy";
     private static final String DEFAULT_BOT = "Milestone1";
     private final List<String> errors;
-    private final LinkedList<String> arguments;
+    private final String[] arguments;
     private final boolean parsed = false;
     private String map;
-    private String bot;
+    private String[] bots;
     private String className;
+    private Options options;
+    private Option mapOption;
+    private Option botOption;
+    private Option classOption;
 
     public ArgumentsBuilder(final String[] args) {
         errors = new ArrayList<String>();
-        arguments = new LinkedList<>(Arrays.asList(args));
+        arguments = args;
+        options = new Options();
     }
 
     public Arguments create() {
+        createOptions();
+
         Arguments arguments = null;
-        if (this.arguments.isEmpty() || this.arguments.contains("-?")) {
+        if (this.arguments.length < 1) {
             printUsage();
         } else {
             parse();
@@ -31,46 +43,78 @@ class ArgumentsBuilder {
                 printErrors();
             } else {
                 arguments = new Arguments(
-                        map == null ? DEFAULT_MAP: map,
-                        bot == null ? DEFAULT_BOT: bot,
+                        map == null ? DEFAULT_MAP : map,
+                        bots == null ? new String[]{DEFAULT_BOT} : bots,
                         className);
             }
         }
         return arguments;
     }
 
-    public static void printUsage() {
-        System.err.println("usage [-m|map MapName] [-b|bot Bot] [-c|className] ClassName");
-        System.err.println("\tMapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard)");
-        System.err.println("\t\tdefault: Easy");
-        System.err.println("\tBot: a bot name to play against (Default, Milestone1, Milestone2, Milestone3)");
-        System.err.println("\t\tdefault: Milestone1");
-        System.err.println("\tClassName: full class name (include package) of your bot");
-        System.err.println("\t\tdefault: your file name + .Bot");
+    public Options createOptions() {
+        mapOption = Option.builder("m")
+                .hasArg()
+                .longOpt("map")
+                .desc("MapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard)\t\t default: Easy")
+                .build();
+
+        botOption = Option.builder("b")
+                .hasArgs()
+                .longOpt("bot")
+                .desc("Bot: a bots name to play against (Default, Milestone1, Milestone2, Milestone3)\t\tdefault: Milestone1. " +
+                        "Can set multiple E.G -b Milestone1 Milestone2 Milestone3")
+                .build();
+
+        classOption = Option.builder("c")
+                .hasArg()
+                .longOpt("className")
+                .desc("ClassName: full class name (include package) of your bots e.g. com.contestantbots.team.ExampleBot")
+                .build();
+
+        options.addOption(mapOption);
+        options.addOption(botOption);
+        options.addOption(classOption);
+        return options;
+    }
+
+
+    public void printUsage() {
+        HelpFormatter formatter = new HelpFormatter();
+        StringBuilder help = new StringBuilder();
+        for (Option option : options.getOptions()) {
+            help.append(String.format("[%s|%s %s] ", option.getOpt(), option.getLongOpt(), option.getDescription().split(":")[0]));
+        }
+        formatter.printHelp(help.toString(), options);
+
     }
 
     private void parse() {
-        if (!arguments.isEmpty()) {
-            while (!arguments.isEmpty()) {
-                final String argument = arguments.poll();
-                if (argument.startsWith("-")) {
-                    if (argument.length() == 1) {
-                        errors.add(String.format("invalid argument format"));
-                    } else {
-                        if (argument.equals("-m") || argument.equals("-map")) {
-                            map = getArgumentValue(argument);
-                        } else if (argument.equals("-b") || argument.equals("-bot")) {
-                            bot = getArgumentValue(argument);
-                        } else if (argument.equals("-c") || argument.equals("-className")) {
-                            className = getArgumentValue(argument);
-                        } else {
-                            errors.add(String.format("argument %s is unknown", argument));
-                        }
-                    }
-                } else {
-                    className = argument;
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = null;
+
+        try {
+            cmd = parser.parse(options, arguments);
+
+            if (cmd.hasOption(mapOption.getOpt())) {
+                map = cmd.getOptionValue(mapOption.getOpt());
+            }
+
+            if (cmd.hasOption(botOption.getOpt())) {
+                bots = cmd.getOptionValues(botOption.getOpt());
+            }
+
+            if (cmd.hasOption(classOption.getOpt())) {
+                className = cmd.getOptionValue(classOption.getOpt());
+            } else {
+                List<String> additionalArgs = cmd.getArgList();
+                if (additionalArgs.size() > 0) {
+                    className = additionalArgs.get(0);
                 }
             }
+
+        } catch (Exception e) {
+            printUsage();
+            printErrors();
         }
     }
 
@@ -84,17 +128,6 @@ class ArgumentsBuilder {
         errors.forEach(error -> {
             System.err.println(error);
         });
-        printUsage();
     }
 
-    private String getArgumentValue(final String argument) {
-        final String value;
-        if (arguments.isEmpty()) {
-            errors.add(String.format("argument %s expects a value", argument));
-            value = null;
-        } else {
-            value = arguments.poll();
-        }
-        return value;
-    }
 }

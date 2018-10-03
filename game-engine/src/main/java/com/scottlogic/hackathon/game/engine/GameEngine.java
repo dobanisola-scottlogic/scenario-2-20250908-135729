@@ -159,9 +159,11 @@ public class GameEngine {
                 .stream()
                 .forEach(consumeResult -> {
                     final Bot bot = consumeResult.getItem();
-                    if (!consumeResult.isCompleted()) {
+                    final Exception exception = consumeResult.getException();
+                    if (exception != null) {
+                        disqualifyBot(bot, Arrays.asList(new BotRejection("bot threw exception: " + exception.getMessage())));
+                    } else if (!consumeResult.isCompleted()) {
                         disqualifyBot(bot, Arrays.asList(new BotRejection("makeMoves took too long")));
-
                     } else {
                         final List<Move> moves = botMoves.get(bot);
                         final List<Rejection> rejectedMoves = getRejectedMoves(bot, moves);

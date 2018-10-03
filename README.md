@@ -88,18 +88,20 @@ java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar
 ```
 
 ## Contestant Dependencies ##
-The contestant project has a runtime dependency on the `client` project, to support
-this the `client` project defines a shadowJar configuration containing the relevant
-projects and dependencies.
+The contestant project has the following dependencies:
+- compile:
+  - `game`
+- runtime:
+  - `client`
 
-There is also a compile time dependency on the `game` project, this dependency is satisfied
-by the standard jar built by the `game` project.
+The `game` project dependency is satisfied by the standard jar configuration.  However, the `client` project dependency
+has to be managed using a custom shadowJar configuration to exclude some of the more advanced bot algorithms.
 
 ### Build ###
 From a command prompt in the root directory of the project:
 ```
 gradlew :client:shadowJar
-gradlew :game
+gradlew :game:build
 ```
 
 ### Install ###
