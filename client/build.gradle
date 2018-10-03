@@ -11,8 +11,9 @@ dependencies {
     compile project(":game")
     compile project(":game-engine")
     compile project(":default-bots")
-    compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
     compile group: "commons-cli", name: "commons-cli", version: "1.4"
+    compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
+    compile group: "org.slf4j", name: "slf4j-simple", version: rootProject.slf4jVersion
 }
 
 jar {
@@ -31,4 +32,11 @@ run {
 
 runShadow {
     args "com.scottlogic.hackathon.bots.DefaultBot"
+}
+
+shadowJar {
+    exclude "com/scottlogic/hackathon/bots/BasicAgent.class"
+    exclude "com/scottlogic/hackathon/bots/FastExpansionBot.class"
+    exclude "com/scottlogic/hackathon/bots/Node.class"
+    exclude "com/scottlogic/hackathon/bots/NodeType.class"
 }
