@@ -34,6 +34,7 @@ runShadow {
 }
 
 shadowJar {
+    dependsOn ":default-bots:shadowJar"
     dependencies {
         include(project(":game"))
         include(project(":game-engine"))
