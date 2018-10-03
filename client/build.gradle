@@ -2,7 +2,6 @@ group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
 def mainClass = "com.scottlogic.hackathon.client.Client"
-def slf4jVersion = "1.7.12"
 
 apply plugin: "application"
 
@@ -14,7 +13,7 @@ dependencies {
     compile project(":default-bots")
     compile group: "commons-cli", name: "commons-cli", version: "1.4"
     compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
-    compile group: "org.slf4j", name: "slf4j-simple", version: slf4jVersion
+    compile group: "org.slf4j", name: "slf4j-simple", version: rootProject.slf4jVersion
 }
 
 jar {
