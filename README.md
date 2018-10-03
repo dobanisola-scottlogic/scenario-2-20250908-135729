@@ -50,7 +50,7 @@
 
 * Install
 * Import the top level gradle project
-** Use the task wrapper configuration
+* Use the task wrapper configuration
 * Ensure Code Style is using the project configuration
 
 ### Extensions ###
@@ -66,15 +66,47 @@
 ## Server ##
 
 ### Build ###
+```
 gradlew :server:shadowJar
+```
 
 ### Run ###
+```
 heroku local -f Procfile.windows
+```
 
 ## Client ##
 
 ### Build ###
+```
 gradlew :client:shadowJar
+```
 
 ### Run ###
+```
 java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar
+```
+
+## Contestant Dependencies ##
+The contestant project has the following dependencies:
+- compile:
+  - `game`
+- runtime:
+  - `client`
+
+The `game` project dependency is satisfied by the standard jar configuration.  However, the `client` project dependency
+has to be managed using a custom shadowJar configuration to exclude some of the more advanced bot algorithms.
+
+### Build ###
+From a command prompt in the root directory of the project:
+```
+gradlew :client:shadowJar
+gradlew :game:build
+```
+
+### Install ###
+Copy the following jar files to the `libs` folder in the contestant project.
+```
+client\build\libs\client-1.0-SNAPSHOT-all.jar
+game\build\libs\game-1.0-SNAPSHOT.jar
+```
