@@ -1,0 +1,10 @@
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dontshrink
+-dontoptimize
+
+-keepnames class com.scottlogic.hackathon.bots.**
+-keepclasseswithmembernames class com.scottlogic.hackathon.bots.** {
+    public <methods>;
+}
+-dontwarn com.scottlogic.hackathon.bots.**,**

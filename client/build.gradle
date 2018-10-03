@@ -12,6 +12,7 @@ dependencies {
     compile project(":game-engine")
     compile project(":default-bots")
     compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
+    compile files('../default-bots/build/libs/milestone-bots-obfuscated.jar')
 }
 
 jar {
@@ -19,7 +20,7 @@ jar {
         attributes(
                 "Implementation-Title": "hackathon-client",
                 "Implementation-Version": version,
-                "Main-Class": mainClass )
+                "Main-Class": mainClass)
     }
 }
 

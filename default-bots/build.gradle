@@ -3,4 +3,22 @@ version "1.0-SNAPSHOT"
 
 dependencies {
     compile project(":game")
+    compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
 }
+
+shadowJar {
+    include "com/scottlogic/hackathon/bots/Milestone**.class"
+    include "com/scottlogic/hackathon/bots/move/**"
+    include "com/scottlogic/hackathon/bots/state/**"
+}
+
+task obfuscate(type: proguard.gradle.ProGuardTask) {
+    configuration 'proguard.txt'
+    injars "build/libs/default-bots-1.0-SNAPSHOT-all.jar"
+    outjars "${buildDir}/libs/milestone-bots-obfuscated.jar"
+}
+
+tasks.shadowJar.doLast {
+    obfuscate.execute();
+}
+
