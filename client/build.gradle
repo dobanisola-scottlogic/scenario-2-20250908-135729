@@ -10,10 +10,15 @@ mainClassName = mainClass
 dependencies {
     compile project(":game")
     compile project(":game-engine")
-    compile project(path: ':default-bots', configuration: 'obfuscated')
     compile group: "commons-cli", name: "commons-cli", version: "1.4"
     compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
     compile group: "org.slf4j", name: "slf4j-simple", version: rootProject.slf4jVersion
+
+    // Keep unofuscated bot classes on this project's classpath for help with IDE etc, but...
+    compileOnly project(':default-bots')
+
+    // ... use the obfuscated classes at runtime. This is also what will be packed up by shadowJar
+    runtime project(path: ':default-bots', configuration: 'obfuscated')
 }
 
 jar {
