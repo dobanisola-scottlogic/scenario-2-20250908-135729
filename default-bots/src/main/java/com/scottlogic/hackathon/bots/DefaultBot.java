@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 public class DefaultBot extends Bot {
     private final List<DirectionAndDistanceMove> moves = new LinkedList<DirectionAndDistanceMove>();
 
+    public DefaultBot() {
+        super("Default");
+    }
+
     @Override
     public List<Move> makeMoves(final GameState gameState) {
         gameState.getRemovedPlayers().forEach(player -> {
@@ -30,11 +34,6 @@ public class DefaultBot extends Bot {
         moves.forEach(move -> move.phase());
 
         return Collections.unmodifiableList(moves);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "Default";
     }
 
     class DirectionAndDistanceMove implements Move {

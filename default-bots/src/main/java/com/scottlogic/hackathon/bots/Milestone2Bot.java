@@ -15,6 +15,10 @@ public class Milestone2Bot extends Bot {
     private final HashMap<Class, Integer> spawnProfile = createDesiredProportionsMap();
     private final HashMap<Class, Integer> transitionProfile = createDesiredProportionsMap();
 
+    public Milestone2Bot() {
+        super("Milestone 2");
+    }
+
     private static HashMap<Class, Integer> createDesiredProportionsMap() {
         HashMap<Class, Integer> desiredProportionsMap = new HashMap<>();
         desiredProportionsMap.put(AttackMove.class, 20);
@@ -111,10 +115,5 @@ public class Milestone2Bot extends Bot {
         }
 
         return Collections.unmodifiableList(moves);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "Milestone 2";
     }
 }

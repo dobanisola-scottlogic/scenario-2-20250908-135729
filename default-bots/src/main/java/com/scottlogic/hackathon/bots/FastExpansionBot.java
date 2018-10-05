@@ -1,13 +1,10 @@
 package com.scottlogic.hackathon.bots;
 
 import com.scottlogic.hackathon.game.Bot;
-import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.GameState;
 import com.scottlogic.hackathon.game.Move;
-import com.scottlogic.hackathon.game.SpawnPoint;
 
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.Map.Entry;
@@ -31,16 +28,15 @@ public class FastExpansionBot extends Bot {
     private LinkedList<Node> water = new LinkedList<Node>();
     private LinkedList<Node> enemyHiveMemory = new LinkedList<Node>();
 
-    @Override
-    public void initialise(final GameState gameState) {
-        mapWidth = gameState.getMap().getWidth();
-        mapHeight = gameState.getMap().getHeight();
-        generateMap();
+    public FastExpansionBot() {
+        super("Fast Expansion");
     }
 
     @Override
-    public String getDisplayName() {
-        return "Fast Expansion";
+    public void initialise(final GameState initialGameState) {
+        mapWidth = initialGameState.getMap().getWidth();
+        mapHeight = initialGameState.getMap().getHeight();
+        generateMap();
     }
 
     @Override

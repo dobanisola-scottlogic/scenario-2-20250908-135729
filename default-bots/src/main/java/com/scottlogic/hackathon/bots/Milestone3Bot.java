@@ -16,6 +16,10 @@ public class Milestone3Bot extends Bot {
     private SpawnPoint spawnPoint;
     private Set<SpawnPoint> opponentSpawnPoints = new HashSet<>();
 
+    public Milestone3Bot() {
+        super("Milestone 3");
+    }
+
     @Override
     public List<Move> makeMoves(final GameState gameState) {
         gameState.getRemovedPlayers().forEach(player -> {
@@ -154,10 +158,5 @@ public class Milestone3Bot extends Bot {
                         this.opponentSpawnPoints.add(spawnPoint);
                     });
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "Milestone 3";
     }
 }
