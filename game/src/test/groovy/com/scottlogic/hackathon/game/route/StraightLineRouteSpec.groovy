@@ -1,5 +1,8 @@
-package com.scottlogic.hackathon.game
+package com.scottlogic.hackathon.game.route
 
+import com.scottlogic.hackathon.game.Direction
+import com.scottlogic.hackathon.game.Position
+import com.scottlogic.hackathon.game.Route
 import spock.lang.Unroll
 
 import java.util.function.Predicate

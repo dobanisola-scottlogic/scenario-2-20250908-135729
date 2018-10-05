@@ -1,5 +1,8 @@
 package com.scottlogic.hackathon.game;
 
+import com.scottlogic.hackathon.game.route.ListRoute;
+import com.scottlogic.hackathon.game.route.StraightLineRoute;
+
 import java.util.List;
 import java.util.stream.Stream;
 

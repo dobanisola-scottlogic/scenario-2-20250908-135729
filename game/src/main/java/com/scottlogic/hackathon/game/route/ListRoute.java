@@ -1,15 +1,20 @@
-package com.scottlogic.hackathon.game;
+package com.scottlogic.hackathon.game.route;
+
+import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.Route;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-class ListRoute extends AbstractRoute {
+public class ListRoute extends AbstractRoute {
 
     private final List<Direction> list;
     private final int index;
 
-    ListRoute(Map map, Position start, List<Direction> steps) {
+    public ListRoute(Map map, Position start, List<Direction> steps) {
         this(map, start, steps, 0);
     }
 

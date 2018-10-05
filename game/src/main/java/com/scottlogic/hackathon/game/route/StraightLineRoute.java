@@ -1,15 +1,20 @@
-package com.scottlogic.hackathon.game;
+package com.scottlogic.hackathon.game.route;
+
+import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.Route;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-class StraightLineRoute extends AbstractRoute {
+public class StraightLineRoute extends AbstractRoute {
 
     private final Direction direction;
     private final int length;
 
-    StraightLineRoute(Map map, Position start, Direction direction, int length) {
+    public StraightLineRoute(Map map, Position start, Direction direction, int length) {
         super(map, start);
         this.direction = direction;
         this.length = length;
