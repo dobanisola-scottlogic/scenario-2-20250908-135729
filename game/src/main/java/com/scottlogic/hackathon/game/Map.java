@@ -1,9 +1,13 @@
 package com.scottlogic.hackathon.game;
 
+import com.scottlogic.hackathon.game.route.Graph;
 import com.scottlogic.hackathon.game.route.ListRoute;
 import com.scottlogic.hackathon.game.route.StraightLineRoute;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -158,6 +162,50 @@ public interface Map {
      */
     default Route straightLineRoute(Position start, Direction direction, int length) {
         return new StraightLineRoute(this, start, direction, length);
+    }
+
+    /**
+     * Finds (one of) the shortest route between the two given {@linkplain Position positions},
+     * avoiding any positions that match the given predicate.
+     * This method uses the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search algorithm</a>.
+     * <p>
+     * It is possible that no route will be found,
+     * if the set of positions that must be avoided forms an unbroken barrier between the start and target positions.
+     * In this situation, and empty {@linkplain Optional} will be returned.
+     *
+     * @param from The Position to find a route from
+     * @param to The Position to find a route to
+     * @param avoid A {@linkplain Predicate} specifying which positions to avoid.
+     *              The found route is guaranteed not to include any positions for which this returns {@code true}.
+     * @return An Optional containing an ordered list of the directions to move in to traverse the found route,
+     *         or {@linkplain Optional#empty() empty} if no route could be found
+     *
+     * @see #findRoute(Position, Position, Collection)
+     */
+    default Optional<Route> findRoute(Position from, Position to, Predicate<Position> avoid) {
+        return Graph.findRoute(this, from, to, avoid);
+    }
+
+    /**
+     * Finds (one of) the shortest route between the two given {@linkplain Position positions},
+     * avoiding any positions in the specified collection.
+     * This method uses the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search algorithm</a>.
+     * <p>
+     * It is possible that no route will be found,
+     * if the set of positions that must be avoided forms an unbroken barrier between the start and target positions.
+     * In this situation, and empty {@linkplain Optional} will be returned.
+     *
+     * @param from The Position to find a route from
+     * @param to The Position to find a route to
+     * @param avoid A {@linkplain Collection} of positions to avoid.
+     *              The found route is guaranteed not to include any positions contained here.
+     * @return An Optional containing an ordered list of the directions to move in to traverse the found route,
+     *         or {@linkplain Optional#empty() empty} if no route could be found
+     *
+     * @see #findRoute(Position, Position, Predicate)
+     */
+    default Optional<Route> findRoute(Position from, Position to, Collection<Position> avoid) {
+        return findRoute(from, to, avoid::contains);
     }
 
 }
