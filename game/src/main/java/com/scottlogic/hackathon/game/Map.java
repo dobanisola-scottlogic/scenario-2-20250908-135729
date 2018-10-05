@@ -32,6 +32,19 @@ public interface Map {
     int getHeight();
 
     /**
+     * Creates new {@linkplain Position} whose coordinates are <em>equivalent</em> to those given.
+     * Depending on the geometry of the map, the coordinates of the resulting Position object may not be identical
+     * to those given. For example, if the map's x-coordinates "wrap around" (like longitude on a map of the Earth),
+     * and an x-coordinate greater than the maximum is specified, it will be converted to the equivalent value less
+     * than the maximum.
+     *
+     * @param x The (horizontal) x-coordinate of the position to create
+     * @param y The (vertical) y-coordinate of the position to create
+     * @return A position with equivalent coordinates
+     */
+    Position createPosition(int x, int y);
+
+    /**
      * Calculates the position on the current map that is displaced by the specified distance and direction from the
      * given position.
      * @param from The position from which to calculate the relative position
