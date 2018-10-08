@@ -3,14 +3,14 @@ version "1.0-SNAPSHOT"
 
 ext.slf4jVersion = '1.7.12'
 
+wrapper {
+    gradleVersion = "4.10.2"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 allprojects {
     repositories {
         mavenCentral()
-    }
-
-    task wrapper(type: Wrapper) {
-        gradleVersion = "2.9"
-        distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
     }
 }
 
@@ -19,14 +19,16 @@ buildscript {
         jcenter()
     }
 
+    //TODO Get rid of these - use a 'plugins {}' block inside the relevant subproject's build.gradle instead
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.1"
+        classpath group: "net.sf.proguard", name: "proguard-gradle", version: "6.0.3"
     }
 }
 
 configure(subprojects - project(':viewer')){
     apply plugin: "java"
-    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "com.github.johnrengelman.shadow" //TODO move this to only the subprojects that need it
 
     sourceCompatibility = 1.8
 

@@ -4,9 +4,12 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * A game's state.
+ * A 'view' of the state of a game.
+ * Instances of this are often not complete,
+ * instead corresponding to what a particular {@linkplain Bot}'s {@linkplain Player Players} can 'see'.
  */
 public interface GameState {
+
     /**
      *
      * @return The current phase of the game. The phase starts at 0 and simply counts up

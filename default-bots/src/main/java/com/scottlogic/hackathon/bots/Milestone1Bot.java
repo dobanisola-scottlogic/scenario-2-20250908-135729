@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 public class Milestone1Bot extends Bot {
     private final List<TimidMove> moves = new LinkedList<>();
 
+    public Milestone1Bot() {
+        super("Milestone 1");
+    }
+
     @Override
     public List<Move> makeMoves(final GameState gameState) {
         gameState.getRemovedPlayers().forEach(player -> {
@@ -52,10 +56,5 @@ public class Milestone1Bot extends Bot {
         });
 
         return Collections.unmodifiableList(moves);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "Milestone 1";
     }
 }

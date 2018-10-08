@@ -1,6 +1,52 @@
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
+
+configurations {
+    obfuscated
+}
+
 dependencies {
     compile project(":game")
 }
+
+/*
+ * Task to extract the DefaultBot class and its dependencies from the built jar.
+ */
+task extractDefaultBot(type: proguard.gradle.ProGuardTask) {
+    injars jar
+    outjars "${buildDir}/proguard/${name}.jar"
+    libraryjars configurations.runtime
+    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+
+    dontobfuscate()
+    keep([includedescriptorclasses: true], 'class **.DefaultBot** { *; }')
+}
+
+/*
+ * Task to extract and obfuscate all other Bots and their dependencies from the built jar.
+ */
+task extractMilestoneBots(type: proguard.gradle.ProGuardTask) {
+    injars jar
+    outjars "${buildDir}/proguard/${name}.jar"
+    libraryjars configurations.runtime
+    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+
+    keep 'public class *,!**.DefaultBot** extends com.scottlogic.hackathon.game.Bot { public *; }'
+    keepnames 'class com.scottlogic.hackathon.bots.**'
+}
+
+task obfuscate(dependsOn: configurations.obfuscated, type: Jar) {
+    classifier = 'obfuscated'
+    inputs.files(extractDefaultBot, extractMilestoneBots)
+    println("Input files")
+    from {zipTree(extractDefaultBot.outputs.files.singleFile)}
+    from {zipTree(extractMilestoneBots.outputs.files.singleFile)}
+}
+
+artifacts {
+    obfuscated obfuscate
+}
+
+
+
