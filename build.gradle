@@ -3,15 +3,14 @@ version "1.0-SNAPSHOT"
 
 ext.slf4jVersion = '1.7.12'
 
+wrapper {
+    gradleVersion = "4.10.2"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 allprojects {
     repositories {
         mavenCentral()
-    }
-
-    //TODO Move this out of allprojects - only the root project should need it
-    wrapper {
-        gradleVersion = "4.10.2"
-        distributionType = Wrapper.DistributionType.ALL
     }
 }
 
