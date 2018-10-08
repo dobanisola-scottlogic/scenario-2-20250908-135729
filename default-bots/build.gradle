@@ -8,7 +8,6 @@ configurations {
 
 dependencies {
     compile project(":game")
-    compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
 }
 
 /*
