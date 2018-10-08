@@ -29,7 +29,7 @@ public class GameResult {
     @JsonRawValue
     @Column(columnDefinition = "TEXT")
     private String phaseResults;
-    private UUID hackathonId;
+    private String hackathonId;
     private CutoffCondition cutoffCondition;
 
     public GameResult() {
@@ -39,7 +39,7 @@ public class GameResult {
                final String game,
                final String spawnPoints,
                final String phaseResults,
-               final UUID hackathonId,
+               final String hackathonId,
                final CutoffCondition cutoffCondition) {
         this.id = id;
         this.game = game;

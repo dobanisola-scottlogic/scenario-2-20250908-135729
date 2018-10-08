@@ -15,7 +15,7 @@ public class Team {
     @Column(unique = true)
     private String name;
     private String password;
-    private UUID hackathonId;
+    private String hackathonId;
 
     public Team() {
     }
@@ -48,11 +48,11 @@ public class Team {
         return credentials.getUsername().equals(name) && credentials.getPassword().equals(password);
     }
 
-    public UUID getHackathonId() {
+    public String getHackathonId() {
         return hackathonId;
     }
 
-    public void setHackathonId(final UUID hackathonId) {
+    public void setHackathonId(final String hackathonId) {
         this.hackathonId = hackathonId;
     }
 }

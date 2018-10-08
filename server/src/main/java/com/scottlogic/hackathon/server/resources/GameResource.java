@@ -55,7 +55,7 @@ public class GameResource {
     @UnitOfWork
     @Timed
     @JsonView(Views.List.class)
-    public List<GameResult> getGameResults(@QueryParam("hackathonId") Optional<UUID> hackathonId) {
+    public List<GameResult> getGameResults(@QueryParam("hackathonId") Optional<String> hackathonId) {
         if(hackathonId.isPresent()) {
             return gameService.getGameResultsByHackathon(hackathonId.orNull());
         }

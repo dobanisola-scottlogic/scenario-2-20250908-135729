@@ -19,7 +19,7 @@ public class HackathonStore extends AbstractStore<Hackathon> {
         logger = LoggerFactory.getLogger(this.getClass().getName());
     }
 
-    public Hackathon update(final UUID id, final HackathonUpdate hackathonUpdate) {
+    public Hackathon update(final String id, final HackathonUpdate hackathonUpdate) {
         Hackathon hackathon = get(id);
         if (hackathon != null) {
             if (hackathonUpdate.getMilestoneClassName() != null) {

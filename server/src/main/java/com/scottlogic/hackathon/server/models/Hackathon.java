@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 public class Hackathon {
     @Id
-    private UUID id;
+    private String id;
     private String name;
     @JsonView(Views.List.class)
     @OneToMany
@@ -26,7 +26,7 @@ public class Hackathon {
     }
 
     public Hackathon(final String name) {
-        this.id = UUID.randomUUID();
+        this.id = name.toLowerCase().replace(" ", "-");
         this.name = name;
         this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "Milestone1Bot";
         this.currentMilestoneMap = "Easy";
@@ -36,7 +36,7 @@ public class Hackathon {
         return name;
     }
 
-    public UUID getId() {
+    public String getId() {
         return this.id;
     }
 

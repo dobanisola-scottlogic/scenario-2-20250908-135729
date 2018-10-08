@@ -96,6 +96,7 @@ class TeamPanelController {
             }
         );
         this.refreshHackathons();
+
     }
 
     refreshHackathons() {

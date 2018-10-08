@@ -13,12 +13,12 @@ public class Game {
     private Set<GameTeam> teams;
     @JsonView(Views.List.class)
     private Map map;
-    private UUID hackathonId;
+    private String hackathonId;
 
     public Game() {
     }
 
-    public Game(final Set<GameTeam> teams, final Map map, final UUID hackathonId) {
+    public Game(final Set<GameTeam> teams, final Map map, final String hackathonId) {
         this.id = UUID.randomUUID();
         this.gameTime = System.currentTimeMillis();
         this.teams = teams;
@@ -34,7 +34,7 @@ public class Game {
         return map;
     }
 
-    public UUID getHackathonId() {
+    public String getHackathonId() {
         return hackathonId;
     }
 }

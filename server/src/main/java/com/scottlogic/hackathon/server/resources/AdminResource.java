@@ -12,8 +12,7 @@ import io.dropwizard.hibernate.UnitOfWork;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.UUID;
+
 
 @Path("/admin")
 @Produces(MediaType.APPLICATION_JSON)

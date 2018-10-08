@@ -27,7 +27,7 @@ public class TeamService {
         return teamStore.list();
     }
 
-    public List<Team> getTeamsByHackathon(final UUID hackathonId) {
+    public List<Team> getTeamsByHackathon(final String hackathonId) {
         return teamStore.list(Restrictions.eq("hackathonId", hackathonId));
     }
 
