@@ -17,7 +17,7 @@ dependencies {
     runtime 'javax.xml.bind:jaxb-api:2.3.1' // Needed by hibernate in Java 9+
     compile group: "com.google.inject", name: "guice", version: "3.0"
     runtime group: "org.postgresql", name: "postgresql", version: "9.4.1211"
-    runtime group: "com.h2database", name: "h2", version: "1.4.192"
+    runtime group: "com.h2database", name: "h2", version: "1.4.197"
     compile project(":game")
     compile project(":game-engine")
     compile project(":default-bots")

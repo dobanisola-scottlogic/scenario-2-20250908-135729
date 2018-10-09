@@ -10,7 +10,7 @@ database:
   user: sa
   password:
   properties:
-    hibernate.dialect: org.hibernate.dialect.MySQLDialect
+    hibernate.dialect: org.hibernate.dialect.H2Dialect
     hibernate.hbm2ddl.auto: update
 logging:
   appenders:
