@@ -66,10 +66,25 @@ public class GameEngine {
         return map;
     }
 
+    /**
+     * Runs the game simulation.
+     *
+     * @return The result of running the game simulation
+     */
     public GameResult play() throws Exception {
         return play((a,b) -> true);
     }
 
+    /**
+     * Runs the game simulation.
+     * <p>
+     * The given callback will be invoked after each phase of the game, with the result of the previously run phase,
+     * and an {@linkplain Optional} that will contain the {@linkplain CutoffCondition} if the game has ended.
+     * If the callback returns {@code false}, the simulation will be cut short.
+     *
+     * @param phaseCallback A callback to be invoked after each phase completes
+     * @return The result of running the game simulation
+     */
     public GameResult play(BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback) throws Exception {
         players = new TrackedSetImpl<>();
         collectables = new TrackedSetImpl<>();
