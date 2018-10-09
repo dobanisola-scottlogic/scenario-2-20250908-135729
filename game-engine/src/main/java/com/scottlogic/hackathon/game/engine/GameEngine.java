@@ -6,6 +6,8 @@ import com.scottlogic.hackathon.game.engine.models.*;
 import com.scottlogic.hackathon.game.engine.models.builders.GameStateBuilder;
 import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class GameEngine {
     private final Set<Bot> bots;
     private final PlayableMap map;
-    private final int maxPhases = 512;
+    private int maxPhases;
     private final int spawnPhases = 8;
     private final int maxVisibleDistance = 6;
     private final int maxCollectablesSpawnedPerPhase = 4;
@@ -30,7 +32,7 @@ public class GameEngine {
     private final double collectablesSpawnFrequency = 0.2;
     private final int battleRadius = 2;
     private final int initialiseTimeoutSeconds = 30;
-    private final int makeMovesTimeoutSeconds = 5;
+    private int makeMovesTimeoutSeconds;
     private final TimedConsumer<Bot> timedConsumer = new TimedConsumer<Bot>();
     private TrackedSetImpl<PlayerImpl> players;
     private TrackedSetImpl<CollectableImpl> collectables;
@@ -43,6 +45,7 @@ public class GameEngine {
         this.map = map;
         this.bots = bots;
         logger = LoggerFactory.getLogger(this.getClass().getName());
+        setConfigValues();
 
         if (bots.size() <= 1) {
             throw new IllegalArgumentException("must have at least 2 bots");
@@ -50,6 +53,35 @@ public class GameEngine {
 
         if (bots.size() > map.getSpawnPointPositions().size()) {
             throw new IllegalArgumentException("must have a spawn point for each bot");
+        }
+    }
+
+    private void setConfigValues() {
+        InputStream inputStream = null;
+        try {
+            Properties props = new Properties();
+            String fileName = "config.properties";
+            inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+
+            if (inputStream != null) {
+                props.load(inputStream);
+            }
+
+            makeMovesTimeoutSeconds = Integer.parseInt(props.getProperty("makeMovesTimeoutSeconds"));
+            maxPhases = Integer.parseInt(props.getProperty("maxPhases"));
+
+            for (Object key : props.keySet()) {
+                logger.info(String.format("Loaded %s property", key.toString()));
+            }
+
+        } catch (Exception e ) {
+            logger.error("Error reading config values: " + e);
+        } finally {
+            try {
+                if (inputStream!= null) inputStream.close();
+            } catch (IOException e) {
+                logger.error("Failed to close input stream :" + e);
+            }
         }
     }
 
