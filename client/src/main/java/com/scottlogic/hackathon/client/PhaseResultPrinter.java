@@ -21,14 +21,12 @@ public class PhaseResultPrinter {
     private static final char SEPARATOR = '-';
     private final Set<Bot> bots;
     private final PlayableMap map;
-    private final Ansi ansi;
     private final Map<UUID, Ansi.Color> ownerColors;
     private final char[] seperator;
 
     public PhaseResultPrinter(final Set<Bot> bots, final PlayableMap map) {
         this.bots = bots;
         this.map = map;
-        this.ansi = Ansi.ansi();
 
         Map<UUID, Ansi.Color> ownerColors = new HashMap<>(bots.size());
         int i=0;
@@ -56,8 +54,10 @@ public class PhaseResultPrinter {
             sb.append(" of ").append(totalPhases);
         }
 
+        Ansi ansi = Ansi.ansi();
+
         ansi
-                .eraseScreen()
+                .newline()
                 .a(sb.toString())
                 .newline();
 
@@ -68,13 +68,13 @@ public class PhaseResultPrinter {
                     .newline();
         }
 
-        printSeperator();
+        printSeperator(ansi);
         tiles.print(ansi);
-        printSeperator();
-        System.out.println(ansi.reset());
+        printSeperator(ansi);
+        System.out.println(ansi);
     }
 
-    private void printSeperator() {
+    private void printSeperator(Ansi ansi) {
         ansi
                 .reset()
                 .a(seperator)
