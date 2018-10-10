@@ -96,7 +96,7 @@ class GamePanelController {
             () => {
                 this.makingCall = false;
             }
-        );
+         );
         this.refreshHackathons();
     }
 

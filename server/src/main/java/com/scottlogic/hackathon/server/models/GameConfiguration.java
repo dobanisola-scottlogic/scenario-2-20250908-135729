@@ -6,12 +6,12 @@ import java.util.UUID;
 public class GameConfiguration {
     private Set<String> teams;
     private String map;
-    private UUID hackathonId;
+    private String hackathonId;
 
     public GameConfiguration() {
     }
 
-    public GameConfiguration(final Set<String> teams, final String map, final UUID hackathonId) {
+    public GameConfiguration(final Set<String> teams, final String map, final String hackathonId) {
         this.teams = teams;
         this.map = map;
         this.hackathonId = hackathonId;
@@ -25,7 +25,7 @@ public class GameConfiguration {
         return map;
     }
 
-    public UUID getHackathonId() {
+    public String getHackathonId() {
         return hackathonId;
     }
 }

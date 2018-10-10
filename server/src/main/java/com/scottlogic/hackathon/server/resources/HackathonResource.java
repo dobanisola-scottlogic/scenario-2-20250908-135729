@@ -18,10 +18,10 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.UUID;
 
 @Path("/hackathon")
 @Produces(MediaType.APPLICATION_JSON)
@@ -59,7 +59,7 @@ public class HackathonResource {
     @RolesAllowed(Authorizer.ROLE_ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Hackathon updateHackathon(@PathParam("id") final UUID id, final HackathonUpdate hackathonUpdate) {
+    public Hackathon updateHackathon(@PathParam("id") final String id, final HackathonUpdate hackathonUpdate) {
         return hackathonService.updateHackathon(id, hackathonUpdate);
     }
 
@@ -77,7 +77,7 @@ public class HackathonResource {
     @Timed
     @Path("/{id}")
     @JsonView(Views.Details.class)
-    public Hackathon getHackathon(@PathParam("id") final UUID id) {
+    public Hackathon getHackathon(@NotNull @PathParam("id") final String id) {
         Hackathon hackathon = hackathonService.getHackathon(id);
         return hackathon;
     }
@@ -87,7 +87,7 @@ public class HackathonResource {
     @Timed
     @Path("/{id}")
     @RolesAllowed(Authorizer.ROLE_ADMIN)
-    public void deleteHackathon(@PathParam("id") final UUID id) {
+    public void deleteHackathon(@PathParam("id") final String id) {
         List<Team> teamsToDelete = teamService.getTeamsByHackathon(id);
         for (Team team : teamsToDelete) {
             teamService.deleteTeam(team.getId());

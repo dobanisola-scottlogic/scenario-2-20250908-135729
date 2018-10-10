@@ -56,7 +56,7 @@ public class GameService {
         return gameStore.list();
     }
 
-    public List<GameResult> getGameResultsByHackathon(final UUID hackathonId) {
+    public List<GameResult> getGameResultsByHackathon(final String hackathonId) {
         return gameStore.list(Restrictions.eq("hackathonId", hackathonId));
     }
 
