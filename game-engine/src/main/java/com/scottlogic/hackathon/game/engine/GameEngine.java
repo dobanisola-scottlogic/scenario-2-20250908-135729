@@ -140,6 +140,23 @@ public class GameEngine {
         .run();
     }
 
+    /**
+     * Performs an action on each {@linkplain Bot} still in the game and its current associated {@linkplain GameState},
+     * possibly in parallel. The action to be performed is specified as a function that takes a Bot,
+     * its associated GameState, and an {@linkplain Executor}, and should return a {@linkplain CompletableFuture}
+     * that produces a {@linkplain Runnable}. The resulting Runnable can be used to perform subsequent actions on the
+     * results of the Bot invocation that must occur synchronously. They will be amalgamated into the returned Runnable.
+     * <p>
+     * The returned Runnable <b>must</b> be invoked at some point. This is because as well as amalgamating the runnables
+     * produced successfully by the future of each Bot, it will also disqualify any Bots whose future completed
+     * exceptionally, or did not complete within the specified timeout.
+     *
+     * @param fnName A string indicating the action each bot will be taking
+     * @param timeout The maximum number of seconds each Bot's action will be allowed to run for
+     *                (unless run synchronously)
+     * @param fn A function to produce the future to run for each Bot and it's GameState, with the given executor
+     * @return A runnable of amalgamated completion tasks, as described above
+     */
     private Runnable invokeBots(String fnName, int timeout,
             Function<Executor, Function<Bot, Function<GameState, CompletableFuture<Runnable>>>> fn) {
         Function<Bot, Function<GameState, CompletableFuture<Runnable>>> f = fn.apply(executor);
@@ -150,6 +167,25 @@ public class GameEngine {
                 .join();
     }
 
+    /**
+     * Converts the given {@linkplain CompletableFuture} to one that <em>always</em> completes normally with a
+     * non-{@code null} Runnable. The returned future's runnable will:
+     * <ul>
+     *     <li>
+     *         be the same as that from the given future, if it completes normally within the given timeout.
+     *     </li>
+     *     <li>
+     *         disqualify the given bot, if the given future completes exceptionally,
+     *         or is not complete after the specified timeout.
+     *     </li>
+     * </ul>
+     *
+     * @param bot The bot to disqualify if the future doesn't complete normally
+     * @param fnName A string indicating the action the given future should be taking
+     * @param timeoutSeconds The number of seconds the given future should be allowed to run
+     * @param future The future to convert
+     * @return The converted future
+     */
     private CompletableFuture<Runnable> safeTimeout(Bot bot, String fnName, int timeoutSeconds,
             CompletableFuture<Runnable> future) {
         return future
@@ -162,7 +198,7 @@ public class GameEngine {
                         disqualifyBot(bot, Arrays.asList(new SimpleRejection(fnName + " took too long"))));
     }
 
-    private synchronized void disqualifyBot(final Bot bot, final List<Rejection> rejectedMoves) {
+    private void disqualifyBot(final Bot bot, final List<Rejection> rejectedMoves) {
         final DisqualifiedBotImpl disqualifiedBot = new DisqualifiedBotImpl(bot, rejectedMoves);
         disqualifiedBots.add(disqualifiedBot);
         removeIf(players, player -> player.getOwner().equals(bot.getId()));
@@ -348,7 +384,7 @@ public class GameEngine {
         return rejections;
     }
 
-    private synchronized void applyMoves(final List<Move> moves, Map<UUID, PlayerImpl> playerIdMap) {
+    private void applyMoves(final List<Move> moves, Map<UUID, PlayerImpl> playerIdMap) {
         for (final Move move : moves) {
             final PlayerImpl player = playerIdMap.get(move.getPlayer());
             final Position position = map.calculatePosition(player.getPosition(), move.getDirection());
