@@ -40,6 +40,7 @@ public class GameEngine {
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase;
+    private Properties props;
     private final Logger logger;
 
     public GameEngine(final PlayableMap map, final Set<Bot> bots) throws IllegalArgumentException {
@@ -56,6 +57,7 @@ public class GameEngine {
         minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn");
         spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases");
         initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds");
+        logger.info("Game loaded with config: " + props);
 
         if (bots.size() <= 1) {
             throw new IllegalArgumentException("must have at least 2 bots");
@@ -70,10 +72,12 @@ public class GameEngine {
         InputStream inputStream = null;
         T value = null;
         try {
-            Properties props = new Properties();
-            String fileName = "config.properties";
-            inputStream = new FileInputStream(fileName);
-            props.load(inputStream);
+            if (props == null) {
+                props = new Properties();
+                String fileName = "config.properties";
+                inputStream = new FileInputStream(fileName);
+                props.load(inputStream);
+            }
             value = parseFunction.apply(props.getProperty(fieldName));
 
         } catch (Exception e) {
