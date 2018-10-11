@@ -29,7 +29,7 @@ task extractMilestoneBots(type: proguard.gradle.ProGuardTask) {
     outjars "${buildDir}/proguard/${name}.jar"
 
     keep 'public class *,!**.DefaultBot** extends com.scottlogic.hackathon.game.Bot { public *; }'
-    keepnames 'class com.scottlogic.hackathon.bots.**'
+    //keepnames 'class com.scottlogic.hackathon.bots.**'
 }
 
 tasks.withType(proguard.gradle.ProGuardTask) {
