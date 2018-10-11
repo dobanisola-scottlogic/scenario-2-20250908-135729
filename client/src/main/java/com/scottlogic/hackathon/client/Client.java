@@ -11,28 +11,25 @@ import java.util.stream.Stream;
 
 public class Client {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         AnsiConsole.systemInstall();
         new Client().run(args);
     }
 
     private void run(final String[] args) {
-        final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(args);
-        final Arguments arguments = argumentsBuilder.create();
-        if (arguments != null) {
-
+        ArgumentsBuilder.create(args).ifPresent(arguments -> {
             final List<Bot> defaultBot = Stream.of(arguments.getBots()).map(this::loadDefaultBot).collect(Collectors.toList());
             final Bot bot = loadBot(arguments.getClassName());
 
             if (bot != null && defaultBot != null) {
-                final Set<Bot> bots = new HashSet<Bot>();
+                final Set<Bot> bots = new HashSet<>();
 
                 bots.addAll(defaultBot);
                 bots.add(bot);
 
                 GameEngine gameEngine = null;
                 try {
-                    gameEngine = GameEngine.create(arguments.getMap(), bots);
+                    gameEngine = GameEngine.create(arguments.getMap(), bots, arguments.isDebug());
                 } catch (final IllegalArgumentException e) {
                     System.err.printf("couldn't create map %s", arguments.getMap())
                             .println();
@@ -86,7 +83,7 @@ public class Client {
                     }
                 }
             }
-        }
+        });
     }
 
     Bot loadDefaultBot(final String botName) {

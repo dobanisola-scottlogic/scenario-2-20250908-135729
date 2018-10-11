@@ -1,133 +1,86 @@
 package com.scottlogic.hackathon.client;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 class ArgumentsBuilder {
-    private static final String DEFAULT_MAP = "Easy";
-    private static final String DEFAULT_BOT = "Milestone1";
-    private final List<String> errors;
-    private final String[] arguments;
-    private final boolean parsed = false;
-    private String map;
-    private String[] bots;
-    private String className;
-    private Options options;
-    private Option mapOption;
-    private Option botOption;
-    private Option classOption;
 
-    public ArgumentsBuilder(final String[] args) {
-        errors = new ArrayList<String>();
-        arguments = args;
-        options = new Options();
-    }
+    private static final Option.Builder MAP = Option.builder("m")
+            .hasArg()
+            .longOpt("map")
+            .desc("MapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard)\t\t default: Easy")
+            ;
 
-    public Arguments create() {
-        createOptions();
+    private static final Option.Builder BOT = Option.builder("b")
+            .hasArgs()
+            .longOpt("bot")
+            .desc("Bot: a bots name to play against (Default, Milestone1, Milestone2, Milestone3)\t\tdefault: Milestone1. " +
+                    "Can set multiple E.G -b Milestone1 Milestone2 Milestone3")
+            ;
 
-        Arguments arguments = null;
-        if (this.arguments.length < 1) {
-            printUsage();
-        } else {
-            parse();
-            validate();
-            if (this.errors.size() > 0) {
-                printErrors();
-            } else {
-                arguments = new Arguments(
-                        map == null ? DEFAULT_MAP : map,
-                        bots == null ? new String[]{DEFAULT_BOT} : bots,
-                        className);
-            }
-        }
-        return arguments;
-    }
+    private static final Option.Builder CLASS = Option.builder("c")
+            .hasArg()
+            .longOpt("className")
+            .desc("ClassName: full class name (include package) of your bots e.g. com.contestantbots.team.ExampleBot")
+            ;
 
-    public Options createOptions() {
-        mapOption = Option.builder("m")
-                .hasArg()
-                .longOpt("map")
-                .desc("MapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard)\t\t default: Easy")
-                .build();
+    private static final Option.Builder DEBUG = Option.builder("d")
+            .longOpt("debug")
+            .desc("Debug: if enabled, Bot methods will be invoked synchronously to assist debugging")
+            ;
 
-        botOption = Option.builder("b")
-                .hasArgs()
-                .longOpt("bot")
-                .desc("Bot: a bots name to play against (Default, Milestone1, Milestone2, Milestone3)\t\tdefault: Milestone1. " +
-                        "Can set multiple E.G -b Milestone1 Milestone2 Milestone3")
-                .build();
+    private ArgumentsBuilder() {}
 
-        classOption = Option.builder("c")
-                .hasArg()
-                .longOpt("className")
-                .desc("ClassName: full class name (include package) of your bots e.g. com.contestantbots.team.ExampleBot")
-                .build();
+    public static Optional<Arguments> create(String[] args) {
 
-        options.addOption(mapOption);
-        options.addOption(botOption);
-        options.addOption(classOption);
-        return options;
-    }
+        Option mapOption = MAP.build();
+        Option botOption = BOT.build();
+        Option classOption = CLASS.build();
+        Option debugOption = DEBUG.build();
 
-
-    public void printUsage() {
-        HelpFormatter formatter = new HelpFormatter();
-        StringBuilder help = new StringBuilder();
-        for (Option option : options.getOptions()) {
-            help.append(String.format("[%s|%s %s] ", option.getOpt(), option.getLongOpt(), option.getDescription().split(":")[0]));
-        }
-        formatter.printHelp(help.toString(), options);
-
-    }
-
-    private void parse() {
-        CommandLineParser parser = new DefaultParser();
-        CommandLine cmd = null;
+        Options options = new Options()
+                .addOption(mapOption)
+                .addOption(botOption)
+                .addOption(classOption)
+                .addOption(debugOption);
 
         try {
-            cmd = parser.parse(options, arguments);
+            List<String> extraArgs = new DefaultParser().parse(options, args)
+                    .getArgList();
 
-            if (cmd.hasOption(mapOption.getOpt())) {
-                map = cmd.getOptionValue(mapOption.getOpt());
-            }
 
-            if (cmd.hasOption(botOption.getOpt())) {
-                bots = cmd.getOptionValues(botOption.getOpt());
-            }
-
-            if (cmd.hasOption(classOption.getOpt())) {
-                className = cmd.getOptionValue(classOption.getOpt());
-            } else {
-                List<String> additionalArgs = cmd.getArgList();
-                if (additionalArgs.size() > 0) {
-                    className = additionalArgs.get(0);
+            String className = classOption.getValue();
+            if (className == null) {
+                if (extraArgs.isEmpty()) {
+                    throw new MissingArgumentException(classOption);
                 }
+                className = extraArgs.get(0);
             }
 
-        } catch (Exception e) {
-            printUsage();
-            printErrors();
-        }
-    }
+            String[] bots = botOption.getValues();
+            if (bots == null || bots.length == 0) {
+                bots = new String[]{Arguments.DEFAULT_BOT};
+            }
 
-    private void validate() {
-        if (className == null) {
-            errors.add("class name must be provided");
-        }
-    }
+            return Optional.of(Arguments.builder()
+                    .setMap(mapOption.getValue(Arguments.DEFAULT_MAP))
+                    .setBots(bots)
+                    .setClassName(className)
+                    .setDebug(options.hasOption(debugOption.getOpt()))
+                    .build());
 
-    public void printErrors() {
-        errors.forEach(error -> {
-            System.err.println(error);
-        });
+        } catch (ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            StringBuilder help = new StringBuilder();
+            for (Option option : options.getOptions()) {
+                help.append(String.format("[%s|%s %s] ", option.getOpt(), option.getLongOpt(), option.getDescription().split(":")[0]));
+            }
+            formatter.printHelp(help.toString(), options);
+
+            return Optional.empty();
+        }
     }
 
 }
