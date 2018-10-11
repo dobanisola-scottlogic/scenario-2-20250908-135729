@@ -68,14 +68,13 @@ public class GameEngine {
     }
 
     private <T> T getConfigValue(Function<String, T> parseFunction, String fieldName, T defaultValue) {
-        InputStream inputStream = null;
         T value = null;
-        try {
+        String fileName = "config.properties";
+        try (InputStream inputStream = new FileInputStream(fileName)) {
 
             if (props == null) {
                 props = new Properties();
-                String fileName = "config.properties";
-                inputStream = new FileInputStream(fileName);
+
                 props.load(inputStream);
             }
 
@@ -87,12 +86,6 @@ public class GameEngine {
 
         } catch (Exception e) {
             logger.error("Error reading config values: " + e);
-        } finally {
-            try {
-                if (inputStream != null) inputStream.close();
-            } catch (IOException e) {
-                logger.error("Failed to close input stream :" + e);
-            }
         }
 
         return value != null ? value : defaultValue;
