@@ -48,17 +48,18 @@ public class GameEngine {
         this.bots = bots;
         logger = LoggerFactory.getLogger(this.getClass().getName());
 
-        maxPhases = getConfigValue(Integer::parseInt, "maxPhases");
-        makeMovesTimeoutSeconds = getConfigValue(Integer::parseInt, "makeMovesTimeoutSeconds");
-        maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance");
-        collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency");
-        battleRadius = getConfigValue(Integer::parseInt, "battleRadius");
-        maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase");
-        minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn");
-        spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases");
-        initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds");
-        logger.info("Game loaded with config: " + props);
+        maxPhases = getConfigValue(Integer::parseInt, "maxPhases", 256);
+        makeMovesTimeoutSeconds = getConfigValue(Integer::parseInt, "makeMovesTimeoutSeconds", 5);
+        maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6);
+        collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2);
+        battleRadius = getConfigValue(Integer::parseInt, "battleRadius", 2);
+        maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4);
+        minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8);
+        spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8);
+        initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds", 30);
 
+        logger.info("Game loaded with config: " + props);
+        logger.info("Max phases set " + maxPhases);
         if (bots.size() <= 1) {
             throw new IllegalArgumentException("must have at least 2 bots");
         }
@@ -68,7 +69,7 @@ public class GameEngine {
         }
     }
 
-    private <T> T getConfigValue(Function<String, T> parseFunction, String fieldName) {
+    private <T> T getConfigValue(Function<String, T> parseFunction, String fieldName, T defaultValue) {
         InputStream inputStream = null;
         T value = null;
         try {
@@ -89,7 +90,8 @@ public class GameEngine {
                 logger.error("Failed to close input stream :" + e);
             }
         }
-        return value;
+
+        return value != null ? value : defaultValue;
     }
 
     public static GameEngine create(final String mapName, final Set<Bot> bots) throws IllegalArgumentException {
