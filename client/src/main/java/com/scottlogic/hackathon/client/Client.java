@@ -17,7 +17,7 @@ public class Client {
     }
 
     private void run(final String[] args) {
-        ArgumentsBuilder.create(args).ifPresent(arguments -> {
+        ArgumentsBuilder.create(getClass(), args).ifPresent(arguments -> {
             final List<Bot> defaultBot = Stream.of(arguments.getBots()).map(this::loadDefaultBot).collect(Collectors.toList());
             final Bot bot = loadBot(arguments.getClassName());
 
