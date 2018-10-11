@@ -6,6 +6,9 @@ import org.fusesource.jansi.Ansi;
 
 import java.util.*;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class PhaseResultPrinter {
     private static final Ansi.Color[] COLORS = new Ansi.Color[]{
@@ -14,26 +17,28 @@ public class PhaseResultPrinter {
             Ansi.Color.YELLOW,
             Ansi.Color.MAGENTA
     };
-    private static final char PLAYER = '*';
-    private static final char SPAWN_POINT = 'O';
+
+    private static final List<Tile> PLAYERS = IntStream.range(0, COLORS.length)
+            .mapToObj(i -> new Tile((char)('a' + i), COLORS[i]))
+            .collect(Collectors.toList());
+
+    private static final List<Tile> SPAWN_POINTS = IntStream.range(0, COLORS.length)
+            .mapToObj(i -> new Tile((char)('A' + i), COLORS[i]))
+            .collect(Collectors.toList());
+
     private static final Tile COLLECTABLE = new Tile('+', Ansi.Color.WHITE);
     private static final Tile OUT_OF_BOUNDS_POSITION = new Tile('X', Ansi.Color.RED);
     private static final char SEPARATOR = '-';
     private final Set<Bot> bots;
     private final PlayableMap map;
-    private final Map<UUID, Ansi.Color> ownerColors;
+    private final List<UUID> ownerIndices;
     private final char[] seperator;
 
     public PhaseResultPrinter(final Set<Bot> bots, final PlayableMap map) {
         this.bots = bots;
         this.map = map;
 
-        Map<UUID, Ansi.Color> ownerColors = new HashMap<>(bots.size());
-        int i=0;
-        for(Bot bot: bots) {
-            ownerColors.put(bot.getId(), COLORS[i++]);
-        }
-        this.ownerColors = Collections.unmodifiableMap(ownerColors);
+        this.ownerIndices = Collections.unmodifiableList(bots.stream().map(Bot::getId).collect(Collectors.toList()));
 
         this.seperator = new char[map.getWidth()];
         Arrays.fill(seperator, SEPARATOR);
@@ -41,7 +46,7 @@ public class PhaseResultPrinter {
 
 
     public void print(PhaseResult phaseResult, int totalPhases) {
-        TileCanvas tiles = new TileCanvas(map.getWidth(), map.getHeight(), ownerColors);
+        TileCanvas tiles = new TileCanvas(map.getWidth(), map.getHeight(), ownerIndices);
 
         phaseResult.getPlayers().forEach(tiles::addTile);
         phaseResult.getSpawnPoints().forEach(tiles::addTile);
@@ -62,8 +67,11 @@ public class PhaseResultPrinter {
                 .newline();
 
         for (final Bot bot : bots) {
+            int index = ownerIndices.indexOf(bot.getId());
             ansi
-                    .fg(ownerColors.get(bot.getId()))
+                    .fg(COLORS[index])
+                    .a(SPAWN_POINTS.get(index).character)
+                    .a(" - ")
                     .a(String.format(bot.getDisplayName()))
                     .newline();
         }
@@ -82,21 +90,16 @@ public class PhaseResultPrinter {
     }
 
     private static class TileCanvas {
-        private final Map<UUID, Ansi.Color> ownerColors;
+        private final List<UUID> ownerIndices;
         private final Tile[][] tiles;
 
-        TileCanvas(int width, int height, java.util.Map<UUID, Ansi.Color> ownerColors) {
+        TileCanvas(int width, int height, List<UUID> ownerIndices) {
             this.tiles = new Tile[height][width];
-            this.ownerColors = ownerColors;
+            this.ownerIndices = ownerIndices;
         }
 
         void addTile(final Player player) {
-            final Ansi.Color color = ownerColors.get(player.getOwner());
-            addTile(player.getPosition(), PLAYER, color);
-        }
-
-        private void addTile(final Position position, final char character, final Ansi.Color color) {
-            addTile(position, new Tile(character, color));
+            addTile(player.getPosition(), PLAYERS.get(ownerIndices.indexOf(player.getOwner())));
         }
 
         private void addTile(final Position position, Tile tile) {
@@ -104,8 +107,7 @@ public class PhaseResultPrinter {
         }
 
         void addTile(final SpawnPoint spawnPoint) {
-            final Ansi.Color color = ownerColors.get(spawnPoint.getOwner());
-            addTile(spawnPoint.getPosition(), SPAWN_POINT, color);
+            addTile(spawnPoint.getPosition(), SPAWN_POINTS.get(ownerIndices.indexOf(spawnPoint.getOwner())));
         }
 
         void addTile(final Collectable collectable) {
