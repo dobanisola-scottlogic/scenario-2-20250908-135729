@@ -197,6 +197,11 @@ abstract class AbstractRouteSpec extends Specification {
         Route straightLineRoute(Position start, Direction direction, int length) {
             throw new AssertionError('A Route implementation should not call Map.straightLineRoute(...)')
         }
+
+        @Override
+        Position createPosition(int x, int y) {
+            return new Position(x, y)
+        }
     }
 
 }
