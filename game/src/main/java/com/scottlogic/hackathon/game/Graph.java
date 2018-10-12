@@ -1,11 +1,14 @@
-package com.scottlogic.hackathon.game.route;
+package com.scottlogic.hackathon.game;
 
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.Route;
 import org.hworblehat.jraph.AStar;
 import org.hworblehat.jraph.DirectedGraph;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * Graph search algorithms for {@linkplain Map Maps}.
  */
-public class Graph {
+class Graph {
 
     /**
      * Finds (one of) the shortest route between the two given {@linkplain Position positions} on the {@linkplain Map},
@@ -35,7 +38,7 @@ public class Graph {
     public static Optional<Route> findRoute(Map map, Position from, Position to, Predicate<Position> avoid) {
         return AStar.findIntRoute(Objects.requireNonNull(from), Objects.requireNonNull(to),
                         new MapGraph(Objects.requireNonNull(map), Objects.requireNonNull(avoid)), map::distance)
-                .map(route -> new ListRoute(map, from,
+                .map(route -> map.route(from,
                         route.getEdges().stream().map(Edge::getDirection).collect(Collectors.toList())));
     }
 

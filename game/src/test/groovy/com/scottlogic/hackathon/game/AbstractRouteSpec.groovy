@@ -1,14 +1,10 @@
-package com.scottlogic.hackathon.game.route
+package com.scottlogic.hackathon.game
 
-import com.scottlogic.hackathon.game.Direction
-import com.scottlogic.hackathon.game.Map
-import com.scottlogic.hackathon.game.Position
-import com.scottlogic.hackathon.game.Route
-import groovy.transform.CompileStatic
 import spock.lang.*
 
-import java.util.stream.Collectors
+import groovy.transform.CompileStatic
 
+import java.util.stream.Collectors
 
 abstract class AbstractRouteSpec extends Specification {
 

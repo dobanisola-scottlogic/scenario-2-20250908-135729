@@ -1,23 +1,51 @@
-package com.scottlogic.hackathon.game.route;
+package com.scottlogic.hackathon.game;
 
-import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.Map;
-import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.Route;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-abstract class AbstractRoute implements Route {
-    protected final Position start;
+class RouteImpl implements Route {
+
+    private final Position start;
     private final Map map;
+    private final List<Direction> list;
+    private final int index;
 
-    public AbstractRoute(Map map, Position start) {
+    public RouteImpl(Map map, Position start, Direction direction, int length) {
+        this(map, start, IntStream.range(0, length).mapToObj(i -> direction)
+                .collect(Collectors.toCollection(() -> new ArrayList<>(length))));
+    }
+
+    public RouteImpl(Map map, Position start, List<Direction> steps) {
+        this(map, start, steps, 0);
+    }
+
+    private RouteImpl(Map map, Position start, List<Direction> steps, int index) {
         this.map = map;
         this.start = start;
+        this.list = steps;
+        this.index = index;
+    }
+
+    @Override
+    public int getLength() {
+        return list.size() - index;
+    }
+
+    @Override
+    public Optional<Direction> getFirstDirection() {
+        return index < list.size() ? Optional.of(list.get(index)) : Optional.empty();
+    }
+
+    @Override
+    public Iterator<Direction> directionIterator() {
+        return list.listIterator(index);
     }
 
     @Override
@@ -45,21 +73,15 @@ abstract class AbstractRoute implements Route {
         };
     }
 
-    protected final Map getMap() {
-        return map;
-    }
-
     @Override
     public Position getStart() {
         return start;
     }
 
-    protected abstract Route createNextStep(Map map, Position next);
-
     @Override
     public final Optional<Route> step() {
         return getFirstDirection()
-                .map(d -> createNextStep(getMap(), getMap().getNeighbour(start, d)));
+                .map(d -> new RouteImpl(map, map.getNeighbour(start, d), list, index+1));
     }
 
     @Override
@@ -67,4 +89,5 @@ abstract class AbstractRoute implements Route {
         return Spliterators.spliterator(directionIterator(), getLength(),
                 Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SIZED);
     }
+
 }

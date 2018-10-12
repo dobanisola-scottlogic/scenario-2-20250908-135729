@@ -16,6 +16,7 @@ public class Position {
      *
      * @param x the X coordinate of the newly constructed Position
      * @param y the Y coordinate of the newly constructed Position
+     * @throws IllegalArgumentException if either given value is less than 0
      *
      * @see Map#createPosition(int, int)
      */

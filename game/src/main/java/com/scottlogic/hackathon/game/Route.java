@@ -31,12 +31,12 @@ public interface Route extends Iterable<Position> {
 
     /**
      * Gets the sub-route starting from the second position along this route.
-     * In other words, this imagines that one step has been taken along this route and retains the portion of the
+     * In other words, this imagines that one step has been taken along this route and returns the portion of the
      * route still to travel.
      * If this route has zero length (i.e. is <em>just</em>  the starting position),
      * then an {@linkplain Optional#empty() empty Optional} will be returned.
      *
-     * @return The sub-route starting from position the second position
+     * @return The sub-route starting from the second position
      */
     Optional<Route> step();
 
@@ -100,7 +100,8 @@ public interface Route extends Iterable<Position> {
      * @return {@code true} iff this route <em>collides</em> with the other, as defined above
      */
     default boolean collides(Route other) {
-        Iterator<Position> itThis=this.iterator(), itOther=other.iterator();
+        final Iterator<Position> itThis=this.iterator();
+        final Iterator<Position> itOther=other.iterator();
         while(itThis.hasNext() && itOther.hasNext()) {
             if(itThis.next().equals(itOther.next())) {
                 return true;

@@ -1,9 +1,5 @@
 package com.scottlogic.hackathon.game;
 
-import com.scottlogic.hackathon.game.route.Graph;
-import com.scottlogic.hackathon.game.route.ListRoute;
-import com.scottlogic.hackathon.game.route.StraightLineRoute;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -161,7 +157,7 @@ public interface Map {
      * @return The resulting route
      */
     default Route route(Position start, List<Direction> route) {
-        return new ListRoute(this, start, route);
+        return new RouteImpl(this, start, route);
     }
 
     /**
@@ -174,7 +170,7 @@ public interface Map {
      * @return The resulting route
      */
     default Route straightLineRoute(Position start, Direction direction, int length) {
-        return new StraightLineRoute(this, start, direction, length);
+        return new RouteImpl(this, start, direction, length);
     }
 
     /**
