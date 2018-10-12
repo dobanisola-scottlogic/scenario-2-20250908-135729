@@ -7,6 +7,7 @@ import com.scottlogic.hackathon.game.engine.models.builders.GameStateBuilder;
 import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -40,23 +41,23 @@ public class GameEngine {
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase;
-    private Properties props;
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
 
     public GameEngine(final PlayableMap map, final Set<Bot> bots) throws IllegalArgumentException {
         this.map = map;
         this.bots = bots;
-        logger = LoggerFactory.getLogger(this.getClass().getName());
 
-        maxPhases = getConfigValue(Integer::parseInt, "maxPhases", 512);
-        makeMovesTimeoutSeconds = getConfigValue(Integer::parseInt, "makeMovesTimeoutSeconds", 5);
-        maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6);
-        collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2);
-        battleRadius = getConfigValue(Integer::parseInt, "battleRadius", 2);
-        maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4);
-        minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8);
-        spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8);
-        initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds", 30);
+        Properties props = loadProperties();
+
+        maxPhases = getConfigValue(Integer::parseInt, "maxPhases", 512, props);
+        makeMovesTimeoutSeconds = getConfigValue(Integer::parseInt, "makeMovesTimeoutSeconds", 5 , props);
+        collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2 , props);
+        battleRadius = getConfigValue(Integer::parseInt, "battleRadius", 2 ,props);
+        maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4 , props);
+        minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8 , props);
+        spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8 , props);
+        initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds", 30 , props);
+        maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
 
         if (bots.size() <= 1) {
             throw new IllegalArgumentException("must have at least 2 bots");
@@ -67,17 +68,22 @@ public class GameEngine {
         }
     }
 
-    private <T> T getConfigValue(Function<String, T> parseFunction, String fieldName, T defaultValue) {
-        T value = null;
+    private static Properties loadProperties() {
         String fileName = "config.properties";
+        Properties props = new Properties();
+
         try (InputStream inputStream = new FileInputStream(fileName)) {
+            props.load(inputStream);
+        } catch (Exception e) {
+            logger.error("Error loading file " + e);
+        }
 
-            if (props == null) {
-                props = new Properties();
+        return props;
+    }
 
-                props.load(inputStream);
-            }
-
+    private static <T> T getConfigValue(Function<String, T> parseFunction, String fieldName, T defaultValue, Properties props) {
+        T value = null;
+        try {
             String property = props.getProperty(fieldName);
 
             if (property != null) {
@@ -85,7 +91,7 @@ public class GameEngine {
             }
 
         } catch (Exception e) {
-            logger.error("Error reading config values: " + e);
+            logger.error("Error parsing config values: " + e);
         }
 
         return value != null ? value : defaultValue;
