@@ -28,7 +28,7 @@ public class TimidMove extends MoveBase {
             }
             if (nearestOpponentPosition != null) {
                 distance = 0;
-                selectDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsAwayFrom(playerPosition, nearestOpponentPosition));
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsAwayFrom(playerPosition, nearestOpponentPosition));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

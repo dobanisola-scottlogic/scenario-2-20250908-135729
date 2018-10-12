@@ -5,8 +5,6 @@ import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
-import java.util.stream.Stream;
-
 public class AttackMove extends MoveBase {
 
     public AttackMove(final Map map, final Player fullPlayer) {
@@ -30,7 +28,7 @@ public class AttackMove extends MoveBase {
             }
             if (nearestOpponentPosition != null) {
                 distance = 0;
-                selectDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestOpponentPosition));
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestOpponentPosition));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

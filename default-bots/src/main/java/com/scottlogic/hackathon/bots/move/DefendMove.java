@@ -5,7 +5,6 @@ import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DefendMove extends MoveBase {
@@ -38,8 +37,8 @@ public class DefendMove extends MoveBase {
         if (spawnPoint != null) {
             distance = 0;
             // Random Percentage keeps the defend move from getting stuck in a local oscillation
-            if (findDistanceBetweenTwoPositionsSquared(playerPosition, spawnPoint.getPosition()) == 0 ||
-                    new Random().nextInt(100) < RANDOM_MOVEMENT_PERCENTAGE) {
+            if (playerPosition.equals(spawnPoint.getPosition())
+                    || ThreadLocalRandom.current().nextInt(100) < RANDOM_MOVEMENT_PERCENTAGE) {
                 direction = Direction.random();
             } else {
                 direction = findBestTetherDirectionOnePositionToAnother(playerPosition, spawnPoint.getPosition(), tetherDistance);

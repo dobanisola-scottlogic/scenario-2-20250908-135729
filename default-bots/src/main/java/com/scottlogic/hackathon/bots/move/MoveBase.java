@@ -1,9 +1,21 @@
 package com.scottlogic.hackathon.bots.move;
 
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Collectable;
+import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.Move;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.SpawnPoint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,7 +80,7 @@ public class MoveBase implements Move {
         return distance == 0;
     }
 
-    protected void selectDirectionNotCollidingWithOtherPlayersIn2Moves(Stream<Direction> preferredDirections) {
+    protected void setDirectionNotCollidingWithOtherPlayersIn2Moves(Stream<Direction> preferredDirections) {
         direction = preferredThenRandom(preferredDirections)
                 .filter(d -> !getMap().straightLineRoute(playerPosition, d, 2).collides(playersPositions))
                 .findFirst()
@@ -84,8 +96,9 @@ public class MoveBase implements Move {
     }
 
     void setRandomDirectionAndDistance(int minDistance, int maxDistance) {
-        while (distance-- <= 0 || map.straightLineRoute(playerPosition, direction, distance).collides(outOfBoundsPositions)) {
-            distance = ThreadLocalRandom.current().nextInt(maxDistance - minDistance) + minDistance + 1;
+        --distance;
+        while (distance < 0 || map.straightLineRoute(playerPosition, direction, distance).collides(outOfBoundsPositions)) {
+            distance = ThreadLocalRandom.current().nextInt(maxDistance - minDistance) + minDistance;
             direction = Direction.random();
         }
     }

@@ -28,7 +28,7 @@ public class CollectableMove extends MoveBase {
             }
             if (nearestCollectable != null) {
                 distance = 0;
-                selectDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestCollectable.getPosition()));
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestCollectable.getPosition()));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

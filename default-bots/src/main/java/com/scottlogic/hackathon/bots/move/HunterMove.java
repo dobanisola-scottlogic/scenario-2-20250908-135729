@@ -43,7 +43,7 @@ public class HunterMove extends MoveBase {
             }
             if (nearestOpponentSpawnPointPosition != null) {
                 distance = 0;
-                selectDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestOpponentSpawnPointPosition));
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestOpponentSpawnPointPosition));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }
