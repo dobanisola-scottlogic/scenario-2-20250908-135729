@@ -1,11 +1,21 @@
 package com.scottlogic.hackathon.client;
 
 import com.scottlogic.hackathon.bots.DefaultBot;
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.DisqualifiedBot;
+import com.scottlogic.hackathon.game.GameResult;
+import com.scottlogic.hackathon.game.PhaseResult;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Rejection;
 import com.scottlogic.hackathon.game.engine.GameEngine;
 import org.fusesource.jansi.AnsiConsole;
-import java.util.*;
+
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

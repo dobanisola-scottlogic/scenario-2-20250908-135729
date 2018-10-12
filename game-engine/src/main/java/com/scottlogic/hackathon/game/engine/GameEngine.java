@@ -1,20 +1,55 @@
 package com.scottlogic.hackathon.game.engine;
 
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.Collectable;
+import com.scottlogic.hackathon.game.CutoffCondition;
+import com.scottlogic.hackathon.game.GameResult;
+import com.scottlogic.hackathon.game.GameState;
+import com.scottlogic.hackathon.game.Move;
+import com.scottlogic.hackathon.game.PhaseResult;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.Rejection;
+import com.scottlogic.hackathon.game.SpawnPoint;
 import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
-import com.scottlogic.hackathon.game.engine.models.*;
+import com.scottlogic.hackathon.game.engine.models.BotExceptionRejection;
+import com.scottlogic.hackathon.game.engine.models.CollectableImpl;
+import com.scottlogic.hackathon.game.engine.models.DisqualifiedBotImpl;
+import com.scottlogic.hackathon.game.engine.models.GameResultImpl;
+import com.scottlogic.hackathon.game.engine.models.MapImpl;
+import com.scottlogic.hackathon.game.engine.models.MoveRejection;
+import com.scottlogic.hackathon.game.engine.models.PlayerImpl;
+import com.scottlogic.hackathon.game.engine.models.SimpleRejection;
+import com.scottlogic.hackathon.game.engine.models.SpawnPointImpl;
 import com.scottlogic.hackathon.game.engine.models.builders.GameStateBuilder;
 import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
-
-import java.util.*;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);

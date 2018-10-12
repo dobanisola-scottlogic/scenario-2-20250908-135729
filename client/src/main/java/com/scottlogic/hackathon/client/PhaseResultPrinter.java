@@ -1,14 +1,21 @@
 package com.scottlogic.hackathon.client;
 
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.Collectable;
+import com.scottlogic.hackathon.game.PhaseResult;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.SpawnPoint;
 import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
 import org.fusesource.jansi.Ansi;
 
-import java.util.*;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class PhaseResultPrinter {
     private static final Ansi.Color[] COLORS = new Ansi.Color[]{
