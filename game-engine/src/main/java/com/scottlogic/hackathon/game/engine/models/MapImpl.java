@@ -41,7 +41,7 @@ public class MapImpl implements Map {
             y += distance;
         }
 
-        return createCanonicalPosition(x, y);
+        return createPosition(x, y);
     }
 
     @Override
@@ -60,17 +60,8 @@ public class MapImpl implements Map {
         return d > extent/2 ? extent-d : d;
     }
 
-    /**
-     * Creates a {@linkplain Position} whose x and y coordinates are the minimum non-negative equivalents to the
-     * given values for this map. Essentially, this takes care of the wrapping nature of this map's coordinate system.
-     *
-     * @param x The x-coordinate of the position to create, which may be negative or greater than this map's
-     *          {@linkplain #getWidth() width}
-     * @param y The y-coordinate of the position to create, which may be negative or greater than this map's
-     *          {@linkplain #getHeight() height}
-     * @return A new Position, whose x and y coordinates have been canonicalised
-     */
-    public Position createCanonicalPosition(int x, int y) {
+    @Override
+    public Position createPosition(int x, int y) {
         return new Position(mod(x, getWidth()), mod(y, getHeight()));
     }
 

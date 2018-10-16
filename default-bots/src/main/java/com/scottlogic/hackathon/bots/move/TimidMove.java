@@ -5,8 +5,6 @@ import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
-import java.util.stream.Stream;
-
 public class TimidMove extends MoveBase {
 
     public TimidMove(Map map, final Player fullPlayer) {
@@ -23,17 +21,14 @@ public class TimidMove extends MoveBase {
             Position nearestOpponentPosition = null;
             int minDistanceSquared = ACTIVE_RADIUS_SQUARED;
             for (Position opponentPosition : opponentPlayerPositions) {
-                if (util.findDistanceBetweenTwoPositionsSquared(playerPosition, opponentPosition) <= minDistanceSquared) {
+                if (findDistanceBetweenTwoPositionsSquared(playerPosition, opponentPosition) <= minDistanceSquared) {
                     nearestOpponentPosition = opponentPosition;
-                    minDistanceSquared = util.findDistanceBetweenTwoPositionsSquared(playerPosition, opponentPosition);
+                    minDistanceSquared = findDistanceBetweenTwoPositionsSquared(playerPosition, opponentPosition);
                 }
             }
             if (nearestOpponentPosition != null) {
                 distance = 0;
-                direction = util.preferredThenRandom(getMap().directionsAwayFrom(playerPosition, nearestOpponentPosition))
-                        .filter(d -> !util.playersCollideInThisMove(2, d, playerPosition, playersPositions))
-                        .findFirst()
-                        .orElseGet(util::randomDirection);
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsAwayFrom(playerPosition, nearestOpponentPosition));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

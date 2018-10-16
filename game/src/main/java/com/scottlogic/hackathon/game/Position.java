@@ -8,12 +8,19 @@ public class Position {
     private final int y;
 
     /**
-     * Constructs and initialises a position at the specified
-     * (x, y) location
+     * Constructs and initialises a position at the specified coordinates.
+     * This does not perform any checking of whether the given coordinates are within the bounds of a particular
+     * {@linkplain Map}, and will throw an exception if either coordinate is negative.
+     * Consider using {@link Map#createPosition(int, int)} instead of this constructor for a safer way of creating
+     * positions.
+     *
      * @param x the X coordinate of the newly constructed Position
      * @param y the Y coordinate of the newly constructed Position
+     * @throws IllegalArgumentException if either given value is less than 0
+     *
+     * @see Map#createPosition(int, int)
      */
-    public Position(final int x, final int y) {
+    public Position(final int x, final int y) throws IllegalArgumentException {
         if (x < 0) {
             throw new IllegalArgumentException("x must be >= 0");
         }
@@ -65,7 +72,7 @@ public class Position {
      */
     @Override
     public String toString() {
-        return String.format("X %s - Y %s", x, y);
+        return String.format("(x:%d, y:%d)", x, y);
     }
 }
 

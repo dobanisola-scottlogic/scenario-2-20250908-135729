@@ -5,8 +5,6 @@ import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
 
-import java.util.stream.Stream;
-
 public class CollectableMove extends MoveBase {
 
     public CollectableMove(Map map, final Player fullPlayer) {
@@ -23,17 +21,14 @@ public class CollectableMove extends MoveBase {
             Collectable nearestCollectable = null;
             int minDistanceSquared = ACTIVE_RADIUS_SQUARED;
             for (Collectable collectable : collectables) {
-                if (util.findDistanceBetweenTwoPositionsSquared(playerPosition, collectable.getPosition()) <= minDistanceSquared) {
+                if (findDistanceBetweenTwoPositionsSquared(playerPosition, collectable.getPosition()) <= minDistanceSquared) {
                     nearestCollectable = collectable;
-                    minDistanceSquared = util.findDistanceBetweenTwoPositionsSquared(playerPosition, nearestCollectable.getPosition());
+                    minDistanceSquared = findDistanceBetweenTwoPositionsSquared(playerPosition, nearestCollectable.getPosition());
                 }
             }
             if (nearestCollectable != null) {
                 distance = 0;
-                direction = util.preferredThenRandom(getMap().directionsTowards(playerPosition, nearestCollectable.getPosition()))
-                        .filter(d -> !util.playersCollideInThisMove(2, d, playerPosition, playersPositions))
-                        .findFirst()
-                        .orElseGet(util::randomDirection);
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestCollectable.getPosition()));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

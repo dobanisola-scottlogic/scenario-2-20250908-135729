@@ -1,5 +1,7 @@
 package com.scottlogic.hackathon.game;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * The directions a player can move.
  */
@@ -59,7 +61,18 @@ public enum Direction {
      * @return The opposite direction
      */
     public Direction getOpposite() {
-        return values()[(ordinal()+4)%8];
+        Direction[] vals = values();
+        int opp = vals.length / 2;
+        assert opp*2 == vals.length;
+        return vals[(ordinal()+opp) % vals.length];
+    }
+
+    /**
+     * @return A random direction
+     */
+    public static Direction random() {
+        Direction[] vals = values();
+        return vals[ThreadLocalRandom.current().nextInt(vals.length)];
     }
 
 }

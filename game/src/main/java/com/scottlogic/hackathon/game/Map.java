@@ -1,5 +1,9 @@
 package com.scottlogic.hackathon.game;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -22,6 +26,19 @@ public interface Map {
      * @return The height of the map
      */
     int getHeight();
+
+    /**
+     * Creates new {@linkplain Position} whose coordinates are <em>equivalent</em> to those given.
+     * Depending on the geometry of the map, the coordinates of the resulting Position object may not be identical
+     * to those given. For example, if the map's x-coordinates "wrap around" (like longitude on a map of the Earth),
+     * and an x-coordinate greater than the maximum is specified, it will be converted to the equivalent value less
+     * than the maximum.
+     *
+     * @param x The (horizontal) x-coordinate of the position to create
+     * @param y The (vertical) y-coordinate of the position to create
+     * @return A position with equivalent coordinates
+     */
+    Position createPosition(int x, int y);
 
     /**
      * Calculates the position on the current map that is displaced by the specified distance and direction from the
@@ -129,6 +146,75 @@ public interface Map {
 
         return Stream.of(Direction.values())
                 .filter(d -> distance(getNeighbour(from, d), awayFrom) > distance);
+    }
+
+    /**
+     * Creates a {@linkplain Route} through this map, starting from the given position and taking a single step
+     * in each of the given directions.
+     *
+     * @param start The starting position of the route
+     * @param route The sequence of steps determining the route
+     * @return The resulting route
+     */
+    default Route route(Position start, List<Direction> route) {
+        return new RouteImpl(this, start, route);
+    }
+
+    /**
+     * Creates a {@linkplain Route} through this map, starting from the given position and taking the given number of
+     * steps in the given direction.
+     *
+     * @param start The starting position of the route
+     * @param direction The direction to move in from the starting position
+     * @param length The numper of steps to move
+     * @return The resulting route
+     */
+    default Route straightLineRoute(Position start, Direction direction, int length) {
+        return new RouteImpl(this, start, direction, length);
+    }
+
+    /**
+     * Finds (one of) the shortest route between the two given {@linkplain Position positions},
+     * avoiding any positions that match the given predicate.
+     * This method uses the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search algorithm</a>.
+     * <p>
+     * It is possible that no route will be found,
+     * if the set of positions that must be avoided forms an unbroken barrier between the start and target positions.
+     * In this situation, and empty {@linkplain Optional} will be returned.
+     *
+     * @param from The Position to find a route from
+     * @param to The Position to find a route to
+     * @param avoid A {@linkplain Predicate} specifying which positions to avoid.
+     *              The found route is guaranteed not to include any positions for which this returns {@code true}.
+     * @return An Optional containing an ordered list of the directions to move in to traverse the found route,
+     *         or {@linkplain Optional#empty() empty} if no route could be found
+     *
+     * @see #findRoute(Position, Position, Collection)
+     */
+    default Optional<Route> findRoute(Position from, Position to, Predicate<Position> avoid) {
+        return Graph.findRoute(this, from, to, avoid);
+    }
+
+    /**
+     * Finds (one of) the shortest route between the two given {@linkplain Position positions},
+     * avoiding any positions in the specified collection.
+     * This method uses the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search algorithm</a>.
+     * <p>
+     * It is possible that no route will be found,
+     * if the set of positions that must be avoided forms an unbroken barrier between the start and target positions.
+     * In this situation, and empty {@linkplain Optional} will be returned.
+     *
+     * @param from The Position to find a route from
+     * @param to The Position to find a route to
+     * @param avoid A {@linkplain Collection} of positions to avoid.
+     *              The found route is guaranteed not to include any positions contained here.
+     * @return An Optional containing an ordered list of the directions to move in to traverse the found route,
+     *         or {@linkplain Optional#empty() empty} if no route could be found
+     *
+     * @see #findRoute(Position, Position, Predicate)
+     */
+    default Optional<Route> findRoute(Position from, Position to, Collection<Position> avoid) {
+        return findRoute(from, to, avoid::contains);
     }
 
 }

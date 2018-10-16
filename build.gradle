@@ -10,7 +10,7 @@ wrapper {
 
 allprojects {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 }
 

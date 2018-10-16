@@ -7,7 +7,6 @@ import com.scottlogic.hackathon.game.Position;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class HunterMove extends MoveBase {
 
@@ -37,17 +36,14 @@ public class HunterMove extends MoveBase {
             Position nearestOpponentSpawnPointPosition = null;
             int minDistanceSquared = largestMapRadius;
             for (Position opponentSpawnPointsPosition : opponentSpawnPointsPositions) {
-                if (util.findDistanceBetweenTwoPositionsSquared(playerPosition, opponentSpawnPointsPosition) <= minDistanceSquared) {
+                if (findDistanceBetweenTwoPositionsSquared(playerPosition, opponentSpawnPointsPosition) <= minDistanceSquared) {
                     nearestOpponentSpawnPointPosition = opponentSpawnPointsPosition;
-                    minDistanceSquared = util.findDistanceBetweenTwoPositionsSquared(playerPosition, nearestOpponentSpawnPointPosition);
+                    minDistanceSquared = findDistanceBetweenTwoPositionsSquared(playerPosition, nearestOpponentSpawnPointPosition);
                 }
             }
             if (nearestOpponentSpawnPointPosition != null) {
                 distance = 0;
-                direction = util.preferredThenRandom(getMap().directionsTowards(playerPosition, nearestOpponentSpawnPointPosition))
-                        .filter(d -> !util.playersCollideInThisMove(2, d, playerPosition, playersPositions))
-                        .findFirst()
-                        .orElseGet(util::randomDirection);
+                setDirectionNotCollidingWithOtherPlayersIn2Moves(getMap().directionsTowards(playerPosition, nearestOpponentSpawnPointPosition));
             } else {
                 setRandomDirectionAndDistance(MINIMUM_RANDOM_DISTANCE, MAXIMUM_RANDOM_DISTANCE);
             }

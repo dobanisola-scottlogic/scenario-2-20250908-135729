@@ -3,12 +3,15 @@ package com.scottlogic.hackathon.bots.move;
 import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DefendMove extends MoveBase {
 
-    private int tetherDistance;
+    private static final Direction[] DIRECTIONS = Direction.values();
+
+    private final int tetherDistance;
 
     private static final int MINIMUM_SPAWN_POINT_TETHER = 3;
     private static final int MAXIMUM_SPAWN_POINT_TETHER = 6;
@@ -16,14 +19,17 @@ public class DefendMove extends MoveBase {
 
     public DefendMove(Map map, final Player fullPlayer) {
         super(map, fullPlayer);
-        // Tether distance is how far it aims to stay to the spawn point
-        this.tetherDistance = new Random().nextInt(MINIMUM_SPAWN_POINT_TETHER) + MAXIMUM_SPAWN_POINT_TETHER - MINIMUM_SPAWN_POINT_TETHER;
+        this.tetherDistance = randomTetherDistance();
     }
 
     public DefendMove(Direction direction, int distance, Map map, final Player fullPlayer) {
         super(direction, distance, map, fullPlayer);
+        this.tetherDistance = randomTetherDistance();
+    }
+
+    private static int randomTetherDistance() {
         // Tether distance is how far it aims to stay to the spawn point
-        this.tetherDistance = new Random().nextInt(MINIMUM_SPAWN_POINT_TETHER) + MAXIMUM_SPAWN_POINT_TETHER - MINIMUM_SPAWN_POINT_TETHER;
+        return ThreadLocalRandom.current().nextInt(MINIMUM_SPAWN_POINT_TETHER) + MAXIMUM_SPAWN_POINT_TETHER - MINIMUM_SPAWN_POINT_TETHER;
     }
 
     @Override
@@ -31,18 +37,33 @@ public class DefendMove extends MoveBase {
         if (spawnPoint != null) {
             distance = 0;
             // Random Percentage keeps the defend move from getting stuck in a local oscillation
-            if (util.findDistanceBetweenTwoPositionsSquared(playerPosition, spawnPoint.getPosition()) == 0 ||
-                    new Random().nextInt(100) < RANDOM_MOVEMENT_PERCENTAGE) {
-                direction = util.randomDirection();
+            if (playerPosition.equals(spawnPoint.getPosition())
+                    || ThreadLocalRandom.current().nextInt(100) < RANDOM_MOVEMENT_PERCENTAGE) {
+                direction = Direction.random();
             } else {
-                direction = util.findBestTetherDirectionOnePositionToAnother(playerPosition, spawnPoint.getPosition(), tetherDistance);
+                direction = findBestTetherDirectionOnePositionToAnother(playerPosition, spawnPoint.getPosition(), tetherDistance);
             }
-            while (util.playersCollideInThisMove(2, direction, playerPosition, playersPositions)) {
-                direction = util.randomDirection();
+            while (getMap().straightLineRoute(playerPosition, direction, 2).collides(playersPositions)) {
+                direction = Direction.random();
             }
         } else {
             setRandomDirectionAndDistance(MINIMUM_SPAWN_POINT_TETHER, MAXIMUM_SPAWN_POINT_TETHER);
         }
+    }
+
+    private Direction findBestTetherDirectionOnePositionToAnother(Position myPosition, Position desiredTether, final int distance) {
+        int minDistanceToTether = distance * distance;
+        int index = ThreadLocalRandom.current().nextInt(Direction.values().length);
+        int randomModifier = ThreadLocalRandom.current().nextInt(DIRECTIONS.length);
+        for (int i = randomModifier; i < DIRECTIONS.length + randomModifier; i++) {
+            Position projectedPosition = getMap().getNeighbour(myPosition, DIRECTIONS[i% DIRECTIONS.length]);
+            int distanceToTether = Math.abs(findDistanceBetweenTwoPositionsSquared(projectedPosition, desiredTether) - distance * distance);
+            if (distanceToTether < minDistanceToTether) {
+                index = i % DIRECTIONS.length;
+                minDistanceToTether = distanceToTether;
+            }
+        }
+        return DIRECTIONS[index];
     }
 
     @Override

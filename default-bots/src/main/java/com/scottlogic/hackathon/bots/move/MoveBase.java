@@ -1,13 +1,25 @@
 package com.scottlogic.hackathon.bots.move;
 
-import com.scottlogic.hackathon.bots.Util;
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Collectable;
+import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.Move;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.SpawnPoint;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class MoveBase implements Move {
     final UUID player;
@@ -24,7 +36,6 @@ public class MoveBase implements Move {
     Set<Collectable> collectables;
 
     private final Map map;
-    Util util;
 
     static final int MINIMUM_RANDOM_DISTANCE = 16;
     static final int MAXIMUM_RANDOM_DISTANCE = 64;
@@ -35,7 +46,6 @@ public class MoveBase implements Move {
         this.playerPosition = fullPlayer.getPosition();
         this.player = fullPlayer.getId();
         this.map = map;
-        this.util = new Util(map.getWidth(), map.getHeight());
     }
 
     public MoveBase(Direction direction, int distance, Map map, final Player fullPlayer) {
@@ -70,6 +80,13 @@ public class MoveBase implements Move {
         return distance == 0;
     }
 
+    protected void setDirectionNotCollidingWithOtherPlayersIn2Moves(Stream<Direction> preferredDirections) {
+        direction = preferredThenRandom(preferredDirections)
+                .filter(d -> !getMap().straightLineRoute(playerPosition, d, 2).collides(playersPositions))
+                .findFirst()
+                .orElseGet(Direction::random);
+    }
+
     public String getName() {
         return null;
     }
@@ -79,15 +96,10 @@ public class MoveBase implements Move {
     }
 
     void setRandomDirectionAndDistance(int minDistance, int maxDistance) {
-        if (distance <= 0 || util.moveGoesOutOfBounds(distance, direction, playerPosition, outOfBoundsPositions)) {
-            boolean isValidMove = false;
-            while (!isValidMove) {
-                distance = util.randomDistance(minDistance, maxDistance);
-                direction = util.randomDirection();
-                isValidMove = !util.moveGoesOutOfBounds(distance, direction, playerPosition, outOfBoundsPositions);
-            }
-        } else {
-            distance--;
+        --distance;
+        while (distance < 0 || map.straightLineRoute(playerPosition, direction, distance).collides(outOfBoundsPositions)) {
+            distance = ThreadLocalRandom.current().nextInt(maxDistance - minDistance) + minDistance;
+            direction = Direction.random();
         }
     }
 
@@ -148,6 +160,22 @@ public class MoveBase implements Move {
 
     public void setCollectables(Set<Collectable> collectables) {
         this.collectables = collectables;
+    }
+
+    protected final int findDistanceBetweenTwoPositionsSquared(Position position1, Position position2) {
+        int xDifference = map.xDistance(position1, position2);
+        int yDifference = map.yDistance(position1, position2);
+        return xDifference * xDifference + yDifference * yDifference;
+    }
+
+    private Stream<Direction> preferredThenRandom(Stream<Direction> preferred) {
+        Set<Direction> pending = EnumSet.allOf(Direction.class);
+        return Stream.concat(preferred.peek(pending::remove), StreamSupport.stream(() -> {
+                    List<Direction> remaining = new ArrayList<>(pending);
+                    Collections.shuffle(remaining);
+                    return remaining.spliterator();
+                }, Spliterator.DISTINCT | Spliterator.SIZED | Spliterator.ORDERED | Spliterator.NONNULL,
+                false));
     }
 
     public void phase() {
