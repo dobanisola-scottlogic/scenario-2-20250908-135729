@@ -10,9 +10,11 @@ import com.scottlogic.hackathon.game.Rejection;
 import com.scottlogic.hackathon.game.engine.GameEngine;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -21,95 +23,90 @@ import java.util.stream.Stream;
 
 public class Client {
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
         AnsiConsole.systemInstall();
         new Client().run(args);
     }
 
-    private void run(final String[] args) {
-        ArgumentsParser.create(getClass(), args).ifPresent(arguments -> {
-            final List<Bot> defaultBot = Stream.of(arguments.getBots()).map(this::loadDefaultBot).collect(Collectors.toList());
-            final Bot bot = loadBot(arguments.getClassName());
+    private void run(final String[] args) throws Exception {
+        Optional<Arguments> optArgs = ArgumentsParser.create(getClass(), args);
+        if(optArgs.isPresent()) {
+            Arguments arguments = optArgs.get();
 
-            if (bot != null && defaultBot != null) {
-                final Set<Bot> bots = new HashSet<>();
+            final Set<Bot> bots = Stream.of(arguments.getBots()).map(this::loadDefaultBot)
+                    .collect(Collectors.toCollection(HashSet::new));
+            bots.add(loadBot(arguments.getClassName()));
 
-                bots.addAll(defaultBot);
-                bots.add(bot);
+            GameEngine gameEngine = null;
+            try {
+                gameEngine = GameEngine.create(arguments.getMap(), bots, arguments.isDebug());
+            } catch (final IllegalArgumentException e) {
+                System.err.printf("couldn't create map %s", arguments.getMap())
+                        .println();
+            }
 
-                GameEngine gameEngine = null;
+            if (gameEngine != null) {
                 try {
-                    gameEngine = GameEngine.create(arguments.getMap(), bots, arguments.isDebug());
-                } catch (final IllegalArgumentException e) {
-                    System.err.printf("couldn't create map %s", arguments.getMap())
-                            .println();
-                }
+                    final Scanner scanner = new Scanner(System.in);
+                    final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameEngine.getMap());
+                    final GameResult gameResult = gameEngine.play((phase, cutoff) -> {
+                        phaseResultPrinter.print(phase, 0);
+                        System.out.println("Type 'q' to quit or press enter to continue");
+                        return !scanner.nextLine().equals("q");
+                    });
 
-                if (gameEngine != null) {
-                    try {
-                        final Scanner scanner = new Scanner(System.in);
-                        final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameEngine.getMap());
-                        final GameResult gameResult = gameEngine.play((phase, cutoff) -> {
-                            phaseResultPrinter.print(phase, 0);
-                            System.out.println("Type 'q' to quit or press enter to continue");
-                            return !scanner.nextLine().equals("q");
-                        });
+                    printGameResult(gameResult, bots);
 
-                        printGameResult(gameResult, bots);
+                    System.out.println("Type 'p' to review game steps or press enter to quit");
+                    if (scanner.nextLine().equals("p")) {
+                        final List<PhaseResult> phaseResults = gameResult.getPhaseResults();
+                        int phase = 1;
+                        while (phase < phaseResults.size()) {
+                            phaseResultPrinter.print(phaseResults.get(phase), phaseResults.size());
+                            System.out.println("Type 'q' to quit, a number to jump to a phase or press enter to continue");
 
-                        System.out.println("Type 'p' to review game steps or press enter to quit");
-                        if (scanner.nextLine().equals("p")) {
-                            final List<PhaseResult> phaseResults = gameResult.getPhaseResults();
-                            int phase = 1;
-                            while (phase < phaseResults.size()) {
-                                phaseResultPrinter.print(phaseResults.get(phase), phaseResults.size());
-                                System.out.println("Type 'q' to quit, a number to jump to a phase or press enter to continue");
-
-                                final String input = scanner.nextLine();
-                                if (input.equals("q")) {
-                                    phase = phaseResults.size();
-                                } else {
-                                    try {
-                                        final int nextPhase = Integer.parseInt(input);
-                                        if (nextPhase < 0 || nextPhase >= phaseResults.size()) {
-                                            System.out.println("Phase out of range");
-                                        } else {
-                                            phase = nextPhase + 1;
-                                        }
-                                    } catch (final Exception ex) {
-                                        phase++;
+                            final String input = scanner.nextLine();
+                            if (input.equals("q")) {
+                                phase = phaseResults.size();
+                            } else {
+                                try {
+                                    final int nextPhase = Integer.parseInt(input);
+                                    if (nextPhase < 0 || nextPhase >= phaseResults.size()) {
+                                        System.out.println("Phase out of range");
+                                    } else {
+                                        phase = nextPhase + 1;
                                     }
+                                } catch (final Exception ex) {
+                                    phase++;
                                 }
                             }
                         }
-                        scanner.close();
-                        System.exit(0);
-                    } catch (final Exception ex) {
-                        System.out.println(ex);
-                        ex.printStackTrace(System.out);
-                        System.exit(1);
-                    } finally {
-                        gameEngine.dispose();
                     }
+                    scanner.close();
+                    System.exit(0);
+                } catch (final Exception ex) {
+                    ex.printStackTrace(System.out);
+                    System.exit(1);
+                } finally {
+                    gameEngine.dispose();
                 }
             }
-        });
-    }
-
-    Bot loadDefaultBot(final String botName) {
-        return loadBot(DefaultBot.class.getPackage().getName() + "." + botName + "Bot");
-    }
-
-    Bot loadBot(final String className) {
-        Bot bot = null;
-        try {
-            final Class clazz = Class.forName(className);
-            bot = (Bot) clazz.newInstance();
-        } catch (final Exception e) {
-            System.err.printf("bot %s wasn't found", className)
-                    .println();
         }
-        return bot;
+    }
+
+    private Bot loadDefaultBot(final String botName) {
+        try {
+            return loadBot(DefaultBot.class.getPackage().getName() + "." + botName + "Bot");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid built-in bot name: " + botName, e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Bot loadBot(final String className) throws Exception {
+        final Class<? extends Bot> clazz = (Class<? extends Bot>) Class.forName(className);
+        Constructor<? extends Bot> constructor = clazz.getConstructor();
+        return constructor.newInstance();
     }
 
     private void printGameResult(final GameResult gameResult, Set<Bot> bots) {
@@ -128,7 +125,7 @@ public class Client {
 
         final Map<UUID, List<Player>> ownerToPlayerLookup = finalResult.getPlayers()
                 .stream()
-                .collect(Collectors.groupingBy(player -> player.getOwner()));
+                .collect(Collectors.groupingBy(Player::getOwner));
 
         for (final Map.Entry<UUID, List<Player>> entry : ownerToPlayerLookup.entrySet()) {
             Bot currentBot = bots
