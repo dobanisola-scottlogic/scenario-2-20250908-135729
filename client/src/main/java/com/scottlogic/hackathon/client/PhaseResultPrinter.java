@@ -1,12 +1,21 @@
 package com.scottlogic.hackathon.client;
 
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.Collectable;
+import com.scottlogic.hackathon.game.PhaseResult;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.SpawnPoint;
+import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
 import org.fusesource.jansi.Ansi;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PhaseResultPrinter {
     private static final Ansi.Color[] COLORS = new Ansi.Color[]{
@@ -15,105 +24,128 @@ public class PhaseResultPrinter {
             Ansi.Color.YELLOW,
             Ansi.Color.MAGENTA
     };
-    private static final char PLAYER = '*';
-    private static final char SPAWN_POINT = 'O';
-    private static final char COLLECTABLE = '+';
-    private static final char OUT_OF_BOUNDS_POSITION = 'X';
+
+    private static final List<Tile> PLAYERS = IntStream.range(0, COLORS.length)
+            .mapToObj(i -> new Tile((char)('a' + i), COLORS[i]))
+            .collect(Collectors.toList());
+
+    private static final List<Tile> SPAWN_POINTS = IntStream.range(0, COLORS.length)
+            .mapToObj(i -> new Tile((char)('A' + i), COLORS[i]))
+            .collect(Collectors.toList());
+
+    private static final Tile COLLECTABLE = new Tile('+', Ansi.Color.WHITE);
+    private static final Tile OUT_OF_BOUNDS_POSITION = new Tile('X', Ansi.Color.RED);
     private static final char SEPARATOR = '-';
     private final Set<Bot> bots;
-    private final GameResult gameResult;
-    private final PhaseResult phaseResult;
-    private final Tile[][] tiles;
-    private final Ansi ansi;
-    private final HashMap<UUID, Ansi.Color> ownerColors = new HashMap<UUID, Ansi.Color>();
+    private final PlayableMap map;
+    private final List<UUID> ownerIndices;
+    private final char[] seperator;
 
-    public PhaseResultPrinter(final Set<Bot> bots, final GameResult gameResult, final PhaseResult phaseResult) {
+    public PhaseResultPrinter(final Set<Bot> bots, final PlayableMap map) {
         this.bots = bots;
-        this.gameResult = gameResult;
-        this.phaseResult = phaseResult;
-        this.tiles = new Tile[this.gameResult.getMap().getHeight()][this.gameResult.getMap().getWidth()];
-        this.ansi = Ansi.ansi();
-        this.createOwnerColors();
+        this.map = map;
+
+        this.ownerIndices = Collections.unmodifiableList(bots.stream().map(Bot::getId).collect(Collectors.toList()));
+
+        this.seperator = new char[map.getWidth()];
+        Arrays.fill(seperator, SEPARATOR);
     }
 
 
-    private void createOwnerColors() {
-        for (final Bot bot : bots) {
-            ownerColors.put(bot.getId(), COLORS[ownerColors.size()]);
+    public void print(PhaseResult phaseResult, int totalPhases) {
+        TileCanvas tiles = new TileCanvas(map.getWidth(), map.getHeight(), ownerIndices);
+
+        phaseResult.getPlayers().forEach(tiles::addTile);
+        phaseResult.getSpawnPoints().forEach(tiles::addTile);
+        phaseResult.getCollectables().forEach(tiles::addTile);
+        map.getOutOfBoundsPositions().forEach(tiles::addTile);
+
+        StringBuilder sb = new StringBuilder("Phase ")
+                .append(phaseResult.getPhase());
+        if(totalPhases > 0) {
+            sb.append(" of ").append(totalPhases);
         }
-    }
 
-    private void addTile(final Player player) {
-        final Ansi.Color color = ownerColors.get(player.getOwner());
-        addTile(player.getPosition(), PLAYER, color);
-    }
-
-    private void addTile(final Position position, final char character, final Ansi.Color color) {
-        tiles[position.getY()][position.getX()] = new Tile(character, color);
-    }
-
-    private void addTile(final SpawnPoint spawnPoint) {
-        final Ansi.Color color = ownerColors.get(spawnPoint.getOwner());
-        addTile(spawnPoint.getPosition(), SPAWN_POINT, color);
-    }
-
-    private void addTile(final Collectable collectable) {
-        addTile(collectable.getPosition(), COLLECTABLE, Ansi.Color.WHITE);
-    }
-
-    private void addTile(final Position outOfBoundsPosition) {
-        addTile(outOfBoundsPosition, OUT_OF_BOUNDS_POSITION, Ansi.Color.RED);
-    }
-
-    public void print() {
-        phaseResult.getPlayers().forEach(this::addTile);
-        phaseResult.getSpawnPoints().forEach(this::addTile);
-        phaseResult.getCollectables().forEach(this::addTile);
-        gameResult.getOutOfBoundPositions().forEach(this::addTile);
+        Ansi ansi = Ansi.ansi();
 
         ansi
-                .eraseScreen()
-                .a(String.format("Phase %s of %s", phaseResult.getPhase(), gameResult.getPhaseResults().size()))
+                .newline()
+                .a(sb.toString())
                 .newline();
 
         for (final Bot bot : bots) {
+            int index = ownerIndices.indexOf(bot.getId());
             ansi
-                    .fg(ownerColors.get(bot.getId()))
+                    .fg(COLORS[index])
+                    .a(SPAWN_POINTS.get(index).character)
+                    .a(" - ")
                     .a(String.format(bot.getDisplayName()))
                     .newline();
         }
 
-        printSeperator();
-        for (final Tile[] row : tiles) {
-            for (final Tile tile : row) {
-                printTile(tile);
-            }
-            ansi.newline();
-        }
-        printSeperator();
-        System.out.println(ansi.reset());
+        printSeparator(ansi);
+        tiles.print(ansi);
+        printSeparator(ansi);
+        System.out.println(ansi);
     }
 
-    private void printSeperator() {
-        final char[] seperator = new char[gameResult.getMap().getWidth()];
-        Arrays.fill(seperator, SEPARATOR);
+    private void printSeparator(Ansi ansi) {
         ansi
                 .reset()
                 .a(seperator)
                 .newline();
     }
 
-    private void printTile(final Tile tile) {
-        if (tile != null) {
-            ansi
-                    .fg(tile.getColor())
-                    .a(tile.getCharacter());
-        } else {
-            ansi.a(' ');
+    private static class TileCanvas {
+        private final List<UUID> ownerIndices;
+        private final Tile[][] tiles;
+
+        TileCanvas(int width, int height, List<UUID> ownerIndices) {
+            this.tiles = new Tile[height][width];
+            this.ownerIndices = ownerIndices;
+        }
+
+        void addTile(final Player player) {
+            addTile(player.getPosition(), PLAYERS.get(ownerIndices.indexOf(player.getOwner())));
+        }
+
+        private void addTile(final Position position, Tile tile) {
+            tiles[position.getY()][position.getX()] = tile;
+        }
+
+        void addTile(final SpawnPoint spawnPoint) {
+            addTile(spawnPoint.getPosition(), SPAWN_POINTS.get(ownerIndices.indexOf(spawnPoint.getOwner())));
+        }
+
+        void addTile(final Collectable collectable) {
+            addTile(collectable.getPosition(), COLLECTABLE);
+        }
+
+        void addTile(final Position outOfBoundsPosition) {
+            addTile(outOfBoundsPosition, OUT_OF_BOUNDS_POSITION);
+        }
+
+        private void printTile(Ansi ansi, final Tile tile) {
+            if (tile != null) {
+                ansi
+                        .fg(tile.getColor())
+                        .a(tile.getCharacter());
+            } else {
+                ansi.a(' ');
+            }
+        }
+
+        void print(Ansi ansi) {
+            for (final Tile[] row : tiles) {
+                for (final Tile tile : row) {
+                    printTile(ansi, tile);
+                }
+                ansi.newline();
+            }
         }
     }
 
-    private class Tile {
+    private static class Tile {
         private final char character;
         private final Ansi.Color color;
 

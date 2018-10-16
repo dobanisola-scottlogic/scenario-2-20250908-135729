@@ -1,38 +1,45 @@
 package com.scottlogic.hackathon.client;
 
 import com.scottlogic.hackathon.bots.DefaultBot;
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.DisqualifiedBot;
+import com.scottlogic.hackathon.game.GameResult;
+import com.scottlogic.hackathon.game.PhaseResult;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Rejection;
 import com.scottlogic.hackathon.game.engine.GameEngine;
 import org.fusesource.jansi.AnsiConsole;
-import java.util.*;
+
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Client {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         AnsiConsole.systemInstall();
         new Client().run(args);
     }
 
     private void run(final String[] args) {
-        final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(args);
-        final Arguments arguments = argumentsBuilder.create();
-        if (arguments != null) {
-
+        ArgumentsParser.create(getClass(), args).ifPresent(arguments -> {
             final List<Bot> defaultBot = Stream.of(arguments.getBots()).map(this::loadDefaultBot).collect(Collectors.toList());
             final Bot bot = loadBot(arguments.getClassName());
 
             if (bot != null && defaultBot != null) {
-                final Set<Bot> bots = new HashSet<Bot>();
+                final Set<Bot> bots = new HashSet<>();
 
                 bots.addAll(defaultBot);
                 bots.add(bot);
 
                 GameEngine gameEngine = null;
                 try {
-                    gameEngine = GameEngine.create(arguments.getMap(), bots);
+                    gameEngine = GameEngine.create(arguments.getMap(), bots, arguments.isDebug());
                 } catch (final IllegalArgumentException e) {
                     System.err.printf("couldn't create map %s", arguments.getMap())
                             .println();
@@ -40,19 +47,23 @@ public class Client {
 
                 if (gameEngine != null) {
                     try {
-                        final GameResult gameResult = gameEngine.play();
+                        final Scanner scanner = new Scanner(System.in);
+                        final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameEngine.getMap());
+                        final GameResult gameResult = gameEngine.play((phase, cutoff) -> {
+                            phaseResultPrinter.print(phase, 0);
+                            System.out.println("Type 'q' to quit or press enter to continue");
+                            return !scanner.nextLine().equals("q");
+                        });
 
                         printGameResult(gameResult, bots);
 
-                        final Scanner scanner = new Scanner(System.in);
-                        System.out.println("Type p to play or press enter to quit");
+                        System.out.println("Type 'p' to review game steps or press enter to quit");
                         if (scanner.nextLine().equals("p")) {
                             final List<PhaseResult> phaseResults = gameResult.getPhaseResults();
                             int phase = 1;
                             while (phase < phaseResults.size()) {
-                                final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameResult, phaseResults.get(phase));
-                                phaseResultPrinter.print();
-                                System.out.println("Type q to quit, a number to jump to a phase or press enter to continue");
+                                phaseResultPrinter.print(phaseResults.get(phase), phaseResults.size());
+                                System.out.println("Type 'q' to quit, a number to jump to a phase or press enter to continue");
 
                                 final String input = scanner.nextLine();
                                 if (input.equals("q")) {
@@ -82,7 +93,7 @@ public class Client {
                     }
                 }
             }
-        }
+        });
     }
 
     Bot loadDefaultBot(final String botName) {
@@ -106,7 +117,7 @@ public class Client {
         System.out.printf("Game completed in %s phases", finalResult.getPhase())
                 .println();
 
-        System.out.printf("Ended because %s", gameResult.getCutoffCondition().toString())
+        System.out.printf("Ended because %s", gameResult.getCutoffCondition())
                 .println();
 
         System.out.printf("The game has %s spawn points, %s players and %s collectables left",

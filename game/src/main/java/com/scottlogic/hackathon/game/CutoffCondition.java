@@ -7,6 +7,5 @@ public enum CutoffCondition {
     RANK_STABLE,
     TURN_LIMIT_REACHED,
     LONE_SURVIVOR,
-    NOT_GATHERING,
-    NOT_RAZING
+    CLIENT_QUIT,
 }
