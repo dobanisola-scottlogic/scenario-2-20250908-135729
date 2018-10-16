@@ -26,6 +26,9 @@ import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,15 +60,15 @@ public class GameEngine {
 
     private final Set<Bot> bots;
     private final PlayableMap map;
-    private final int maxPhases = 512;
-    private final int spawnPhases = 8;
-    private final int maxVisibleDistance = 6;
-    private final int maxCollectablesSpawnedPerPhase = 4;
-    private final int minCollectableDistanceFromSpawn = 8;
-    private final double collectablesSpawnFrequency = 0.2;
-    private final int battleRadius = 2;
-    private final int initialiseTimeoutSeconds = 30;
-    private final int makeMovesTimeoutSeconds = 5;
+    private final int maxPhases;
+    private final int spawnPhases;
+    private final int maxVisibleDistance;
+    private final int maxCollectablesSpawnedPerPhase;
+    private final int minCollectableDistanceFromSpawn;
+    private final double collectablesSpawnFrequency;
+    private final int battleRadius;
+    private final int initialiseTimeoutSeconds;
+    private final int makeMovesTimeoutSeconds;
     private TrackedSetImpl<PlayerImpl> players;
     private TrackedSetImpl<CollectableImpl> collectables;
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
@@ -76,8 +80,53 @@ public class GameEngine {
     private GameEngine(final PlayableMap map, final Set<Bot> bots, Executor executor, Runnable onDispose) {
         this.map = map;
         this.bots = bots;
+
+        Properties props = loadProperties();
+
+        maxPhases = getConfigValue(Integer::parseInt, "maxPhases", 512, props);
+        makeMovesTimeoutSeconds = getConfigValue(Integer::parseInt, "makeMovesTimeoutSeconds", 5 , props);
+        collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2 , props);
+        battleRadius = getConfigValue(Integer::parseInt, "battleRadius", 2 ,props);
+        maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4 , props);
+        minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8 , props);
+        spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8 , props);
+        initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds", 30 , props);
+        maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
+        
         this.executor = executor;
         this.onDispose = onDispose;
+    }
+
+    private static Properties loadProperties() {
+        String fileName = "config.properties";
+        Properties props = new Properties();
+
+        File file = new File(fileName);
+        if(file.isFile()) {
+            try (InputStream inputStream = new FileInputStream(file)) {
+                props.load(inputStream);
+            } catch (Exception e) {
+                LOGGER.error("Error loading file config file: ", e);
+            }
+        }
+
+        return props;
+    }
+
+    private static <T> T getConfigValue(Function<String, T> parseFunction, String fieldName, T defaultValue, Properties props) {
+        T value = null;
+        try {
+            String property = props.getProperty(fieldName);
+
+            if (property != null) {
+                value = parseFunction.apply(property);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Error parsing config value: {}", fieldName, e);
+        }
+
+        return value != null ? value : defaultValue;
     }
 
     public static GameEngine create(String mapName, Set<Bot> bots) throws IllegalArgumentException {
