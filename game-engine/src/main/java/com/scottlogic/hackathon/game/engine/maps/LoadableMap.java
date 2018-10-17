@@ -1,11 +1,11 @@
 package com.scottlogic.hackathon.game.engine.maps;
 
-public class Map {
+public class LoadableMap {
     private int width;
     private int height;
     private int[] data;
 
-    public Map() {
+    public LoadableMap() {
 
     }
 

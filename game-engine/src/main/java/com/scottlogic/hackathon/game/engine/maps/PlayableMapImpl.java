@@ -2,17 +2,17 @@ package com.scottlogic.hackathon.game.engine.maps;
 
 import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.engine.models.MapImpl;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-class PlayableMapImpl implements PlayableMap {
+class PlayableMapImpl extends MapImpl implements PlayableMap {
     private final String name;
-    private final int width;
-    private final int height;
     private final Set<Position> outOfBoundsPositions;
     private final Set<Position> spawnPointPositions;
 
@@ -22,9 +22,8 @@ class PlayableMapImpl implements PlayableMap {
             final int height,
             final Set<Position> outOfBoundsPositions,
             final Set<Position> spawnPointPositions) throws Exception {
+        super(width, height);
         this.name = name;
-        this.width = width;
-        this.height = height;
         this.outOfBoundsPositions = outOfBoundsPositions;
         this.spawnPointPositions = spawnPointPositions;
         this.validate();
@@ -46,8 +45,8 @@ class PlayableMapImpl implements PlayableMap {
 
     public String toString() {
         return String.format("With %s - Height %s - Spawn Point Positions %s - Out Of Bounds Positions %s",
-                width,
-                height,
+                getWidth(),
+                getHeight(),
                 spawnPointPositions.size(),
                 outOfBoundsPositions.size());
     }
@@ -55,16 +54,6 @@ class PlayableMapImpl implements PlayableMap {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
     }
 
     @Override
@@ -80,71 +69,17 @@ class PlayableMapImpl implements PlayableMap {
     @Override
     public boolean contains(final Position position) {
         return position.getX() >= 0
-                && position.getX() < width
+                && position.getX() < getWidth()
                 && position.getY() >= 0
-                && position.getY() < height;
+                && position.getY() < getHeight();
     }
 
     @Override
-    public Position calculatePosition(final Position position, final Direction direction) {
-        return calculatePosition(position, direction, 1);
+    public Stream<Position> getSurroundingPositions(final Position position, final int distance) {
+        return IntStream.rangeClosed(position.getX()-distance, position.getX()+distance)
+                .mapToObj(x -> IntStream.rangeClosed(position.getY()-distance, position.getY()+distance)
+                        .mapToObj(y -> createPosition(x, y)))
+                .flatMap(Function.identity());
     }
-
-    @Override
-    public Position calculatePosition(final Position position, final Direction direction, final int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("distance must be greater than 0");
-        }
-        int x = position.getX();
-        int y = position.getY();
-
-        if (direction == Direction.NORTHWEST || direction == Direction.WEST || direction == Direction.SOUTHWEST) {
-            x = (x - distance) % width;
-            if (x < 0) {
-                x = width + x;
-            }
-        } else if (direction == Direction.NORTHEAST || direction == Direction.EAST || direction == Direction.SOUTHEAST) {
-            x = (x + distance) % width;
-        }
-
-        if (direction == Direction.NORTHEAST || direction == Direction.NORTH || direction == Direction.NORTHWEST) {
-            y = (y - distance) % height;
-            if (y < 0) {
-                y = height + y;
-            }
-        } else if (direction == Direction.SOUTHEAST || direction == Direction.SOUTH || direction == Direction.SOUTHWEST) {
-            y = (y + distance) % height;
-        }
-
-        return new Position(x, y);
-    }
-
-    @Override
-    public Stream<Position> getSurroundingPositions(final Position position, final int distance, final boolean includeOrigin) {
-        final IntStream distanceStream = IntStream.rangeClosed(1, distance);
-        Stream<Position> positions = Arrays.stream(Direction.values())
-                .flatMap(direction -> IntStream.rangeClosed(1, distance)
-                        .mapToObj(currentDistance -> calculatePosition(position, direction, currentDistance)));
-
-        if (includeOrigin) {
-            positions = Stream.concat(Stream.of(position), positions);
-        }
-
-        return positions;
-    }
-
-    @Override
-    public int distanceBetween(final Position position1, final Position position2) {
-        final int x1 = position1.getX();
-        final int x2 = position2.getX();
-        final int y1 = position1.getY();
-        final int y2 = position2.getY();
-
-        final int deltaX = Math.min(Math.abs(x1 - x2), getWidth() - Math.abs(x1 - x2));
-        final int deltaY = Math.min(Math.abs(y1 - y2), getHeight() - Math.abs(y1 - y2));
-
-        return (int) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
-    }
-
 
 }

@@ -45,7 +45,7 @@ public class BattleSystem {
     private List<PlayerImpl> enemiesInRange(final PlayerImpl of) {
         return players.stream()
                 .filter(player -> !player.getOwner().equals(of.getOwner()))
-                .filter(enemy -> map.distanceBetween(enemy.getPosition(), of.getPosition()) <= battleRadius)
+                .filter(enemy -> map.distance(enemy.getPosition(), of.getPosition()) <= battleRadius)
                 .collect(Collectors.toList());
     }
 }

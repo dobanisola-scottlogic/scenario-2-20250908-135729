@@ -363,7 +363,7 @@ public class GameEngine {
         final Set<Position> visiblePositions = ownPlayers
                 .stream()
                 .map(player -> player.getPosition())
-                .flatMap(position -> map.getSurroundingPositions(position, maxVisibleDistance, true))
+                .flatMap(position -> map.getSurroundingPositions(position, maxVisibleDistance))
                 .collect(Collectors.toSet());
 
         gameStateBuilder
@@ -471,7 +471,7 @@ public class GameEngine {
     private void applyMoves(final List<Move> moves, Map<UUID, PlayerImpl> playerIdMap) {
         for (final Move move : moves) {
             final PlayerImpl player = playerIdMap.get(move.getPlayer());
-            final Position position = map.calculatePosition(player.getPosition(), move.getDirection());
+            final Position position = map.getNeighbour(player.getPosition(), move.getDirection());
             players.replace(player, player.move(position));
         }
     }
@@ -522,7 +522,7 @@ public class GameEngine {
     private boolean closeToSpawnPoint(final Position source, final int range) {
         return spawnPoints
                 .stream()
-                .anyMatch(spawnPoint -> map.distanceBetween(source, spawnPoint.getPosition()) <= range);
+                .anyMatch(spawnPoint -> map.distance(source, spawnPoint.getPosition()) <= range);
     }
 
     private void spawnPlayers() {

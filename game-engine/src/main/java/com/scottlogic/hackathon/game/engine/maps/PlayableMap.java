@@ -2,6 +2,7 @@ package com.scottlogic.hackathon.game.engine.maps;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.Map;
 import com.scottlogic.hackathon.game.Position;
 
 import java.io.InputStream;
@@ -9,11 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface PlayableMap {
+public interface PlayableMap extends Map {
     static PlayableMap load(final String mapName) throws Exception {
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream("maps/" + mapName + ".json");
         final ObjectMapper objectMapper = new ObjectMapper();
-        final Map map = objectMapper.readValue(inputStream, Map.class);
+        final LoadableMap map = objectMapper.readValue(inputStream, LoadableMap.class);
 
         final Set<Position> outOfBoundsPositions = new HashSet<>();
         final Set<Position> spawnPointPositions = new HashSet<>();
@@ -44,13 +45,8 @@ public interface PlayableMap {
     }
 
     String getName();
-    int getWidth();
-    int getHeight();
     Set<Position> getOutOfBoundsPositions();
     Set<Position> getSpawnPointPositions();
     boolean contains(Position position);
-    Position calculatePosition(Position position, Direction direction);
-    Position calculatePosition(Position position, Direction direction, int distance);
-    Stream<Position> getSurroundingPositions(Position position, int distance, boolean includeOrigin);
-    int distanceBetween(final Position a, final Position b);
+    Stream<Position> getSurroundingPositions(Position position, int distance);
 }
