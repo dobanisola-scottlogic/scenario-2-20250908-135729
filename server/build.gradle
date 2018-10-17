@@ -27,6 +27,7 @@ dependencies {
     compile group: "com.google.inject", name: "guice", version: "3.0"
     runtime group: "org.postgresql", name: "postgresql", version: "9.4.1211"
     runtime group: "com.h2database", name: "h2", version: "1.4.197"
+    runtime 'org.mariadb.jdbc:mariadb-java-client:2.3.0'
     compile project(":game")
     compile project(":game-engine")
     compile project(":default-bots")

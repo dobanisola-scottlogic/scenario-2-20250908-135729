@@ -6,9 +6,8 @@ server:
     port: 8080
   rootPath: '/api/*'
 database:
-  driverClass: org.postgresql.Driver
   properties:
-    hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.dialect: org.hibernate.dialect.H2Dialect
     hibernate.hbm2ddl.auto: update
 logging:
   appenders:

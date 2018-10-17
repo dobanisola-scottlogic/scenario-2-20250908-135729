@@ -1,0 +1,17 @@
+FROM groovy:alpine
+
+ENV NEXUS_PORT 8081
+ENV NEXUS_HOST nexus
+ENV NEXUS_USER admin
+ENV NEXUS_PASSWORD admin123
+
+RUN wget https://raw.githubusercontent.com/eficode/wait-for/f71f8199a0dd95953752fb5d3f76f79ced16d47d/wait-for -O wait-for \
+    && chmod a+x wait-for \
+    && wget https://github.com/AdoptOpenJDK/openjdk9-binaries/releases/download/jdk-9.0.4%2B11/OpenJDK9U-jdk_x64_windows_hotspot_9.0.4_11.zip -O jdk-windows.zip \
+    && wget https://github.com/AdoptOpenJDK/openjdk9-binaries/releases/download/jdk-9.0.4%2B11/OpenJDK9U-jdk_x64_linux_hotspot_9.0.4_11.tar.gz -O jdk-linux.tgz
+
+ADD groovy groovy
+ADD jars jars
+
+CMD ./wait-for ${NEXUS_HOST}:${NEXUS_PORT} -t 120 -- \
+    groovy -cp 'jars/*' groovy/uploadAndRunScript.groovy -h http://$NEXUS_HOST:$NEXUS_PORT -u $NEXUS_USER -p "$NEXUS_PASSWORD"

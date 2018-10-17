@@ -1,0 +1,87 @@
+version: '3.7'
+
+volumes:
+  database:
+
+services:
+
+  ########################################################
+  # Nexus repository manager
+  # --
+  # Acts as a caching proxy to various online repoitories:
+  #  - Gradle distribution downloads (Gradlew)
+  nexus:
+    image: sonatype/nexus3
+    ports:
+      - 8081:8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      interval: 15s
+      timeout: 10s
+
+  ##########################################
+  # Short-lived container to set up nexus
+  # --
+  # Uploads and runs config scripts on nexus
+  nexus-setup:
+    depends_on:
+      - nexus
+    environment:
+      NEXUS_HOST: nexus
+      NEXUS_PORT: 8081
+    build:
+      context: build/docker/nexus
+      dockerfile: docker/DOCKERFILE
+
+  #######################################
+  # Git server
+  # --
+  # Hosts the contestant git repository
+  gitea:
+    build:
+      context: src/gitea
+      dockerfile: docker/DOCKERFILE
+    ports:
+      - 3000:3000
+    environment:
+      APP_NAME: Scott Logic Hackathon
+      RUN_MODE: prod
+
+  #######################################################
+  # Short-lived container to set up gitea
+  # --
+  # Calls REST API to migrate contestant repo from GitHub
+  gitea-setup:
+    depends_on:
+      - gitea
+    build:
+      context: src/gitea
+      dockerfile: docker/setup.DOCKERFILE
+    environment:
+      - GH_USER
+      - GH_PASSWORD
+
+  database:
+    image: postgres:10-alpine
+    environment:
+      POSTGRES_DB: hackathon
+      POSTGRES_USER: scottlogic
+      POSTGRES_PASSWORD: hackathon
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: build/docker/server
+      dockerfile: docker/DOCKERFILE
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: hackathon
+      DB_USER: scottlogic
+      DB_PASSWORD: hackathon

@@ -1,0 +1,16 @@
+FROM openjdk:latest
+
+ADD jars /jars
+ADD conf /conf
+ADD scripts /scripts
+
+RUN apt-get update \
+    && apt-get install dos2unix \
+    && apt-get clean \
+    && dos2unix /scripts/* \
+    && curl https://raw.githubusercontent.com/eficode/wait-for/f71f8199a0dd95953752fb5d3f76f79ced16d47d/wait-for > /scripts/wait-for \
+    && chmod -R +x /scripts
+
+EXPOSE 8080
+
+ENTRYPOINT ["/scripts/entrypoint.sh"]
