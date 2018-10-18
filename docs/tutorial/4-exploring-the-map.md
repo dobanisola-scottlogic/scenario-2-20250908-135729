@@ -95,18 +95,15 @@ private void updateUnseenLocations(final GameState gameState) {
 }
 ```
 
-Note above, we've set the initial guess as 5; does this make much difference to the performance of your bot,
+Note above, we've set the initial guess as 5; does this make much difference to the performance of your Bot,
 or does it need adjusting?
 
 ```
 private Stream<Position> getSurroundingPositions(final GameState gameState, final Position position, final int distance) {
-    Stream<Position> positions = Arrays.stream(Direction.values())
-            .flatMap(direction -> IntStream.rangeClosed(1, distance)
-                    .mapToObj(currentDistance -> gameState.getMap().getRelativePosition(position, direction, currentDistance)));
-
-    positions = Stream.concat(Stream.of(position), positions);
-
-    return positions;
+    return IntStream.rangeClosed(-distance, distance)
+            .mapToObj(x -> IntStream.rangeClosed(-distance, distance)
+                    .mapToObj(y -> gameState.getMap().createPosition(x,y)))
+            .flatMap(Function.identity());
 }
 ```
 

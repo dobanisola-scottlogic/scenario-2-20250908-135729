@@ -65,7 +65,7 @@ private List<Move> doExplore(final GameState gameState) {
 ```
 
 ### Testing
-Now you're ready to send your upgraded bot into battle, so run another game.
+Now you're ready to send your upgraded Bot into battle, so run another game.
 
 Windows command prompt:
 
