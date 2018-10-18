@@ -29,7 +29,7 @@ public class ExampleBot extends Bot {
      * After each turn, the current state of the game will be printed as an ASCII-art representation in the console.
      * You can study the map before hitting 'Enter' to play the next phase.
      */
-    public static void main(String ignored[]) {
+    public static void main(String ignored[]) throws Exception {
 
         final String[] args = new String[]{
                 /*
