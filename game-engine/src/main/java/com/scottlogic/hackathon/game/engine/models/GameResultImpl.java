@@ -10,12 +10,12 @@ import java.util.UUID;
 public class GameResultImpl implements GameResult {
     private final UUID id;
     private final List<PhaseResult> phaseResults;
-    private final Map map;
+    private final GameMap map;
     private final Set<Position> outOfBoundPositions;
     private final CutoffCondition cutoffCondition;
 
     public GameResultImpl(final List<PhaseResult> phaseResults,
-                          final Map map,
+                          final GameMap map,
                           final Set<Position> outOfBoundPositions,
                           final CutoffCondition cutoffCondition) {
         this.id = UUID.randomUUID();
@@ -36,7 +36,7 @@ public class GameResultImpl implements GameResult {
     }
 
     @Override
-    public Map getMap() {
+    public GameMap getMap() {
         return map;
     }
 

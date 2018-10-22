@@ -12,17 +12,17 @@ public class Game {
     @JsonView(Views.List.class)
     private Set<GameTeam> teams;
     @JsonView(Views.List.class)
-    private Map map;
+    private ArenaModel arena;
     private String hackathonId;
 
     public Game() {
     }
 
-    public Game(final Set<GameTeam> teams, final Map map, final String hackathonId) {
+    public Game(final Set<GameTeam> teams, final ArenaModel arena, final String hackathonId) {
         this.id = UUID.randomUUID();
         this.gameTime = System.currentTimeMillis();
         this.teams = teams;
-        this.map = map;
+        this.arena = arena;
         this.hackathonId = hackathonId;
     }
 
@@ -30,8 +30,8 @@ public class Game {
         return teams;
     }
 
-    public Map getMap() {
-        return map;
+    public ArenaModel getMap() {
+        return arena;
     }
 
     public String getHackathonId() {

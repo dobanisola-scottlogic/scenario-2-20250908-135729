@@ -13,20 +13,20 @@ import java.util.stream.IntStream;
 class RouteImpl implements Route {
 
     private final Position start;
-    private final Map map;
+    private final GameMap map;
     private final List<Direction> list;
     private final int index;
 
-    public RouteImpl(Map map, Position start, Direction direction, int length) {
+    public RouteImpl(GameMap map, Position start, Direction direction, int length) {
         this(map, start, IntStream.range(0, length).mapToObj(i -> direction)
                 .collect(Collectors.toCollection(() -> new ArrayList<>(length))));
     }
 
-    public RouteImpl(Map map, Position start, List<Direction> steps) {
+    public RouteImpl(GameMap map, Position start, List<Direction> steps) {
         this(map, start, steps, 0);
     }
 
-    private RouteImpl(Map map, Position start, List<Direction> steps, int index) {
+    private RouteImpl(GameMap map, Position start, List<Direction> steps, int index) {
         this.map = map;
         this.start = start;
         this.list = steps;

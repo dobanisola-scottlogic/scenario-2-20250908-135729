@@ -1,14 +1,14 @@
 package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
+import com.scottlogic.hackathon.game.engine.maps.Arena;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Map {
+public class ArenaModel {
     @JsonView(Views.List.class)
     private String name;
     @JsonView(Views.List.class)
@@ -18,10 +18,10 @@ public class Map {
     @JsonView(Views.Details.class)
     private Set<Position> outOfBoundPositions;
 
-    public Map() {
+    public ArenaModel() {
     }
 
-    public Map(final String name,
+    public ArenaModel(final String name,
                final int width,
                final int height,
                final Set<Position> outOfBoundPositions) {
@@ -31,8 +31,8 @@ public class Map {
         this.outOfBoundPositions = new HashSet<>(outOfBoundPositions);
     }
 
-    public static Map create(final PlayableMap playableMap) {
-        return new Map(
+    public static ArenaModel create(final Arena playableMap) {
+        return new ArenaModel(
                 playableMap.getName(),
                 playableMap.getWidth(),
                 playableMap.getHeight(),

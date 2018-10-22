@@ -11,12 +11,12 @@ import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 import com.scottlogic.hackathon.game.Rejection;
 import com.scottlogic.hackathon.game.SpawnPoint;
-import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
+import com.scottlogic.hackathon.game.engine.maps.Arena;
 import com.scottlogic.hackathon.game.engine.models.BotExceptionRejection;
 import com.scottlogic.hackathon.game.engine.models.CollectableImpl;
 import com.scottlogic.hackathon.game.engine.models.DisqualifiedBotImpl;
 import com.scottlogic.hackathon.game.engine.models.GameResultImpl;
-import com.scottlogic.hackathon.game.engine.models.MapImpl;
+import com.scottlogic.hackathon.game.engine.models.GameMapImpl;
 import com.scottlogic.hackathon.game.engine.models.MoveRejection;
 import com.scottlogic.hackathon.game.engine.models.PlayerImpl;
 import com.scottlogic.hackathon.game.engine.models.SimpleRejection;
@@ -59,7 +59,7 @@ public class GameEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
 
     private final Set<Bot> bots;
-    private final PlayableMap map;
+    private final Arena map;
     private final int maxPhases;
     private final int spawnPhases;
     private final int maxVisibleDistance;
@@ -77,7 +77,7 @@ public class GameEngine {
     private final Executor executor;
     private final Runnable onDispose;
 
-    private GameEngine(final PlayableMap map, final Set<Bot> bots, Executor executor, Runnable onDispose) {
+    private GameEngine(final Arena map, final Set<Bot> bots, Executor executor, Runnable onDispose) {
         this.map = map;
         this.bots = bots;
 
@@ -138,9 +138,9 @@ public class GameEngine {
             throw new IllegalArgumentException("must have at least 2 bots");
         }
 
-        final PlayableMap map;
+        final Arena map;
         try {
-            map = PlayableMap.load(mapName);
+            map = Arena.load(mapName);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("map wasn't found");
         }
@@ -157,7 +157,7 @@ public class GameEngine {
         }
     }
 
-    public PlayableMap getMap() {
+    public Arena getMap() {
         return map;
     }
 
@@ -211,7 +211,7 @@ public class GameEngine {
 
         LOGGER.info("Cut Off Condition: " + cutoffCondition);
 
-        return new GameResultImpl(phaseResults, new MapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
+        return new GameResultImpl(phaseResults, new GameMapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
     }
 
     public void dispose() {
@@ -356,7 +356,7 @@ public class GameEngine {
     private GameState createGameState(final Bot bot) {
         final GameStateBuilder gameStateBuilder = new GameStateBuilder()
                 .setPhase(phase)
-                .setMap(new MapImpl(map.getWidth(), map.getHeight()));
+                .setMap(new GameMapImpl(map.getWidth(), map.getHeight()));
 
         final Set<Player> ownPlayers = getOwnedItems(players.stream(), player -> player.getOwner() == bot.getId());
 
