@@ -31,12 +31,12 @@ public class ArenaModel {
         this.outOfBoundPositions = new HashSet<>(outOfBoundPositions);
     }
 
-    public static ArenaModel create(final Arena playableMap) {
+    public static ArenaModel create(final Arena arena) {
         return new ArenaModel(
-                playableMap.getName(),
-                playableMap.getWidth(),
-                playableMap.getHeight(),
-                playableMap.getOutOfBoundsPositions()
+                arena.getName(),
+                arena.getWidth(),
+                arena.getHeight(),
+                arena.getOutOfBoundsPositions()
                         .stream()
                         .map(Position::create)
                         .collect(Collectors.toSet())

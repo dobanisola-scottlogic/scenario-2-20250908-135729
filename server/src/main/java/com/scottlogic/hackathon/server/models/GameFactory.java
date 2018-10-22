@@ -65,8 +65,7 @@ public class GameFactory {
                 ArenaModel arena = null;
                 final String mapName = gameConfiguration.getMap();
                 try {
-                    final Arena playableMap = Arena.load(mapName);
-                    arena = ArenaModel.create(playableMap);
+                    arena = ArenaModel.create(Arena.load(mapName));
                 } catch (final Exception e) {
                     logger.error(String.format("Loading Arena %s failed", mapName), e);
                 }

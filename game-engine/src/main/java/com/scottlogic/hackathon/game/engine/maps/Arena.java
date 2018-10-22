@@ -33,14 +33,14 @@ public interface Arena extends GameMap {
             }
         }
 
-        final Arena playableMap = new ArenaImpl(
+        final Arena arena = new ArenaImpl(
                 mapName,
                 width,
                 height,
                 outOfBoundsPositions,
                 spawnPointPositions);
 
-        return playableMap;
+        return arena;
     }
 
     String getName();
