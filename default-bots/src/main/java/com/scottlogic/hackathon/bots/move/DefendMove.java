@@ -43,7 +43,7 @@ public class DefendMove extends MoveBase {
             } else {
                 direction = findBestTetherDirectionOnePositionToAnother(playerPosition, spawnPoint.getPosition(), tetherDistance);
             }
-            while (getMap().straightLineRoute(playerPosition, direction, 2).collides(playersPositions)) {
+            while (getMap().straightLineRoute(playerPosition, direction, 2).collides(myPlayersPositions)) {
                 direction = Direction.random();
             }
         } else {

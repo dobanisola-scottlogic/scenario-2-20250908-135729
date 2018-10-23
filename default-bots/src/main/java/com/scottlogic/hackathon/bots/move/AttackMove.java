@@ -17,10 +17,10 @@ public class AttackMove extends MoveBase {
 
     @Override
     public void phase() {
-        if (opponentPlayerPositions.size() > 0) {
+        if (opponentPlayersPositions.size() > 0) {
             Position nearestOpponentPosition = null;
             int minDistanceSquared = ACTIVE_RADIUS_SQUARED;
-            for (Position opponentPosition : opponentPlayerPositions) {
+            for (Position opponentPosition : opponentPlayersPositions) {
                 if (findDistanceBetweenTwoPositionsSquared(playerPosition, opponentPosition) <= minDistanceSquared) {
                     nearestOpponentPosition = opponentPosition;
                     minDistanceSquared = findDistanceBetweenTwoPositionsSquared(playerPosition, opponentPosition);

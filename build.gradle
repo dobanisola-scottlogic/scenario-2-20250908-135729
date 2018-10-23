@@ -30,7 +30,7 @@ configure(subprojects - project(':viewer')){
     apply plugin: "java"
     apply plugin: "com.github.johnrengelman.shadow" //TODO move this to only the subprojects that need it
 
-    sourceCompatibility = 1.9
+    sourceCompatibility = 1.8
 
     dependencies {
         testCompile group: "junit", name: "junit", version: "4.11"

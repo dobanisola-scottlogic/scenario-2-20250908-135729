@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.UUID;
@@ -28,8 +29,8 @@ public class MoveBase implements Move {
 
     Direction direction;
     int distance;
-    Set<Position> playersPositions = new HashSet<>();
-    Set<Position> opponentPlayerPositions = new HashSet<>();
+    Set<Position> myPlayersPositions = new HashSet<>();
+    Set<Position> opponentPlayersPositions = new HashSet<>();
     Set<Position> outOfBoundsPositions = new HashSet<>();
     SpawnPoint spawnPoint;
     Set<SpawnPoint> opponentSpawnPoints = new HashSet<>();
@@ -82,7 +83,8 @@ public class MoveBase implements Move {
 
     protected void setDirectionNotCollidingWithOtherPlayersIn2Moves(Stream<Direction> preferredDirections) {
         direction = preferredThenRandom(preferredDirections)
-                .filter(d -> !getMap().straightLineRoute(playerPosition, d, 2).collides(p -> !p.equals(playerPosition) && playersPositions.contains(p)))
+                .filter(d -> !getMap().straightLineRoute(playerPosition, d, 2)
+                        .collides(p -> !p.equals(playerPosition) && myPlayersPositions.contains(p)))
                 .findFirst()
                 .orElseGet(Direction::random);
     }
@@ -95,49 +97,78 @@ public class MoveBase implements Move {
         return distance;
     }
 
-    void setRandomDirectionAndDistance(int minDistance, int maxDistance) {
-        --distance;
-        while (distance < 0 || map.straightLineRoute(playerPosition, direction, distance).collides(outOfBoundsPositions)) {
-            distance = ThreadLocalRandom.current().nextInt(maxDistance - minDistance) + minDistance;
-            direction = Direction.random();
+    /**
+     * Attempts to find a randomised direction and distance for a valid route.
+     *
+     * @param minDistance Minimum distance for route to cover
+     * @param maxDistance Maximum distance for route to cover
+     *
+     * @throws IllegalArgumentException if minDistance is less than 1, or maxDistance is not greater than minDistance
+     */
+    void setRandomDirectionAndDistance(final int minDistance, final int maxDistance) throws IllegalArgumentException {
+        if (minDistance < 1) {
+            throw new IllegalArgumentException("minDistance [" + minDistance + "] must be greater than zero");
         }
-    }
+        if (maxDistance <= minDistance) {
+            throw new IllegalArgumentException(String.format(
+                    "maxDistance [%d] must be greater than minDistance [%d]", maxDistance, minDistance
+            ));
+        }
 
-    public void setPlayersPositions(Set<Position> playersPositions) {
-        this.playersPositions = playersPositions;
-        if (playersPositions != null && playersPositions.size() > 0 && opponentSpawnPoints.size() > 0) {
-            for (Position myPlayerPosition : playersPositions) {
-                Set<SpawnPoint> opponentSpawnPointsReached = opponentSpawnPoints.stream()
-                        .filter(opponentSpawnPoint -> myPlayerPosition.getX() == opponentSpawnPoint.getPosition().getX() &&
-                                myPlayerPosition.getY() == opponentSpawnPoint.getPosition().getY())
-                        .collect(Collectors.toSet());
-                for (SpawnPoint opponentSpawnPointReached : opponentSpawnPointsReached) {
-                    this.opponentSpawnPoints.remove(opponentSpawnPointReached);
+        final List<Direction> directions = Direction.randomisedValues();
+
+        --distance;
+        if (distance < 0 || routeGoesOutOfBounds(playerPosition, direction, distance)) {
+            distance = ThreadLocalRandom.current().nextInt(minDistance, maxDistance);
+
+            while (distance >= minDistance) {
+                final Optional<Direction> directionOpt = findDirectionForWithinBoundsRoute(
+                        playerPosition, directions, distance
+                );
+                if (directionOpt.isPresent()) {
+                    direction = directionOpt.get();
+                    break;
                 }
+                if (distance == minDistance) {
+                    // TODO Reduce MIN_DISTANCE a little, or set / calculate depending on the map?
+                    distance = 1;
+                    direction = findDirectionForWithinBoundsMove(playerPosition, directions).orElse(direction);
+                    break;
+                }
+                distance = ThreadLocalRandom.current().nextInt(minDistance, distance);
             }
         }
     }
 
-    public void setOpponentPlayerPositions(Set<Position> opponentPlayerPositions) {
-        this.opponentPlayerPositions = opponentPlayerPositions;
-        if (opponentPlayerPositions != null && opponentPlayerPositions.size() > 0 && spawnPoint != null) {
-            opponentPlayerPositions.stream()
+    public void setMyPlayersPositions(final Set<Position> playerPositions) {
+        this.myPlayersPositions = playerPositions;
+        if (playerPositions != null && playerPositions.size() > 0 && opponentSpawnPoints.size() > 0) {
+            playerPositions.forEach(myPlayerPosition ->
+                opponentSpawnPoints.stream()
+                        .filter(opponentSpawnPoint ->
+                                myPlayerPosition.getX() == opponentSpawnPoint.getPosition().getX() &&
+                                myPlayerPosition.getY() == opponentSpawnPoint.getPosition().getY()
+                        )
+                        .forEach(opponentSpawnPoint -> this.opponentSpawnPoints.remove(opponentSpawnPoint))
+            );
+        }
+    }
+
+    public void setOpponentPlayersPositions(final Set<Position> playerPositions) {
+        this.opponentPlayersPositions = playerPositions;
+        if (playerPositions != null && playerPositions.size() > 0 && spawnPoint != null) {
+            playerPositions.stream()
                     .filter(opponentPlayerPosition -> spawnPoint != null &&
                             opponentPlayerPosition.getX() == spawnPoint.getPosition().getX() &&
                             opponentPlayerPosition.getY() == spawnPoint.getPosition().getY())
-                    .forEach(opponentPlayerPosition -> {
-                        spawnPoint = null;
-                    });
+                    .findAny().ifPresent(position -> spawnPoint = null);
         }
     }
 
     public void addOutOfBoundsPositions(Set<Position> outOfBoundsPositions) {
         outOfBoundsPositions.stream()
                 .filter(outOfBoundsPosition -> !this.outOfBoundsPositions.contains(outOfBoundsPosition))
-                .forEach(outOfBoundsPosition -> {
-                    this.outOfBoundsPositions.add(outOfBoundsPosition);
-                });
-        this.outOfBoundsPositions = outOfBoundsPositions;
+                .forEach(outOfBoundsPosition -> this.outOfBoundsPositions.add(outOfBoundsPosition));
     }
 
     public void addSpawnPoints(Set<SpawnPoint> spawnPoints) {
@@ -151,10 +182,10 @@ public class MoveBase implements Move {
                 }
             }
             spawnPoints.stream()
-                    .filter(spawnPoint -> spawnPoint.getOwner() != owner && !this.opponentSpawnPoints.contains(spawnPoint))
-                    .forEach(spawnPoint -> {
-                        this.opponentSpawnPoints.add(spawnPoint);
-                    });
+                    .filter(spawnPoint ->
+                            spawnPoint.getOwner() != owner && !this.opponentSpawnPoints.contains(spawnPoint)
+                    )
+                    .forEach(spawnPoint -> this.opponentSpawnPoints.add(spawnPoint));
         }
     }
 
@@ -176,6 +207,29 @@ public class MoveBase implements Move {
                     return remaining.spliterator();
                 }, Spliterator.DISTINCT | Spliterator.SIZED | Spliterator.ORDERED | Spliterator.NONNULL,
                 false));
+    }
+
+    private boolean routeGoesOutOfBounds(final Position from, final Direction direction, final int distance) {
+        return this.map.straightLineRoute(from, direction, distance).collides(outOfBoundsPositions);
+    }
+
+    private Optional<Direction> findDirectionForWithinBoundsRoute(
+            final Position fromPosition,
+            final List<Direction> directions,
+            final int distance
+    ) {
+        return directions.stream()
+                .filter(direction -> !routeGoesOutOfBounds(fromPosition, direction, distance))
+                .findFirst();
+    }
+
+    private Optional<Direction> findDirectionForWithinBoundsMove(
+            final Position playerPosition,
+            final List<Direction> directions
+    ) {
+        return directions.stream()
+                .filter(direction -> !outOfBoundsPositions.contains(map.getNeighbour(playerPosition, direction)))
+                .findFirst();
     }
 
     public void phase() {

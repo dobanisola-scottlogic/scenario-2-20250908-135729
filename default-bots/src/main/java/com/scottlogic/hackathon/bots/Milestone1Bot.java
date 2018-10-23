@@ -1,9 +1,19 @@
 package com.scottlogic.hackathon.bots;
 
 import com.scottlogic.hackathon.bots.move.TimidMove;
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.Collectable;
+import com.scottlogic.hackathon.game.GameState;
+import com.scottlogic.hackathon.game.Move;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.SpawnPoint;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Milestone1Bot extends Bot {
@@ -15,20 +25,19 @@ public class Milestone1Bot extends Bot {
 
     @Override
     public List<Move> makeMoves(final GameState gameState) {
-        gameState.getRemovedPlayers().forEach(player -> {
-            moves.removeIf(move -> move.getPlayer().equals(player.getId()));
-        });
+        gameState.getRemovedPlayers()
+                .forEach(player -> moves.removeIf(move -> move.getPlayer().equals(player.getId())));
 
         final Set<UUID> previousPlayers = moves
                 .stream()
-                .map(move -> move.getPlayer())
+                .map(Move::getPlayer)
                 .collect(Collectors.toSet());
 
-        final Set<Position> playerPositions = new HashSet<>();
+        final Set<Position> myPlayerPositions = new HashSet<>();
         final Set<Position> opponentPlayerPositions = new HashSet<>();
         gameState.getPlayers().forEach(player -> {
             if (player.getOwner().equals(getId())) {
-                playerPositions.add(player.getPosition());
+                myPlayerPositions.add(player.getPosition());
                 if (!previousPlayers.contains(player.getId())) {
                     moves.add(new TimidMove(gameState.getMap(), player));
                 } else {
@@ -43,12 +52,12 @@ public class Milestone1Bot extends Bot {
             }
         });
 
-        final Set<Position> outOfBoundsPositions = gameState.getOutOfBoundsPositions().stream().collect(Collectors.toSet());
-        final Set<SpawnPoint> spawnPoints = gameState.getSpawnPoints().stream().collect(Collectors.toSet());
-        final Set<Collectable> collectables = gameState.getCollectables().stream().collect(Collectors.toSet());
+        final Set<Position> outOfBoundsPositions = new HashSet<>(gameState.getOutOfBoundsPositions());
+        final Set<SpawnPoint> spawnPoints = new HashSet<>(gameState.getSpawnPoints());
+        final Set<Collectable> collectables = new HashSet<>(gameState.getCollectables());
         moves.forEach(move -> {
-            move.setPlayersPositions(playerPositions);
-            move.setOpponentPlayerPositions(opponentPlayerPositions);
+            move.setMyPlayersPositions(myPlayerPositions);
+            move.setOpponentPlayersPositions(opponentPlayerPositions);
             move.addOutOfBoundsPositions(outOfBoundsPositions);
             move.addSpawnPoints(spawnPoints);
             move.setCollectables(collectables);

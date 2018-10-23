@@ -23,4 +23,9 @@ public interface SpawnPoint {
      * @return The position of the current spawn point.
      */
     Position getPosition();
+
+    /**
+     * Queue a player for spawning.
+     */
+    void queuePlayer();
 }

@@ -1,5 +1,8 @@
 package com.scottlogic.hackathon.game;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -73,6 +76,12 @@ public enum Direction {
     public static Direction random() {
         Direction[] vals = values();
         return vals[ThreadLocalRandom.current().nextInt(vals.length)];
+    }
+
+    public static List<Direction> randomisedValues() {
+        final List<Direction> directions = Arrays.asList(values());
+        Collections.shuffle(directions);
+        return Collections.unmodifiableList(directions);
     }
 
 }

@@ -18,6 +18,7 @@ logging:
     - type: console
       threshold: INFO
       target: stderr
+      logFormat: '%-5level %d [%thread]: %message%n'
     # Log info, warnings and errors to our apps' main log.
     # Rolled over daily and retained for 5 days.
     - type: file
@@ -26,6 +27,7 @@ logging:
       archivedLogFilenamePattern: ./logs/hackathon-%d.log.gz
       archivedFileCount: 5
       timeZone: UTC
+      logFormat: '%-5level %d [%thread]: %message%n'
     # Log debug messages, info, warnings and errors to our apps' debug log.
     # Rolled over hourly and retained for 6 hours
     - type: file
@@ -33,3 +35,4 @@ logging:
       currentLogFilename: ./logs/debug.log
       archivedLogFilenamePattern: ./logs/debug-%d{yyyy-MM-dd-hh}.log.gz
       archivedFileCount: 6
+      logFormat: '%-5level %d [%thread]: %message%n'

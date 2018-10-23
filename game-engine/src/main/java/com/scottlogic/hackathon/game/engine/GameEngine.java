@@ -30,24 +30,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -166,7 +166,7 @@ public class GameEngine {
      *
      * @return The result of running the game simulation
      */
-    public GameResult play() throws Exception {
+    public GameResult play() {
         return play((a,b) -> true);
     }
 
@@ -180,7 +180,7 @@ public class GameEngine {
      * @param phaseCallback A callback to be invoked after each phase completes
      * @return The result of running the game simulation
      */
-    public GameResult play(BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback) throws Exception {
+    public GameResult play(BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback) {
         players = new TrackedSetImpl<>();
         collectables = new TrackedSetImpl<>();
         spawnPoints = new TrackedSetImpl<>();
@@ -238,16 +238,21 @@ public class GameEngine {
      * @param fnName A string indicating the action each bot will be taking
      * @param timeout The maximum number of seconds each Bot's action will be allowed to run for
      *                (unless run synchronously)
-     * @param fn A function to produce the future to run for each Bot and it's GameState, with the given executor
+     * @param fn A function to produce the future to run for each Bot and its GameState, with the given executor
      * @return A runnable of amalgamated completion tasks, as described above
      */
-    private Runnable invokeBots(String fnName, int timeout,
-            Function<Executor, Function<Bot, Function<GameState, CompletableFuture<Runnable>>>> fn) {
-        Function<Bot, Function<GameState, CompletableFuture<Runnable>>> f = fn.apply(executor);
+    private Runnable invokeBots(
+            final String fnName,
+            final int timeout,
+            final Function<Executor, Function<Bot, Function<GameState, CompletableFuture<Runnable>>>> fn
+    ) {
+        final Function<Bot, Function<GameState, CompletableFuture<Runnable>>> botFunction = fn.apply(executor);
         return getQualifyingBots().stream()
-                .map(bot -> safeTimeout(bot, fnName, timeout, f.apply(bot).apply(createGameState(bot))))
-                .reduce(CompletableFuture.completedFuture(()->{}),
-                        (f1,f2) -> f1.thenCombine(f2, (r1,r2)->()->{r1.run(); r2.run();}))
+                .map(bot -> safeTimeout(bot, fnName, timeout, botFunction.apply(bot).apply(createGameState(bot))))
+                .reduce(
+                        CompletableFuture.completedFuture(() -> {}),
+                        (f1, f2) -> f1.thenCombine(f2, (r1, r2) -> () -> { r1.run(); r2.run(); })
+                )
                 .join();
     }
 
@@ -270,16 +275,26 @@ public class GameEngine {
      * @param future The future to convert
      * @return The converted future
      */
-    private CompletableFuture<Runnable> safeTimeout(Bot bot, String fnName, int timeoutSeconds,
-            CompletableFuture<Runnable> future) {
-        return future
-                .exceptionally(ex -> {
-                    LOGGER.info("Bot threw exception.", ex);
-                    return () -> disqualifyBot(bot, Arrays.asList(new BotExceptionRejection(ex)));
-                })
-                .orTimeout(timeoutSeconds, TimeUnit.SECONDS)
-                .exceptionally(ex -> () ->
-                        disqualifyBot(bot, Arrays.asList(new SimpleRejection(fnName + " took too long"))));
+    private CompletableFuture<Runnable> safeTimeout(
+            final Bot bot, final String fnName, final int timeoutSeconds, final CompletableFuture<Runnable> future
+    ) {
+        return CompletableFuture.completedFuture(() -> {
+            try {
+                // A runnable within a future within a runnable within a future! Would be nicer in Java 9.
+                future.get(timeoutSeconds, TimeUnit.SECONDS).run();
+            } catch (TimeoutException ex) {
+                LOGGER.error("Bot timed out waiting for function to complete:", ex);
+                disqualifyBot(bot, Collections.singletonList(
+                        new SimpleRejection(fnName + " took too long ... possible infinite loop?")
+                ));
+            } catch (InterruptedException ex) {
+                LOGGER.info("Bot execution interrupted: {}", ex.getMessage());
+                disqualifyBot(bot, Collections.singletonList(new BotExceptionRejection(ex)));
+            } catch (ExecutionException ex) {
+                LOGGER.info("Bot threw exception:", ex);
+                disqualifyBot(bot, Collections.singletonList(new BotExceptionRejection(ex)));
+            }
+        });
     }
 
     private void disqualifyBot(final Bot bot, final List<Rejection> rejectedMoves) {
@@ -300,21 +315,29 @@ public class GameEngine {
         }
     }
 
-    private PhaseResult playPhase() throws Exception {
+    private PhaseResult playPhase() {
+        final Map<UUID, PlayerImpl> uuidPlayerMap = Collections.unmodifiableMap(
+                players.stream().collect(Collectors.toMap(Player::getId, Function.identity(), (a,b) -> a))
+        );
 
-        Map<UUID, PlayerImpl> uuidPlayerMap = Collections.unmodifiableMap(players.stream()
-                .collect(Collectors.toMap(Player::getId, Function.identity(), (a,b) -> a)));
-
-        Runnable applyMoves = invokeBots("makeMoves", makeMovesTimeoutSeconds, exec -> bot -> gameState ->
+        final Runnable applyMoves = invokeBots("makeMoves", makeMovesTimeoutSeconds, exec -> bot -> gameState ->
                 CompletableFuture.supplyAsync(() -> bot.makeMoves(gameState), exec)
-                        .thenApply(moves -> () -> {
+                        .thenApply(moves -> (Runnable) () -> {
                             List<Rejection> rejectedMoves = getRejectedMoves(bot, moves, uuidPlayerMap);
-                            if(rejectedMoves.isEmpty()) {
+                            if (rejectedMoves.isEmpty()) {
                                 applyMoves(moves, uuidPlayerMap);
                             } else {
+	                            LOGGER.info("Disqualifying bot {} due to {} rejected moves",
+                                        bot.getDisplayName(), rejectedMoves.size()
+                                );
                                 disqualifyBot(bot, rejectedMoves);
                             }
-                        }));
+                        })
+                        .exceptionally(throwable -> () -> LOGGER.error(
+                                "Unexpected error processing moves for bot {}: {}", bot.getDisplayName(), throwable
+                        )
+                )
+	    );
 
         players.reset();
         collectables.reset();
@@ -362,7 +385,7 @@ public class GameEngine {
 
         final Set<Position> visiblePositions = ownPlayers
                 .stream()
-                .map(player -> player.getPosition())
+                .map(Player::getPosition)
                 .flatMap(position -> map.getSurroundingPositions(position, maxVisibleDistance))
                 .collect(Collectors.toSet());
 
@@ -370,12 +393,12 @@ public class GameEngine {
                 .setOutOfBoundsPositions(getVisibleItems(visiblePositions, map.getOutOfBoundsPositions().stream(), Function.identity()))
                 .setPlayers(getVisibleItemsOrOwnedItems(visiblePositions,
                         players.stream(),
-                        player -> player.getPosition(),
+                        Player::getPosition,
                         player -> player.getOwner().equals(bot.getId())))
-                .setCollectables(getVisibleItems(visiblePositions, collectables.stream(), collectable -> collectable.getPosition()))
+                .setCollectables(getVisibleItems(visiblePositions, collectables.stream(), Collectable::getPosition))
                 .setSpawnPoints(getVisibleItemsOrOwnedItems(visiblePositions,
                         spawnPoints.stream(),
-                        spawnPoint -> spawnPoint.getPosition(),
+                        SpawnPoint::getPosition,
                         spawnPoint -> spawnPoint.getOwner().equals(bot.getId())))
                 .setRemovedPlayers(getOwnedItems(players.getRemoved().stream(), player -> player.getOwner().equals(bot.getId())))
                 .setRemovedSpawnPoints(getOwnedItems(spawnPoints.getRemoved().stream(), spawnPoint -> spawnPoint.getOwner().equals(bot.getId())));
@@ -384,52 +407,35 @@ public class GameEngine {
     }
 
     private <T> Set<T> getVisibleItemsOrOwnedItems(final Set<Position> visiblePositions, final Stream<? extends T> items, final Function<T, Position> getPosition, final Predicate<T> isOwned) {
-        final Set<T> visibleItemsOrOwnedItems = items
+        return items
                 .filter(item -> visiblePositions.contains(getPosition.apply(item)) || isOwned.test(item))
                 .collect(Collectors.toSet());
-        return visibleItemsOrOwnedItems;
     }
 
     private <T> Set<T> getOwnedItems(final Stream<? extends T> items, final Predicate<T> isOwned) {
-        final Set<T> ownedItems = items
-                .filter(item -> isOwned.test(item))
+        return items
+                .filter(isOwned::test)
                 .collect(Collectors.toSet());
-        return ownedItems;
     }
 
     private <T> Set<T> getVisibleItems(final Set<Position> visiblePositions, final Stream<? extends T> items, final Function<T, Position> getPosition) {
-        final Set<T> visibleItems = items
+        return items
                 .filter(item -> visiblePositions.contains(getPosition.apply(item)))
                 .collect(Collectors.toSet());
-        return visibleItems;
     }
 
     private CutoffCondition getCutoffCondition() {
-        CutoffCondition cutoffCondition = null;
-
-        if (phase > maxPhases) {
-            cutoffCondition = CutoffCondition.TURN_LIMIT_REACHED;
-        } else if (spawnPoints.size() == 0) {
-            cutoffCondition = CutoffCondition.RANK_STABLE;
-        } else {
-            UUID[] box = new UUID[1];
-            if(players.stream().map(Player::getOwner)
-                    .sequential()
-                    .allMatch(id -> id.equals(box[0] = Objects.requireNonNullElse(box[0], id)))) {
-                cutoffCondition = CutoffCondition.LONE_SURVIVOR;
-            }
-        }
-
-        return cutoffCondition;
+        return (phase > maxPhases)
+                ? CutoffCondition.TURN_LIMIT_REACHED
+                : (spawnPoints.size() == 0)
+                        ? CutoffCondition.RANK_STABLE
+                        : (players.stream().map(Player::getOwner).collect(Collectors.toSet()).size() < 2)
+                                ? CutoffCondition.LONE_SURVIVOR
+                                : null;
     }
 
     private void createSpawnPoints() {
-        final Random random = new Random();
-        final List<Position> spawnPointPositions = map
-                .getSpawnPointPositions()
-                .stream()
-                .collect(Collectors.toList());
-
+        final List<Position> spawnPointPositions = new ArrayList<>(map.getSpawnPointPositions());
         Collections.shuffle(spawnPointPositions);
 
         final Iterator<Position> spawnPointPositionsIterator = spawnPointPositions.iterator();
@@ -494,13 +500,13 @@ public class GameEngine {
         }
     }
 
-    private CollectableImpl spawnCollectable(final Collectable.Type type) {
+    private void spawnCollectable(final Collectable.Type type) {
         final Random random = new Random();
 
         final Set<Position> excludedPositions = Stream.concat(
                 map.getOutOfBoundsPositions().stream(),
-                Stream.concat(collectables.stream().map(collectable -> collectable.getPosition()),
-                        spawnPoints.stream().map(spawnPoint -> spawnPoint.getPosition())))
+                Stream.concat(collectables.stream().map(CollectableImpl::getPosition),
+                        spawnPoints.stream().map(SpawnPointImpl::getPosition)))
                     .collect(Collectors.toSet());
 
         Position position;
@@ -512,17 +518,16 @@ public class GameEngine {
             if (attempts++ > 100) {
                 throw new RuntimeException("Too many positions are excluded to allow use to find a free position");
             }
-        } while (excludedPositions.contains(position) || closeToSpawnPoint(position, minCollectableDistanceFromSpawn));
+        } while (excludedPositions.contains(position) || tooCloseToSpawnPoint(position, minCollectableDistanceFromSpawn));
 
         final CollectableImpl collectable = new CollectableImpl(type, position);
         collectables.add(collectable);
-        return collectable;
     }
 
-    private boolean closeToSpawnPoint(final Position source, final int range) {
+    private boolean tooCloseToSpawnPoint(final Position source, final int distance) {
         return spawnPoints
                 .stream()
-                .anyMatch(spawnPoint -> map.distance(source, spawnPoint.getPosition()) <= range);
+                .anyMatch(spawnPoint -> map.distance(source, spawnPoint.getPosition()) <= distance);
     }
 
     private void spawnPlayers() {
@@ -533,14 +538,13 @@ public class GameEngine {
         }
     }
 
-    private PlayerImpl spawnPlayer(final SpawnPoint spawnPoint) {
+    private void spawnPlayer(final SpawnPoint spawnPoint) {
         final PlayerImpl player = new PlayerImpl(spawnPoint.getOwner(), spawnPoint.getPosition());
         players.add(player);
         LOGGER.info("Player Spawned: " + player.toString());
-        return player;
     }
 
-    private void collideOutOfBoundsTiles() throws Exception {
+    private void collideOutOfBoundsTiles() {
         final Set<PlayerImpl> playersToRemove = new HashSet<>();
         Set<Position> outOfBounds = map.getOutOfBoundsPositions();
 
@@ -577,7 +581,7 @@ public class GameEngine {
 
     private void collideSpawnPoints(Map<Position, UUID> positionOwners) {
         final Set<SpawnPointImpl> spawnPointsToRemove = new HashSet<>();
-        actionOwnerAtItem(positionOwners, spawnPoints, (spawnPoint) -> spawnPoint.getPosition(), (owner, spawnPoint) -> {
+        actionOwnerAtItem(positionOwners, spawnPoints, SpawnPoint::getPosition, (owner, spawnPoint) -> {
             if (owner != spawnPoint.getOwner()) {
                 spawnPointsToRemove.add(spawnPoint);
                 LOGGER.info("Spawn point captured: " + spawnPoint);
@@ -590,15 +594,10 @@ public class GameEngine {
 
     private void collect(Map<Position, UUID> positionOwners) {
         final Set<CollectableImpl> collectablesToRemove = new HashSet<>();
-        actionOwnerAtItem(positionOwners, collectables, collectable -> collectable.getPosition(), (owner, collectable) -> {
-            boolean collected = false;
-            if (collectable.getType() == Collectable.Type.PLAYER) {
-                collected = collectPlayer(owner, collectable);
-                LOGGER.info("Collectable Gathered By: " + owner);
-            }
-
-            if (collected) {
+        actionOwnerAtItem(positionOwners, collectables, Collectable::getPosition, (owner, collectable) -> {
+            if (collectable.getType() == Collectable.Type.PLAYER && collectPlayer(owner)) {
                 collectablesToRemove.add(collectable);
+                LOGGER.info("Collectable Gathered By: " + owner);
             }
         });
         if (collectables.size() > 0) {
@@ -606,22 +605,26 @@ public class GameEngine {
         }
     }
 
-    private boolean collectPlayer(final UUID owner, final CollectableImpl collectable) {
+    private boolean collectPlayer(final UUID owner) {
         final Optional<SpawnPointImpl> spawnPoint = spawnPoints
                 .stream()
                 .filter(item -> item.getOwner().equals(owner))
                 .findFirst();
-        if (spawnPoint.isPresent()) {
-            spawnPoint.get().queuePlayer();
-        }
+        spawnPoint.ifPresent(SpawnPoint::queuePlayer);
+        // Note: This means players of a bot without a spawn point can still collect food:
         return true;
     }
 
-    private <T> void actionOwnerAtItem(Map<Position, UUID> positionOwners, Iterable<? extends T> items,
-            Function<T, Position> getPosition, BiConsumer<UUID, T> action) {
+    private <T> void actionOwnerAtItem(
+            Map<Position, UUID> positionOwners,
+            Iterable<? extends T> items,
+            Function<T, Position> getPosition,
+            BiConsumer<UUID, T> action
+    ) {
+        UUID owner;
         for (final T item : items) {
-            UUID owner = positionOwners.get(getPosition.apply(item));
-            if(owner!=null) {
+            owner = positionOwners.get(getPosition.apply(item));
+            if (owner != null) {
                 action.accept(owner, item);
             }
         }

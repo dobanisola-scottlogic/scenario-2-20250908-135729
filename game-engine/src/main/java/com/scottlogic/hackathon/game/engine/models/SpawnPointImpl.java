@@ -38,6 +38,7 @@ public class SpawnPointImpl implements SpawnPoint {
         return String.format("Id %s - Owner %s - %s", id, owner, position);
     }
 
+    @Override
     public void queuePlayer() {
         queuedPlayers++;
     }

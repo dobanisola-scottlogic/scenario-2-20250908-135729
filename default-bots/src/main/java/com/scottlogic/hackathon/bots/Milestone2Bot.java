@@ -31,18 +31,17 @@ public class Milestone2Bot extends Bot {
 
     @Override
     public List<Move> makeMoves(final GameState gameState) {
-        gameState.getRemovedPlayers().forEach(player -> {
-            moves.removeIf(move -> move.getPlayer().equals(player.getId()));
-        });
+        gameState.getRemovedPlayers()
+                .forEach(player -> moves.removeIf(move -> move.getPlayer().equals(player.getId())));
 
         final Set<UUID> previousPlayers = moves
                 .stream()
-                .map(move -> move.getPlayer())
+                .map(Move::getPlayer)
                 .collect(Collectors.toSet());
 
         final Map<Class, Integer> moveCounts = moves
                 .stream()
-                .collect(Collectors.toMap(move -> move.getClass(), move -> 1, (count, moveCount) -> count + moveCount));
+                .collect(Collectors.toMap(Move::getClass, move -> 1, (count, moveCount) -> count + moveCount));
 
         final Set<Position> playerPositions = new HashSet<>();
         final Set<Position> opponentPlayerPositions = new HashSet<>();
@@ -51,19 +50,15 @@ public class Milestone2Bot extends Bot {
                 playerPositions.add(player.getPosition());
                 if (!previousPlayers.contains(player.getId())) {
                     // Determines which bot is selected
-                    ProportionalStateSelector proportionalStateSelector = null;
                     try {
-                        proportionalStateSelector = new ProportionalStateSelector(moveCounts, spawnProfile, gameState.getMap(), player);
-                    } catch (final InvocationTargetException e) {
-                        e.printStackTrace();
-                    } catch (final NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (final InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (final IllegalAccessException e) {
+                        moves.add(
+                                new ProportionalStateSelector(moveCounts, spawnProfile, gameState.getMap(), player)
+                                        .getMove()
+                        );
+                    } catch (final InvocationTargetException | NoSuchMethodException | InstantiationException |
+                            IllegalAccessException e) {
                         e.printStackTrace();
                     }
-                    moves.add(proportionalStateSelector.getMove());
                 } else {
                     moves.forEach(move -> {
                         if (move.getPlayer().equals(player.getId())) {
@@ -76,12 +71,12 @@ public class Milestone2Bot extends Bot {
             }
         });
 
-        final Set<Position> outOfBoundsPositions = gameState.getOutOfBoundsPositions().stream().collect(Collectors.toSet());
-        final Set<SpawnPoint> spawnPoints = gameState.getSpawnPoints().stream().collect(Collectors.toSet());
-        final Set<Collectable> collectables = gameState.getCollectables().stream().collect(Collectors.toSet());
+        final Set<Position> outOfBoundsPositions = new HashSet<>(gameState.getOutOfBoundsPositions());
+        final Set<SpawnPoint> spawnPoints = new HashSet<>(gameState.getSpawnPoints());
+        final Set<Collectable> collectables = new HashSet<>(gameState.getCollectables());
         moves.forEach(move -> {
-            move.setPlayersPositions(playerPositions);
-            move.setOpponentPlayerPositions(opponentPlayerPositions);
+            move.setMyPlayersPositions(playerPositions);
+            move.setOpponentPlayersPositions(opponentPlayerPositions);
             move.addOutOfBoundsPositions(outOfBoundsPositions);
             move.addSpawnPoints(spawnPoints);
             move.setCollectables(collectables);
@@ -92,26 +87,22 @@ public class Milestone2Bot extends Bot {
                 .stream()
                 .filter(move -> move.getPlayer().equals(getId()) && !move.isActive())
                 .collect(Collectors.toSet());
-        moves.removeIf(move -> inactivePlayerMoves.contains(move));
+        moves.removeIf(inactivePlayerMoves::contains);
         for (final MoveBase move : inactivePlayerMoves) {
             final Player movePlayer = gameState.getPlayers()
                     .stream()
                     .filter(player -> player.getId().equals(move.getPlayer()))
-                    .collect(Collectors.toList())
-                    .get(0);
-            ProportionalTransitionSelector proportionalTransitionSelector = null;
+                    .findFirst()
+                    .get();
             try {
-                proportionalTransitionSelector = new ProportionalTransitionSelector(moveCounts, transitionProfile, gameState.getMap(), move, movePlayer);
-            } catch (final InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (final NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (final InstantiationException e) {
-                e.printStackTrace();
-            } catch (final IllegalAccessException e) {
+                moves.add(
+                        new ProportionalTransitionSelector(moveCounts, transitionProfile, gameState.getMap(), move, movePlayer)
+                                .getMove()
+                );
+            } catch (final InvocationTargetException | NoSuchMethodException | InstantiationException |
+                    IllegalAccessException e) {
                 e.printStackTrace();
             }
-            moves.add(proportionalTransitionSelector.getMove());
         }
 
         return Collections.unmodifiableList(moves);
