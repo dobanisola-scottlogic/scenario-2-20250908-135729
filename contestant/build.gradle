@@ -28,9 +28,6 @@ repositories {
 
 // BEGIN SKIP
 dependencies {
-    testCompile group: "junit", name: "junit", version: "4.12"
-//    compile name: "game-1.0-SNAPSHOT"
-//    compile name: "client-1.0-SNAPSHOT-all"
     compile project(':game')
     compile project(':client')
 }
