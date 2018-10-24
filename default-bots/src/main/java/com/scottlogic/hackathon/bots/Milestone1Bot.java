@@ -26,10 +26,7 @@ public class Milestone1Bot extends Bot {
         gameState.getRemovedPlayers()
                 .forEach(player -> moves.removeIf(move -> move.getPlayer().equals(player.getId())));
 
-        final Set<UUID> previousPlayers = moves
-                .stream()
-                .map(Move::getPlayer)
-                .collect(Collectors.toSet());
+        final Set<UUID> previousPlayers = moves.stream().map(Move::getPlayer).collect(Collectors.toSet());
 
         final Set<Position> myPlayerPositions = new HashSet<>();
         final Set<Position> opponentPlayerPositions = new HashSet<>();

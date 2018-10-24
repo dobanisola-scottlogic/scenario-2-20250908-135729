@@ -2,11 +2,21 @@ package com.scottlogic.hackathon.bots;
 
 import com.scottlogic.hackathon.bots.move.MoveBase;
 import com.scottlogic.hackathon.bots.state.StateAnalyser;
-import com.scottlogic.hackathon.game.*;
+import com.scottlogic.hackathon.game.Bot;
+import com.scottlogic.hackathon.game.GameState;
+import com.scottlogic.hackathon.game.Move;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.SpawnPoint;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Milestone3Bot extends Bot {
@@ -57,8 +67,9 @@ public class Milestone3Bot extends Bot {
                 opponentSpawnPoints,
                 gameState.getCollectables()
         );
-        Map<Class, Integer> initialMoveCounts = moves.stream()
-                .collect(Collectors.toMap(Move::getClass, move -> 1, (count, moveCount) -> count + moveCount));
+        Map<Class, Integer> initialMoveCounts = moves.stream().collect(
+                Collectors.toMap(Move::getClass, move -> 1, Integer::sum)
+        );
         stateAnalyser.setMoveCounts(initialMoveCounts);
 
         gameState.getPlayers().forEach(player -> {
@@ -114,9 +125,9 @@ public class Milestone3Bot extends Bot {
                 e.printStackTrace();
             }
             moves.add(stateAnalyser.getMove());
-            Map<Class, Integer> moveCounts = moves
-                    .stream()
-                    .collect(Collectors.toMap(Move::getClass, iteratedMove -> 1, (count, moveCount) -> count + moveCount));
+            Map<Class, Integer> moveCounts = moves.stream().collect(
+                    Collectors.toMap(Move::getClass, iteratedMove -> 1, Integer::sum)
+            );
             stateAnalyser.setMoveCounts(moveCounts);
         }
 

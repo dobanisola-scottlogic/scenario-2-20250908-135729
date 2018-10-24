@@ -49,14 +49,11 @@ public class Milestone2Bot extends Bot {
         gameState.getRemovedPlayers()
                 .forEach(player -> moves.removeIf(move -> move.getPlayer().equals(player.getId())));
 
-        final Set<UUID> previousPlayers = moves
-                .stream()
-                .map(Move::getPlayer)
-                .collect(Collectors.toSet());
+        final Set<UUID> previousPlayers = moves.stream().map(Move::getPlayer).collect(Collectors.toSet());
 
-        final Map<Class, Integer> moveCounts = moves
-                .stream()
-                .collect(Collectors.toMap(Move::getClass, move -> 1, (count, moveCount) -> count + moveCount));
+        final Map<Class, Integer> moveCounts = moves.stream().collect(
+                Collectors.toMap(Move::getClass, move -> 1, Integer::sum)
+        );
 
         final Set<Position> playerPositions = new HashSet<>();
         final Set<Position> opponentPlayerPositions = new HashSet<>();

@@ -140,6 +140,7 @@ public class GameEngine {
     private GameEngine(final PlayableMap map, final Set<Bot> bots, final TimedConsumer<Bot> timedConsumer) {
         this.map = map;
         this.bots = bots;
+        this.timedConsumer = timedConsumer;
 
         Properties props = loadProperties();
 
@@ -152,8 +153,6 @@ public class GameEngine {
         spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8 , props);
         initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds", 30 , props);
         maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
-
-        this.timedConsumer = timedConsumer;
     }
 
     public PlayableMap getMap() {
