@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -142,11 +143,10 @@ public class MoveBase implements Move {
 
     public void setMyPlayersPositions(final Set<Position> playerPositions) {
         this.myPlayersPositions = playerPositions;
-        if (playerPositions != null && playerPositions.size() > 0 && opponentSpawnPoints.size() > 0) {
-            playerPositions.forEach(myPlayerPosition ->
-                opponentSpawnPoints.stream()
-                        .filter(opponentSpawnPoint -> myPlayerPosition.equals(opponentSpawnPoint.getPosition()))
-                        .forEach(opponentSpawnPoint -> this.opponentSpawnPoints.remove(opponentSpawnPoint))
+        if (playerPositions != null && !playerPositions.isEmpty()) {
+            opponentSpawnPoints.removeIf(spawnPoint ->
+                playerPositions.parallelStream()
+                        .anyMatch(playerPosition -> spawnPoint.getPosition().equals(playerPosition))
             );
         }
     }
