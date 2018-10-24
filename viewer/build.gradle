@@ -10,6 +10,14 @@ node {
 }
 
 task webpack(type: NodeTask) {
+    inputs.with {
+        dir 'assets'
+        files npmInstall
+        dir 'scripts'
+        dir 'styles'
+        files 'package.json', 'package-lock.json', 'webpack.config.js', 'index.html'
+    }
+    outputs.dir buildDir
     script = file('node_modules/webpack/bin/webpack.js')
 }
 
