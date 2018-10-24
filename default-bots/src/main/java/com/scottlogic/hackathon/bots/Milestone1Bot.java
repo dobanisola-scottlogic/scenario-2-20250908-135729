@@ -2,11 +2,9 @@ package com.scottlogic.hackathon.bots;
 
 import com.scottlogic.hackathon.bots.move.TimidMove;
 import com.scottlogic.hackathon.game.Bot;
-import com.scottlogic.hackathon.game.Collectable;
 import com.scottlogic.hackathon.game.GameState;
 import com.scottlogic.hackathon.game.Move;
 import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.SpawnPoint;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -52,15 +50,12 @@ public class Milestone1Bot extends Bot {
             }
         });
 
-        final Set<Position> outOfBoundsPositions = new HashSet<>(gameState.getOutOfBoundsPositions());
-        final Set<SpawnPoint> spawnPoints = new HashSet<>(gameState.getSpawnPoints());
-        final Set<Collectable> collectables = new HashSet<>(gameState.getCollectables());
         moves.forEach(move -> {
             move.setMyPlayersPositions(myPlayerPositions);
             move.setOpponentPlayersPositions(opponentPlayerPositions);
-            move.addOutOfBoundsPositions(outOfBoundsPositions);
-            move.addSpawnPoints(spawnPoints);
-            move.setCollectables(collectables);
+            move.addOutOfBoundsPositions(gameState.getOutOfBoundsPositions());
+            move.addSpawnPoints(gameState.getSpawnPoints());
+            move.setCollectables(gameState.getCollectables());
             move.phase();
         });
 

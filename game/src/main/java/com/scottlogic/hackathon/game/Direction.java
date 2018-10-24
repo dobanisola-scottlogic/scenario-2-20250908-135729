@@ -81,7 +81,7 @@ public enum Direction {
     public static List<Direction> randomisedValues() {
         final List<Direction> directions = Arrays.asList(values());
         Collections.shuffle(directions);
-        return Collections.unmodifiableList(directions);
+        return directions;
     }
 
 }

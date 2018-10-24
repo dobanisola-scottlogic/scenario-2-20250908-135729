@@ -145,10 +145,7 @@ public class MoveBase implements Move {
         if (playerPositions != null && playerPositions.size() > 0 && opponentSpawnPoints.size() > 0) {
             playerPositions.forEach(myPlayerPosition ->
                 opponentSpawnPoints.stream()
-                        .filter(opponentSpawnPoint ->
-                                myPlayerPosition.getX() == opponentSpawnPoint.getPosition().getX() &&
-                                myPlayerPosition.getY() == opponentSpawnPoint.getPosition().getY()
-                        )
+                        .filter(opponentSpawnPoint -> myPlayerPosition.equals(opponentSpawnPoint.getPosition()))
                         .forEach(opponentSpawnPoint -> this.opponentSpawnPoints.remove(opponentSpawnPoint))
             );
         }
@@ -157,21 +154,17 @@ public class MoveBase implements Move {
     public void setOpponentPlayersPositions(final Set<Position> playerPositions) {
         this.opponentPlayersPositions = playerPositions;
         if (playerPositions != null && playerPositions.size() > 0 && spawnPoint != null) {
-            playerPositions.stream()
-                    .filter(opponentPlayerPosition -> spawnPoint != null &&
-                            opponentPlayerPosition.getX() == spawnPoint.getPosition().getX() &&
-                            opponentPlayerPosition.getY() == spawnPoint.getPosition().getY())
-                    .findAny().ifPresent(position -> spawnPoint = null);
+            playerPositions.parallelStream()
+                    .filter(opponentPlayerPosition -> opponentPlayerPosition.equals(spawnPoint.getPosition()))
+                    .findAny().ifPresent(pos -> spawnPoint = null);
         }
     }
 
-    public void addOutOfBoundsPositions(Set<Position> outOfBoundsPositions) {
-        outOfBoundsPositions.stream()
-                .filter(outOfBoundsPosition -> !this.outOfBoundsPositions.contains(outOfBoundsPosition))
-                .forEach(outOfBoundsPosition -> this.outOfBoundsPositions.add(outOfBoundsPosition));
+    public void addOutOfBoundsPositions(final Set<Position> outOfBoundsPositions) {
+        this.outOfBoundsPositions.addAll(outOfBoundsPositions);
     }
 
-    public void addSpawnPoints(Set<SpawnPoint> spawnPoints) {
+    public void addSpawnPoints(final Set<SpawnPoint> spawnPoints) {
         if (spawnPoints.size() > 0) {
             if (spawnPoint == null) {
                 List<SpawnPoint> spawnPointList = spawnPoints.stream()
@@ -189,8 +182,8 @@ public class MoveBase implements Move {
         }
     }
 
-    public void setCollectables(Set<Collectable> collectables) {
-        this.collectables = collectables;
+    public void setCollectables(final Set<Collectable> collectables) {
+        this.collectables = Collections.unmodifiableSet(collectables);
     }
 
     protected final int findDistanceBetweenTwoPositionsSquared(Position position1, Position position2) {

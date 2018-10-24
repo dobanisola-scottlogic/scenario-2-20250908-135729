@@ -3,6 +3,7 @@ package com.scottlogic.hackathon.game.engine.models;
 import com.scottlogic.hackathon.game.Position;
 import com.scottlogic.hackathon.game.SpawnPoint;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class SpawnPointImpl implements SpawnPoint {
@@ -50,5 +51,21 @@ public class SpawnPointImpl implements SpawnPoint {
         }
 
         return shouldSpawnPlayer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return Objects.equals(id, ((SpawnPointImpl) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

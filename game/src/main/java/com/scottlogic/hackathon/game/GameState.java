@@ -51,7 +51,7 @@ public interface GameState {
      *         or an {@linkplain Optional#empty() empty Optional} if there is none
      */
     default Optional<Player> getPlayerAt(Position position) {
-        return getPlayers().stream()
+        return getPlayers().parallelStream()
                 .filter(p -> p.getPosition().equals(position))
                 .findAny();
     }
@@ -75,7 +75,7 @@ public interface GameState {
      *         or an {@linkplain Optional#empty() empty Optional} if there is none
      */
     default Optional<SpawnPoint> getSpawnPointAt(Position position) {
-        return getSpawnPoints().stream()
+        return getSpawnPoints().parallelStream()
                 .filter(p -> p.getPosition().equals(position))
                 .findAny();
     }
@@ -99,7 +99,7 @@ public interface GameState {
      *         or an {@linkplain Optional#empty() empty Optional} if there is none
      */
     default Optional<Collectable> getCollectableAt(Position position) {
-        return getCollectables().stream()
+        return getCollectables().parallelStream()
                 .filter(p -> p.getPosition().equals(position))
                 .findAny();
     }
