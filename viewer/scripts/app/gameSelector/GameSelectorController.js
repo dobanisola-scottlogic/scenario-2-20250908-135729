@@ -16,10 +16,11 @@ class GameSelectorController {
         this.hackathonService = hackathonService;
         this.sharedPropertiesService = sharedPropertiesService;
         this.milestoneBotPrefix = sharedPropertiesService.milestoneBotPrefix;
+
         this.selectGame = this.selectGame.bind(this);
+        this.mapGame = this.mapGame.bind(this);
 
         this.gamesList = [];
-
         this.teamList = [];
 
         this.initialiseHackathon();
