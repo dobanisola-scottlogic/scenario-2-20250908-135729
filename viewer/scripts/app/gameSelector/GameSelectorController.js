@@ -165,21 +165,15 @@ class GameSelectorController {
         }
     }
     setGamesList(gamesList) {
-        if (gamesList && gamesList.length) {
-            this.gamesList = gamesList.map(game => {
-                return this.mapGame(game);
-            });
-        }
         /*
          * sort by game time, i.e. latest game at the top, as this is the most common use case
          *
          * N.B. columns are sortable by default so users can always sort on any other column as needed
          */
-        this.gridOptions.data = this.gamesList.sort(
-            function(gameOne, gameTwo) {
-                return gameTwo.time - gameOne.time;
-            }
-        );
+        this.gamesList = (gamesList && gamesList.length)
+            ? gamesList.map(this.mapGame).sort((a, b) => b.time - a.time)
+            : [];
+        this.gridOptions.data = this.gamesList;
     }
     selectGame(game) {
         this.gameService.getGame(game.id).then(response => {
