@@ -32,9 +32,8 @@ dependencies {
     compile project(':client')
 }
 // END SKIP
-// DEPENDENCIES
+// DEPENDENCIES (do not remove this line)
 
-sourceCompatibility = 1.9
 mainClassName = project.hasProperty('mainClass') ? project.mainClass : 'com.contestantbots.team.ExampleBot'
 
 run {
