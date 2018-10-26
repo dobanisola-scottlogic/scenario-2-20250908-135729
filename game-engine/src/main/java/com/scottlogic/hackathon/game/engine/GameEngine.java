@@ -84,9 +84,9 @@ public class GameEngine {
             throw new IllegalArgumentException("must have at least 2 bots");
         }
 
-        final PlayableMap map;
+        final Arena map;
         try {
-            map = PlayableMap.load(mapName);
+            map = Arena.load(mapName);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("map wasn't found");
         }
