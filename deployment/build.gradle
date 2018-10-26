@@ -2,6 +2,8 @@ plugins {
     id 'groovy'
 }
 
+import org.apache.tools.ant.DirectoryScanner
+
 sourceSets {
     nexus
     server
@@ -19,17 +21,16 @@ dependencies {
     nexusCompile "org.sonatype.nexus:nexus-script:${nexusVersion}"
     nexusCompile "org.sonatype.nexus:nexus-rest-client:${nexusVersion}"
     nexusCompile "org.sonatype.nexus:nexus-security:${nexusVersion}"
-    nexusCompile 'org.apache.httpcomponents:httpclient:4.5.6'
 
     nexusRuntime "org.sonatype.nexus:nexus-rest-jackson2:${nexusVersion}"
     nexusRuntime "org.slf4j:slf4j-simple:1.7.+"
 
-    nexusCompile "org.sonatype.nexus:nexus-repository:${nexusVersion}"
-    nexusCompile "org.sonatype.nexus:nexus-blobstore:${nexusVersion}"
-    nexusCompile "org.sonatype.nexus:nexus-core:${nexusVersion}"
-    nexusCompile "org.sonatype.nexus.plugins:nexus-blobstore-tasks:${nexusVersion}"
-    nexusCompile "org.sonatype.nexus.plugins:nexus-repository-maven:${nexusVersion}"
-    nexusCompile "org.sonatype.nexus.plugins:nexus-script-plugin:${nexusVersion}"
+    nexusCompileOnly "org.sonatype.nexus:nexus-repository:${nexusVersion}"
+    nexusCompileOnly "org.sonatype.nexus:nexus-blobstore:${nexusVersion}"
+    nexusCompileOnly "org.sonatype.nexus:nexus-core:${nexusVersion}"
+    nexusCompileOnly "org.sonatype.nexus.plugins:nexus-blobstore-tasks:${nexusVersion}"
+    nexusCompileOnly "org.sonatype.nexus.plugins:nexus-repository-maven:${nexusVersion}"
+    nexusCompileOnly "org.sonatype.nexus.plugins:nexus-script-plugin:${nexusVersion}"
 
     serverRuntime project(path: ':server', configuration: 'shadow')
     
@@ -51,6 +52,10 @@ task ('gatherGitea', type: Sync) {
         into 'repo'
     }
     from(file("src/gitea"))
+
+    // The following 2 lines are a workaround for https://github.com/gradle/gradle/issues/1348
+    doFirst { DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) } }
+    doLast { DirectoryScanner.resetDefaultExcludes() }
 }
 
 task ('gatherServer', type: Sync) {

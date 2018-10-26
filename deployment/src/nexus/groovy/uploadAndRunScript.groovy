@@ -1,14 +1,3 @@
-import org.apache.http.HttpHeaders
-import org.apache.http.HttpRequest
-import org.apache.http.HttpRequestInterceptor
-import org.apache.http.HttpStatus
-import org.apache.http.client.HttpResponseException
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.client.methods.HttpPut
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.FileEntity
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.protocol.HttpContext
 import org.jboss.resteasy.client.jaxrs.BasicAuthentication
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder
 import org.sonatype.nexus.script.ScriptClient
@@ -52,20 +41,3 @@ println "Stored scripts are now: ${scripts.browse().collect { it.name }}"
 
 println "Running script: $name"
 scripts.run(name, '')
-
-HttpClients.createDefault().with { client ->
-    ['jdk-windows.zip', 'jdk-linux.tgz'].each { fileName ->
-        def jdkFile = new File(fileName)
-        println "pushing $jdkFile"
-        HttpPut put = new HttpPut("${host}/repository/java/${fileName}")
-        put.setHeader(HttpHeaders.AUTHORIZATION, 'Basic ' + "${options.u}:${options.p}".bytes.encodeBase64())
-        put.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM.toString())
-        put.entity = new FileEntity(jdkFile)
-        client.execute(put) { response ->
-            println "Upload repsonse from nexus: ${response.statusLine}"
-            if (response.statusLine.statusCode < 200 || response.statusLine.statusCode >= 300) {
-                throw new HttpResponseException(response.statusLine.statusCode, "Failed to upload java dist.")
-            }
-        }
-    }
-}

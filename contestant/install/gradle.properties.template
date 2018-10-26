@@ -1,2 +1,0 @@
-mavenProxyUrl=${maven_url}
-org.gradle.console=plain

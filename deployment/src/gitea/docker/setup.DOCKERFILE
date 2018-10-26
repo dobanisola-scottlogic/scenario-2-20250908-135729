@@ -15,12 +15,6 @@ RUN apk --no-cache add curl bash dos2unix git \
     && chmod -R +x /scripts
 
 ADD repo /repo
-RUN cd /repo \
-    && git init \
-    && git config user.name "$GITEA_ADMIN_USER" \
-    && git config user.email "$GITEA_ADMIN_EMAIL" \
-    && git add . \
-    && git commit -m 'Scott Logic Hackathon'
 
 WORKDIR /repo
 CMD /scripts/wait-for ${GITEA_HOST}:${GITEA_PORT} -t 120 -- /scripts/setup-repo

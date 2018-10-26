@@ -9,6 +9,8 @@ buildscript {
 
 import org.eclipse.jgit.ignore.IgnoreNode
 import org.eclipse.jgit.ignore.IgnoreNode.MatchResult
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.lib.StoredConfig
 import org.apache.tools.ant.DirectoryScanner
 
 Spec<FileTreeElement> filesMatching(String fileName) {
@@ -98,19 +100,23 @@ Transformer<String,String> inFileDependencies() {
     }
 }
 
-task('assembleContestantRepo', type: Sync) {
+task('writeRepoProps', type: WriteProperties) {
+    outputFile = "$buildDir/props/PROPERTIES"
+    property('javaVersion', "${sourceCompatibility.majorVersion}")
+}
+
+task('copyContestantRepo', type: Sync) {
     destinationDir = project.contestantRepoDir
     from(projectDir) {
+        exclude '**/.contestantignore'
         exclude filesMatching('.gitignore')
         exclude filesMatching('.contestantignore')
-        exclude '**/.contestantignore'
-        exclude 'gradle/wrapper/**' // Filters mangle jar files, so we'll copy this dir separately below
         filter outLinesBetween('BEGIN SKIP').and('END SKIP')
         filter inFileDependencies()
     }
 
-    from('gradle/wrapper') {
-        into 'gradle/wrapper'
+    from(writeRepoProps) {
+        into 'install'
     }
 
     into('libs') { spec ->
@@ -119,11 +125,68 @@ task('assembleContestantRepo', type: Sync) {
         }
     }
 
+    preserve {
+        include 'gradlew*'
+        include 'gradle/wrapper/**'
+        include '.git'
+    }
+
     // The following 2 lines are a workaround for https://github.com/gradle/gradle/issues/1348
     doFirst { DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) } }
     doLast { DirectoryScanner.resetDefaultExcludes() }
+}
+
+task('contestantRepoWrapper', type: GradleBuild) {
+    dependsOn copyContestantRepo
+    dir = copyContestantRepo.destinationDir
+    tasks = ['wrapper']
+    startParameter.projectCacheDir = temporaryDir
+    inputs.files {
+        project.fileTree(dir) {
+            include '**/*.gradle'
+            include '**/*.properties'
+        }
+    }
+    outputs.files {
+        project.fileTree(dir) {
+            include 'gradlew*'
+            include 'gradle/wrapper/**'
+        }
+    }
+}
+
+task('contestantRepoGitInit') {
+    ext.dir = project.contestantRepoDir
+    dependsOn copyContestantRepo, contestantRepoWrapper
+
+    inputs.files {
+        project.fileTree(dir) {
+            exclude '.git'
+        }
+    }
+
+    outputs.dir("$dir/.git")
 
     doLast {
-        println "Contestant repo assembled in '${rootDir.toURI().relativize(destinationDir.toURI())}'."
+        Git git = Git.init().setDirectory(dir).call()
+
+        StoredConfig config = git.repository.config
+        config.load()
+        config.setString('user', null, 'name', 'Scott Logic')
+        config.setString('user', null, 'email', 'hackathon@scottlogic.co.uk')
+        config.save()
+
+        git.add().addFilepattern('.').call()
+        git.commit().setMessage('Scott Logic Hackathon').call()
+    }
+}
+
+task('assembleContestantRepo') {
+    ext.destinationDir = project.contestantRepoDir
+    inputs.files copyContestantRepo, contestantRepoWrapper, contestantRepoGitInit
+    outputs.dir destinationDir
+
+    doLast {
+        println "Contestant repo assembled in '${rootDir.toURI().relativize(destinationDir.toURI())}'"
     }
 }
