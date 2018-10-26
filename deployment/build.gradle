@@ -5,11 +5,15 @@ plugins {
 sourceSets {
     nexus
     server
+    gitea
 }
 
-ext.nexusVersion = '3.13.0-01'
-ext.nexusDistDir = file("$buildDir/docker/nexus")
-ext.serverDistDir = file("$buildDir/docker/server")
+ext {
+    nexusVersion = '3.13.0-01'
+    nexusDistDir = file("$buildDir/docker/nexus")
+    serverDistDir = file("$buildDir/docker/server")
+    giteaDistDir = file("$buildDir/docker/gitea")
+}
 
 dependencies {
     nexusCompile "org.sonatype.nexus:nexus-script:${nexusVersion}"
@@ -28,6 +32,8 @@ dependencies {
     nexusCompile "org.sonatype.nexus.plugins:nexus-script-plugin:${nexusVersion}"
 
     serverRuntime project(path: ':server', configuration: 'shadow')
+    
+    giteaRuntime project(path: ':contestant', configuration: 'repo')
 }
 
 task ('gatherNexus', type: Sync) {
@@ -37,6 +43,14 @@ task ('gatherNexus', type: Sync) {
         exclude 'groovy-*'
     }
     from(file("src/nexus"))
+}
+
+task ('gatherGitea', type: Sync) {
+    destinationDir = giteaDistDir
+    from(configurations.giteaRuntime) {
+        into 'repo'
+    }
+    from(file("src/gitea"))
 }
 
 task ('gatherServer', type: Sync) {
@@ -52,19 +66,9 @@ task ('gatherServer', type: Sync) {
 }
 
 task up(type: Exec) {
-    dependsOn gatherNexus, gatherServer
+    dependsOn gatherNexus, gatherServer, gatherGitea
     workingDir = projectDir
     commandLine 'docker-compose', 'up', '-d', '--build'
-    doFirst {
-        if(!project.hasProperty('githubUser')) {
-            throw new Exception("Property 'githubUser' must be set (e.g. './gradlew -PgithubUser=<username>')")
-        }
-        if(!project.hasProperty('githubPassword')) {
-            throw new Exception("Property 'githubPassword' must be set (e.g. './gradlew -PgithubPassword=<password>')")
-        }
-        environment('GH_USER', project.githubUser)
-        environment('GH_PASSWORD', project.githubPassword)
-    }
 }
 
 task down(type: Exec) {

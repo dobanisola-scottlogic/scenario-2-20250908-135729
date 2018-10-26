@@ -39,7 +39,7 @@ services:
   # Hosts the contestant git repository
   gitea:
     build:
-      context: src/gitea
+      context: build/docker/gitea
       dockerfile: docker/DOCKERFILE
     ports:
       - 3000:3000
@@ -55,11 +55,8 @@ services:
     depends_on:
       - gitea
     build:
-      context: src/gitea
+      context: build/docker/gitea
       dockerfile: docker/setup.DOCKERFILE
-    environment:
-      - GH_USER
-      - GH_PASSWORD
 
   database:
     image: postgres:10-alpine

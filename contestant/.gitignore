@@ -1,3 +1,6 @@
+# Java
+*.class
+
 # Git
 *.orig
 
@@ -9,12 +12,8 @@ gradle-app.setting
 .gradletasknamecache
 
 # Idea
-*.iml
-*.ipr
-*.iws
 .idea/
-out/
-
+*.iml
 
 # Eclipse
 .classpath
@@ -24,13 +23,3 @@ out/
 
 # Ubuntu
 *.swp
-
-# Node
-node_modules
-npm-debug.log
-
-# DB
-data
-
-# Logs
-logs

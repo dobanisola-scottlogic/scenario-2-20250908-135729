@@ -1,0 +1,129 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.eclipse.jgit:org.eclipse.jgit:5.1.2.201810061102-r'
+    }
+}
+
+import org.eclipse.jgit.ignore.IgnoreNode
+import org.eclipse.jgit.ignore.IgnoreNode.MatchResult
+import org.apache.tools.ant.DirectoryScanner
+
+Spec<FileTreeElement> filesMatching(String fileName) {
+    Map<File, IgnoreNode> ignores = [:]
+    def getIgnoreRules = {File dir ->
+        if(ignores.containsKey(dir)) {
+            return ignores.get(dir)
+        }
+
+        IgnoreNode ignoreNode = new IgnoreNode()
+        if(dir.directory) {
+            def ignoreFile = new File(dir, fileName)
+            if(ignoreFile.file) {
+                ignoreFile.withInputStream {
+                    ignoreNode.parse(it)
+                }
+            }
+        }
+        ignores.put(dir, ignoreNode)
+        return ignoreNode
+    }
+
+
+
+    return { FileTreeElement element ->
+        def ignoreRoot = element.file
+        def relPath = ignoreRoot.name
+        def matchResult = MatchResult.CHECK_PARENT
+        while(matchResult == MatchResult.CHECK_PARENT) {
+            if(ignoreRoot==rootDir) {
+                matchResult = MatchResult.NOT_IGNORED
+            } else {
+                ignoreRoot = ignoreRoot.parentFile
+                matchResult = getIgnoreRules(ignoreRoot).isIgnored(relPath, element.directory)
+                relPath = "${ignoreRoot.name}/$relPath"
+            }
+        }
+
+        return matchResult == MatchResult.IGNORED
+    }
+}
+
+interface And {
+    Transformer<String,String> and(String endToken)
+}
+
+And outLinesBetween(String beginToken) {
+    return { String endToken ->
+        boolean skipping = false
+        return { String line ->
+            if(!skipping && line.contains(beginToken)) {
+                skipping = true
+            }
+
+            String ret = skipping ? null : line;
+
+            if(skipping && line.contains(endToken)) {
+                skipping = false
+            }
+
+            return ret
+        } as Transformer<String,String>
+    }
+}
+
+Transformer<String,String> inFileDependencies() {
+    return { String line ->
+        if(!line.contains('DEPENDENCIES')) {
+            return line
+        }
+
+        return configurations.all.inject(new StringBuilder('dependencies {')) { sb, conf ->
+            if(conf.canBeResolved) {
+                def directDeps = conf.dependencies
+                if(!directDeps.empty) {
+                    conf.files{
+                        directDeps.contains(it)
+                    }.inject(sb) { sb2, file ->
+                        sb2.append('\r\n    ').append(" ${conf.name} name: '${file.name.take(file.name.lastIndexOf('.'))}'")
+                    }
+                }
+            }
+            return sb
+        }
+        .append('\r\n}')
+        .toString()
+    }
+}
+
+task('assembleContestantRepo', type: Sync) {
+    destinationDir = project.contestantRepoDir
+    from(projectDir) {
+        exclude filesMatching('.gitignore')
+        exclude filesMatching('.contestantignore')
+        exclude '**/.contestantignore'
+        exclude 'gradle/wrapper/**' // Filters mangle jar files, so we'll copy this dir separately below
+        filter outLinesBetween('BEGIN SKIP').and('END SKIP')
+        filter inFileDependencies()
+    }
+
+    from('gradle/wrapper') {
+        into 'gradle/wrapper'
+    }
+
+    into('libs') { spec ->
+        configurations.matching { it.canBeResolved }.each {
+            spec.from it
+        }
+    }
+
+    // The following 2 lines are a workaround for https://github.com/gradle/gradle/issues/1348
+    doFirst { DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) } }
+    doLast { DirectoryScanner.resetDefaultExcludes() }
+
+    doLast {
+        println "Contestant repo assembled in '${rootDir.toURI().relativize(destinationDir.toURI())}'."
+    }
+}

@@ -1,0 +1,109 @@
+plugins {
+    id "java"
+    id "application"
+}
+
+group "com.scottlogic.hackathon-contestant"
+version "1.0-SNAPSHOT"
+
+task printProps {
+    doFirst {
+        println mavenProxyUrl
+    }
+}
+
+repositories {
+    if(project.hasProperty('mavenProxyUrl')){
+        maven {
+            url mavenProxyUrl
+        }
+    } else{
+        mavenCentral()
+    }
+
+    flatDir {
+        dirs "libs"
+    }
+}
+
+// BEGIN SKIP
+dependencies {
+    compile project(':game')
+    compile project(':client')
+}
+// END SKIP
+// DEPENDENCIES
+
+sourceCompatibility = 1.9
+mainClassName = project.hasProperty('mainClass') ? project.mainClass : 'com.contestantbots.team.ExampleBot'
+
+run {
+    standardInput = System.in
+}
+
+// BEGIN SKIP
+ext {
+    contestantRepoDir = file("$buildDir/contestantRepo")
+    contestantRepoBuildDir = file("$buildDir/contestantRepoBuild")
+    contestantRepoGradleCache = file("$buildDir/contestantRepoGradleCache")
+}
+
+apply from: 'gradle/contestant-repo.gradle' // Adds the assembleContestantRepo task
+assemble.dependsOn.clear()
+assemble.dependsOn assembleContestantRepo
+
+configurations {
+    repo
+}
+
+def repoDir = layout.directoryProperty()
+repoDir.set(assembleContestantRepo.destinationDir)
+artifacts {
+    repo(repoDir) {
+        builtBy assembleContestantRepo
+    }
+}
+
+task('checkContestantRepo', type: Exec) {
+    group = 'Verification'
+    description = "Runs 'gradlew check' on the assembled contestant repo to verify its integrity"
+    shouldRunAfter check.dependsOn
+
+    inputs.files assembleContestantRepo
+    outputs.dirs project.contestantRepoBuildDir, project.contestantRepoGradleCache
+
+    workingDir = assembleContestantRepo.destinationDir
+    if(System.getProperty('os.name').toLowerCase().contains('win')) {
+        executable 'cmd'
+        args '/c', 'gradlew.bat'
+    } else {
+        executable 'sh'
+        args '-c', 'gradlew'
+    }
+    args 'check'
+    args "-PbuildDir=${project.contestantRepoBuildDir}"
+    args "--project-cache-dir=${project.contestantRepoGradleCache}"
+    args '--console=plain'
+    args '--stacktrace'//, '--debug'
+
+    doFirst {
+        delete project.contestantRepoBuildDir, project.contestantRepoGradleCache
+        println """
+=======================================================================
+Begin contestant repo Gradle build
+${commandLine[0..2].join(' ')} ${commandLine[3..-1].join('\n    ')}
+=======================================================================
+"""
+    }
+
+    doLast {
+        println """
+=======================================================================
+End contestant repo Gradle build
+=======================================================================
+"""
+    }
+}
+check.dependsOn checkContestantRepo
+
+// END SKIP
