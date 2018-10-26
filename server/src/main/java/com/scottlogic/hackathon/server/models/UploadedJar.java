@@ -2,8 +2,6 @@ package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.io.ByteStreams;
-import com.scottlogic.hackathon.game.Bot;
-import com.scottlogic.hackathon.server.services.RemoteClassLoader;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -11,11 +9,9 @@ import javax.persistence.Id;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 @Entity
 public class UploadedJar {
@@ -24,6 +20,9 @@ public class UploadedJar {
     private byte[] data;
     @ElementCollection
     private Set<String> contestantBots;
+
+    @ElementCollection
+    private Map<String, String> messageLookup;
 
     public UploadedJar() {
     }
@@ -65,5 +64,13 @@ public class UploadedJar {
 
     public void setContestantBots(final Set contestantBots) {
         this.contestantBots = contestantBots;
+    }
+
+    public void setMessageLookup(Map<String, String> messageLookup) {
+        this.messageLookup = messageLookup;
+    }
+
+    public Map<String, String> getMessageLookup() {
+        return messageLookup;
     }
 }

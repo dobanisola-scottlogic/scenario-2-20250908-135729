@@ -1,4 +1,8 @@
 <div class="alert" ng-class="{'alert-success': isSuccess(), 'alert-danger': isError()}" role="alert">
     <button type="button" class="close" ng-click="closeAlert()"><span aria-hidden="true">×</span></button>
-    <strong>{{alert.type}}!</strong> {{alert.message}}
+    <strong>{{alert.type}}!</strong>
+    <div class="message">{{alert.message}}</div>
+    <ul class="detail">
+        <li ng-repeat="detail in alert.details" title="{{detail.title}}">{{detail.text}}</li>
+    </ul>
 </div>
