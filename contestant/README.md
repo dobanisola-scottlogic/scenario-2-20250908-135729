@@ -43,19 +43,14 @@ run. This ensures other checks succeed before the relatively expensive operation
 [//]: # (END SKIP)
 
 # Scott Logic Hackathon
+
 ## Setup
-### 1 Ensure Java is installed and set-up
-You need a JDK installed of version 9 or later. If you don't have this, you can download one from the same machine this
-site is running on. In your web browser, navigate to `http://<host>:8081/repository/java/jdk-windows.zip` or
-`http://<host>:8081/repository/java/jdk-linux.tgz`, where `<host>` is the same host name as this Git server is on.
-Extract the downloaded archive onto your hard drive.
 
-Make sure you also have your `JAVA_HOME` environment variable set to the path of the correct JDK folder.
-In Windows, search for 'env' in your Start Menu, then follow the prompts. In Linux, edit your `~/.profile`
-or `~/.bashrc` file appropriately.
+### 1 (Optional) Install Git
+You don't need to have Git installed in order to take part, but it might help if you're collaborating with others.
+However, if you're not familiar with Git, now may not be the best time to learn it.
 
-### 1a (Optional) Install Git
-It may help to have Git installed. On Windows, download Git for Windows [here](https://gitforwindows.org/).
+On Windows, you can download Git for Windows [here](https://gitforwindows.org/).
 This also gives you access to a Linux-style Bash shell terminal called Git Bash.
 
 ### 2 Download this project
@@ -63,37 +58,63 @@ If you have Git installed, you can clone the repository to your local machine us
 Alternatively, there's also a link above to download the repository as a zip or tar archive.
 
 A third option, which may make working with your team mates easier, is to register a username on this git server,
-then fork the project and clone it from there. That will allow you to share code with your team mates by pushing
+then fork the project and clone it from there. That will allow you to share code with your team mates by pushing Git
 commits back up to your forked project.
 
-### 3 Setup build proxy paths
+### 3 Install
 
-Configure internet settings used to build this project.  This allows us to set a proxy that will be used to download
-Gradle and Maven dependencies used when building the project.
+There's an installation script in the root folder of this repository. This will download and set up an appropriate
+Java Development Kit for your machine.
+
+Optionally, if your Scott Logic host tells you that you need to do this, you can add the `-r` option to configure a
+proxy URL for downloading the necessary dependencies.
+
+Open a terminal (command prompt), and run the command below.
 
 Windows command prompt:
 ```batch
-install -r http://<host>:8081/repository
+install [-r http://<proxy_host>:8081/repository]
 ```
 
-Unix shell:
+Mac or Linux shell:
 ```sh
-./install.sh -r http://<host>:8081/repository
+./install.sh [-r http://<proxy_host>:8081/repository]
 ```
 
-In both of the above, `<host>` is the same hostname as this site is on.
-For example if the URL of this web page is `http://WS01161:3000/ScottLogic/hackathon-contestant`, then (on Windows):
+In both of the above, `<proxy_host>` is the hostname provided to you by the Scott Logic host at your event,
+if necessary. As an example, if the hostname given to you is `WS01161`, then (on Windows):
 ```batch
 install -r http://WS01161:8081/repository
 ```
 
+If you're told that no proxy needs to be set up, then all you need to type is
+```batch
+install
+```
+
 ### 4 (Optional) Install and import into a Java IDE
 It will probably be easier to do development in a Java IDE - ideally one that supports importing Gradle projects, like
-Eclipse or IntelliJ IDEA. We recommend IntelliJ. Make sure you've set your JDK to one with at least version 9 in
-your IDE settings.
+[Eclipse](https://www.eclipse.org/downloads/) or [IntelliJ IDEA](https://www.jetbrains.com/idea/download/index.html).
+Make sure you've set your IDE's JDK to the one downloaded in the above step.
+You can find it in the `<project_root_dir>/tools/jdk` folder.
 
-In IntelliJ if you open the repostory's root folder as a new project, it should detect Gradle and start the import
-wizard automatically. In Eclipse, choose `File -> Import... -> Gradle`.
+#### Eclipse
+
+Make sure you have the downloaded JDK set as an "installed JRE". Go to **_Window &rarr; Preferences &rarr; Java &rarr;
+Installed JREs &rarr; Add &rarr; Standard VM &rarr; Next &rarr; Directory..._**, and navigate to the
+`<project_root_dir>/tools/jdk/<jdk_name>` folder.
+
+To open the project, go to **_File &rarr; Import... &rarr; Gradle &rarr; Existing Gradle Project_**,
+and follow the prompts in the wizard. 
+
+#### IntelliJ IDEA
+
+First, ensure you have the downloaded JDK set as one of your SDKs. Hit `Ctrl+Alt+Shift+S`, then go to
+**_Project Settings &rarr; Project &rarr; New... &rarr; JDK_**, and navigate to the
+`<project_root_dir>/tools/jdk/<jdk_name>` folder.
+
+If you **_Open_** the repostory's root folder as a new project, it should detect Gradle and start the import wizard
+automatically.
 
 ## Building & Running
 
