@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class GameStateImpl implements GameState {
     private final int phase;
-    private final Map map;
+    private final GameMap map;
     private final Set<Position> outOfBoundsPositions;
     private final Set<Player> players;
     private final Set<Player> removedPlayers;
@@ -16,7 +16,7 @@ public class GameStateImpl implements GameState {
     private final Set<Collectable> collectables;
 
     public GameStateImpl(final int phase,
-                         final Map map,
+                         final GameMap map,
                          final Set<Position> outOfBoundsPositions,
                          final Set<Player> players,
                          final Set<Player> removedPlayers,
@@ -39,7 +39,7 @@ public class GameStateImpl implements GameState {
     }
 
     @Override
-    public Map getMap() {
+    public GameMap getMap() {
         return map;
     }
 

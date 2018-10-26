@@ -1,15 +1,15 @@
 package com.scottlogic.hackathon.game.engine.models;
 
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.GameMap;
 import com.scottlogic.hackathon.game.Position;
 
-public class MapImpl implements Map {
+public class GameMapImpl implements GameMap {
 
     private final int width;
     private final int height;
 
-    public MapImpl(final int width, final int height) {
+    public GameMapImpl(final int width, final int height) {
         this.width = width;
         this.height = height;
     }

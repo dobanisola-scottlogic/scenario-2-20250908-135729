@@ -1,8 +1,7 @@
 package com.scottlogic.hackathon.game.engine.maps;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.GameMap;
 import com.scottlogic.hackathon.game.Position;
 
 import java.io.InputStream;
@@ -10,8 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface PlayableMap extends Map {
-    static PlayableMap load(final String mapName) throws Exception {
+public interface Arena extends GameMap {
+    static Arena load(final String mapName) throws Exception {
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream("maps/" + mapName + ".json");
         final ObjectMapper objectMapper = new ObjectMapper();
         final LoadableMap map = objectMapper.readValue(inputStream, LoadableMap.class);
@@ -34,14 +33,14 @@ public interface PlayableMap extends Map {
             }
         }
 
-        final PlayableMap playableMap = new PlayableMapImpl(
+        final Arena arena = new ArenaImpl(
                 mapName,
                 width,
                 height,
                 outOfBoundsPositions,
                 spawnPointPositions);
 
-        return playableMap;
+        return arena;
     }
 
     String getName();

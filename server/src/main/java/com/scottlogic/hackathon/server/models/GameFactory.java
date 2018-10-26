@@ -2,7 +2,7 @@ package com.scottlogic.hackathon.server.models;
 
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.game.Bot;
-import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
+import com.scottlogic.hackathon.game.engine.maps.Arena;
 import com.scottlogic.hackathon.server.services.MilestoneService;
 import com.scottlogic.hackathon.server.services.TeamService;
 import org.slf4j.Logger;
@@ -62,19 +62,18 @@ public class GameFactory {
             if (teamsWithoutBots.size() > 0) {
                 logger.error(String.format("Team(s) without bots, %s", String.join(",", teamsWithoutBots)));
             } else {
-                Map map = null;
+                ArenaModel arena = null;
                 final String mapName = gameConfiguration.getMap();
                 try {
-                    final PlayableMap playableMap = PlayableMap.load(mapName);
-                    map = Map.create(playableMap);
+                    arena = ArenaModel.create(Arena.load(mapName));
                 } catch (final Exception e) {
-                    logger.error(String.format("Loading PlayableMap %s failed", mapName), e);
+                    logger.error(String.format("Loading Arena %s failed", mapName), e);
                 }
                 final Set<GameTeam> gameTeams = teamBotMap.entrySet()
                         .stream()
                         .map(entry -> new GameTeam(entry.getKey().getId(), entry.getKey().getName(), entry.getValue().getId()))
                         .collect(Collectors.toSet());
-                game = new Game(gameTeams, map, gameConfiguration.getHackathonId());
+                game = new Game(gameTeams, arena, gameConfiguration.getHackathonId());
             }
         }
         return game;

@@ -1,22 +1,20 @@
 package com.scottlogic.hackathon.game.engine.maps;
 
-import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.engine.models.MapImpl;
+import com.scottlogic.hackathon.game.engine.models.GameMapImpl;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-class PlayableMapImpl extends MapImpl implements PlayableMap {
+class ArenaImpl extends GameMapImpl implements Arena {
     private final String name;
     private final Set<Position> outOfBoundsPositions;
     private final Set<Position> spawnPointPositions;
 
-    public PlayableMapImpl(
+    public ArenaImpl(
             final String name,
             final int width,
             final int height,
