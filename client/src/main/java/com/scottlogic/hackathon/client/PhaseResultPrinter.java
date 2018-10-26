@@ -6,7 +6,7 @@ import com.scottlogic.hackathon.game.PhaseResult;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 import com.scottlogic.hackathon.game.SpawnPoint;
-import com.scottlogic.hackathon.game.engine.maps.PlayableMap;
+import com.scottlogic.hackathon.game.engine.maps.Arena;
 import org.fusesource.jansi.Ansi;
 
 import java.util.Arrays;
@@ -37,11 +37,11 @@ public class PhaseResultPrinter {
     private static final Tile OUT_OF_BOUNDS_POSITION = new Tile('X', Ansi.Color.RED);
     private static final char SEPARATOR = '-';
     private final Set<Bot> bots;
-    private final PlayableMap map;
+    private final Arena map;
     private final List<UUID> ownerIndices;
     private final char[] seperator;
 
-    public PhaseResultPrinter(final Set<Bot> bots, final PlayableMap map) {
+    public PhaseResultPrinter(final Set<Bot> bots, final Arena map) {
         this.bots = bots;
         this.map = map;
 

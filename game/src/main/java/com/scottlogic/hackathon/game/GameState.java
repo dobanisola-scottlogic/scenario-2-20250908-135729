@@ -21,7 +21,7 @@ public interface GameState {
      *
      * @return The game's map.
      */
-    Map getMap();
+    GameMap getMap();
 
     /**
      *

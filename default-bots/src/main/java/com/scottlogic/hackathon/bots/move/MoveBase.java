@@ -2,7 +2,7 @@ package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Collectable;
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.Map;
+import com.scottlogic.hackathon.game.GameMap;
 import com.scottlogic.hackathon.game.Move;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
@@ -36,26 +36,26 @@ public class MoveBase implements Move {
     Set<SpawnPoint> opponentSpawnPoints = new HashSet<>();
     Set<Collectable> collectables;
 
-    private final Map map;
+    private final GameMap map;
 
     static final int MINIMUM_RANDOM_DISTANCE = 16;
     static final int MAXIMUM_RANDOM_DISTANCE = 64;
     static final int ACTIVE_RADIUS_SQUARED = 50;
 
-    public MoveBase(Map map, final Player fullPlayer) {
+    public MoveBase(GameMap map, final Player fullPlayer) {
         this.owner = fullPlayer.getOwner();
         this.playerPosition = fullPlayer.getPosition();
         this.player = fullPlayer.getId();
         this.map = map;
     }
 
-    public MoveBase(Direction direction, int distance, Map map, final Player fullPlayer) {
+    public MoveBase(Direction direction, int distance, GameMap map, final Player fullPlayer) {
         this(map, fullPlayer);
         this.direction = direction;
         this.distance = distance;
     }
 
-    protected Map getMap() {
+    protected GameMap getMap() {
         return map;
     }
 
