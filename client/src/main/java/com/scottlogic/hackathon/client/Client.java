@@ -39,7 +39,8 @@ public class Client {
 
             GameEngine gameEngine = null;
             try {
-                gameEngine = GameEngine.create(arguments.getMap(), bots, arguments.isDebug());
+                gameEngine = arguments.isDebug() ? GameEngine.createDebug(arguments.getMap(), bots) :
+                        GameEngine.create(arguments.getMap(), bots);
             } catch (final IllegalArgumentException e) {
                 System.err.printf("couldn't create map %s", arguments.getMap())
                         .println();
