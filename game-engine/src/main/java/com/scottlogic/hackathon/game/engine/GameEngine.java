@@ -233,12 +233,35 @@ public class GameEngine {
 
     private void initialiseBots() throws InterruptedException {
         invokeBots("initialise", initialiseTimeoutSeconds, (bot, gameState) -> {
-            bot.initialise(gameState);
-            return () -> {};
+            bot.initialise(gameState); // Run in parallel
+            return () -> {};           // No post-processing required
         })
         .run();
     }
 
+    /**
+     * Invokes an action on all bots still in the game in parallel.
+     * This method blocks until the action has been completed for all bots, or the time limit has been reached.
+     * <p>
+     * The actions is supplied in the form of a {@linkplain BiFunction} that takes a {@linkplain Bot} and associated
+     * {@linkplain GameState}, and produces a {@linkplain Runnable}. The BiFunction will run asynchronously as part of
+     * the parralel execution, but the resulting runnable will <em>not</em>. Instead, the Runnables resulting from
+     * invoking the action on each bot are bundled together and encapsulated in the Runnable returned by this method.
+     * <p>
+     * The provided action should be careful not to change the state of this class, as it is not thread safe.
+     * Instead, any state changes that should be made in response to the bots' actions should occur in the Runnable
+     * that the action produces, which can be run synchronously after this method returns.
+     * <p>
+     * The Runnable that this method returns <em>must</em> be run, even if the Runnables produced by the bot action
+     * are no-ops. This is because the returned Runnable will also action the disqualification of any bots whose
+     * actions threw exceptions or exceeded the specified time limit.
+     *
+     * @param actionName A human-readable name for the action being invoked. Used for error reporting
+     * @param timeout The number of seconds the action should be given to run for each bot
+     * @param action The action to take on each bot
+     * @return A {@linkplain Runnable} that will perform any post-processing required of the actions, as described above
+     * @throws InterruptedException If the current thread is interrupted while waiting for the actions to complete
+     */
     private Runnable invokeBots(String actionName, int timeout, BiFunction<Bot, GameState, Runnable> action)
             throws InterruptedException {
         Map<Bot, CompletableFuture<Runnable>> actions = getQualifyingBots().stream()
@@ -291,8 +314,8 @@ public class GameEngine {
                 .collect(Collectors.toMap(Player::getId, Function.identity(), (a,b) -> a));
 
         Runnable applyMoves = invokeBots("makeMoves", makeMovesTimeoutSeconds, (bot, gameState) -> {
-            List<Move> moves = bot.makeMoves(gameState);
-            return () -> {
+            List<Move> moves = bot.makeMoves(gameState); // Run in parallel
+            return () -> { // Reject and apply moves as part of synchronous post-processing, run <BELOW>
                 List<Rejection> rejectedMoves = getRejectedMoves(bot, moves, uuidPlayerMap);
                 if (!rejectedMoves.isEmpty()) {
                     disqualifyBot(bot, rejectedMoves);
@@ -306,7 +329,7 @@ public class GameEngine {
         collectables.reset();
         spawnPoints.reset();
 
-        applyMoves.run();
+        applyMoves.run(); // <BELOW>
 
         collideOutOfBoundsTiles();
         collideOwnPlayers();
