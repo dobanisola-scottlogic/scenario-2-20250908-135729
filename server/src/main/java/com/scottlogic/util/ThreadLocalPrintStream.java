@@ -40,8 +40,9 @@ public final class ThreadLocalPrintStream extends PrintStream {
         }
         if(delegate==defaultDelegate) {
             this.delegate.remove();
+        } else {
+            this.delegate.set(delegate);
         }
-        this.delegate.set(delegate);
     }
 
     public void resetThreadLocalDelegate() {
