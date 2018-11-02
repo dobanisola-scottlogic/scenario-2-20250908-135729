@@ -25,6 +25,8 @@ public class PhaseResult {
     private Set<UUID> removedSpawnPoints;
     @JsonView(Views.Details.class)
     private Set<UUID> removedCollectables;
+    @JsonView(Views.Details.class)
+    private Set<DisqualifiedBot> disqualifiedBots;
 
     public PhaseResult() {
     }
@@ -35,7 +37,7 @@ public class PhaseResult {
                        final Set<Collectable> addedCollectables,
                        final Set<UUID> removedPlayers,
                        final Set<UUID> removedSpawnPoints,
-                       final Set<UUID> removedCollectables) {
+                       final Set<UUID> removedCollectables, final Set<DisqualifiedBot> disqualifiedBots) {
         this.id = UUID.randomUUID();
         this.phase = phase;
         this.playerPositions = new HashSet<>(playerPositions);
@@ -44,6 +46,7 @@ public class PhaseResult {
         this.removedPlayers = new HashSet<>(removedPlayers);
         this.removedSpawnPoints = new HashSet<>(removedSpawnPoints);
         this.removedCollectables = new HashSet<>(removedCollectables);
+        this.disqualifiedBots = new HashSet<>(disqualifiedBots);
     }
 
     public static PhaseResult create(final com.scottlogic.hackathon.game.PhaseResult phaseResult) {
@@ -77,8 +80,11 @@ public class PhaseResult {
                         .getRemoved()
                         .stream()
                         .map(com.scottlogic.hackathon.game.Collectable::getId)
+                        .collect(Collectors.toSet()),
+                phaseResult.getDisqualifiedBots()
+                        .stream()
+                        .map(db -> new DisqualifiedBot(db.getBot().getId(), db.getRejections().get(0).getMessage()))
                         .collect(Collectors.toSet())
-
         );
     }
 
@@ -110,5 +116,6 @@ public class PhaseResult {
         return Collections.unmodifiableSet(removedCollectables);
     }
 
+    public Set<DisqualifiedBot> getDisqualifiedBots() { return Collections.unmodifiableSet(disqualifiedBots); }
 
 }

@@ -12,6 +12,9 @@ public class DisqualifiedBotImpl implements DisqualifiedBot {
     private final List<Rejection> rejections;
 
     public DisqualifiedBotImpl(final Bot bot, final List<Rejection> rejections) {
+        if(rejections.isEmpty()) {
+            throw new IllegalArgumentException("Bot cannot be disqualified without a reason.");
+        }
         this.bot = bot;
         this.rejections = rejections;
     }
