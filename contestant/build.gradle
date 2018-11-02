@@ -42,6 +42,51 @@ run {
     standardInput = System.in
 }
 
+tasks.withType(Wrapper) {
+    doLast {
+        boolean found = false
+        batchScript.text = batchScript.readLines().collect {
+            if(!found && it.startsWith('set APP_HOME')) {
+                found = true
+                return it + '\r\n' +
+                        '\r\n' +
+                        'FOR /F "tokens=1* delims==" %%A IN (%APP_HOME%\\gradle.properties) DO (\r\n' +
+                        '    IF "%%A"=="org.gradle.java.home" set JAVA_HOME=%%B\r\n' +
+                        ')\r\n' +
+                        '\r\n' +
+                        'echo JAVA_HOME: %JAVA_HOME%\r\n'
+            } else return it
+        }.join('\r\n')
+        if(!found) {
+            throw new IllegalStateException("Insertion point in ${batchScript.name} not found.")
+        }
+
+        found = false
+        scriptFile.text = scriptFile.readLines().collect {
+            if(!found && it.contains('CLASSPATH=')) {
+                found = true
+                return it + '\n' +
+                        '\n' +
+                        'while IFS="=" read -r k v; do\n' +
+                        '    if [ "$k" = "org.gradle.java.home" ]; then\n' +
+                        '        JAVA_HOME="$v"\n' +
+                        '        UNAME=`uname`\n' +
+                        '        if [ "$cygwin" = "true" -o "$msys" = "true" -o "${UNAME#MSYS}" != "$UNAME" ]; then\n' +
+                        '            JAVA_HOME=`cygpath "$JAVA_HOME"`\n' +
+                        '        fi\n' +
+                        '    fi\n' +
+                        'done < "$APP_HOME/gradle.properties"\n' +
+                        '\n' +
+                        'echo "JAVA_HOME: $JAVA_HOME\n"'
+            } else return it
+        }.join('\n')
+        if(!found) {
+            throw new IllegalStateException("Insertion point in ${scriptFile.name} not found.")
+        }
+
+    }
+}
+
 // BEGIN SKIP
 ext {
     contestantRepoDir = file("$buildDir/contestantRepo")
