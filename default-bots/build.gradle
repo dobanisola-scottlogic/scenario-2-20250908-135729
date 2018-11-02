@@ -45,7 +45,6 @@ tasks.withType(proguard.gradle.ProGuardTask) {
 task obfuscate(dependsOn: configurations.obfuscated, type: Jar) {
     classifier = 'obfuscated'
     inputs.files(extractDefaultBot, extractMilestoneBots)
-    println("Input files")
     from {zipTree(extractDefaultBot.outputs.files.singleFile)}
     from {zipTree(extractMilestoneBots.outputs.files.singleFile)}
 }

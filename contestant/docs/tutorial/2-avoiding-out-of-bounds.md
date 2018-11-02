@@ -80,10 +80,11 @@ the movement logic for a player:
 
 ```
 private Move doMove(final GameState gameState, final List<Position> nextPositions, final Player player) {
+    List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
     Direction direction;
     do {
-        direction = Direction.random();
-    } while (!canMove(gameState, nextPositions, player, direction));
+        direction = directions.remove(ThreadLocalRandom.current().nextInt(directions.size()));
+    } while (!directions.isEmpty() && !canMove(gameState, nextPositions, player, direction));
     return new MoveImpl(player.getId(), direction);
 }
 ```
@@ -111,9 +112,9 @@ be to start picking up the collectables and spawning more players.
 
 ## Extra Credit
 ### Random Directions
-Looking at the `doMove` method can you spot the deliberate flaw?  For instance, it might be possible, now that you have
-more players in the game, that there isn't an empty space available for a player to move to.  Can you think how else
-the random selection code might 'fail'?
+Looking at the `doMove` method can you spot the flaw?  For instance, it might be possible, now that you have
+more players in the game, that there isn't an empty space available for a player to move to. What will happen in this
+situation, and how might you correct it?
 
 ### Other Players
 It's possible, now that your players are moving further from the spawn point and living longer, that you'll come across

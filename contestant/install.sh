@@ -1,40 +1,46 @@
 #!/usr/bin/env bash
 
-
-
-while getopts r: option
-do
-case "${option}"
-in
-r) REPO=${OPTARG};;
-esac
+while getopts r: option; do
+    case "${option}" in
+        r) REPO=${OPTARG};;
+    esac
 done
+shift $((OPTIND-1))
 
-WRAPPER_PROPS_IN='install/gradle-wrapper.properties.template'
-WRAPPER_PROPS_OUT='gradle/wrapper/gradle-wrapper.properties'
+PROJECT_DIR="$(dirname "$(readlink -f "$0")")"
+SCRIPTS_DIR="$PROJECT_DIR/install"
+TOOLS_DIR="$PROJECT_DIR/tools"
 
-GRADLE_PROPS_IN='install/gradle.properties.template'
-GRADLE_PROPS_OUT='gradle.properties'
+source "$SCRIPTS_DIR/PROPERTIES" || exit $?
 
-function configure_default_access(){
-  GRADLE_DIST_URL='https://services.gradle.org/distributions'
-  sed -e 's|${gradle_distributions_url}|'"${GRADLE_DIST_URL}"'|'  ${WRAPPER_PROPS_IN}>${WRAPPER_PROPS_OUT}
-  echo "Gradle will be installed from ${GRADLE_DIST_URL} and Maven will use maven central"
-  if [ -e "gradle.properties" ]; then grep "mavenProxyUrl" ${GRADLE_PROPS_OUT} > ${GRADLE_PROPS_OUT}; fi;
+#
+# Install JDK
+#
 
-}
+JDK_DIR="$TOOLS_DIR/jdk"
 
-function configure_proxy_access(){
-  GRADLE_DIST_URL="${REPO}/gradle-distributions"
-  sed -e 's|${gradle_distributions_url}|'"${GRADLE_DIST_URL}"'|'  ${WRAPPER_PROPS_IN}>${WRAPPER_PROPS_OUT}
-  MAVEN_URL="${REPO}/maven-public/"
-  sed -e 's|${maven_url}|'"${MAVEN_URL}"'|'  ${GRADLE_PROPS_IN}>${GRADLE_PROPS_OUT}
-  echo "Gradle will be installed from ${GRADLE_DIST_URL} and Maven will be proxied to ${MAVEN_URL}"
-}
+#TODO Check for existing Java
+"$SCRIPTS_DIR/install-jdk.sh" -v ${javaVersion:-8} ${REPO:+-p $REPO/openjdk} "$JDK_DIR" || exit $?
+num_jdks=$(ls "$JDK_DIR" | wc -w)
+if [ $num_jdks -lt 1 ]; then
+    echo "Error with JDK installation: no JDK directory detected" >&2
+    exit 1
+elif [ $num_jdks -gt 1 ]; then
+    echo "Error with JDK installation: more then 1 JDK directory detected: $(ls "$JDK_DIR")" >&2
+    exit 1
+fi
 
-if [ -z ${REPO+x} ]; then configure_default_access; else configure_proxy_access; fi
+export JAVA_HOME=`echo $JDK_DIR/*`
 
-echo "REPO: ${REPO}"
+#
+# Modify properties files
+#
 
+echo "" >> "$PROJECT_DIR/gradle.properties" || exit $?
+echo "org.gradle.java.home=$JAVA_HOME" >> "$PROJECT_DIR/gradle.properties" || exit $?
 
-
+if [ -n "$REPO" ]; then
+    sed -i -r -e 's|https?\\?\://services\.gradle\.org/distributions|'"$REPO/gradle-distributions|" \
+        "$PROJECT_DIR/gradle/wrapper/gradle-wrapper.properties" || exit $?
+    echo "mavenProxyUrl=$REPO/maven-public" >> "$PROJECT_DIR/gradle.properties"
+fi

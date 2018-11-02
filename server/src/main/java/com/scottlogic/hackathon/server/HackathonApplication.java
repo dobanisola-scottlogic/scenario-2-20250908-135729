@@ -22,6 +22,8 @@ import com.scottlogic.hackathon.server.resources.MilestoneResource;
 import com.scottlogic.hackathon.server.resources.TeamResource;
 import com.scottlogic.hackathon.server.services.AdminService;
 import com.scottlogic.hackathon.server.services.TeamService;
+import com.scottlogic.util.NoOpPrintStream;
+import com.scottlogic.util.ThreadLocalPrintStream;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -39,6 +41,8 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import java.util.EnumSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public class HackathonApplication extends Application<HackathonConfiguration> {
     public static void main(final String[] args) throws Exception {
@@ -75,7 +79,11 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
 
     @Override
     public void run(final HackathonConfiguration configuration, final Environment environment) {
-        final Injector injector = Guice.createInjector(new HackathonModule(configuration, environment, hibernateBundle));
+        ThreadLocalPrintStream sysOut = new ThreadLocalPrintStream(System.out);
+        System.setOut(sysOut);
+
+        final Injector injector = Guice.createInjector(
+                new HackathonModule(configuration, environment, hibernateBundle, new BotThreadFactory(sysOut)));
 
         hibernateBundle.getSessionFactory().openSession().createQuery("from GameResult").list();
 

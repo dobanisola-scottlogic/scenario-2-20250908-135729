@@ -30,23 +30,29 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,7 +62,8 @@ import java.util.stream.Stream;
 public class GameEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
 
-    private final TimedConsumer<Bot> timedConsumer;
+    private final Executor executor;
+    private final Runnable onShutdown;
     private final Set<Bot> bots;
     private final Arena map;
     private final int maxPhases;
@@ -75,11 +82,20 @@ public class GameEngine {
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase;
 
-    public static GameEngine create(String mapName, Set<Bot> bots) throws IllegalArgumentException {
-        return create(mapName, bots, false);
+    public static GameEngine createDebug(final String mapName, final Set<Bot> bots) {
+        return createInternal(mapName, bots, null);
     }
 
-    public static GameEngine create(final String mapName, final Set<Bot> bots, boolean debug) throws IllegalArgumentException {
+    public static GameEngine create(final String mapName, final Set<Bot> bots) {
+        return createInternal(mapName, bots, Executors.defaultThreadFactory());
+    }
+
+    public static GameEngine create(final String mapName, final Set<Bot> bots, ThreadFactory botThreadFactory) {
+        return createInternal(mapName, bots, Objects.requireNonNull(botThreadFactory));
+    }
+
+    private static GameEngine createInternal(final String mapName, final Set<Bot> bots, ThreadFactory botThreadFactory)
+            throws IllegalArgumentException {
         if (bots.size() < 2) {
             throw new IllegalArgumentException("must have at least 2 bots");
         }
@@ -95,14 +111,12 @@ public class GameEngine {
             throw new IllegalArgumentException("must have a spawn point for each bot");
         }
 
-        final TimedConsumer<Bot> timedConsumer;
-        if (debug) {
-            timedConsumer = new TimedConsumer<>(Runnable::run, () -> {});
+        if (botThreadFactory==null) {
+            return new GameEngine(map, bots, Runnable::run, () -> {});
         } else {
-            final ExecutorService executorService = Executors.newFixedThreadPool(bots.size());
-            timedConsumer = new TimedConsumer<>(executorService, executorService::shutdown);
+            final ExecutorService executorService = Executors.newFixedThreadPool(bots.size(), botThreadFactory);
+            return new GameEngine(map, bots, executorService, executorService::shutdown);
         }
-        return new GameEngine(map, bots, timedConsumer);
     }
 
     private static Properties loadProperties() {
@@ -137,10 +151,11 @@ public class GameEngine {
         return value != null ? value : defaultValue;
     }
 
-    private GameEngine(final Arena map, final Set<Bot> bots, final TimedConsumer<Bot> timedConsumer) {
+    private GameEngine(final Arena map, final Set<Bot> bots, final Executor executor, final Runnable onShutdown) {
         this.map = map;
         this.bots = bots;
-        this.timedConsumer = timedConsumer;
+        this.executor = executor;
+        this.onShutdown = onShutdown;
 
         Properties props = loadProperties();
 
@@ -178,7 +193,7 @@ public class GameEngine {
      * @param phaseCallback A callback to be invoked after each phase completes
      * @return The result of running the game simulation
      */
-    public GameResult play(BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback) throws Exception {
+    public GameResult play(BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback) throws InterruptedException {
         players = new TrackedSetImpl<>();
         collectables = new TrackedSetImpl<>();
         spawnPoints = new TrackedSetImpl<>();
@@ -213,28 +228,68 @@ public class GameEngine {
     }
 
     public void dispose() {
-        timedConsumer.dispose();
+        onShutdown.run();
     }
 
-    private void initialiseBots() throws InterruptedException, ExecutionException {
-        final Map<Bot, GameState> botToGameStateMap = new ConcurrentHashMap<>(bots.size());
-        for (final Bot bot : bots) {
-            botToGameStateMap.put(bot, createGameState(bot));
+    private void initialiseBots() throws InterruptedException {
+        invokeBots("initialise", initialiseTimeoutSeconds, (bot, gameState) -> {
+            bot.initialise(gameState); // Run in parallel
+            return () -> {};           // No post-processing required
+        })
+        .run();
+    }
+
+    /**
+     * Invokes an action on all bots still in the game in parallel.
+     * This method blocks until the action has been completed for all bots, or the time limit has been reached.
+     * <p>
+     * The actions is supplied in the form of a {@linkplain BiFunction} that takes a {@linkplain Bot} and associated
+     * {@linkplain GameState}, and produces a {@linkplain Runnable}. The BiFunction will run asynchronously as part of
+     * the parallel execution, but the resulting runnable will <em>not</em>. Instead, the Runnables resulting from
+     * invoking the action on each bot are bundled together and encapsulated in the Runnable returned by this method.
+     * <p>
+     * The provided action should be careful not to change the state of this class, as it is not thread safe.
+     * Instead, any state changes that should be made in response to the bots' actions should occur in the Runnable
+     * that the action produces, which can be run synchronously after this method returns.
+     * <p>
+     * The Runnable that this method returns <em>must</em> be run, even if the Runnables produced by the bot action
+     * are no-ops. This is because the returned Runnable will also action the disqualification of any bots whose
+     * actions threw exceptions or exceeded the specified time limit.
+     *
+     * @param actionName A human-readable name for the action being invoked. Used for error reporting
+     * @param timeout The number of seconds the action should be given to run for each bot
+     * @param action The action to take on each bot
+     * @return A {@linkplain Runnable} that will perform any post-processing required of the actions, as described above
+     * @throws InterruptedException If the current thread is interrupted while waiting for the actions to complete
+     */
+    private Runnable invokeBots(String actionName, int timeout, BiFunction<Bot, GameState, Runnable> action)
+            throws InterruptedException {
+        Map<Bot, CompletableFuture<Runnable>> actions = getQualifyingBots().stream()
+                .collect(Collectors.toMap(Function.identity(), bot -> {
+                    GameState gs = createGameState(bot);
+                    return CompletableFuture.supplyAsync(() -> action.apply(bot, gs), executor)
+                            .exceptionally(ex -> () -> disqualifyBot(bot, Arrays.asList(new BotExceptionRejection(ex))));
+                }));
+
+        try {
+            CompletableFuture.allOf(actions.values().toArray(new CompletableFuture[actions.size()]))
+                    .get(timeout, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("Impossible exception thrown.", e.getCause());
+        } catch (TimeoutException e) {
+            actions.forEach((bot, f) -> {
+                // The below commands are both no-ops if the future is already complete
+                f.complete(() -> disqualifyBot(bot, Arrays.asList(new SimpleRejection(actionName + " took too long"))));
+                f.cancel(true); //TODO kill thread properly (see GH issue 64)
+            });
         }
 
-        final Set<TimedConsumer.Result<Bot>> consumeResults = timedConsumer.consume(bot ->
-                bot.initialise(botToGameStateMap.get(bot)),
-                bots,
-                initialiseTimeoutSeconds,
-                TimeUnit.SECONDS
-        );
+        assert actions.values().stream().allMatch(CompletableFuture::isDone);
 
-        consumeResults.stream()
-                .filter(consumeResult -> !consumeResult.isCompleted())
-                .forEach(consumeResult -> disqualifyBot(
-                        consumeResult.getItem(),
-                        Collections.singletonList(new SimpleRejection("initialise took too long"))
-                ));
+        return actions.values().stream()
+                .map(CompletableFuture::join)
+                .reduce((r1, r2) -> () -> {r1.run(); r2.run();})
+                .orElse(() -> {});
     }
 
     private void disqualifyBot(final Bot bot, final List<Rejection> rejectedMoves) {
@@ -254,28 +309,28 @@ public class GameEngine {
         }
     }
 
-    private PhaseResult playPhase() throws Exception {
-        final Set<Bot> bots = getQualifyingBots();
+    private PhaseResult playPhase() throws InterruptedException {
 
-        final Map<Bot, GameState> botToGameStateMap = new ConcurrentHashMap<>(bots.size());
-        for (final Bot bot : bots) {
-            botToGameStateMap.put(bot, createGameState(bot));
-        }
         final Map<UUID, PlayerImpl> uuidPlayerMap = players.stream()
                 .collect(Collectors.toMap(Player::getId, Function.identity(), (a,b) -> a));
+
+        Runnable applyMovesToAllBots = invokeBots("makeMoves", makeMovesTimeoutSeconds, (bot, gameState) -> {
+            List<Move> moves = bot.makeMoves(gameState); // Run in parallel
+            return () -> { // Reject and apply moves as part of synchronous post-processing, run <BELOW>
+                List<Rejection> rejectedMoves = getRejectedMoves(bot, moves, uuidPlayerMap);
+                if (!rejectedMoves.isEmpty()) {
+                    disqualifyBot(bot, rejectedMoves);
+                } else {
+                    applyMoves(moves, uuidPlayerMap);
+                }
+            };
+        });
 
         players.reset();
         collectables.reset();
         spawnPoints.reset();
 
-        final Map<Bot, List<Move>> botMoves = new ConcurrentHashMap<>(bots.size());
-        final Set<TimedConsumer.Result<Bot>> consumeResults = timedConsumer.consume(bot -> {
-            final GameState gameState = botToGameStateMap.get(bot);
-            final List<Move> moves = bot.makeMoves(gameState);
-            botMoves.put(bot, moves);
-        }, bots, makeMovesTimeoutSeconds, TimeUnit.SECONDS);
-
-        processBotMoveResults(consumeResults, botMoves, uuidPlayerMap);
+        applyMovesToAllBots.run(); // <BELOW>
 
         collideOutOfBoundsTiles();
         collideOwnPlayers();
@@ -295,32 +350,6 @@ public class GameEngine {
         LOGGER.info("Phase Number: " + phase);
 
         return phaseResult;
-    }
-
-    private void processBotMoveResults(
-            final Set<TimedConsumer.Result<Bot>> consumeResults,
-            final Map<Bot, List<Move>> botMoves,
-            final Map<UUID, PlayerImpl> uuidPlayerMap
-    ) {
-        consumeResults.forEach(consumeResult -> {
-            final Bot bot = consumeResult.getItem();
-            final Exception exception = consumeResult.getException();
-            if (exception != null) {
-                LOGGER.info("Bot threw exception.", exception);
-                disqualifyBot(bot, Collections.singletonList(new BotExceptionRejection(exception)));
-            } else if (!consumeResult.isCompleted()) {
-                disqualifyBot(bot, Collections.singletonList(new SimpleRejection("makeMoves took too long")));
-            } else {
-                final List<Move> moves = botMoves.get(bot);
-                final List<Rejection> rejectedMoves = getRejectedMoves(bot, moves, uuidPlayerMap);
-
-                if (rejectedMoves.size() > 0) {
-                    disqualifyBot(bot, rejectedMoves);
-                } else {
-                    applyMoves(moves, uuidPlayerMap);
-                }
-            }
-        });
     }
 
     private PhaseResult createPhaseResult() {

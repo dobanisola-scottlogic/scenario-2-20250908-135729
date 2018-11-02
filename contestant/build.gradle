@@ -1,3 +1,5 @@
+import org.apache.tools.ant.DirectoryScanner
+
 plugins {
     id "java"
     id "application"
@@ -32,9 +34,8 @@ dependencies {
     compile project(':client')
 }
 // END SKIP
-// DEPENDENCIES
+// DEPENDENCIES (do not remove this line)
 
-sourceCompatibility = 1.9
 mainClassName = project.hasProperty('mainClass') ? project.mainClass : 'com.contestantbots.team.ExampleBot'
 
 run {
@@ -44,6 +45,7 @@ run {
 // BEGIN SKIP
 ext {
     contestantRepoDir = file("$buildDir/contestantRepo")
+    contestantRepoCheckDir = file("$buildDir/contestantRepoCheck")
     contestantRepoBuildDir = file("$buildDir/contestantRepoBuild")
     contestantRepoGradleCache = file("$buildDir/contestantRepoGradleCache")
 }
@@ -64,15 +66,55 @@ artifacts {
     }
 }
 
+task('installTestContestantRepo', type: Exec) {
+    group = 'Verification'
+    description = "Copies the contestant repo to a new location for testing, and runs the install script on it"
+
+    inputs.files assembleContestantRepo
+    outputs.dirs project.contestantRepoCheckDir
+    workingDir = project.contestantRepoCheckDir
+
+    doFirst {
+        project.delete workingDir
+        DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) }
+        project.copy {
+            from(assembleContestantRepo)
+            into(workingDir)
+        }
+        DirectoryScanner.resetDefaultExcludes()
+        println """
+=======================================================================
+Begin contestant repo install: ${commandLine.join(' ')}
+=======================================================================
+"""
+    }
+
+    if(System.getProperty('os.name').toLowerCase().contains('win')) {
+        executable 'cmd'
+        args '/c', 'install.bat'
+    } else {
+        executable 'sh'
+        args '-c', 'install.sh'
+    }
+
+    doLast {
+        println """
+=======================================================================
+End contestant repo install
+=======================================================================
+"""
+    }
+}
+
 task('checkContestantRepo', type: Exec) {
     group = 'Verification'
     description = "Runs 'gradlew check' on the assembled contestant repo to verify its integrity"
     shouldRunAfter check.dependsOn
 
-    inputs.files assembleContestantRepo
+    inputs.files installTestContestantRepo
     outputs.dirs project.contestantRepoBuildDir, project.contestantRepoGradleCache
 
-    workingDir = assembleContestantRepo.destinationDir
+    workingDir = installTestContestantRepo.workingDir
     if(System.getProperty('os.name').toLowerCase().contains('win')) {
         executable 'cmd'
         args '/c', 'gradlew.bat'
