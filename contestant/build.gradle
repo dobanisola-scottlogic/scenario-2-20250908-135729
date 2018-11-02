@@ -50,7 +50,7 @@ tasks.withType(Wrapper) {
                 found = true
                 return it + '\r\n' +
                         '\r\n' +
-                        'FOR /F "tokens=1* delims==" %%A IN (%APP_HOME%\\gradle.properties) DO (\r\n' +
+                        'FOR /F "tokens=1* delims== usebackq" %%A IN ("%APP_HOME%\\gradle.properties") DO (\r\n' +
                         '    IF "%%A"=="org.gradle.java.home" set JAVA_HOME=%%B\r\n' +
                         ')\r\n' +
                         '\r\n' +
@@ -77,7 +77,7 @@ tasks.withType(Wrapper) {
                         '    fi\n' +
                         'done < "$APP_HOME/gradle.properties"\n' +
                         '\n' +
-                        'echo "JAVA_HOME: $JAVA_HOME\n"'
+                        'echo "JAVA_HOME: $JAVA_HOME"\n'
             } else return it
         }.join('\n')
         if(!found) {
