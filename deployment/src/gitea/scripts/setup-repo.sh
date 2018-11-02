@@ -13,5 +13,5 @@ curl -vsfS "$GITEA_URL/api/v1/user/repos" -H "Content-Type: application/json" -d
 }
 EOF
 
-git remote add origin "$GITEA_URL/$GITEA_ADMIN_USER/$REPO_NAME" || exit $?
-git push -v -u origin master || exit $?
+git remote add gitea "$GITEA_URL/$GITEA_ADMIN_USER/$REPO_NAME" || exit $?
+git push -v -u gitea master || exit $?

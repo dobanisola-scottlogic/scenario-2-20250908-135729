@@ -35,4 +35,4 @@ JAVA_OPTS="$JAVA_OPTS -Ddw.database.driverClass=$DB_DRIVER -Ddw.database.propert
 export JAVA_OPTS
 
 set -x
-java ${JAVA_OPTS} -jar /jars/server*.jar server /conf/server.yml
+java ${JAVA_OPTS} -cp 'libs/*' $MAIN server conf/server.yml

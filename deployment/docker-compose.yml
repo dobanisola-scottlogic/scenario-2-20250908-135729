@@ -68,9 +68,7 @@ services:
       - database:/var/lib/postgresql/data
 
   server:
-    build:
-      context: build/docker/server
-      dockerfile: docker/DOCKERFILE
+    image: hackathon-server
     depends_on:
       - database
     ports:

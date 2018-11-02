@@ -6,14 +6,12 @@ import org.apache.tools.ant.DirectoryScanner
 
 sourceSets {
     nexus
-    server
     gitea
 }
 
 ext {
     nexusVersion = '3.13.0-01'
     nexusDistDir = file("$buildDir/docker/nexus")
-    serverDistDir = file("$buildDir/docker/server")
     giteaDistDir = file("$buildDir/docker/gitea")
 }
 
@@ -31,8 +29,6 @@ dependencies {
     nexusCompileOnly "org.sonatype.nexus.plugins:nexus-blobstore-tasks:${nexusVersion}"
     nexusCompileOnly "org.sonatype.nexus.plugins:nexus-repository-maven:${nexusVersion}"
     nexusCompileOnly "org.sonatype.nexus.plugins:nexus-script-plugin:${nexusVersion}"
-
-    serverRuntime project(path: ':server', configuration: 'shadow')
     
     giteaRuntime project(path: ':contestant', configuration: 'repo')
 }
@@ -58,20 +54,8 @@ task ('gatherGitea', type: Sync) {
     doLast { DirectoryScanner.resetDefaultExcludes() }
 }
 
-task ('gatherServer', type: Sync) {
-    destinationDir = serverDistDir
-    from(configurations.serverRuntime) {
-        into 'jars'
-    }
-    from(rootDir) {
-        into 'conf'
-        include 'server.yml'
-    }
-    from(file("src/server"))
-}
-
 task up(type: Exec) {
-    dependsOn gatherNexus, gatherServer, gatherGitea
+    dependsOn gatherNexus, ':server:dockerBuild', gatherGitea
     workingDir = projectDir
     commandLine 'docker-compose', 'up', '-d', '--build'
 }

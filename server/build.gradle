@@ -4,6 +4,11 @@ version "1.0-SNAPSHOT"
 def mainClass = "com.scottlogic.hackathon.server.HackathonApplication"
 def dropWizardVersion = "1.3.7"
 
+ext {
+    dockerImageName = 'hackathon-server'
+    httpPort = '8080'
+}
+
 apply plugin: "application"
 
 mainClassName = mainClass
@@ -57,4 +62,56 @@ run {
     main mainClass
     args "server"
     args "..\\server.yml"
+}
+
+task('dockerBuildEnv', type: Sync) {
+
+    into("$buildDir/docker")
+    from('src/main/docker') {
+        filter(org.apache.tools.ant.filters.FixCrLfFilter,
+                eol: org.apache.tools.ant.filters.FixCrLfFilter.CrLf.newInstance('lf'))
+        
+        from('../server.yml') {
+            into 'hackathon/conf'
+        }
+    }
+
+    into('hackathon/libs') {
+        from configurations[sourceSets.main.runtimeClasspathConfigurationName]
+        from tasks[sourceSets.main.jarTaskName]
+    }
+}
+
+task('dockerBuild', type: Exec) {
+    inputs.properties(
+            MAINTAINER: 'Scott Logic',
+            PORT: project.httpPort,
+            MAIN: mainClass
+    )
+
+    inputs.files(dockerBuildEnv)
+
+    workingDir = dockerBuildEnv.destinationDir
+    executable = 'docker'
+    args 'build', '-t', project.dockerImageName, '.'
+
+    doFirst {
+        inputs.properties.each { k,v ->
+            args '--build-arg', "${k}=${v}"
+        }
+    }
+
+}
+
+task('dockerRun', type: Exec) {
+    dependsOn dockerBuild
+    executable = 'docker'
+    args 'run', '--rm', '-d',
+            '-p', "${project.httpPort}:${project.httpPort}",
+            '--name', project.dockerImageName,
+            project.dockerImageName
+
+    doLast {
+        println "Docker container is now running. You can stop it with 'docker stop ${project.dockerImageName}'"
+    }
 }
