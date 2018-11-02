@@ -69,10 +69,10 @@ tasks.withType(Wrapper) {
                         '\n' +
                         'while IFS="=" read -r k v; do\n' +
                         '    if [ "$k" = "org.gradle.java.home" ]; then\n' +
-                        '        JAVA_HOME="$v"\n' +
+                        '        export JAVA_HOME="$v"\n' +
                         '        UNAME=`uname`\n' +
                         '        if [ "$cygwin" = "true" -o "$msys" = "true" -o "${UNAME#MSYS}" != "$UNAME" ]; then\n' +
-                        '            JAVA_HOME=`cygpath "$JAVA_HOME"`\n' +
+                        '            export JAVA_HOME=`cygpath "$JAVA_HOME"`\n' +
                         '        fi\n' +
                         '    fi\n' +
                         'done < "$APP_HOME/gradle.properties"\n' +
