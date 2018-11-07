@@ -1,24 +1,23 @@
+plugins {
+    id 'application'
+}
+
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
-
-def mainClass = "com.scottlogic.hackathon.client.Client"
-
-apply plugin: "application"
-
-mainClassName = mainClass
+mainClassName = "com.scottlogic.hackathon.client.Client"
 
 dependencies {
-    compile project(":game")
-    compile project(":game-engine")
-    compile group: "commons-cli", name: "commons-cli", version: "1.4"
-    compile group: "org.fusesource.jansi", name: "jansi", version: "1.11"
-    compile group: "org.slf4j", name: "slf4j-simple", version: rootProject.slf4jVersion
+    implementation project(":game")
+    implementation project(":game-engine")
+    implementation group: "commons-cli", name: "commons-cli", version: "1.4"
+    implementation group: "org.fusesource.jansi", name: "jansi", version: "1.11"
+    implementation group: "org.slf4j", name: "slf4j-simple", version: project.slf4jVersion
 
     // Keep unofuscated bot classes on this project's classpath for help with IDE etc, but...
     compileOnly project(':default-bots')
 
     // ... use the obfuscated classes at runtime. This is also what will be packed up by shadowJar
-    runtime project(path: ':default-bots', configuration: 'obfuscated')
+    runtimeOnly project(path: ':default-bots', configuration: 'obfuscated')
 }
 
 jar {
@@ -26,22 +25,10 @@ jar {
         attributes(
                 "Implementation-Title": "hackathon-client",
                 "Implementation-Version": version,
-                "Main-Class": mainClass)
+                "Main-Class": mainClassName)
     }
 }
 
 run {
-    main mainClass
     args "com.scottlogic.hackathon.bots.DefaultBot"
-}
-
-runShadow {
-    args "com.scottlogic.hackathon.bots.DefaultBot"
-}
-
-shadowJar {
-    exclude "com/scottlogic/hackathon/bots/BasicAgent.class"
-    exclude "com/scottlogic/hackathon/bots/FastExpansionBot.class"
-    exclude "com/scottlogic/hackathon/bots/Node.class"
-    exclude "com/scottlogic/hackathon/bots/NodeType.class"
 }
