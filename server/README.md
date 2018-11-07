@@ -20,12 +20,12 @@ To run the server locally, for testing during development:
 ```
 You should now be able to access the server by navigating to <http://localhost:8080/application>.
 
-The `databse` property is optional, and specifies the path of an H2 database file for the server to use as its DB.
+The `database` property is optional, and specifies the path of an H2 database file for the server to use as its DB.
 If this property is omitted, an in-memory database will be used.
 
 ### Building a redistributable application
 
-You can use `./gradlew server:installDist` to asseemble an "installation folder",
+You can use `./gradlew server:installDist` to assemble an "installation folder",
 including start scripts for Windows and Unix in the `build/install/hackathon-server` subdirectory.
 At present, some command-line arguments are mandatory when running from here:
 
@@ -34,7 +34,7 @@ cd build/install/hackathon-server
 bin/hackathon-server server conf/server.yml
 ```
 
-The application can automatically bbe packed into a zip or tar archive using `./gradlew server:disZip` or
+The application can automatically be packed into a zip or tar archive using `./gradlew server:disZip` or
 `./gradlew server:distTar`.
 
 ### Building a Docker image
