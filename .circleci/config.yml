@@ -45,7 +45,8 @@ jobs:
       GRADLE_OPTS: -Dorg.gradle.daemon=false
 
     steps:
-    - checkout
+    - checkout:
+        post: .circleci/merge-pr.sh
     - restore_caches
 
     - run:
