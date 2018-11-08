@@ -42,7 +42,7 @@ jobs:
 
     environment:
       TERM: dumb
-      GRADLE_OPTS: org.gradle.daemon=false
+      GRADLE_OPTS: -Dorg.gradle.daemon=false
 
     steps:
     - checkout
@@ -59,4 +59,3 @@ workflows:
   check:
     jobs:
       - check
-      
