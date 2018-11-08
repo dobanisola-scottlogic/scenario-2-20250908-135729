@@ -93,8 +93,7 @@ Begin contestant repo install: ${commandLine.join(' ')}
         executable 'cmd'
         args '/c', 'install.bat'
     } else {
-        executable 'sh'
-        args '-c', 'install.sh'
+        executable './install.sh'
     }
 
     doLast {
