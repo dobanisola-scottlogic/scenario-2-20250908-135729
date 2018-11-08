@@ -2,8 +2,6 @@
 # if we are testing a PR, merge it with the latest master branch before testing
 # this ensures that all tests pass with the latest changes in master.
 
-set -eu -o pipefail
-
 PR_NUMBER=${CI_PULL_REQUEST//*pull\//}
 err=0
 
