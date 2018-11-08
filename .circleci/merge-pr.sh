@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # if we are testing a PR, merge it with the latest master branch before testing
 # this ensures that all tests pass with the latest changes in master.
 
