@@ -93,8 +93,7 @@ Begin contestant repo install: ${commandLine.join(' ')}
         executable 'cmd'
         args '/c', 'install.bat'
     } else {
-        executable 'sh'
-        args '-c', 'install.sh'
+        executable './install.sh'
     }
 
     doLast {
@@ -115,12 +114,14 @@ task('checkContestantRepo', type: Exec) {
     outputs.dirs project.contestantRepoBuildDir, project.contestantRepoGradleCache
 
     workingDir = installTestContestantRepo.workingDir
+    int initialIndex
     if(System.getProperty('os.name').toLowerCase().contains('win')) {
         executable 'cmd'
         args '/c', 'gradlew.bat'
+        initialIndex = 2
     } else {
-        executable 'sh'
-        args '-c', 'gradlew'
+        executable './gradlew'
+        initialIndex = 0
     }
     args 'check'
     args "-PbuildDir=${project.contestantRepoBuildDir}"
@@ -133,7 +134,7 @@ task('checkContestantRepo', type: Exec) {
         println """
 =======================================================================
 Begin contestant repo Gradle build
-${commandLine[0..2].join(' ')} ${commandLine[3..-1].join('\n    ')}
+${commandLine[0..initialIndex].join(' ')} ${commandLine[initialIndex+1..-1].join('\n    ')}
 =======================================================================
 """
     }
