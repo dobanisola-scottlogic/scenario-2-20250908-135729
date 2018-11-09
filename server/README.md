@@ -34,7 +34,7 @@ cd build/install/hackathon-server
 bin/hackathon-server server conf/server.yml
 ```
 
-The application can automatically be packed into a zip or tar archive using `./gradlew server:disZip` or
+The application can automatically be packed into a zip or tar archive using `./gradlew server:distZip` or
 `./gradlew server:distTar`.
 
 ### Building a Docker image
@@ -69,7 +69,7 @@ docker stop $(docker ps -qaf ancestor=hackathon-server)
 
 Alternatively, you can stop and remove all containers running on your machine with the following Bash command:
 ```bash
-docker rm $(docker ps -qa)
+docker rm -f $(docker ps -qa)
 ```
 
 ### Production deployment
