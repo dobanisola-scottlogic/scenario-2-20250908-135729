@@ -1,13 +1,26 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath group: "net.sf.proguard", name: "proguard-gradle", version: "6.0.3"
+    }
+}
+
+plugins {
+    id 'java-library'
+}
+
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
-
 
 configurations {
     obfuscated
 }
 
 dependencies {
-    compile project(":game")
+    api project(":game")
 }
 
 /*
@@ -33,7 +46,7 @@ task extractMilestoneBots(type: proguard.gradle.ProGuardTask) {
 }
 
 tasks.withType(proguard.gradle.ProGuardTask) {
-    libraryjars configurations.runtime
+    libraryjars sourceSets.main.compileClasspath
     if(System.getProperty('java.version').startsWith('1.')) {
         libraryjars("${System.getProperty('java.home')}/lib/rt.jar")
     } else {
@@ -52,6 +65,3 @@ task obfuscate(dependsOn: configurations.obfuscated, type: Jar) {
 artifacts {
     obfuscated obfuscate
 }
-
-
-

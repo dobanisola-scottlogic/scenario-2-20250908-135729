@@ -66,6 +66,17 @@ artifacts {
     }
 }
 
+task('extractRepo', type: Sync) {
+
+    if(project.hasProperty('repoDest')) {
+        destinationDir = rootProject.file(project.repoDest)
+    } else {
+        enabled = false
+    }
+
+    from(configurations.repo.artifacts.files)
+}
+
 task('installTestContestantRepo', type: Exec) {
     group = 'Verification'
     description = "Copies the contestant repo to a new location for testing, and runs the install script on it"

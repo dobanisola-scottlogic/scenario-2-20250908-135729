@@ -1,112 +1,42 @@
-# Code Challenge - Server
+# Hackathon Code Challenge
 
-# Git #
+This is programming challenge where contestants must write code that can play a simple strategy game.
 
-* All code shall be reviewed before merge to develop via pull request
-* Follow branch naming conventions, using JIRA ticket numbers
-* Include a JIRA issue number in every commit message
-* Keep all pull requests specific to one piece of work and make them small and frequent where possible
+## Quick Start
 
-# Code Style #
-
-* Do not use acronyms and abbreviations (except Id)
-* Always use curly braces to enclose if/for/while etc
-* Don't break early, use loop conditions
-* Use single return point where practical
-* Tab size 4, insert spaces
-* Format a file before checking in
-* Class or Type name should match the filename try and limit to one Class or Type per file
-* Code should be self commenting, though classes may be commented with a general description of their responsibilities. If you feel the need to comment in a function then split it down and ensure the function name is descriptive. Include comments where code is not intuitive
-
-## Java ##
-
-* camelCase for fields and methods, PascalCase for Types, CAPITAL_CASE for constants and enum values
-* Use Streams liberally
-
-## JypeScript ##
-
-* Use Pascal Case for Types (class, constructor function), Camel Case for everything else
-* Prefer arrow functions (e.g. =>) over bind
-* Use '===' and '!=='; for length check always use '> 0'
-* Avoid magic strings and numbers, create these as private fields
-* Keep functions small (<25 lines)
-* Avoid locally-defined functions (i.e. function defined within another function)
-* Use ' rather than "
-* Don't use comma separated variable lists, favour separate variable statements
-* Use let in favour of var
-
-## CSS ##
-
-* Use camel case for selectors
-
------------------------
-
-# Developer Setup #
-
-## Heroku ##
-* Install Heroku Toolbelt
-
-## IntelliJ IDEA ##
-
-* Install
-* Import the top level gradle project
-* Use the task wrapper configuration
-* Ensure Code Style is using the project configuration
-
-### Extensions ###
-
-* Install Save Actions and Enabled 'Organise imports', 'Reformat code', 'Rearrange code', 'Add final to local variable' and 'Add final to field'
-
-## See the viewer folder readme for info on viewer development ##
-
------------------------
-
-# Build and Run #
-
-## Server ##
-
-### Build ###
+### 1 - Extract contestant repo
+Run:
+```bash
+./gradlew contestant:extractRepo -P repoDest=<destination_folder_path>
 ```
-gradlew :server:shadowJar
-```
+This will extract a copy of the stub repository given to contestants.
+It contains instructions on how to get started with participating in the challenge.
 
-### Run ###
+### 2 - Run server
+Run:
+```bash
+./gradlew server:run
 ```
-heroku local -f Procfile.windows
-```
+This will start the web server application running on your local machine.
+Point your browser at <http://localhost:8080/application> and login with username 'admin' and password 'secret'.
 
-## Client ##
+## Subprojects
 
-### Build ###
-```
-gradlew :client:shadowJar
-```
+This project is made up of a number of subcomponents:
+  - [client](client) - A command-line client application for simulating games and rendering them as ASCII art.
+    Provided to contestants so they can test and debug their code.
+  - [contestant](contestant) - The skeleton project to be given to contestants,
+    including a stub implementation of the strategy they have to write.
+  - [default-bots](default-bots) - A library containing built in game strategies that contestants can play against
+    on the client or server.
+  - [deployment](deployment) - Scripts and configs for automating various modes of production deployment
+    (self-hosted server, cloud, etc.).
+  - [game](game) - A library containing the API of the game itself, including the interfaces available to contestants
+    _and_ the game state model given to the client and server for rendering.
+  - [game-engine](game-engine) - A library implementing the game API.
+  - [server](server) - The web server application and REST back-end.
+  - [viewer](viewer) - The front-end web application.
 
-### Run ###
-```
-java -jar client\build\libs\client-1.0-SNAPSHOT-all.jar
-```
+## Development
 
-## Contestant Dependencies ##
-The contestant project has the following dependencies:
-- compile:
-  - `game`
-- runtime:
-  - `client`
-
-The `game` project dependency is satisfied by the standard jar configuration.  However, the `client` project dependency
-has to be managed using a custom shadowJar configuration to exclude some of the more advanced bot algorithms.
-
-### Build ###
-From a command prompt in the root directory of the project:
-```
-gradlew :client:shadowJar
-gradlew :game:build
-```
-
-### Install ###
-Copy the following jar files to the `libs` folder in the contestant project.
-```
-client\build\libs\client-1.0-SNAPSHOT-all.jar
-game\build\libs\game-1.0-SNAPSHOT.jar
-```
+Run `./gradlew check` before committing, and check it passes. It will make people love you!

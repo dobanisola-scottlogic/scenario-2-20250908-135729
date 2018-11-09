@@ -1,13 +1,17 @@
+plugins {
+    id 'java-library'
+}
+
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
 def jacksonVersion = "2.6.3"
 
 dependencies {
-    compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: jacksonVersion
-    compile group: "com.fasterxml.jackson.core", name: "jackson-core", version: jacksonVersion
-    compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jacksonVersion
-    compile group: "org.slf4j", name: "jul-to-slf4j", version: rootProject.slf4jVersion
-    compile group: "org.slf4j", name: "slf4j-api", version: rootProject.slf4jVersion
-    compile project(":game")
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: jacksonVersion
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: jacksonVersion
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jacksonVersion
+    runtimeOnly group: "org.slf4j", name: "jul-to-slf4j", version: project.slf4jVersion
+    implementation group: "org.slf4j", name: "slf4j-api", version: project.slf4jVersion
+    api project(":game")
 }
