@@ -9,6 +9,7 @@ import org.joda.time.DateTimeZone;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ public class UploadedBot {
     @Id
     private UUID id;
     String teamId;
+    @Lob
     private byte[] data;
     private String botClassName;
     private Date timeStamp;

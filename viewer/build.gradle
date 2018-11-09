@@ -1,4 +1,5 @@
 plugins {
+    id 'base'
     id "com.moowork.node" version "1.2.0"
 }
 
@@ -9,7 +10,14 @@ node {
     download = true
 }
 
-task webpack(type: NodeTask) {
+task('webpack', type: NodeTask) {
+    group = 'Build'
+    description = 'Transpiles JavaScript code into single bundle'
+
+    ext {
+        outputDir = "$buildDir/webpack" //TODO this is also specified in build.gradle... unify!
+    }
+
     inputs.with {
         dir 'assets'
         files npmInstall
@@ -17,20 +25,39 @@ task webpack(type: NodeTask) {
         dir 'styles'
         files 'package.json', 'package-lock.json', 'webpack.config.js', 'index.html'
     }
-    outputs.dir buildDir
+    outputs.dir outputDir
     script = file('node_modules/webpack/bin/webpack.js')
 }
+assemble.dependsOn webpack
 
-task jasmine(type: NodeTask) {
+task('jasmineTest', type: NodeTask) {
+    group = 'Verification'
+    description = 'Runs Jasmine tests'
+
+    inputs.files npmInstall
     script = file('node_modules/jasmine/bin/jasmine.js')
 }
+check.dependsOn jasmineTest
 
-task build(){
-    dependsOn npmInstall
-    dependsOn webpack
+task('jar', type: Jar){
+    manifest {
+        attributes(
+                "Implementation-Title": "hackathon-viewer",
+                "Implementation-Version": version
+        )
+    }
+    into ('assets') {
+        from(webpack) {
+            into 'build'
+        }
+        from(projectDir) {
+            include 'index.html'
+            include 'assets/*.png'
+        }
+    }
 }
+assemble.dependsOn jar
 
-task test(){
-    dependsOn npmInstall
-    dependsOn jasmine
+artifacts {
+    archives jar
 }

@@ -19,8 +19,6 @@ if [ -n "$DB_TYPE" ] ; then
             ;;
     esac
     DB_URL=${DB_PROTO}://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    echo "Waiting for database: $DB_HOST:$DB_PORT"
-    sleep 15
 else
     echo "Neither DB_URL or DB_TYPE variables are set. Defaulting to local H2 database."
     DB_URL=h2:~/hackathon.db
@@ -34,5 +32,4 @@ JAVA_OPTS="$JAVA_OPTS -Ddw.database.driverClass=$DB_DRIVER -Ddw.database.propert
 [ -n "$DB_PASSWORD" ] && JAVA_OPTS="$JAVA_OPTS -Ddw.database.password=$DB_PASSWORD"
 export JAVA_OPTS
 
-set -x
-java ${JAVA_OPTS} -jar /jars/server*.jar server /conf/server.yml
+exec "$@"

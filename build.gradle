@@ -1,47 +1,21 @@
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
-ext.slf4jVersion = '1.7.12'
-
 wrapper {
     gradleVersion = "4.10.2"
     distributionType = Wrapper.DistributionType.ALL
 }
 
-allprojects {
-    repositories {
-        jcenter()
+subprojects {
+    pluginManager.withPlugin('java') {
+        ext{
+            slf4jVersion = '1.7.12'
+        }
+
+        repositories {
+            jcenter()
+        }
+
+        sourceCompatibility = 1.8
     }
-}
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    //TODO Get rid of these - use a 'plugins {}' block inside the relevant subproject's build.gradle instead
-    dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.1"
-        classpath group: "net.sf.proguard", name: "proguard-gradle", version: "6.0.3"
-    }
-}
-
-configure(subprojects - project(':viewer')){
-    apply plugin: "java"
-    apply plugin: "com.github.johnrengelman.shadow" //TODO move this to only the subprojects that need it
-
-    sourceCompatibility = 1.8
-
-    dependencies {
-        testCompile group: "junit", name: "junit", version: "4.11"
-    }
-
-    shadowJar {
-        mergeServiceFiles()
-    }
-}
-
-task stage {
-    dependsOn ":server:shadowJar"
-    dependsOn ":client:shadowJar"
 }

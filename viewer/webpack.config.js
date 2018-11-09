@@ -3,7 +3,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 const PATHS = {
-    BUILD: path.join(__dirname, '/build/'),
+    BUILD: path.join(__dirname, '/build/webpack/'), //TODO this is also specified in build.gradle... unify!
     PUBLIC_DEV: '/build/',
     PUBLIC_PRODUCTION: '/application/build/',
     PHASER: path.join(__dirname, '/node_modules/phaser/build/custom/phaser-split.js'),

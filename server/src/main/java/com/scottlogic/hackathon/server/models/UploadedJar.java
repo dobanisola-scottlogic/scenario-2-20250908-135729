@@ -6,6 +6,7 @@ import com.google.common.io.ByteStreams;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,8 @@ import java.util.UUID;
 public class UploadedJar {
     @Id
     private UUID id;
+
+    @Lob
     private byte[] data;
     @ElementCollection
     private Set<String> contestantBots;
