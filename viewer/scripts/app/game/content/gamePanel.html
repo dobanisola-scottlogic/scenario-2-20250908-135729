@@ -49,7 +49,7 @@
             ng-class="{'active': controller.isTeamSelected(team)}"
             ng-repeat="team in controller.milestoneTeams"
             ng-click="controller.onTeamSelected(team)">
-            {{team.name.replace(controller.milestoneBotPrefix, '').replace('Bot', '')}}
+            {{team.name.replace(controller.milestoneBotPrefix, '')}}
             <span ng-if="controller.isCurrentMilestone(team.name)" class="glyphicon glyphicon-map-marker pull-right"></span>
         </button>
     </div>

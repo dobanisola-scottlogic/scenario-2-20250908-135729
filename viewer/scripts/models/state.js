@@ -23,11 +23,19 @@ class State {
         for (let i = 0; i < gameData.phaseResults.length; i++) {
 
             let previousState = null;
-            let teamInfo = gameData.game.teams.map(() => ({playerCount: 0, owner: null, spawnCount: 0}));
+            let teamInfo = gameData.game.teams.map(() => ({
+                playerCount: 0,
+                owner: null,
+                spawnCount: 0,
+                disqualificationReason: null
+            }));
 
             if (i > 0) {
                 previousState = states[i - 1];
             }
+
+            mapTeamOwners(gameData, teamInfo);
+            parseDisqualificationReasons(gameData.phaseResults[i], teamInfo);
 
             let state = new State(
                 parsePlayerPositions(i, gameData, previousState, teamInfo),
@@ -43,19 +51,28 @@ class State {
     }
 }
 
+function mapTeamOwners(gameData, teamInfo) {
+    gameData.spawnPoints.forEach((spawnPoint, teamIndex) => {
+        teamInfo[teamIndex].owner = spawnPoint.owner;
+    });
+}
+
+function parseDisqualificationReasons(state, teamInfo) {
+    state.disqualifiedBots.forEach(disqualifiedBot => {
+        teamInfo.find(team => team.owner === disqualifiedBot.id).disqualificationReason = disqualifiedBot.reason;
+    });
+}
+
 function parsePlayerPositions(index, gameData, previousState, teamInfo) {
     let players = [];
     let previousPlayers = [];
 
-    let spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => {
-        teamInfo[teamIndex].owner = spawnPoint.owner;
-        return {
-            id: spawnPoint.id,
-            owner: spawnPoint.owner,
-            cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
-            teamIndex: teamIndex
-        };
-    });
+    let spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => ({
+        id: spawnPoint.id,
+        owner: spawnPoint.owner,
+        cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
+        teamIndex: teamIndex
+    }));
 
     if (index > 0) {
         previousPlayers = previousState.players.map(previousPlayer => previousPlayer.id);

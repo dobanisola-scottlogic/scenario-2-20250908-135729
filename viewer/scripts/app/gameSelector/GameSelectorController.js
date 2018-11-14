@@ -114,7 +114,7 @@ class GameSelectorController {
     mapGame(game) {
         return {
             name: game.game.teams.map(team => {
-                return team.teamName.replace(this.milestoneBotPrefix, '').replace('Bot', '');
+                return team.teamName.replace(this.milestoneBotPrefix, '');
             }).sort(function(a, b) {
                 let teamA = a.toUpperCase();
                 let teamB = b.toUpperCase();

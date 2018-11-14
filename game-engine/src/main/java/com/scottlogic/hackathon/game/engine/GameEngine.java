@@ -44,6 +44,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -268,7 +269,8 @@ public class GameEngine {
                 .collect(Collectors.toMap(Function.identity(), bot -> {
                     GameState gs = createGameState(bot);
                     return CompletableFuture.supplyAsync(() -> action.apply(bot, gs), executor)
-                            .exceptionally(ex -> () -> disqualifyBot(bot, Arrays.asList(new BotExceptionRejection(ex))));
+                            .exceptionally(ex -> () -> disqualifyBot(bot, Arrays.asList(new BotExceptionRejection(
+                                    ex instanceof CompletionException ? ex.getCause() : ex))));
                 }));
 
         try {
@@ -450,17 +452,21 @@ public class GameEngine {
             UUID playerId = move.getPlayer();
             Player player = playerIdMap.get(playerId);
 
+            if (move.getDirection() == null) {
+                rejections.add(new MoveRejection(move, "player in 'null' direction"));
+            }
+
             if (player == null) {
                 rejections.add(
-                        new MoveRejection(move, String.format("player %s is unknown", move.getPlayer()))
+                        new MoveRejection(move, "unknown player")
                 );
             } else if (!player.getOwner().equals(bot.getId())) {
                 rejections.add(
-                        new MoveRejection(move, String.format("player %s is not owned by this bot", move.getPlayer()))
+                        new MoveRejection(move, "player not owned by this bot")
                 );
             } else if (playerMoves.putIfAbsent(playerId, move) != null) {
                 rejections.add(
-                        new MoveRejection(move, String.format("player %s can only move once per phase", move.getPlayer()))
+                        new MoveRejection(move, "same player more than once per phase")
                 );
             }
         }

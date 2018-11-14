@@ -12,21 +12,13 @@ public class MoveRejection implements Rejection {
         this.moveMessage = moveMessage;
     }
 
-    public Move getMove() {
-        return move;
-    }
-
-    public String getMoveMessage() {
-        return moveMessage;
-    }
-
     @Override
     public String getMessage() {
-        return String.format("Move %s - %s", move, moveMessage);
+        return new StringBuilder("Attempted to move ").append(moveMessage).toString();
     }
 
     @Override
     public String toString() {
-        return getMessage();
+        return new StringBuilder(getMessage()).append(": ").append(move).toString();
     }
 }

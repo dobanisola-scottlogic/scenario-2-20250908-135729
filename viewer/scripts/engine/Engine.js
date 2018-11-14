@@ -173,7 +173,8 @@ class Engine {
                 name: team.teamName,
                 players: teamInfo.playerCount,
                 spawnPoint: teamInfo.spawnCount === 1,
-                botId: team.botId
+                botId: team.botId,
+                disqualificationReason: teamInfo.disqualificationReason
             };
         });
 
