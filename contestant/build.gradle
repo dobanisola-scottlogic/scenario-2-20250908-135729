@@ -42,6 +42,51 @@ run {
     standardInput = System.in
 }
 
+tasks.withType(Wrapper) {
+    doLast {
+        boolean found = false
+        batchScript.text = batchScript.readLines().collect {
+            if(!found && it.startsWith('set APP_HOME')) {
+                found = true
+                return it + '\r\n' +
+                        '\r\n' +
+                        'FOR /F "tokens=1* delims== usebackq" %%A IN ("%APP_HOME%\\gradle.properties") DO (\r\n' +
+                        '    IF "%%A"=="org.gradle.java.home" set JAVA_HOME=%%B\r\n' +
+                        ')\r\n' +
+                        '\r\n' +
+                        'echo JAVA_HOME: %JAVA_HOME%\r\n'
+            } else return it
+        }.join('\r\n')
+        if(!found) {
+            throw new IllegalStateException("Insertion point in ${batchScript.name} not found.")
+        }
+
+        found = false
+        scriptFile.text = scriptFile.readLines().collect {
+            if(!found && it.contains('CLASSPATH=')) {
+                found = true
+                return it + '\n' +
+                        '\n' +
+                        'while IFS="=" read -r k v; do\n' +
+                        '    if [ "$k" = "org.gradle.java.home" ]; then\n' +
+                        '        export JAVA_HOME="$v"\n' +
+                        '        UNAME=`uname`\n' +
+                        '        if [ "$cygwin" = "true" -o "$msys" = "true" -o "${UNAME#MSYS}" != "$UNAME" ]; then\n' +
+                        '            export JAVA_HOME=`cygpath "$JAVA_HOME"`\n' +
+                        '        fi\n' +
+                        '    fi\n' +
+                        'done < "$APP_HOME/gradle.properties"\n' +
+                        '\n' +
+                        'echo "JAVA_HOME: $JAVA_HOME"\n'
+            } else return it
+        }.join('\n')
+        if(!found) {
+            throw new IllegalStateException("Insertion point in ${scriptFile.name} not found.")
+        }
+
+    }
+}
+
 // BEGIN SKIP
 ext {
     contestantRepoDir = file("$buildDir/contestantRepo")
@@ -64,6 +109,17 @@ artifacts {
     repo(repoDir) {
         builtBy assembleContestantRepo
     }
+}
+
+task('extractRepo', type: Sync) {
+
+    if(project.hasProperty('repoDest')) {
+        destinationDir = rootProject.file(project.repoDest)
+    } else {
+        enabled = false
+    }
+
+    from(configurations.repo.artifacts.files)
 }
 
 task('installTestContestantRepo', type: Exec) {
@@ -93,8 +149,7 @@ Begin contestant repo install: ${commandLine.join(' ')}
         executable 'cmd'
         args '/c', 'install.bat'
     } else {
-        executable 'sh'
-        args '-c', 'install.sh'
+        executable './install.sh'
     }
 
     doLast {
@@ -115,12 +170,14 @@ task('checkContestantRepo', type: Exec) {
     outputs.dirs project.contestantRepoBuildDir, project.contestantRepoGradleCache
 
     workingDir = installTestContestantRepo.workingDir
+    int initialIndex
     if(System.getProperty('os.name').toLowerCase().contains('win')) {
         executable 'cmd'
         args '/c', 'gradlew.bat'
+        initialIndex = 2
     } else {
-        executable 'sh'
-        args '-c', 'gradlew'
+        executable './gradlew'
+        initialIndex = 0
     }
     args 'check'
     args "-PbuildDir=${project.contestantRepoBuildDir}"
@@ -133,7 +190,7 @@ task('checkContestantRepo', type: Exec) {
         println """
 =======================================================================
 Begin contestant repo Gradle build
-${commandLine[0..2].join(' ')} ${commandLine[3..-1].join('\n    ')}
+${commandLine[0..initialIndex].join(' ')} ${commandLine[initialIndex+1..-1].join('\n    ')}
 =======================================================================
 """
     }

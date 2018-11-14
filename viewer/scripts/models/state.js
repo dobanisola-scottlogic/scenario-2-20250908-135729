@@ -67,14 +67,12 @@ function parsePlayerPositions(index, gameData, previousState, teamInfo) {
     let players = [];
     let previousPlayers = [];
 
-    let spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => {
-        return {
-            id: spawnPoint.id,
-            owner: spawnPoint.owner,
-            cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
-            teamIndex: teamIndex
-        };
-    });
+    let spawnPoints = gameData.spawnPoints.map((spawnPoint, teamIndex) => ({
+        id: spawnPoint.id,
+        owner: spawnPoint.owner,
+        cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
+        teamIndex: teamIndex
+    }));
 
     if (index > 0) {
         previousPlayers = previousState.players.map(previousPlayer => previousPlayer.id);

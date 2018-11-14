@@ -32,12 +32,13 @@ public class PhaseResult {
     }
 
     public PhaseResult(final int phase,
-                       final Set<PlayerPosition> playerPositions,
-                       final Set<Player> addedPlayers,
-                       final Set<Collectable> addedCollectables,
-                       final Set<UUID> removedPlayers,
-                       final Set<UUID> removedSpawnPoints,
-                       final Set<UUID> removedCollectables, final Set<DisqualifiedBot> disqualifiedBots) {
+            final Set<PlayerPosition> playerPositions,
+            final Set<Player> addedPlayers,
+            final Set<Collectable> addedCollectables,
+            final Set<UUID> removedPlayers,
+            final Set<UUID> removedSpawnPoints,
+            final Set<UUID> removedCollectables,
+            final Set<DisqualifiedBot> disqualifiedBots) {
         this.id = UUID.randomUUID();
         this.phase = phase;
         this.playerPositions = new HashSet<>(playerPositions);

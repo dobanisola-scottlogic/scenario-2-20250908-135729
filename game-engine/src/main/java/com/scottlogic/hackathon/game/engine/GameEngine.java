@@ -452,7 +452,7 @@ public class GameEngine {
             UUID playerId = move.getPlayer();
             Player player = playerIdMap.get(playerId);
 
-            if(move.getDirection()==null) {
+            if (move.getDirection() == null) {
                 rejections.add(new MoveRejection(move, "player in 'null' direction"));
             }
 

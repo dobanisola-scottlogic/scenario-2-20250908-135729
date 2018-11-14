@@ -36,8 +36,13 @@ export JAVA_HOME=`echo $JDK_DIR/*`
 # Modify properties files
 #
 
+case `uname -s` in
+    CYGWIN*|MINGW*|MSYS*) JAVA_HOME_PROP=`cygpath -m "$JAVA_HOME"`;;
+    *) JAVA_HOME_PROP="$JAVA_HOME";;
+esac
+
 echo "" >> "$PROJECT_DIR/gradle.properties" || exit $?
-echo "org.gradle.java.home=$JAVA_HOME" >> "$PROJECT_DIR/gradle.properties" || exit $?
+echo "org.gradle.java.home=$JAVA_HOME_PROP" >> "$PROJECT_DIR/gradle.properties" || exit $?
 
 if [ -n "$REPO" ]; then
     sed -i -r -e 's|https?\\?\://services\.gradle\.org/distributions|'"$REPO/gradle-distributions|" \

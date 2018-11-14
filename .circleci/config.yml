@@ -1,0 +1,70 @@
+version: 2.1
+
+commands:
+
+  checkout_repo:
+    description: Checks out the GitHub repo
+    steps:
+    - checkout
+    - run:
+        name: Merge PR Commit if PR
+        command: .circleci/merge-pr.sh
+
+
+  restore_caches:
+    description: Restore all caches
+    steps:
+    - restore_cache:
+        name: Restore Gradle Wrapper
+        key: v1-gradle-wrapper-{{ arch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+    - restore_cache:
+        name: Restore Gradle Dependencies
+        keys:
+        - v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-
+        - v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-
+
+  save_caches:
+    description: Save all caches
+    steps:
+    - run:
+        name: Cleanup Gradle cache dir
+        command: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock \
+            && ls -laR ~/.gradle/caches/modules-2 > ~/gradle-cache-listing
+    - save_cache:
+        name: Cache Gradle Dependencies
+        paths:
+        - ~/.gradle/caches/modules-2/
+        key: v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "~/gradle-cache-listing" }}
+
+    - save_cache:
+        name: Cache Gradle Wrapper
+        paths:
+        - ~/.gradle/wrapper/
+        key: v1-gradle-wrapper-{{ arch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+
+jobs:
+  check:
+    docker:
+    - image: circleci/openjdk:8-jdk
+
+    working_directory: ~/repo
+
+    environment:
+      TERM: dumb
+      GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+    steps:
+    - checkout_repo
+    - restore_caches
+    - run:
+        name: Run checks
+        command: ./gradlew check
+    - save_caches
+
+workflows:
+  version: 2
+  check:
+    jobs:
+      - check
