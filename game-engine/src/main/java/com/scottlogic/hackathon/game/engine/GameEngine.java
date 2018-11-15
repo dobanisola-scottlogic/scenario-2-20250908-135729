@@ -74,8 +74,8 @@ public class GameEngine {
     private final int minCollectableDistanceFromSpawn;
     private final double collectablesSpawnFrequency;
     private final int battleRadius;
-    private final int initialiseTimeoutSeconds;
-    private final int makeMovesTimeoutSeconds;
+    private final int initialiseTimeoutMillis;
+    private final int makeMovesTimeoutMillis;
 
     private TrackedSetImpl<PlayerImpl> players;
     private TrackedSetImpl<CollectableImpl> collectables;
@@ -161,13 +161,13 @@ public class GameEngine {
         Properties props = loadProperties();
 
         maxPhases = getConfigValue(Integer::parseInt, "maxPhases", 512, props);
-        makeMovesTimeoutSeconds = getConfigValue(Integer::parseInt, "makeMovesTimeoutSeconds", 5 , props);
+        makeMovesTimeoutMillis = getConfigValue(Integer::parseInt, "makeMovesTimeoutMillis", 500, props);
         collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2 , props);
         battleRadius = getConfigValue(Integer::parseInt, "battleRadius", 2 ,props);
         maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4 , props);
         minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8 , props);
         spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8 , props);
-        initialiseTimeoutSeconds = getConfigValue(Integer::parseInt, "initialiseTimeoutSeconds", 30 , props);
+        initialiseTimeoutMillis = getConfigValue(Integer::parseInt, "initialiseTimeoutMillis", 2000, props);
         maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
     }
 
@@ -233,7 +233,7 @@ public class GameEngine {
     }
 
     private void initialiseBots() throws InterruptedException {
-        invokeBots("initialise", initialiseTimeoutSeconds, (bot, gameState) -> {
+        invokeBots("initialise", initialiseTimeoutMillis, (bot, gameState) -> {
             bot.initialise(gameState); // Run in parallel
             return () -> {};           // No post-processing required
         })
@@ -258,7 +258,7 @@ public class GameEngine {
      * actions threw exceptions or exceeded the specified time limit.
      *
      * @param actionName A human-readable name for the action being invoked. Used for error reporting
-     * @param timeout The number of seconds the action should be given to run for each bot
+     * @param timeout The number of milliseconds the action should be given to run for each bot
      * @param action The action to take on each bot
      * @return A {@linkplain Runnable} that will perform any post-processing required of the actions, as described above
      * @throws InterruptedException If the current thread is interrupted while waiting for the actions to complete
@@ -275,7 +275,7 @@ public class GameEngine {
 
         try {
             CompletableFuture.allOf(actions.values().toArray(new CompletableFuture[actions.size()]))
-                    .get(timeout, TimeUnit.SECONDS);
+                    .get(timeout, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
             throw new IllegalStateException("Impossible exception thrown.", e.getCause());
         } catch (TimeoutException e) {
@@ -316,7 +316,7 @@ public class GameEngine {
         final Map<UUID, PlayerImpl> uuidPlayerMap = players.stream()
                 .collect(Collectors.toMap(Player::getId, Function.identity(), (a,b) -> a));
 
-        Runnable applyMovesToAllBots = invokeBots("makeMoves", makeMovesTimeoutSeconds, (bot, gameState) -> {
+        Runnable applyMovesToAllBots = invokeBots("makeMoves", makeMovesTimeoutMillis, (bot, gameState) -> {
             List<Move> moves = bot.makeMoves(gameState); // Run in parallel
             return () -> { // Reject and apply moves as part of synchronous post-processing, run <BELOW>
                 List<Rejection> rejectedMoves = getRejectedMoves(bot, moves, uuidPlayerMap);

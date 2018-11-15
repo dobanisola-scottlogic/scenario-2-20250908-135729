@@ -170,7 +170,9 @@ restrictions on the compiled code:
 - any helper or utility classes should either be
   - inner classes of your Bot, or
   - not have a public constructor
-- your Bot should take no more than 5 seconds to calculate the moves otherwise it will be timed out
+- your Bot should take no more than half a second to calculate the moves or else it will be disqualified
+- your Bot should take no more than 2 seconds for its `initialise(...)` method to run (if implemented) or else it will
+  be disqualified
 - you can include more than one Bot class in the uploaded jar file to allow you to test different strategies, however
 only one Bot can be active at any given time
 
