@@ -10,6 +10,7 @@ buildscript {
 import org.eclipse.jgit.ignore.IgnoreNode
 import org.eclipse.jgit.ignore.IgnoreNode.MatchResult
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.api.ResetCommand.ResetType
 import org.eclipse.jgit.lib.StoredConfig
 import org.apache.tools.ant.DirectoryScanner
 
@@ -105,6 +106,18 @@ task('writeRepoProps', type: WriteProperties) {
     property('javaVersion', "${sourceCompatibility.majorVersion}")
 }
 
+task('writeSettingsFile') {
+    ext.destFile = file("$buildDir/settings/settings.gradle")
+    inputs.property('projectName', project.contestantProjectName)
+    outputs.file(destFile)
+
+    doLast {
+        destFile.text = """
+rootProject.name = "${inputs.properties.projectName}"
+"""
+    }
+}
+
 task('copyContestantRepo', type: Sync) {
     destinationDir = project.contestantRepoDir
     from(projectDir) {
@@ -121,21 +134,38 @@ task('copyContestantRepo', type: Sync) {
         into 'install'
     }
 
+    from(writeSettingsFile)
+
     into('libs') { spec ->
         configurations.matching { it.canBeResolved }.each {
             spec.from it
         }
     }
 
-    preserve {
-        include 'gradlew*'
-        include 'gradle/wrapper/**'
-        include '.git'
-    }
-
     // The following 2 lines are a workaround for https://github.com/gradle/gradle/issues/1348
     doFirst { DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) } }
     doLast { DirectoryScanner.resetDefaultExcludes() }
+
+    doLast {
+        Git git = Git.init().setDirectory(destinationDir).call()
+        try {
+            StoredConfig config = git.repository.config
+            config.load()
+            config.setString('user', null, 'name', 'Scott Logic')
+            config.setString('user', null, 'email', 'hackathon@scottlogic.co.uk')
+            config.save()
+
+            git.add().addFilepattern('.').call()
+            git.commit().setMessage('Scott Logic Coding Challenge').call()
+
+            // This fixes line ending issues introduced by copying
+            project.delete(file(destinationDir).listFiles().findAll({it.name != '.git'}))
+            git.add().addFilepattern('.').call()
+            git.reset().setMode(ResetType.HARD).call()
+        } finally {
+            git.repository.close()
+        }
+    }
 }
 
 task('contestantRepoWrapper', type: GradleBuild) {
@@ -153,42 +183,92 @@ task('contestantRepoWrapper', type: GradleBuild) {
         project.fileTree(dir) {
             include 'gradlew*'
             include 'gradle/wrapper/**'
+            include '.git/**'
         }
     }
-}
-
-task('contestantRepoGitInit') {
-    ext.dir = project.contestantRepoDir
-    dependsOn copyContestantRepo, contestantRepoWrapper
-
-    inputs.files {
-        project.fileTree(dir) {
-            exclude '.git'
-        }
-    }
-
-    outputs.dir("$dir/.git")
 
     doLast {
-        Git git = Git.init().setDirectory(dir).call()
-
-        StoredConfig config = git.repository.config
-        config.load()
-        config.setString('user', null, 'name', 'Scott Logic')
-        config.setString('user', null, 'email', 'hackathon@scottlogic.co.uk')
-        config.save()
-
-        git.add().addFilepattern('.').call()
-        git.commit().setMessage('Scott Logic Hackathon').call()
+        Git git = Git.open(dir)
+        try {
+            git.add().addFilepattern('.').call()
+            git.commit().setMessage("Add Gradle wrapper").call()
+        } finally {
+            git.repository.close()
+        }
     }
 }
 
-task('assembleContestantRepo') {
+task('gitRepo') {
     ext.destinationDir = project.contestantRepoDir
-    inputs.files copyContestantRepo, contestantRepoWrapper, contestantRepoGitInit
+    inputs.files copyContestantRepo, contestantRepoWrapper
     outputs.dir destinationDir
 
     doLast {
         println "Contestant repo assembled in '${rootDir.toURI().relativize(destinationDir.toURI())}'"
+    }
+}
+
+project.ext {
+    cloneRepo = { File dest, String eol ->
+        Git git = Git.cloneRepository()
+            .setURI(file("${project.contestantRepoDir}/.git").toURI().toString())
+            .setDirectory(dest)
+            .setNoCheckout(true)
+            .call()
+
+        try {
+            StoredConfig config = git.repository.config
+            config.load()
+            config.setString('core', null, 'eol', eol)
+            config.setString('core', null, 'autocrlf', 'false')
+            config.save()
+
+            git.checkout()
+                    .setName("origin/master")
+                    .call()
+        } finally {
+            git.repository.close()
+        }
+
+    }
+}
+
+task('cloneWin') {
+    ext.destinationDir = file("$buildDir/cloneWin")
+    inputs.files(tasks.gitRepo)
+    outputs.dir destinationDir
+
+    doLast {
+        cloneRepo(destinationDir, 'crlf')
+    }
+}
+
+task('zipWin', type: Zip) {
+    baseName = project.contestantProjectName
+    version = null
+    classifier = "win"
+
+    from(tasks.cloneWin) {
+        exclude '.git/**'
+    }
+}
+
+task('cloneUnix') {
+    ext.destinationDir = file("$buildDir/cloneUnix")
+    inputs.files(tasks.gitRepo)
+    outputs.dir destinationDir
+
+    doLast {
+        cloneRepo(destinationDir, 'lf')
+    }
+}
+
+task('tarUnix', type: Tar) {
+    baseName = project.contestantProjectName
+    version = null
+    classifier = "unix"
+
+    from(tasks.cloneUnix) {
+        exclude '.git/**'
     }
 }
