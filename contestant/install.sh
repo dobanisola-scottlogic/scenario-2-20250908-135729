@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
+PROJECT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+SCRIPTS_DIR="$PROJECT_DIR/install"
+TOOLS_DIR="$PROJECT_DIR/tools"
+
 while getopts r: option; do
     case "${option}" in
         r) REPO=${OPTARG};;
@@ -7,11 +13,7 @@ while getopts r: option; do
 done
 shift $((OPTIND-1))
 
-PROJECT_DIR="$(dirname "$(readlink -f "$0")")"
-SCRIPTS_DIR="$PROJECT_DIR/install"
-TOOLS_DIR="$PROJECT_DIR/tools"
-
-source "$SCRIPTS_DIR/PROPERTIES" || exit $?
+source "$SCRIPTS_DIR/PROPERTIES"
 
 #
 # Install JDK
@@ -20,7 +22,7 @@ source "$SCRIPTS_DIR/PROPERTIES" || exit $?
 JDK_DIR="$TOOLS_DIR/jdk"
 
 #TODO Check for existing Java
-"$SCRIPTS_DIR/install-jdk.sh" -v ${javaVersion:-8} ${REPO:+-p $REPO/openjdk} "$JDK_DIR" || exit $?
+"$SCRIPTS_DIR/install-jdk.sh" -v ${javaVersion:-8} ${REPO:+-p $REPO/openjdk} "$JDK_DIR"
 num_jdks=$(ls "$JDK_DIR" | wc -w)
 if [ $num_jdks -lt 1 ]; then
     echo "Error with JDK installation: no JDK directory detected" >&2
@@ -41,11 +43,11 @@ case `uname -s` in
     *) JAVA_HOME_PROP="$JAVA_HOME";;
 esac
 
-echo "" >> "$PROJECT_DIR/gradle.properties" || exit $?
-echo "org.gradle.java.home=$JAVA_HOME_PROP" >> "$PROJECT_DIR/gradle.properties" || exit $?
+echo "" >> "$PROJECT_DIR/gradle.properties"
+echo "org.gradle.java.home=$JAVA_HOME_PROP" >> "$PROJECT_DIR/gradle.properties"
 
 if [ -n "$REPO" ]; then
     sed -i -r -e 's|https?\\?\://services\.gradle\.org/distributions|'"$REPO/gradle-distributions|" \
-        "$PROJECT_DIR/gradle/wrapper/gradle-wrapper.properties" || exit $?
+        "$PROJECT_DIR/gradle/wrapper/gradle-wrapper.properties"
     echo "mavenProxyUrl=$REPO/maven-public" >> "$PROJECT_DIR/gradle.properties"
 fi

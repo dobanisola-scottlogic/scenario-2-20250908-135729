@@ -17,10 +17,10 @@ See below for details.
 ## Building & Testing
 
 The normal Gradle lifecycle tasks will turn this subproject into a standalone project that can be given to contestants:
-  - The `assemble` lifecycle task depends on `assembleContestantRepo`
+  - The `assemble` lifecycle task depends on `gitRepo`, `zipWin`, and `tarUnix`
   - The `check` lifecycle task depends on `checkContestantRepo`
   
-### `assembleContestantRepo`
+### `gitRepo`
 
 This task creates a standalone version of this subproject.
 It copies the entire subproject into folder in the `build` directory, with the following modifications:
@@ -29,9 +29,21 @@ It copies the entire subproject into folder in the `build` directory, with the f
     are stripped out (that is how this portion of the README is excluded)
   - Inter-project and Maven dependencies are replaced with file dependencies in a `libs` subdirectory
   
+A Gradle wrapper script is installed in the root of this new subproject, and a new Git repository is initialised.
+
+The generated repository can be uploaded to a Git server for access by contestants.
+
+### `zipWin` and `tarUnix`
+
+These tasks both clone the Git repository created by `gitRepo`, each using appropriate [line ending checkout
+configuration](https://git-scm.com/docs/git-config#git-config-coreeol) for their respective platforms.
+They then bundle the checked out working directory in an archive file, _without_ the `.git` repository folder.
+
+The outputs of these tasks are suitable for distributing to contestants.
+  
 ### `checkContestantRepo`
 
-This task depends on `assembleContestantRepo` and runs a separate `gradlew check` process on it.
+This task depends on `gitRepo` and runs a separate `gradlew check` process on it.
 If the child process fails, so does this task.
 
 If this task is run alongside other verification tasks (e.g. by running `gradlew check`), then this will be the last to
@@ -42,7 +54,7 @@ run. This ensures other checks succeed before the relatively expensive operation
 
 [//]: # (END SKIP)
 
-# Scott Logic Hackathon
+# Scott Logic Coding Challenge
 
 ## Setup
 

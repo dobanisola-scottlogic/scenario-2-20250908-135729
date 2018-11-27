@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 function get-redirect-url() {
     curl -w "%{redirect_url}" -I -s -S "$1" -o /dev/null
 }
@@ -56,11 +58,11 @@ if [ -n "$proxy" ] && [[ "$url" =~ ^https:\/\/github\.com\/AdoptOpenJDK\/(.+) ]]
 fi
 
 echo "Downloading $url to $dest" >&2
-mkdir -p "$dest" || exit $?
+mkdir -p "$dest"
 case "$url" in
     *.zip)
-        tempFile="$(mktemp)"
-        curl -L "$url" >"$tempFile" || exit $?
+        tempFile=`mktemp`
+        curl -L "$url" >"$tempFile"
         unzip -q -d "$dest" "$tempFile"
         ;;
     *.tgz|*.tar.gz)

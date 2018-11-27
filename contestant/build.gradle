@@ -89,55 +89,54 @@ tasks.withType(Wrapper) {
 
 // BEGIN SKIP
 ext {
-    contestantRepoDir = file("$buildDir/contestantRepo")
-    contestantRepoCheckDir = file("$buildDir/contestantRepoCheck")
-    contestantRepoBuildDir = file("$buildDir/contestantRepoBuild")
-    contestantRepoGradleCache = file("$buildDir/contestantRepoGradleCache")
+    contestantProjectName = 'scott-logic-code-challenge'
+    contestantRepoDir = file("$buildDir/gitRepo")
+    contestantRepoCheckDir = file("$buildDir/repoCheck/project")
+    contestantRepoBuildDir = file("$buildDir/repoCheck/build")
+    contestantRepoGradleCache = file("$buildDir/repoCheck/gradle-cache")
 }
 
 apply from: 'gradle/contestant-repo.gradle' // Adds the assembleContestantRepo task
 assemble.dependsOn.clear()
-assemble.dependsOn assembleContestantRepo
+assemble.dependsOn gitRepo, zipWin, tarUnix
 
 configurations {
     repo
 }
 
 def repoDir = layout.directoryProperty()
-repoDir.set(assembleContestantRepo.destinationDir)
+repoDir.set(gitRepo.destinationDir)
 artifacts {
     repo(repoDir) {
-        builtBy assembleContestantRepo
+        builtBy gitRepo
     }
 }
 
-task('extractRepo', type: Sync) {
+task('extractRepo') {
+    inputs.files(gitRepo)
 
     if(project.hasProperty('repoDest')) {
-        destinationDir = rootProject.file(project.repoDest)
+        ext.destinationDir = rootProject.file(project.repoDest)
     } else {
         enabled = false
     }
 
-    from(configurations.repo.artifacts.files)
+    doLast {
+        cloneRepo(ext.destinationDir, 'native')
+    }
 }
 
 task('installTestContestantRepo', type: Exec) {
     group = 'Verification'
     description = "Copies the contestant repo to a new location for testing, and runs the install script on it"
 
-    inputs.files assembleContestantRepo
+    inputs.files gitRepo
     outputs.dirs project.contestantRepoCheckDir
     workingDir = project.contestantRepoCheckDir
 
     doFirst {
         project.delete workingDir
-        DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) }
-        project.copy {
-            from(assembleContestantRepo)
-            into(workingDir)
-        }
-        DirectoryScanner.resetDefaultExcludes()
+        cloneRepo(workingDir, 'native')
         println """
 =======================================================================
 Begin contestant repo install: ${commandLine.join(' ')}
