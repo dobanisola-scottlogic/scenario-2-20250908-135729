@@ -3,7 +3,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.eclipse.jgit:org.eclipse.jgit:5.1.2.201810061102-r'
+        classpath 'org.eclipse.jgit:org.eclipse.jgit:5.1.3.201810200350-r'
+        classpath 'org.eclipse.jgit:org.eclipse.jgit.archive:5.1.3.201810200350-r'
     }
 }
 
@@ -11,7 +12,12 @@ import org.eclipse.jgit.ignore.IgnoreNode
 import org.eclipse.jgit.ignore.IgnoreNode.MatchResult
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ResetCommand.ResetType
+import org.eclipse.jgit.api.ArchiveCommand
+import org.eclipse.jgit.archive.TgzFormat
 import org.eclipse.jgit.lib.StoredConfig
+import org.eclipse.jgit.lib.FileMode
+import org.eclipse.jgit.dircache.DirCache
+import org.eclipse.jgit.dircache.DirCacheEntry
 import org.apache.tools.ant.DirectoryScanner
 
 Spec<FileTreeElement> filesMatching(String fileName) {
@@ -155,7 +161,23 @@ task('copyContestantRepo', type: Sync) {
             config.setString('user', null, 'email', 'hackathon@scottlogic.co.uk')
             config.save()
 
-            git.add().addFilepattern('.').call()
+            DirCache dc = git.add().addFilepattern('.').call()
+
+            //////////////////////////////////////////////////////////
+            // Windows file permission fix
+            //////////////////////////////////////////////////////////
+            dc.lock()
+            dc.read()
+            for(int i=0; i<dc.entryCount; ++i) {
+                DirCacheEntry entry = dc.getEntry(i)
+                if(entry.pathString.endsWith('.sh')) {
+                    entry.fileMode = FileMode.EXECUTABLE_FILE
+                }
+            }
+            dc.write()
+            dc.commit()
+            //////////////////////////////////////////////////////////
+
             git.commit().setMessage('Scott Logic Coding Challenge').call()
 
             // This fixes line ending issues introduced by copying
@@ -190,7 +212,17 @@ task('contestantRepoWrapper', type: GradleBuild) {
     doLast {
         Git git = Git.open(dir)
         try {
-            git.add().addFilepattern('.').call()
+            DirCache dc = git.add().addFilepattern('.').call()
+
+            //////////////////////////////////////////////////////////
+            // Windows file permission fix
+            //////////////////////////////////////////////////////////
+            dc.lock()
+            dc.getEntry('gradlew').fileMode = FileMode.EXECUTABLE_FILE
+            dc.write()
+            dc.commit()
+            //////////////////////////////////////////////////////////
+
             git.commit().setMessage("Add Gradle wrapper").call()
         } finally {
             git.repository.close()
@@ -249,7 +281,7 @@ task('zipWin', type: Zip) {
     classifier = "win"
 
     from(tasks.cloneWin) {
-        exclude '.git/**'
+        exclude('/.git')
     }
 }
 
@@ -263,12 +295,30 @@ task('cloneUnix') {
     }
 }
 
-task('tarUnix', type: Tar) {
-    baseName = project.contestantProjectName
-    version = null
-    classifier = "unix"
+task('tarUnix') {
+    ext {
+        outputFile = file("$buildDir/distributions/${project.contestantProjectName}-unix.tar.gz")
+    }
 
-    from(tasks.cloneUnix) {
-        exclude '.git/**'
+    inputs.files(tasks.gitRepo)
+    outputs.file(outputFile)
+
+    doLast {
+        outputFile.parentFile.mkdirs()
+
+        Git git = Git.open(project.contestantRepoDir)
+        ArchiveCommand.registerFormat('tgz', new TgzFormat())
+        try {
+            outputFile.withOutputStream { os ->
+                git.archive()
+                        .setTree(git.repository.resolve('HEAD'))
+                        .setFormat('tgz')
+                        .setOutputStream(os)
+                        .call()
+            }
+        } finally {
+            git.repository.close()
+            ArchiveCommand.unregisterFormat('tgz')
+        }
     }
 }
