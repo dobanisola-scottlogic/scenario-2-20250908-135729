@@ -8,18 +8,19 @@ See [here](running-events.md) for more details on running events.
 ## The Game
 
 Each game is turn-based, and played by between 2 and 4 teams (or 'bots').
-Every team has a bas (or 'spawn point') on a 2D, 'donut'-shaped map, grid-based map.
+Every team has a base (or 'spawn point') on a 2D,
+[donut-shaped](https://kotaku.com/classic-jrpg-worlds-are-actually-donuts-1239882216), grid-based map.
 Distances between diagonally adjacent squares on the map are the same for horizontally or vertically adjacent squares
-(meaning distances obey the [infinity norm](https://en.wikipedia.org/wiki/Uniform_norm),
-rather than the usual [Euclidean norm](https://en.wikipedia.org/wiki/Euclidean_distance)).
-The map includes permanent areas of water ('out of bounds positions'), and food ('collectables') that is randomly
-generated each turn. For the first 8 turns, a new 'player' is spawned for each team at their respective spawn point.
+(all 8 squares surrounding a single square can be reached in s single move, rather than diagonal moves costing &radic;2).
+The map includes permanent areas of water ('out of bounds positions'),
+and pieces of food ('collectables') that are randomly generated each turn.
+For the first 8 turns, a new 'player' is spawned for each team at their respective spawn point.
 
 On every turn, each bot's `makeMoves` method is invoked. A `GameState` is passed in, describing the size of the map,
 and objects on the map that the bot can 'see', this includes:
   - The bot's own spawn point (if it still exists)
   - All the bot's own currently living players
-  - Any collectables, enemy spawn point, enemy players, or out-of-bounds positions that are within a 5 moves of any
+  - Any collectables, enemy spawn points, enemy players, or out-of-bounds positions that are within 5 moves of any
     of the bot's own players (effectively an 11&times;11 square around each player)
     
 The `makeMoves` method must return a list of `Move` instances, each an instruction to move one of the bot's players in

@@ -25,9 +25,9 @@ It should be ensured that prizes can be easily split among team members.
 There should be a number of organisers at the event:
   - At least 1 'public speaker', communicating instructions to attendees, and being a commentator on competitions.
   - At least 1 'IT super-user' who should have good administrative knowledge of the software and deployment
-    infrastructure. They will administer the server and be the final point of contact for technical questions and
-    problems.
-  - Several other 'helpers' with some experience of the software from a competitors viewpoint,
+    infrastructure.
+    They will administer the server and be the final point of contact for technical questions and problems.
+  - Several other 'helpers' with some experience of the software from a competitor's viewpoint,
     to provide assistance to attendees. This could be technical set-up assistance,
     help or advice with strategy and teamwork, or just making sure that people aren't bored.
     
@@ -36,7 +36,7 @@ There should be a number of organisers at the event:
 There is a [tutorial](contestant/docs/tutorial/index.md) that contestants can follow to get them started with
 development. Following it to completion will likely take up a significant portion of the available time,
 so in previous events we have warned attendees of this and suggested that they skim it for reference instead.
-Some of the algorithms it suggests lead to sub-optimal solutions, so its also worth explicitly
+Some of the algorithms it suggests lead to sub-optimal solutions, so it's also worth explicitly
 "not guaranteeing that it will work" to attendees. At past events, people have found this amusing.
 
 ### Server Access
@@ -52,7 +52,7 @@ Attendees don't need access to the server to begin coding, so this can be done o
 There is currently no fixed or automated way to run a competition across several games.
 
 Here is one format that worked well at the Durham 2018 event:
-  - A series of games of 4 players were devised, following a round-robin type format.
+  - A series of games of 4 teams were devised, following a round-robin type format.
   - The first game was played about half way through the event, with a game roughly every 10 minutes after that.
   - Teams were allowed to continue developing and upload revisions to their bots once games had started.
   - Differing numbers of points were awarded to the team that came 1st, 2nd, and 3rd in each game.
@@ -61,7 +61,7 @@ Here is one format that worked well at the Durham 2018 event:
     best-of-3/sudden-death final.
     
 An advantage of this format is that it encourages teams to upload implementations early, and refine later.
-Without this, there's a tendency for teams to put of running/testing/submitting an implementation until the very last
+Without this, there's a tendency for teams to put off running/testing/submitting an implementation until the very last
 minute, only to discover that it has a bug, so is disqualified.
 
 ## Technical Requirements
@@ -76,12 +76,12 @@ The following resources are required:
   
 ### Server Deployment
 
-The [deployment](deployment) subproject describes several means of deploying the server.
+The [deployment](deployment) subproject describes some ways of deploying the server.
 
 ### Contestant Stub Project
 
 The stub contestant project needs to be available on the computers that attendees will use for development.
-If attendees bring there own laptops to the event, the stub project can be delivered as a Git repository or as a
+If attendees bring their own laptops to the event, the stub project can be delivered as a Git repository or as a
 zip/tar archive. Both these methods are described below, or you can see the
 [README of the contestant subproject](contestant) for more details.
 
@@ -113,7 +113,7 @@ At past events, attendees have struggled to get their IDE setup correctly.
 In part, this was due to a couple of bugs in setup scripts,
 and unknown incompatibilities with IDEs (particularly Eclipse), but these have now been fixed.
 A large part of the problem was definitely down to attendees not reading the instructions properly.
-Instead, they would attempt to set up the project in their IDE in tae way that they're used to:
+Instead, they would attempt to set up the project in their IDE in the way that they're used to:
 manually, with no additional libraries on the classpath.
 
 They need to be encouraged to read the instructions carefully, and use their IDE's Gradle import functionality to
@@ -121,7 +121,7 @@ set up the project. Both Eclipse and IntelliJ should be able to do this fine.
 
 ### Long-Running Bots, Infinite Loops, and Privileged Execution
 
-There are a number of known issues with having unaudited contestant code run the server:
+There are a number of known issues with having unaudited contestant code run on the server:
 
   - While bots are disqualified if their code takes too long to execute, and the game continues without waiting,
     the executing contestant code is not forcibly terminated. If it is particularly long-running, or infinite,
@@ -236,8 +236,8 @@ rather than the losers.
       (sometimes several times).
   
   - Time limits on contestant code execution were laxer than they are now
-    (see [PR #96](https://github.com/ScottLogic/hackathon-ai-game/pull/96)), which meant games took a long time tom
-    simulate on the server.
+    (see [PR #96](https://github.com/ScottLogic/hackathon-ai-game/pull/96)),
+    which meant games took a long time to simulate on the server.
   
   - Due to the issues with uploading to the server and long-running simulations, there was only time to play each
     team's submission in a single game, against one opponent. The winners of each game were ranked based on on the

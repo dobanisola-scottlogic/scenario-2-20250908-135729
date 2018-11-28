@@ -3,14 +3,14 @@
 This subproject contains code and scripts to assist with various strategies for creating a 'production' deployment of
 the [server](../server) along with various supplementary services.
 
-A couple of startegies are supported (to a greater or lesser extent).
+A couple of strategies are supported (to a greater or lesser extent).
 
 ## Docker Compose
 
 This deployment strategy uses Docker compose to deploy the following services to a single machine:
 
   - The game server, accessible on port 8080
-  - A PostgresSQL database for the game server to use
+  - A PostgreSQL database for the game server to use
   - A [Gitea](https://gitea.io) Git server, hosting the [contestant repo](../contestant) at
     `ScottLogic/coding-challenge`, accessible on port 3000
   - A [Nexus](https://www.sonatype.com/nexus-repository-sonatype) repository, that can act as a proxy for downloading
@@ -78,6 +78,6 @@ AWS resources for running the [game server](../server) and a supporting database
 The server should be accessible via the URL of the public load balancer deployed in the first stack
 (see the "outputs" tab in the CloudFormation console).
 
-If you need to update the server image, delete the stack produced in step 5, then repeat steps 2-5.
+If you need to update the server image, delete the stack produced in step 5, then repeat steps 3-5.
 
 The [push-to-aws.sh](push-to-aws.sh) script in this directory is a work-in-progress attempt to automate this process.
