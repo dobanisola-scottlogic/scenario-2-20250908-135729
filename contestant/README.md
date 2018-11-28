@@ -125,8 +125,9 @@ First, ensure you have the downloaded JDK set as one of your SDKs. Hit `Ctrl+Alt
 **_Project Settings &rarr; Project &rarr; New... &rarr; JDK_**, and navigate to the
 `<project_root_dir>/tools/jdk/<jdk_name>` folder.
 
-If you **_Open_** the repostory's root folder as a new project, it should detect Gradle and start the import wizard
-automatically.
+Now, if you **_Open..._** this repostory's root folder as an existing project,
+IntelliJ should detect Gradle and start the import wizard automatically.
+**You shouldn't create a "new project" in IntelliJ, as this will fail to put required libraries on your classpath.**
 
 ## Building & Running
 

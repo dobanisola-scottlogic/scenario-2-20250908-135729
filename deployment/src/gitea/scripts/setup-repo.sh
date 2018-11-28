@@ -2,7 +2,7 @@
 
 GITEA_USER=$GITEA_ADMIN_USER
 GITEA_URL="http://${GITEA_ADMIN_USER}:${GITEA_ADMIN_PASSWORD}@${GITEA_HOST}:${GITEA_PORT}"
-REPO_NAME=hackathon
+REPO_NAME=coding-challenge
 
 curl -vsfS "$GITEA_URL/api/v1/user/repos" -H "Content-Type: application/json" -d @- << EOF || exit $?
 {

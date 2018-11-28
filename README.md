@@ -1,6 +1,42 @@
-# Hackathon Code Challenge
+# Coding Challenge
 
-This is programming challenge where contestants must write code that can play a simple strategy game.
+This is a programming challenge where contestants must write code that can play a simple strategy game.
+Typically, this is used to run events with university students,
+where attendees spend several hours in teams developing strategies and playing against each other.
+See [here](running-events.md) for more details on running events.
+
+## The Game
+
+Each game is turn-based, and played by between 2 and 4 teams (or 'bots').
+Every team has a bas (or 'spawn point') on a 2D, 'donut'-shaped map, grid-based map.
+Distances between diagonally adjacent squares on the map are the same for horizontally or vertically adjacent squares
+(meaning distances obey the [infinity norm](https://en.wikipedia.org/wiki/Uniform_norm),
+rather than the usual [Euclidean norm](https://en.wikipedia.org/wiki/Euclidean_distance)).
+The map includes permanent areas of water ('out of bounds positions'), and food ('collectables') that is randomly
+generated each turn. For the first 8 turns, a new 'player' is spawned for each team at their respective spawn point.
+
+On every turn, each bot's `makeMoves` method is invoked. A `GameState` is passed in, describing the size of the map,
+and objects on the map that the bot can 'see', this includes:
+  - The bot's own spawn point (if it still exists)
+  - All the bot's own currently living players
+  - Any collectables, enemy spawn point, enemy players, or out-of-bounds positions that are within a 5 moves of any
+    of the bot's own players (effectively an 11&times;11 square around each player)
+    
+The `makeMoves` method must return a list of `Move` instances, each an instruction to move one of the bot's players in
+one of 8 possible directions.
+
+The aim of the game is to be the last team with living players on the map.
+The following interactions affect the number of players:
+  - If a bot's `makeMoves` method takes too long to execute or throws an Exception on any turn, the bot is disqualified.
+  - If a bot's `makeMoves` returns an instruction to move a nonexistent or enemy player, the bot is disqualified.
+  - If a bot's `makeMoves` returns multiple instructions to move the same player, the bot is disqualified.
+  - If a player moves to an out-of-bounds position, it dies.
+  - If two players collide, they both die.
+  - If a player is outnumbered by enemy players on nearby positions (within 2 moves), it dies.
+  - If a player moves to a position containing a collectable, the collectable disappears and a new player will be
+    spawned from the bot's spawn point on the following turn (if it still exists).
+  - If a player moves to the position of an enemy spawn point, the spawn point is destroyed, preventing that team from
+    spawning new players by collecting food.
 
 ## Quick Start
 
