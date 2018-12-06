@@ -2,15 +2,6 @@ version: 2.1
 
 commands:
 
-  checkout_repo:
-    description: Checks out the GitHub repo
-    steps:
-    - checkout
-    - run:
-        name: Merge PR Commit if PR
-        command: .circleci/merge-pr.sh
-
-
   restore_caches:
     description: Restore all caches
     steps:
@@ -56,7 +47,7 @@ jobs:
       GRADLE_OPTS: -Dorg.gradle.daemon=false
 
     steps:
-    - checkout_repo
+    - checkout
     - restore_caches
     - run:
         name: Run checks
