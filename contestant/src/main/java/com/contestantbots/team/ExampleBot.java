@@ -36,7 +36,8 @@ public class ExampleBot extends Bot {
                 Pick the map to play on
                 -----------------------
                 Each successive map is larger, and has more out-of-bounds positions that must be avoided.
-                Make sure you only have ONE line uncommented below.
+                Make sure you only have ONE line uncommented below. The maps starting with "Three" are
+                designed specifically for 3 players
                  */
                 "--map",
 //                    "VeryEasy",
@@ -44,6 +45,8 @@ public class ExampleBot extends Bot {
 //                    "Medium",
 //                    "LargeMedium",
 //                    "Hard",
+//                    "ThreeStar",
+//                    "ThreeStraight"
 
                 /*
                 Pick your opponent bots to test against

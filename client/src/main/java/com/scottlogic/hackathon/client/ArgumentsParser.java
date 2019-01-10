@@ -19,7 +19,7 @@ class ArgumentsParser {
     private static final Option MAP = Option.builder("m")
             .hasArg()
             .longOpt("map")
-            .desc("MapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard)\t\t default: Easy")
+            .desc("MapName: a map name (VeryEasy, Easy, Medium, LargeMedium, Hard, ThreeStar, ThreeStraight)\t\t default: Easy")
             .build()
             ;
 

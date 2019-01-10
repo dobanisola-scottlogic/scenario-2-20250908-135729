@@ -3,6 +3,7 @@ require('p2');
 let parser = require('../../parser');
 let phaser = require('phaser');
 let Engine = require('../../engine/Engine.js');
+const Maps = require('../maps/MapOptions');
 
 let engine;
 
@@ -16,6 +17,8 @@ class GameSelectorController {
         this.hackathonService = hackathonService;
         this.sharedPropertiesService = sharedPropertiesService;
         this.milestoneBotPrefix = sharedPropertiesService.milestoneBotPrefix;
+
+        this.maps = Maps;
 
         this.selectGame = this.selectGame.bind(this);
         this.mapGame = this.mapGame.bind(this);
@@ -38,13 +41,8 @@ class GameSelectorController {
                 filter: {
                     type: uiGridConstants.filter.SELECT,
                     condition: uiGridConstants.filter.EXACT,
-                    selectOptions: [
-                        { value: 'VeryEasy', label: 'Very Easy' },
-                        { value: 'Easy', label: 'Easy' },
-                        { value: 'Medium', label: 'Medium'},
-                        { value: 'LargeMedium', label: 'Large Medium' },
-                        { value: 'Hard', label: 'Hard' }
-                    ]}
+                    selectOptions: this.maps.map(({ display, value }) => ({ label: display, value }))
+                  }
                 },
                 { name: 'Game Time', field: 'timeString', type: 'date'}
             ],
