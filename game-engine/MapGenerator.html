@@ -1,0 +1,157 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #fafafa;
+      }
+
+      button {
+        display: inline-block;
+        border: 1px solid grey;
+        height: 10px;
+        width: 10px;
+        padding: 0px;
+      }
+  
+      #generate-button {
+        display: block;
+        border: 1px solid black;
+        height: 30px;
+        width: 100px;
+        margin-bottom: 10px;
+      }
+  
+      #json-output {
+        width: 400px;
+        height: 200px;
+        overflow-y: auto;
+        word-break: break-all;
+        border: solid 1px black;
+        margin-bottom: 20px;
+      }
+    </style>
+    <script>
+        let mouseDown = false;
+        document.onmousedown = () => { 
+          mouseDown = true;
+        }
+        document.onmouseup = () => {
+          mouseDown = false;
+        }
+
+        const width = 128;
+        const height = 64;
+    
+        const getColorFromData = (data) => {
+          switch (data) {
+            case '1':
+              return 'red';
+            case '2':
+              return 'blue';
+          }
+          return 'white';
+        }
+
+        const createDefaultTileElement = () => {
+          const element = document.createElement('button');
+          element.setAttribute('data', '0');
+          element.style = 'background-color: ' + getColorFromData('0') + ';';
+          element.onmouseenter = (e) => {
+            if (mouseDown) {
+              if(e.shiftKey) {
+                resetColor(e);
+              } else {
+                toggleColor(e);
+              }
+            }
+          };
+          element.onmousedown = (e) => {
+            if (e.shiftKey) {
+              resetColor(e);
+            } else {
+              toggleColor(e);
+            }
+          };
+          return element;
+        }
+    
+        const generateGrid = () => {
+          const grid = document.getElementById('grid');
+
+          for (let y = 0; y < height; y++) {
+            const row = document.createElement('div');
+            for (let x = 0; x < width; x++) { 
+              const element = createDefaultTileElement();
+              element.title = (x + 1) + "," +  (y + 1);
+              row.appendChild(element);
+            }
+            grid.appendChild(row);
+          }
+        }
+    
+        const toggleColor = (e) => {
+          const element = e.target;
+          const data = element.getAttribute('data');
+          const newData = "" + (parseInt(data) + 1) % 3;
+          element.setAttribute('data', newData);
+          element.style = 'background-color: ' + getColorFromData(newData) + ';';
+        }
+
+        const resetColor = (e) => {
+          const element = e.target;
+          element.setAttribute('data', "0");
+          element.style = 'background-color: ' + getColorFromData("0") + ';';
+        }
+    
+        const exportGrid = () => {
+          const grid = document.getElementById('grid');
+          const outputBlock = document.getElementById('json-output');
+          outputBlock.innerText = '';
+    
+          const data = [];
+          grid.childNodes.forEach(row => {
+            row.childNodes.forEach(square => {
+              data.push(parseInt(square.getAttribute('data')));
+            })
+          });
+    
+          outputBlock.innerText = JSON.stringify({
+            width: width,
+            height: height,
+            data: data
+          });
+          outputBlock.select();
+          document.execCommand('copy');
+        }
+    </script>
+  </head>
+  <body>
+    <h1>Map Designer</h1>
+    <h2>Instructions</h2>
+    <ul>
+      <li>Click to change tile type</li>
+      <li>Click and drag for multiple tile selection</li>
+      <li>Holding "shift" and dragging will erase tiles</li>
+      <li>Hovering over a tile will show the coordinates (top left (1,1))</li>
+      <li>Click export to create the map data needed (auto copied to clipboard)</li>
+    </ul>
+    <hr/>
+    <label>Out of bounds</label>
+    <button style="background-color: red"></button>
+
+    <label>Spawn</label>
+    <button style="background-color: blue"></button>
+    <br/>
+    <div id="grid">
+    </div>
+    <hr/>
+    <div>
+      <button id="generate-button" onclick="exportGrid()">Export</button>
+      <textarea id="json-output">
+      </textarea>
+    </div>
+    <script>
+      generateGrid();
+    </script>
+  </body>
+</html>
