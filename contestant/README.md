@@ -159,9 +159,9 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
-For example (Unix):
+For example (Windows):
 ```sh
-./gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+gradlew run -P mainClass=com.contestantbots.team.ExampleBot
 ```
 
 
