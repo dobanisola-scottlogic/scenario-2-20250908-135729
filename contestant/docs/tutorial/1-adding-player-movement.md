@@ -79,6 +79,11 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
+For example (Windows):
+```sh
+gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+```
+
 The game should now have lasted 21 phases, but still end with the `LONE_SURVIVOR` end condition as all your players
 march in a neat line directly northwards and straight into the nearby water!
 

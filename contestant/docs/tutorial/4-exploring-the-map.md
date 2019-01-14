@@ -161,6 +161,11 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
+For example (Windows):
+```sh
+gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+```
+
 Your players should now be exploring the map and collecting all visible food, with the result that your Bot will
 almost certainly survive to the `TURN_LIMIT_REACHED` end condition every time. If you're lucky you might even manage
 to wander onto an enemy spawn point and end the game early... How about adding that as another goal before gathering

@@ -105,6 +105,11 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
+For example (Windows):
+```sh
+gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+```
+
 This game should now last much longer, and might even end with the `TURN_LIMIT_REACHED` instead of `LONE_SURVIVOR` end
 condition; if so, congratulations on making it to the end of a game! But look at all those collectable items that keep
 appearing while your players just mill about around the spawn point.  The [next step](3-gathering-collectables.md) will
