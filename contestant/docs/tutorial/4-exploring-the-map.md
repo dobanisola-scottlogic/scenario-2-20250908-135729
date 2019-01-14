@@ -63,15 +63,18 @@ game, so add it as an instance variable:
 private Set<Position> unseenPositions = new HashSet<>();
 ```
 
-And add the following to the `initialise` method as this only needs to be done once:
+And add the following `initialise` method (this only needs to be ran once):
 
 ```
-// add all positions to the unseen set
-for (int x = 0; x < gameState.getMap().getWidth(); x++) {
-    for (int y = 0; y < gameState.getMap().getHeight(); y++) {
-        unseenPositions.add(new Position(x, y));
+@Override
+    public void initialise(GameState gameState) {
+        // add all positions to the unseen set
+        for (int x = 0; x < gameState.getMap().getWidth(); x++) {
+            for (int y = 0; y < gameState.getMap().getHeight(); y++) {
+                unseenPositions.add(new Position(x, y));
+            }
+        }
     }
-}
 ```
 
 Before processing your moves, you need to update the set of unseen positions to remove those that are visible on the
