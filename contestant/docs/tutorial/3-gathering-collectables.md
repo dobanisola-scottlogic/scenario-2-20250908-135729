@@ -135,6 +135,11 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
+For example (Windows):
+```sh
+gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+```
+
 Your Bot should now survive to the `TURN_LIMIT_REACHED` end condition every time, and if you're lucky you might even
 see the `LONE_SURVIVOR` end condition with just your Bot remaining: congratulations, you've just **won** a game! But
 your players are now doing a very good impression of a swarm of bees, you can fix that by attempting to

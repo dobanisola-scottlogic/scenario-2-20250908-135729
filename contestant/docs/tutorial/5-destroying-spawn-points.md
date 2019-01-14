@@ -83,6 +83,11 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
+For example (Windows):
+```sh
+gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+```
+
 Your Bot should now be destroying the enemy spawn point along the way to a `LONE_SURVIVOR` end condition which
 concludes the tutorial. But how does your Bot handle more than one enemy, or the more sophisticated Bots? How about
 uploading it to the server and taking on Bots written by your competitors?
