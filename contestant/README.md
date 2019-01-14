@@ -159,6 +159,12 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
+For example (Unix):
+```sh
+./gradlew run -P mainClass=com.contestantbots.team.ExampleBot
+```
+
+
 ### Game Output
 The turn-by-turn game output is rendered as an ascii-art representation of the board with the following key:
  - `A`-`D`: spawn point
