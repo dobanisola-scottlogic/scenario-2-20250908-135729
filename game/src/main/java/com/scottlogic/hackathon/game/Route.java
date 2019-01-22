@@ -21,6 +21,11 @@ public interface Route extends Iterable<Position> {
     Position getStart();
 
     /**
+     * @return the ending position of the route
+     */
+    Position getDestination();
+
+    /**
      * Gets the {@linkplain Direction} that the route moves away from the {@linkplain #getStart() starting position}.
      * If this route has zero length (i.e. is <em>just</em>  the starting position),
      * then an {@linkplain Optional#empty() empty Optional} will be returned.

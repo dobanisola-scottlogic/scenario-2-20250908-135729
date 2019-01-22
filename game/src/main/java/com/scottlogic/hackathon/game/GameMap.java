@@ -156,8 +156,8 @@ public interface GameMap {
      * @param route The sequence of steps determining the route
      * @return The resulting route
      */
-    default Route route(Position start, List<Direction> route) {
-        return new RouteImpl(this, start, route);
+    default Route route(Position start, Position destination, List<Direction> route) {
+        return new RouteImpl(this, start, destination, route);
     }
 
     /**
@@ -170,7 +170,7 @@ public interface GameMap {
      * @return The resulting route
      */
     default Route straightLineRoute(Position start, Direction direction, int length) {
-        return new RouteImpl(this, start, direction, length);
+        return new RouteImpl(this, start, null, direction, length);
     }
 
     /**

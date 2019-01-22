@@ -16,21 +16,23 @@ class RouteImpl implements Route {
     private final GameMap map;
     private final List<Direction> list;
     private final int index;
+    private final Position destination;
 
-    public RouteImpl(GameMap map, Position start, Direction direction, int length) {
-        this(map, start, IntStream.range(0, length).mapToObj(i -> direction)
+    public RouteImpl(GameMap map, Position start, Position destination, Direction direction, int length) {
+        this(map, start, destination, IntStream.range(0, length).mapToObj(i -> direction)
                 .collect(Collectors.toCollection(() -> new ArrayList<>(length))));
     }
 
-    public RouteImpl(GameMap map, Position start, List<Direction> steps) {
-        this(map, start, steps, 0);
+    public RouteImpl(GameMap map, Position start, Position destination, List<Direction> steps) {
+        this(map, start, destination, steps, 0);
     }
 
-    private RouteImpl(GameMap map, Position start, List<Direction> steps, int index) {
+    private RouteImpl(GameMap map, Position start, Position destination, List<Direction> steps, int index) {
         this.map = map;
         this.start = start;
         this.list = steps;
         this.index = index;
+        this.destination = destination;
     }
 
     @Override
@@ -79,9 +81,14 @@ class RouteImpl implements Route {
     }
 
     @Override
+    public Position getDestination() {
+        return destination;
+    }
+
+    @Override
     public final Optional<Route> step() {
         return getFirstDirection()
-                .map(d -> new RouteImpl(map, map.getNeighbour(start, d), list, index+1));
+                .map(d -> new RouteImpl(map, map.getNeighbour(start, d), destination, list, index+1));
     }
 
     @Override
