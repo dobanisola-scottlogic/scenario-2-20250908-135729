@@ -185,7 +185,7 @@ abstract class AbstractRouteSpec extends Specification {
         }
 
         @Override
-        Route route(Position start, List<Direction> route) {
+        Route route(Position start, Position destination, List<Direction> route) {
             throw new AssertionError('A Route implementation should not call GameMap.route(...)')
         }
 
