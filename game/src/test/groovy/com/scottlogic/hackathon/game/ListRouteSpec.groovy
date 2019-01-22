@@ -9,18 +9,18 @@ import static com.scottlogic.hackathon.game.Direction.*
 class ListRouteSpec extends AbstractRouteSpec {
 
     @Override
-    RouteImpl createARouteStartingAt(Position position, Random random) {
-        return new RouteImpl(map, position, randomDirectionList(0, random))
+    RouteImpl createARouteStartingAt(Position position, Position destination, Random random) {
+        return new RouteImpl(map, position, destination, randomDirectionList(0, random))
     }
 
     @Override
     Route createARouteOfNonZeroLength(Random random) {
-        return new RouteImpl(map, randomPosition(random), randomDirectionList(1, random))
+        return new RouteImpl(map, randomPosition(random), null,  randomDirectionList(1, random))
     }
 
     @Override
     Route createARouteOfZeroLength(Random random) {
-        return new RouteImpl(map, randomPosition(random), [])
+        return new RouteImpl(map, randomPosition(random), randomPosition(random),  [])
     }
 
     private List<Direction> randomDirectionList(int minLength, Random random) {
@@ -32,7 +32,7 @@ class ListRouteSpec extends AbstractRouteSpec {
 
         given: "a list of directions, and a route using it"
         def dirs = randomDirectionList(0, random)
-        def route = new RouteImpl(map, randomPosition(random), dirs)
+        def route = new RouteImpl(map, randomPosition(random), null, dirs)
 
         expect: "the route to iterate over the list of directions"
         route.directionIterator().collect() == dirs
@@ -44,7 +44,7 @@ class ListRouteSpec extends AbstractRouteSpec {
     def "The route collides with a known position on it"(List directions, int x, int y) {
 
         given: "a route and a known position along it"
-        def route = new RouteImpl(map, new Position(100,100), directions)
+        def route = new RouteImpl(map, new Position(100,100), null, directions)
 
         expect: "the route to collide with the known position"
         route.collides([new Position(x,y)])
@@ -60,7 +60,7 @@ class ListRouteSpec extends AbstractRouteSpec {
     def "The route doesn't collide with positions known not to be on it"(List directions, Predicate<Position> collide) {
 
         given: "a route"
-        def route = new RouteImpl(map, new Position(100,100), directions)
+        def route = new RouteImpl(map, new Position(100,100), null, directions)
 
         expect: "the route not to collide positions known not to be on it"
         !route.collides(collide)

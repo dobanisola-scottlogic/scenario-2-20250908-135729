@@ -16,7 +16,7 @@ abstract class AbstractRouteSpec extends Specification {
     @Shared GameMap map = new AlmostInfiniteMap()
     @Shared Direction[] directions = Direction.values()
 
-    abstract Route createARouteStartingAt(Position position, Random random)
+    abstract Route createARouteStartingAt(Position position, Position destination, Random random)
     abstract Route createARouteOfNonZeroLength(Random random)
     abstract Route createARouteOfZeroLength(Random random)
 
