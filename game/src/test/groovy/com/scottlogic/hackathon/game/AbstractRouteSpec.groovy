@@ -25,7 +25,8 @@ abstract class AbstractRouteSpec extends Specification {
 
         given: "a position, and a route starting at it"
         Position start = randomPosition(random)
-        Route route = createARouteStartingAt(start, random)
+        Position destination = randomPosition(random)
+        Route route = createARouteStartingAt(start, destination, random)
 
         expect: "the route collides with the start"
         route.collides([start])
@@ -39,7 +40,8 @@ abstract class AbstractRouteSpec extends Specification {
 
         given: "a position, and a route starting at it"
         Position start = randomPosition(random)
-        Route route = createARouteStartingAt(start, random)
+        Position destination = randomPosition(random)
+        Route route = createARouteStartingAt(start, destination, random)
 
         expect: "the route's 'getStart()' method returns the start position"
         route.getStart() == start
@@ -52,7 +54,7 @@ abstract class AbstractRouteSpec extends Specification {
     def "The positions covered by stream, iterator, and spliterator are the same"(Random random) {
 
         given: "a route"
-        Route route = createARouteStartingAt(randomPosition(random), random)
+        Route route = createARouteStartingAt(randomPosition(random), randomPosition(random), random)
 
         when: "the Positions produced by its 'stream', 'iterator', and 'spliterator' methods are all collected into lists"
         List stream = route.stream().collect(Collectors.toList())
@@ -74,7 +76,7 @@ abstract class AbstractRouteSpec extends Specification {
     def "The directions covered by stream, iterator, and spliterator are the same"(Random random) {
 
         given: "a route"
-        Route route = createARouteStartingAt(randomPosition(random), random)
+        Route route = createARouteStartingAt(randomPosition(random),randomPosition(random), random)
 
         when: "the Directions produced by its 'streamDirections', 'directionIterator', and 'directionSpliterator' methods are all collected into lists"
         List stream = route.streamDirections().collect(Collectors.toList())
