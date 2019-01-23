@@ -7,7 +7,7 @@ Parameters:
       Necessary to locate and reference resources created by that stack.
   ServerServiceName:
     Type: String
-    Default: hackathon-server
+    Default: TEST-hackathon
     Description: A name for ECS the service running the Hackathon server.
   ServerHTTPPort:
     Type: Number
@@ -122,7 +122,7 @@ Resources:
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
       - ContainerName: !Ref 'ServerServiceName'
-        ContainerPort: !Ref 'ContainerPort'
+        ContainerPort: !Ref 'ServerHTTPPort'
         TargetGroupArn: !Ref 'TargetGroup'
 
   # A target group. This is used for keeping track of all the tasks, and
@@ -140,7 +140,7 @@ Resources:
       HealthyThresholdCount: 2
       TargetType: ip
       Name: !Ref 'ServerServiceName'
-      Port: !Ref 'ContainerPort'
+      Port: !Ref 'ServerHTTPPort'
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId:
