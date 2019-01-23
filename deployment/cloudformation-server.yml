@@ -7,7 +7,7 @@ Parameters:
       Necessary to locate and reference resources created by that stack.
   ServerServiceName:
     Type: String
-    Default: TEST-hackathon
+    Default: hackathon-server
     Description: A name for ECS the service running the Hackathon server.
   ServerHTTPPort:
     Type: Number
