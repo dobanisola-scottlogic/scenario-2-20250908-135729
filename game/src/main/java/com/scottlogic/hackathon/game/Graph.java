@@ -34,8 +34,8 @@ class Graph {
     public static Optional<Route> findRoute(GameMap map, Position from, Position to, Predicate<Position> avoid) {
         return AStar.findIntRoute(Objects.requireNonNull(from), Objects.requireNonNull(to),
                         new MapGraph(Objects.requireNonNull(map), Objects.requireNonNull(avoid)), map::distance)
-                .map(route -> map.route(from,to,
-                        route.getEdges().stream().map(Edge::getDirection).collect(Collectors.toList())));
+                .map(route -> (new RouteImpl(map, from, to, route.getEdges().stream().map(Edge::getDirection).collect(Collectors.toList()))));
+
     }
 
     private static final class Edge {

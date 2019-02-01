@@ -1,9 +1,6 @@
 package com.scottlogic.hackathon.bots;
 
-import com.scottlogic.hackathon.game.Bot;
-import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.GameState;
-import com.scottlogic.hackathon.game.Move;
+import com.scottlogic.hackathon.game.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +27,11 @@ public class DefaultBot extends Bot {
                 moves.add(new DirectionAndDistanceMove(player.getId()));
             }
         });
+
+        System.out.println("before route");
+        Optional<Route> route = gameState.getMap().findRoute(new Position(0,0), new Position(12,0), gameState.getOutOfBoundsPositions());
+        System.out.println("found a route");
+        route.ifPresent(positions -> System.out.println("after route - length = " + positions.getLength() + " with direction " + positions.getFirstDirection().get()));
 
         moves.forEach(move -> move.phase());
 

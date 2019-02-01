@@ -9,13 +9,24 @@ import static com.scottlogic.hackathon.game.Direction.*
 class ListRouteSpec extends AbstractRouteSpec {
 
     @Override
-    RouteImpl createARouteStartingAt(Position position, Position destination, Random random) {
-        return new RouteImpl(map, position, destination, randomDirectionList(0, random))
+    RouteImpl createARouteStartingAt(Position position, Random random) {
+        List<Direction> directionList = randomDirectionList(0, random)
+        Position dest = position
+        for (Direction dir : directionList){
+            dest = map.getNeighbour(dest, dir)
+        }
+        return new RouteImpl(map, position, dest, directionList)
     }
 
     @Override
     Route createARouteOfNonZeroLength(Random random) {
-        return new RouteImpl(map, randomPosition(random), null,  randomDirectionList(1, random))
+        Position randomPos = randomPosition(random)
+        List<Direction> directionList = randomDirectionList(1, random)
+        Position dest = randomPos
+        for (Direction dir : directionList){
+            dest = map.getNeighbour(dest, dir)
+        }
+        return new RouteImpl(map,randomPos, dest,  directionList)
     }
 
     @Override

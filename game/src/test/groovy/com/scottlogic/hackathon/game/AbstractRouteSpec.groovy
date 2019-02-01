@@ -16,7 +16,7 @@ abstract class AbstractRouteSpec extends Specification {
     @Shared GameMap map = new AlmostInfiniteMap()
     @Shared Direction[] directions = Direction.values()
 
-    abstract Route createARouteStartingAt(Position position, Position destination, Random random)
+    abstract Route createARouteStartingAt(Position position, Random random)
     abstract Route createARouteOfNonZeroLength(Random random)
     abstract Route createARouteOfZeroLength(Random random)
 
@@ -25,8 +25,7 @@ abstract class AbstractRouteSpec extends Specification {
 
         given: "a position, and a route starting at it"
         Position start = randomPosition(random)
-        Position destination = randomPosition(random)
-        Route route = createARouteStartingAt(start, destination, random)
+        Route route = createARouteStartingAt(start, random)
 
         expect: "the route collides with the start"
         route.collides([start])
@@ -40,8 +39,7 @@ abstract class AbstractRouteSpec extends Specification {
 
         given: "a position, and a route starting at it"
         Position start = randomPosition(random)
-        Position destination = randomPosition(random)
-        Route route = createARouteStartingAt(start, destination, random)
+        Route route = createARouteStartingAt(start, random)
 
         expect: "the route's 'getStart()' method returns the start position"
         route.getStart() == start
@@ -54,7 +52,7 @@ abstract class AbstractRouteSpec extends Specification {
     def "The positions covered by stream, iterator, and spliterator are the same"(Random random) {
 
         given: "a route"
-        Route route = createARouteStartingAt(randomPosition(random), randomPosition(random), random)
+        Route route = createARouteStartingAt(randomPosition(random), random)
 
         when: "the Positions produced by its 'stream', 'iterator', and 'spliterator' methods are all collected into lists"
         List stream = route.stream().collect(Collectors.toList())
@@ -76,7 +74,7 @@ abstract class AbstractRouteSpec extends Specification {
     def "The directions covered by stream, iterator, and spliterator are the same"(Random random) {
 
         given: "a route"
-        Route route = createARouteStartingAt(randomPosition(random),randomPosition(random), random)
+        Route route = createARouteStartingAt(randomPosition(random), random)
 
         when: "the Directions produced by its 'streamDirections', 'directionIterator', and 'directionSpliterator' methods are all collected into lists"
         List stream = route.streamDirections().collect(Collectors.toList())
@@ -187,7 +185,7 @@ abstract class AbstractRouteSpec extends Specification {
         }
 
         @Override
-        Route route(Position start, Position destination, List<Direction> route) {
+        Route route(Position start, List<Direction> route) {
             throw new AssertionError('A Route implementation should not call GameMap.route(...)')
         }
 
