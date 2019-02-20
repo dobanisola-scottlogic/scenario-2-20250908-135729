@@ -2,11 +2,11 @@
 
 ## The Plan
 
-Now that your ants are surviving long enough without killing themselves, we need to tell them to collect food to spawn more ants.
+Now that your players are surviving long enough without killing themselves, we need to tell them to collect food to spawn more players.
 
 ## Code Updates
 
-### Making ants move towards food
+### Making players move towards food
 
 Add a method for collecting food:
 
@@ -28,8 +28,8 @@ private void collectFood(GameState gameState){
 }
 ```
 
-This will go through all of your ants, and for each ant loop through all of the food items. If the distance is less than 10, the ant will move
-towards that food. Note that an ant will move towards the last food it finds that is less than 10 this is not necessarily the closest food and may not be the same food each turn. We then need to add a call to `collectFood` in the `makeMoves` method, so add `collectFood(gameState);` just
+This will go through all of your players, and for each player loop through all of the food items. If the distance is less than 10, the player will move
+towards that food. Note that a player will move towards the last food it finds that is less than 10 this is not necessarily the closest food and may not be the same food each turn. We then need to add a call to `collectFood` in the `makeMoves` method, so add `collectFood(gameState);` just
 before `List<Move> movingNorth = extractMoves(gameState);`
 
 ### Testing

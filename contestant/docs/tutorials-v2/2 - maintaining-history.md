@@ -2,14 +2,14 @@
 
 ## The Plan
 
-We want to remember the direction each ant was travelling in so that you know which direction the ant moved last turn.
+We want to remember the direction each player was travelling in so that you know which direction the player moved last turn.
 
 ## Code Updates
 
 ### Using a HashMap
 
-Instead of determining each ants move every turn, we can use a HashMap to map each ant to a specific direction.
-We can use this to know which direction an ant moved in previously, removing the need to recalculate it if we don't want to.
+Instead of determining each players move every turn, we can use a HashMap to map each player to a specific direction.
+We can use this to know which direction a player moved in previously, removing the need to recalculate it if we don't want to.
 Add
 
 `private HashMap<UUID, Direction> antDirectionHashMap;`
@@ -33,7 +33,7 @@ private void moveNorth(GameState gameState){
     for (Player player : gameState.getPlayers()){
         UUID playerID = player.getId();
         if (antDirectionHashMap.containsKey(playerID)){
-            // Do nothing, ant already exists in the HashMap
+            // Do nothing, player already exists in the HashMap
         }
         else {
             antDirectionHashMap.put(playerID, Direction.NORTH);
@@ -98,11 +98,11 @@ For example (Windows):
 gradlew run -P mainClass=com.contestantbots.team.ExampleBot
 ```
 
-### Removing dead ants from the HashMap
+### Removing dead players from the HashMap
 
 If you run the program now, it should have lasted 15 or 16 phases with your bot being disqualified. This is because it
-attempted to move a dead ant that had crashed into the sea (because they still existed in the HashMap). To solve
-this we just need to remove the dead ants from the HashMap each turn. This can be done by adding
+attempted to move a dead player that had crashed into the sea (because they still existed in the HashMap). To solve
+this we just need to remove the dead players from the HashMap each turn. This can be done by adding
 
 ```
 private void removeDeadPlayers(GameState gameState) {
@@ -117,4 +117,4 @@ Now we just need to call this method at the beginning of `makeMoves`, so just be
 
 `removeDeadPlayers(gameState);`
 
-In the next tutorial we will look at preventing the ants from dying by walking into the sea.
+In the next tutorial we will look at preventing the players from dying by walking into the sea.

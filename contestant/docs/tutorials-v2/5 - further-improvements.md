@@ -2,15 +2,16 @@
 
 There are a few improvements that could be made to this basic bot. This is a list of ideas to get you started
 
-- Is it a good idea to give each ant a random direction each turn if it isn't near any food?
-- Some of the ants get stuck at the sea if there is food close to them on the other side. How could this be fixed?
-- What is the best way to make my ants explore the map so that the ants can see more food?
-- How could the ants decide which food to go for more effectively?
-- Should multiple ants go for the same food item?
-- When a player can't move, their position is not added to the list of positions that will be occupied next turn. This can result in ants colliding
+- Is it a good idea to give each player a random direction each turn if it isn't near any food? Should they keep moving in the direction they were going
+  previously instead?
+- Some of the players get stuck at the sea if there is food close to them on the other side. How could this be fixed?
+- What is the best way to make players explore the map so that the players can see more food?
+- How could the players decide which food to go for more effectively?
+- Should multiple players go for the same food item?
+- When a player can't move, their position is not added to the list of positions that will be occupied next turn. This can result in players colliding
 - Perhaps the HashMap idea could be extended to be of type `HashMap<UUID, YourOwnClass>`, where the objects of your new class could have a direction
-  property as well as several others. This would enable you to store much more information about each ant
-- This tutorial does not consider any fighting logic. How should your ants react to seeing enemy players? Or even enemy spawns?
+  property as well as several others. This would enable you to store much more information about each player
+- This tutorial does not consider any fighting logic. How should your players react to seeing enemy players? Or even enemy spawns?
 
 ## Methods available to you
 
@@ -19,7 +20,7 @@ adding more complexity to your bots.
 
 #### The GameState object
 
-`Set<SpawnPoint> spawnPoints = gameState.getSpawnPoints();` returns a list of all the spawn points your ants can see. You can see the owner of the spawn
+`Set<SpawnPoint> spawnPoints = gameState.getSpawnPoints();` returns a list of all the spawn points your players can see. You can see the owner of the spawn
 points with
 
 ```

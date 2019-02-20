@@ -2,26 +2,26 @@
 
 ## The Plan
 
-Currently the ants will move wherever you tell them to, even if it results colliding into a wall or each other. We will
+Currently the players will move wherever you tell them to, even if it results colliding into a wall or each other. We will
 add some logic to prevent this.
 
 ## Code Updates
 
 ### Tracking the next positions
 
-We will maintain a list of positions that our ants will occupy on the next turn, so that we can make sure no position
-is occupied by 2 ants. Add
+We will maintain a list of positions that our players will occupy on the next turn, so that we can make sure no position
+is occupied by 2 players. Add
 
 `private List<Position> nextPositions;`
 
 as an instance variable, and also initialise it with `nextPositions = new ArrayList<>();` at the beginning of
 `makeMoves`, as we need to clear this list at the beginning of every turn, since it represents the positions our
-ants will occupy on the following turn.
+players will occupy on the following turn.
 
-We will add a method called `canMove` which will determine whether a given ant is able to move in a specific direction.
+We will add a method called `canMove` which will determine whether a given player is able to move in a specific direction.
 It will return _True_ only if the move
 
-- Would not result in crashing to another ant on the same team (through our use of `nextPositions`)
+- Would not result in crashing to another player on the same team (through our use of `nextPositions`)
 - Would not result walking into water
 
 ```
@@ -39,12 +39,12 @@ private boolean canMove(final GameState gameState, final Player player, final Di
 
 ## Random movement
 
-We will now make our ants move randomly each turn instead of always north. Lets rename the method to
+We will now make our players move randomly each turn instead of always north. Lets rename the method to
 `moveRandomly` and add the randomness. To do this, replace
 
 ```
 if (antDirectionHashMap.containsKey(playerID)){
-    // Do nothing, ant already exists in the HashMap
+    // Do nothing, player already exists in the HashMap
 }
 else {
     antDirectionHashMap.put(playerID, Direction.NORTH);
@@ -85,10 +85,10 @@ else {
 }
 ```
 
-This will check if the ant exists and if the direction it has been assigned is a valid direction to move. If so, it will add the move,
+This will check if the player exists and if the direction it has been assigned is a valid direction to move. If so, it will add the move,
 otherwise it will do nothing and stay still.
 
-Now the `extractMoves` method will only add moves to the HashMap if they would not result in the ant crashing into the sea or another ant.
+Now the `extractMoves` method will only add moves to the HashMap if they would not result in the player crashing into the sea or another player.
 
 ### Testing
 
@@ -112,10 +112,10 @@ For example (Windows):
 gradlew run -P mainClass=com.contestantbots.team.ExampleBot
 ```
 
-## Stop moving enemy ants
+## Stop moving enemy players
 
-If you run the game now, your ants should much longer. You may even meet enemy teams ants. However, if you try and move an enemy players
-ant, your bot will be disqualified. To avoid this, we need to not add ants to our HashMap if they belong to an enemy. To achieve this,
+If you run the game now, your players should much longer. You may even meet enemy teams players. However, if you try and move an enemy teams
+player, your bot will be disqualified. To avoid this, we need to not add players to our HashMap if they belong to an enemy. To achieve this,
 add a helper function
 
 ```

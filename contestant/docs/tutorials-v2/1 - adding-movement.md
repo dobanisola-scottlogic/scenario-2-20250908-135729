@@ -40,7 +40,7 @@ separate package, e.g. `com.contestantbots.util`.
 
 ### Issuing Orders
 
-The first thing we need to do is loop through the ants and provide each of them with a direction. For now, we will
+The first thing we need to do is loop through the players and provide each of them with a direction. For now, we will
 just make them all move north. Add the method moveNorth below to your class.
 
 ```
@@ -54,7 +54,7 @@ private List<Move> moveNorth(GameState gameState){
 }
 ```
 
-This will loop through all of the ants, giving each a direction of north. Then in the `makeMoves` method, replace
+This will loop through all of the players, giving each a direction of north. Then in the `makeMoves` method, replace
 
 `return new ArrayList<>();`
 
