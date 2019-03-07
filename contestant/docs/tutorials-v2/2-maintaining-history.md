@@ -12,7 +12,7 @@ Instead of determining each players move every turn, we can use a HashMap to map
 We can use this to know which direction a player moved in previously, removing the need to recalculate it if we don't want to.
 Add
 
-`private HashMap<UUID, Direction> antDirectionHashMap;`
+`private HashMap<UUID, Direction> playerDirectionHashMap;`
 
 as an instance variable. We also need to initialise
 the HashMap, so add the following `initialise` method.
@@ -20,7 +20,7 @@ the HashMap, so add the following `initialise` method.
 ```
 @Override
 public void initialise(GameState gameState) {
-    antDirectionHashMap = new HashMap<>();
+    playerDirectionHashMap = new HashMap<>();
 }
 ```
 
@@ -32,11 +32,11 @@ Now we need to edit the `moveNorth` method to instead populate the HashMap. Repl
 private void moveNorth(GameState gameState){
     for (Player player : gameState.getPlayers()){
         UUID playerID = player.getId();
-        if (antDirectionHashMap.containsKey(playerID)){
+        if (playerDirectionHashMap.containsKey(playerID)){
             // Do nothing, player already exists in the HashMap
         }
         else {
-            antDirectionHashMap.put(playerID, Direction.NORTH);
+            playerDirectionHashMap.put(playerID, Direction.NORTH);
         }
     }
 }
@@ -53,10 +53,10 @@ Now that we have generated entries into the HashMap, we need a way of extracting
 ```
 private List<Move> extractMoves(GameState gameState){
     List<Move> moves = new ArrayList<>();
-    for (Map.Entry<UUID, Direction> item : antDirectionHashMap.entrySet()) {
-        UUID antID = item.getKey();
+    for (Map.Entry<UUID, Direction> item : playerDirectionHashMap.entrySet()) {
+        UUID playerID = item.getKey();
         Direction direction = item.getValue();
-        moves.add(new MoveImpl(antID, direction));
+        moves.add(new MoveImpl(playerID, direction));
     }
     return moves;
 }
@@ -108,7 +108,7 @@ this we just need to remove the dead players from the HashMap each turn. This ca
 private void removeDeadPlayers(GameState gameState) {
     // Remove dead players from the HashMap
     for (Player p : gameState.getRemovedPlayers()) {
-        antDirectionHashMap.remove(p.getId());
+        playerDirectionHashMap.remove(p.getId());
     }
 }
 ```
@@ -117,4 +117,4 @@ Now we just need to call this method at the beginning of `makeMoves`, so just be
 
 `removeDeadPlayers(gameState);`
 
-In the next tutorial we will look at preventing the players from dying by walking into the sea.
+In the next step [next step](3-avoiding-collisions.md) we will look at preventing the players from dying by walking into the sea.

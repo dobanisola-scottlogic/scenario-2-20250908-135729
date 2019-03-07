@@ -29,7 +29,6 @@ private boolean canMove(final GameState gameState, final Player player, final Di
     Set<Position> outOfBounds = gameState.getOutOfBoundsPositions();
     Position newPosition = gameState.getMap().getNeighbour(player.getPosition(), direction);
     if (!nextPositions.contains(newPosition) && !outOfBounds.contains(newPosition)) {
-        nextPositions.add(newPosition);
         return true;
     } else {
         return false;
@@ -43,18 +42,18 @@ We will now make our players move randomly each turn instead of always north. Le
 `moveRandomly` and add the randomness. To do this, replace
 
 ```
-if (antDirectionHashMap.containsKey(playerID)){
+if (playerDirectionHashMap.containsKey(playerID)){
     // Do nothing, player already exists in the HashMap
 }
 else {
-    antDirectionHashMap.put(playerID, Direction.NORTH);
+    playerDirectionHashMap.put(playerID, Direction.NORTH);
 }
 ```
 
 with
 
 ```
-antDirectionHashMap.put(playerID, Direction.random());
+playerDirectionHashMap.put(playerID, Direction.random());
 ```
 
 ## Making use of makeMove
@@ -63,7 +62,7 @@ Now when we extract our moves from the HashMap, we need to check if that move is
 Before this, we need to add a small helper function to find the Player object based on its ID.
 
 ```
-private Player findAntByID(GameState gameState, UUID id){
+private Player findPlayerByID(GameState gameState, UUID id){
     for (Player player : gameState.getPlayers()){
         if (player.getId().equals(id)){
             return player;
@@ -73,12 +72,14 @@ private Player findAntByID(GameState gameState, UUID id){
 }
 ```
 
-Now in extract moves, replace `moves.add(new MoveImpl(antID, direction));` with
+Now in extract moves, replace `moves.add(new MoveImpl(playerID, direction));` with
 
 ```
-Player player = findAntByID(gameState, antID);
+Player player = findPlayerByID(gameState, playerID);
 if (player != null && canMove(gameState, player, direction)) {
-    moves.add(new MoveImpl(antID, direction));
+    moves.add(new MoveImpl(playerID, direction));
+    Position newPosition = gameState.getMap().getNeighbour(player.getPosition(), direction);
+    nextPositions.add(newPosition);
 }
 else {
     // Player cannot move
@@ -119,7 +120,7 @@ player, your bot will be disqualified. To avoid this, we need to not add players
 add a helper function
 
 ```
-private boolean isMyAnt(Player player){
+private boolean isMyPlayer(Player player){
     return player.getOwner().equals(getId());
 }
 ```
@@ -127,7 +128,9 @@ private boolean isMyAnt(Player player){
 and edit the `moveRandomly` method so it contains the following:
 
 ```
-if (isMyAnt(player)) {
-    antDirectionHashMap.put(playerID, Direction.random());
+if (isMyPlayer(player)) {
+    playerDirectionHashMap.put(playerID, Direction.random());
 }
 ```
+
+In the next step [next step](4-collecting-food.md) we will look at how to collect food.

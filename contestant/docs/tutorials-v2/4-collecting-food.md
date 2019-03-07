@@ -13,13 +13,13 @@ Add a method for collecting food:
 ```
 private void collectFood(GameState gameState){
     for (Player player : gameState.getPlayers()){
-        if (isMyAnt(player)){
+        if (isMyPlayer(player)){
             for (Collectable food : gameState.getCollectables()){
                 int distanceToFood = gameState.getMap().distance(player.getPosition(), food.getPosition());
                 if (distanceToFood < 10){
                     Optional<Direction> direction = gameState.getMap().directionsTowards(player.getPosition(), food.getPosition()).findFirst();
                     if (direction.isPresent()){
-                        antDirectionHashMap.put(player.getId(), direction.get());
+                        playerDirectionHashMap.put(player.getId(), direction.get());
                     }
                 }
             }
@@ -53,3 +53,5 @@ For example (Windows):
 ```sh
 gradlew run -P mainClass=com.contestantbots.team.ExampleBot
 ```
+
+In the next step [next step](5-further-improvements.md) we will look at other ways the bot could be improved
