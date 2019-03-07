@@ -54,4 +54,4 @@ For example (Windows):
 gradlew run -P mainClass=com.contestantbots.team.ExampleBot
 ```
 
-In the next step [next step](5-further-improvements.md) we will look at other ways the bot could be improved
+In the [next step](5-further-improvements.md) we will look at other ways the bot could be improved

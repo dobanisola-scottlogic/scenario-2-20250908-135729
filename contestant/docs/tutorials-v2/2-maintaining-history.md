@@ -117,4 +117,4 @@ Now we just need to call this method at the beginning of `makeMoves`, so just be
 
 `removeDeadPlayers(gameState);`
 
-In the next step [next step](3-avoiding-collisions.md) we will look at preventing the players from dying by walking into the sea.
+In the [next step](3-avoiding-collisions.md) we will look at preventing the players from dying by walking into the sea.

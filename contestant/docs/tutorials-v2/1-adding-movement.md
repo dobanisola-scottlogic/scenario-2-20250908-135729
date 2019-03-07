@@ -88,7 +88,7 @@ gradlew run -P mainClass=com.contestantbots.team.ExampleBot
 ```
 
 The game should now have lasted 21 phases, but still end with the `LONE_SURVIVOR` end condition as all your players
-march in a neat line directly northwards and straight into the nearby water! 
+march in a neat line directly northwards and straight into the nearby water!
 
-In the next step, [next step](2-maintaining-history.md) we will look at maintaining a history the directions
+In the [next step](2-maintaining-history.md) we will look at maintaining a history the directions
 that your players are travelling in.

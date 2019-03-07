@@ -133,4 +133,4 @@ if (isMyPlayer(player)) {
 }
 ```
 
-In the next step [next step](4-collecting-food.md) we will look at how to collect food.
+In the [next step](4-collecting-food.md) we will look at how to collect food.
