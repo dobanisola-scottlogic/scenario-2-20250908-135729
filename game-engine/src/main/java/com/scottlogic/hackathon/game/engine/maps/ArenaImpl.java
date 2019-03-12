@@ -4,6 +4,7 @@ import com.scottlogic.hackathon.game.Position;
 import com.scottlogic.hackathon.game.engine.models.GameMapImpl;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -13,17 +14,21 @@ class ArenaImpl extends GameMapImpl implements Arena {
     private final String name;
     private final Set<Position> outOfBoundsPositions;
     private final Set<Position> spawnPointPositions;
+    private final Double perTurnFoodSpawnProbability;
 
     public ArenaImpl(
             final String name,
             final int width,
             final int height,
             final Set<Position> outOfBoundsPositions,
-            final Set<Position> spawnPointPositions) throws Exception {
+            final Set<Position> spawnPointPositions,
+            final Double perTurnFoodSpawnProbability)
+            throws Exception {
         super(width, height);
         this.name = name;
         this.outOfBoundsPositions = outOfBoundsPositions;
         this.spawnPointPositions = spawnPointPositions;
+        this.perTurnFoodSpawnProbability = perTurnFoodSpawnProbability;
         this.validate();
     }
 
@@ -38,6 +43,10 @@ class ArenaImpl extends GameMapImpl implements Arena {
 
         if (spawnPointPositions.size() == 0) {
             throw new Exception("must have some spawn points");
+        }
+
+        if (perTurnFoodSpawnProbability != null && (perTurnFoodSpawnProbability < 0 || perTurnFoodSpawnProbability > 1)) {
+            throw new Exception("perTurnFoodSpawnProbability must be >=0 and <=1");
         }
     }
 
@@ -62,6 +71,10 @@ class ArenaImpl extends GameMapImpl implements Arena {
     @Override
     public Set<Position> getSpawnPointPositions() {
         return Collections.unmodifiableSet(spawnPointPositions);
+    }
+
+    public Optional<Double> getPerTurnFoodSpawnProbability() {
+        return perTurnFoodSpawnProbability == null ? Optional.empty() : Optional.of(perTurnFoodSpawnProbability);
     }
 
     @Override

@@ -491,7 +491,7 @@ public class GameEngine {
         final Random random = new Random();
         final Collectable.Type[] types = Collectable.Type.values();
         for (final Collectable.Type type : types) {
-            if (random.nextDouble() > collectablesSpawnFrequency) {
+            if (random.nextDouble() < this.map.getPerTurnFoodSpawnProbability().orElse(1 - collectablesSpawnFrequency)) {
                 final int count = random.nextInt(maxCollectablesSpawnedPerPhase);
                 for (int i = 0; i < count; i++) {
                     spawnCollectable(type);

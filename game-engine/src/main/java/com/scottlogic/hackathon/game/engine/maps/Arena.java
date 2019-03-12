@@ -6,6 +6,7 @@ import com.scottlogic.hackathon.game.Position;
 
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -38,7 +39,8 @@ public interface Arena extends GameMap {
                 width,
                 height,
                 outOfBoundsPositions,
-                spawnPointPositions);
+                spawnPointPositions,
+                map.getPerTurnFoodSpawnProbability());
 
         return arena;
     }
@@ -48,4 +50,5 @@ public interface Arena extends GameMap {
     Set<Position> getSpawnPointPositions();
     boolean contains(Position position);
     Stream<Position> getSurroundingPositions(Position position, int distance);
+    Optional<Double> getPerTurnFoodSpawnProbability();
 }
