@@ -23,6 +23,10 @@ public interface Arena extends GameMap {
         final int height = map.getHeight();
         final int[] data = map.getData();
 
+        if (height * width != data.length) {
+            throw new Exception("Map is invalid; wrong number of cells");
+        }
+
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 final int datum = data[(y * width) + x];
