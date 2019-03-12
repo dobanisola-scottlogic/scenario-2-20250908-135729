@@ -4,6 +4,7 @@ public class LoadableMap {
     private int width;
     private int height;
     private Double perTurnFoodSpawnProbability;
+    private Integer maximumFoodCount;
     private int[] data;
 
     public LoadableMap() {
@@ -20,6 +21,10 @@ public class LoadableMap {
 
     public Double getPerTurnFoodSpawnProbability() {
         return perTurnFoodSpawnProbability;
+    }
+
+    public Integer getMaximumFoodCount() {
+        return maximumFoodCount;
     }
 
     public int[] getData() {

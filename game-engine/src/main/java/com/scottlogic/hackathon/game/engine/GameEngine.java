@@ -490,9 +490,14 @@ public class GameEngine {
     private void spawnCollectables() {
         final Random random = new Random();
         final Collectable.Type[] types = Collectable.Type.values();
+
         for (final Collectable.Type type : types) {
-            if (random.nextDouble() < this.map.getPerTurnFoodSpawnProbability().orElse(1 - collectablesSpawnFrequency)) {
-                final int count = random.nextInt(maxCollectablesSpawnedPerPhase);
+            if (random.nextDouble() < map.getPerTurnFoodSpawnProbability().orElse(1 - collectablesSpawnFrequency)) {
+                // generate a random count of food to spawn, but limit it so we don't go over the map's maximum
+                final int count = Math.min(
+                    1 + random.nextInt(maxCollectablesSpawnedPerPhase - 1),
+                    map.getMaximumFoodCount().orElse(Integer.MAX_VALUE) - collectables.size());
+
                 for (int i = 0; i < count; i++) {
                     spawnCollectable(type);
                 }
@@ -532,6 +537,8 @@ public class GameEngine {
 
     private void spawnPlayers() {
         for (final SpawnPointImpl spawnPoint : spawnPoints) {
+
+
             if (spawnPoint.shouldSpawnPlayer()) {
                 spawnPlayer(spawnPoint);
             }

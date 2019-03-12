@@ -15,6 +15,7 @@ class ArenaImpl extends GameMapImpl implements Arena {
     private final Set<Position> outOfBoundsPositions;
     private final Set<Position> spawnPointPositions;
     private final Double perTurnFoodSpawnProbability;
+    private final Integer maximumFoodCount;
 
     public ArenaImpl(
             final String name,
@@ -22,13 +23,15 @@ class ArenaImpl extends GameMapImpl implements Arena {
             final int height,
             final Set<Position> outOfBoundsPositions,
             final Set<Position> spawnPointPositions,
-            final Double perTurnFoodSpawnProbability)
+            final Double perTurnFoodSpawnProbability,
+            final Integer maximumFoodCount)
             throws Exception {
         super(width, height);
         this.name = name;
         this.outOfBoundsPositions = outOfBoundsPositions;
         this.spawnPointPositions = spawnPointPositions;
         this.perTurnFoodSpawnProbability = perTurnFoodSpawnProbability;
+        this.maximumFoodCount = maximumFoodCount;
         this.validate();
     }
 
@@ -78,6 +81,11 @@ class ArenaImpl extends GameMapImpl implements Arena {
     }
 
     @Override
+    public Optional<Integer> getMaximumFoodCount() {
+        return maximumFoodCount == null ? Optional.empty() : Optional.of(maximumFoodCount);
+    }
+
+    @Override
     public boolean contains(final Position position) {
         return position.getX() >= 0
                 && position.getX() < getWidth()
@@ -92,5 +100,4 @@ class ArenaImpl extends GameMapImpl implements Arena {
                         .mapToObj(y -> createPosition(x, y)))
                 .flatMap(Function.identity());
     }
-
 }
