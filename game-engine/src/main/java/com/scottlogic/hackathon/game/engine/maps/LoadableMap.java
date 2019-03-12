@@ -9,6 +9,7 @@ public class LoadableMap {
     private Integer maximumTurnCount;
     private Integer initialUnitSpawnCount;
     private Integer battleRadius;
+    private Integer viewDistance;
 
     public LoadableMap() {
 
@@ -44,5 +45,9 @@ public class LoadableMap {
 
     public Integer getBattleRadius() {
         return battleRadius;
+    }
+
+    public Integer getViewDistance() {
+        return viewDistance;
     }
 }

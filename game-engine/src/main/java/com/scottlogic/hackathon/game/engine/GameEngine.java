@@ -176,8 +176,8 @@ public class GameEngine {
             getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8 , props);
         spawnPhases = map.getInitialUnitSpawnCount().orElse(
             getConfigValue(Integer::parseInt, "spawnPhases", 8 , props));
-        maxVisibleDistance =
-            getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
+        maxVisibleDistance = map.getViewDistance().orElse(
+            getConfigValue(Integer::parseInt, "maxVisibleDistance", 6, props));
     }
 
     public Arena getMap() {

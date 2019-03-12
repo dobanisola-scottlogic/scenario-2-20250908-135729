@@ -19,6 +19,7 @@ class ArenaImpl extends GameMapImpl implements Arena {
     private final Integer maximumTurnCount;
     private final Integer initialUnitSpawnCount;
     private final Integer battleRadius;
+    private final Integer viewDistance;
 
     public ArenaImpl(
             final String name,
@@ -30,7 +31,8 @@ class ArenaImpl extends GameMapImpl implements Arena {
             final Integer maximumFoodCount,
             final Integer maximumTurnCount,
             final Integer initialUnitSpawnCount,
-            final Integer battleRadius)
+            final Integer battleRadius,
+            final Integer viewDistance)
             throws Exception {
 
         super(width, height);
@@ -42,6 +44,7 @@ class ArenaImpl extends GameMapImpl implements Arena {
         this.maximumTurnCount = maximumTurnCount;
         this.initialUnitSpawnCount = initialUnitSpawnCount;
         this.battleRadius = battleRadius;
+        this.viewDistance = viewDistance;
         this.validate();
     }
 
@@ -108,6 +111,11 @@ class ArenaImpl extends GameMapImpl implements Arena {
     @Override
     public Optional<Integer> getInitialUnitSpawnCount() {
         return initialUnitSpawnCount == null ? Optional.empty() : Optional.of(initialUnitSpawnCount);
+    }
+
+    @Override
+    public Optional<Integer> getViewDistance() {
+        return viewDistance == null ? Optional.empty() : Optional.of(viewDistance);
     }
 
     @Override

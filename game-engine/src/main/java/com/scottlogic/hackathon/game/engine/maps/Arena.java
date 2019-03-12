@@ -48,7 +48,8 @@ public interface Arena extends GameMap {
                 map.getMaximumFoodCount(),
                 map.getMaximumTurnCount(),
                 map.getInitialUnitSpawnCount(),
-                map.getBattleRadius());
+                map.getBattleRadius(),
+                map.getViewDistance());
 
         return arena;
     }
@@ -64,4 +65,5 @@ public interface Arena extends GameMap {
     Optional<Integer> getMaximumTurnCount();
     Optional<Integer> getBattleRadius();
     Optional<Integer> getInitialUnitSpawnCount();
+    Optional<Integer> getViewDistance();
 }
