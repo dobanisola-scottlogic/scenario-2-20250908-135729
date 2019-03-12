@@ -41,7 +41,10 @@ public interface Arena extends GameMap {
                 outOfBoundsPositions,
                 spawnPointPositions,
                 map.getPerTurnFoodSpawnProbability(),
-                map.getMaximumFoodCount());
+                map.getMaximumFoodCount(),
+                map.getMaximumTurnCount(),
+                map.getInitialUnitSpawnCount(),
+                map.getBattleRadius());
 
         return arena;
     }
@@ -51,6 +54,10 @@ public interface Arena extends GameMap {
     Set<Position> getSpawnPointPositions();
     boolean contains(Position position);
     Stream<Position> getSurroundingPositions(Position position, int distance);
+
     Optional<Double> getPerTurnFoodSpawnProbability();
     Optional<Integer> getMaximumFoodCount();
+    Optional<Integer> getMaximumTurnCount();
+    Optional<Integer> getBattleRadius();
+    Optional<Integer> getInitialUnitSpawnCount();
 }

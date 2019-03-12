@@ -6,6 +6,9 @@ public class LoadableMap {
     private Double perTurnFoodSpawnProbability;
     private Integer maximumFoodCount;
     private int[] data;
+    private Integer maximumTurnCount;
+    private Integer initialUnitSpawnCount;
+    private Integer battleRadius;
 
     public LoadableMap() {
 
@@ -19,6 +22,10 @@ public class LoadableMap {
         return height;
     }
 
+    public int[] getData() {
+        return data;
+    }
+
     public Double getPerTurnFoodSpawnProbability() {
         return perTurnFoodSpawnProbability;
     }
@@ -27,7 +34,15 @@ public class LoadableMap {
         return maximumFoodCount;
     }
 
-    public int[] getData() {
-        return data;
+    public Integer getMaximumTurnCount() {
+        return maximumTurnCount;
+    }
+
+    public Integer getInitialUnitSpawnCount() {
+        return initialUnitSpawnCount;
+    }
+
+    public Integer getBattleRadius() {
+        return battleRadius;
     }
 }

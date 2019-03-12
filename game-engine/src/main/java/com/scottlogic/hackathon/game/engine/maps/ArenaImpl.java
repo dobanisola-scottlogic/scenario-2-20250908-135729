@@ -16,6 +16,9 @@ class ArenaImpl extends GameMapImpl implements Arena {
     private final Set<Position> spawnPointPositions;
     private final Double perTurnFoodSpawnProbability;
     private final Integer maximumFoodCount;
+    private final Integer maximumTurnCount;
+    private final Integer initialUnitSpawnCount;
+    private final Integer battleRadius;
 
     public ArenaImpl(
             final String name,
@@ -24,14 +27,21 @@ class ArenaImpl extends GameMapImpl implements Arena {
             final Set<Position> outOfBoundsPositions,
             final Set<Position> spawnPointPositions,
             final Double perTurnFoodSpawnProbability,
-            final Integer maximumFoodCount)
+            final Integer maximumFoodCount,
+            final Integer maximumTurnCount,
+            final Integer initialUnitSpawnCount,
+            final Integer battleRadius)
             throws Exception {
+
         super(width, height);
         this.name = name;
         this.outOfBoundsPositions = outOfBoundsPositions;
         this.spawnPointPositions = spawnPointPositions;
         this.perTurnFoodSpawnProbability = perTurnFoodSpawnProbability;
         this.maximumFoodCount = maximumFoodCount;
+        this.maximumTurnCount = maximumTurnCount;
+        this.initialUnitSpawnCount = initialUnitSpawnCount;
+        this.battleRadius = battleRadius;
         this.validate();
     }
 
@@ -83,6 +93,21 @@ class ArenaImpl extends GameMapImpl implements Arena {
     @Override
     public Optional<Integer> getMaximumFoodCount() {
         return maximumFoodCount == null ? Optional.empty() : Optional.of(maximumFoodCount);
+    }
+
+    @Override
+    public Optional<Integer> getMaximumTurnCount() {
+        return maximumTurnCount == null ? Optional.empty() : Optional.of(maximumTurnCount);
+    }
+
+    @Override
+    public Optional<Integer> getBattleRadius() {
+        return battleRadius == null ? Optional.empty() : Optional.of(battleRadius);
+    }
+
+    @Override
+    public Optional<Integer> getInitialUnitSpawnCount() {
+        return initialUnitSpawnCount == null ? Optional.empty() : Optional.of(initialUnitSpawnCount);
     }
 
     @Override

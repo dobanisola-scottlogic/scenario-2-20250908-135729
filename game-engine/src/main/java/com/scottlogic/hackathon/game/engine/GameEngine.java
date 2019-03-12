@@ -160,15 +160,24 @@ public class GameEngine {
 
         Properties props = loadProperties();
 
-        maxPhases = getConfigValue(Integer::parseInt, "maxPhases", 512, props);
-        makeMovesTimeoutMillis = getConfigValue(Integer::parseInt, "makeMovesTimeoutMillis", 500, props);
-        collectablesSpawnFrequency = getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2 , props);
-        battleRadius = getConfigValue(Integer::parseInt, "battleRadius", 2 ,props);
-        maxCollectablesSpawnedPerPhase = getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4 , props);
-        minCollectableDistanceFromSpawn = getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8 , props);
-        spawnPhases = getConfigValue(Integer::parseInt, "spawnPhases", 8 , props);
-        initialiseTimeoutMillis = getConfigValue(Integer::parseInt, "initialiseTimeoutMillis", 2000, props);
-        maxVisibleDistance = getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
+        maxPhases = map.getMaximumTurnCount().orElse(
+            getConfigValue(Integer::parseInt, "maxPhases", 512, props));
+        makeMovesTimeoutMillis =
+            getConfigValue(Integer::parseInt, "makeMovesTimeoutMillis", 500, props);
+        initialiseTimeoutMillis =
+            getConfigValue(Integer::parseInt, "initialiseTimeoutMillis", 2000, props);
+        collectablesSpawnFrequency =
+            getConfigValue(Double::parseDouble, "collectablesSpawnFrequency", 0.2 , props);
+        battleRadius = map.getBattleRadius().orElse(
+            getConfigValue(Integer::parseInt, "battleRadius", 2 ,props));
+        maxCollectablesSpawnedPerPhase =
+            getConfigValue(Integer::parseInt, "maxCollectablesSpawnedPerPhase", 4 , props);
+        minCollectableDistanceFromSpawn =
+            getConfigValue(Integer::parseInt, "minCollectableDistanceFromSpawn", 8 , props);
+        spawnPhases = map.getInitialUnitSpawnCount().orElse(
+            getConfigValue(Integer::parseInt, "spawnPhases", 8 , props));
+        maxVisibleDistance =
+            getConfigValue(Integer::parseInt, "maxVisibleDistance", 6 , props);
     }
 
     public Arena getMap() {
