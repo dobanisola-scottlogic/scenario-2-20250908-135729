@@ -3,6 +3,7 @@ package com.scottlogic.hackathon.server.models;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.game.engine.maps.Arena;
+import com.scottlogic.hackathon.game.engine.maps.MapFileReader;
 import com.scottlogic.hackathon.server.services.MilestoneService;
 import com.scottlogic.hackathon.server.services.TeamService;
 import org.slf4j.Logger;
@@ -65,7 +66,8 @@ public class GameFactory {
                 ArenaModel arena = null;
                 final String mapName = gameConfiguration.getMap();
                 try {
-                    arena = ArenaModel.create(Arena.load(mapName));
+                    arena = ArenaModel.create(
+                        new MapFileReader().readMapFile(mapName).getArena());
                 } catch (final Exception e) {
                     logger.error(String.format("Loading Arena %s failed", mapName), e);
                 }
