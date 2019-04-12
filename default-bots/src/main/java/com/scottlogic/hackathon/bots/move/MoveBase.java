@@ -1,12 +1,7 @@
 package com.scottlogic.hackathon.bots.move;
 
-import com.scottlogic.hackathon.game.Collectable;
-import com.scottlogic.hackathon.game.Direction;
+import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.game.GameGeometry;
-import com.scottlogic.hackathon.game.Move;
-import com.scottlogic.hackathon.game.Player;
-import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.SpawnPoint;
 
 import java.util.ArrayList;
 import java.util.Collections;

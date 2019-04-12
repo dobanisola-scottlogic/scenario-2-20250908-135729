@@ -9,13 +9,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * The map of a game. This includes information and methods relating to the map's overall size and shape.
- * It does <em>not</em> define the locations of
+ * A definition of an area in which games take place, and its geographic logic - for instance, whether it loops at the
+ * edges. This includes information and methods relating to the map's overall size and shape, but not the locations of
  * {@linkplain GameState#getOutOfBoundsPositions() obstacles}, {@linkplain GameState#getCollectables() collectables},
  * {@linkplain GameState#getPlayers() players}, or {@linkplain GameState#getSpawnPoints() spawn points}.
  * Information about these elements must be obtained from the {@linkplain GameState},
- * and will be limited by what your players can see.
- * Information in <em>this class</em> is universal, and does not depend on the position of your players.
+ * and, unlike this class, will be limited by what your players can see.
  */
 public interface GameGeometry {
 
@@ -41,6 +40,16 @@ public interface GameGeometry {
      * @return A position with equivalent coordinates
      */
     Position getPosition(int x, int y);
+
+    /**
+     * Returns all distinct {@linkplain Position}s that can exist within this geometry.
+     */
+    default Stream<Position> getAllPositions() {
+        return IntStream.rangeClosed(0, getWidth())
+            .mapToObj(x -> IntStream.rangeClosed(0, getHeight())
+                .mapToObj(y -> getPosition(x, y)))
+            .flatMap(Function.identity());
+    }
 
     /**
      * Calculates the position on the current map that is displaced by the specified distance and direction from the

@@ -1,25 +1,18 @@
 package com.scottlogic.hackathon.game.engine;
 
-import com.scottlogic.hackathon.game.Bot;
-import com.scottlogic.hackathon.game.Collectable;
-import com.scottlogic.hackathon.game.CutoffCondition;
-import com.scottlogic.hackathon.game.GameResult;
-import com.scottlogic.hackathon.game.GameState;
-import com.scottlogic.hackathon.game.Move;
-import com.scottlogic.hackathon.game.PhaseResult;
-import com.scottlogic.hackathon.game.Player;
-import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.Rejection;
-import com.scottlogic.hackathon.game.SpawnPoint;
+import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.game.engine.config.GameConfig;
-import com.scottlogic.hackathon.game.engine.config.GameConfigFileReader;
-import com.scottlogic.hackathon.game.engine.config.GameConfigLayer;
 import com.scottlogic.hackathon.game.engine.maps.Arena;
-import com.scottlogic.hackathon.game.engine.maps.MapDetails;
-import com.scottlogic.hackathon.game.engine.maps.MapFileReader;
+import com.scottlogic.hackathon.game.engine.maps.FoodSpawnPositionPopulator;
 import com.scottlogic.hackathon.game.engine.maps.MapLoadException;
-import com.scottlogic.hackathon.game.engine.models.*;
-import com.scottlogic.hackathon.game.engine.models.LoopingQuadsGameGeometry;
+import com.scottlogic.hackathon.game.engine.models.BotExceptionRejection;
+import com.scottlogic.hackathon.game.engine.models.CollectableImpl;
+import com.scottlogic.hackathon.game.engine.models.DisqualifiedBotImpl;
+import com.scottlogic.hackathon.game.engine.models.GameResultImpl;
+import com.scottlogic.hackathon.game.engine.models.MoveRejection;
+import com.scottlogic.hackathon.game.engine.models.PlayerImpl;
+import com.scottlogic.hackathon.game.engine.models.SimpleRejection;
+import com.scottlogic.hackathon.game.engine.models.SpawnPointImpl;
 import com.scottlogic.hackathon.game.engine.models.builders.GameStateBuilder;
 import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 import org.slf4j.Logger;
@@ -64,53 +57,52 @@ public class GameEngine {
     private final Arena map;
     private final GameConfig gameConfig;
 
+    private final FoodPlacementStrategy foodPlacementStrategy;
+
     private TrackedSetImpl<PlayerImpl> players;
     private TrackedSetImpl<CollectableImpl> collectables;
     private TrackedSetImpl<SpawnPointImpl> spawnPoints;
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase;
 
-    public static GameEngine createDebug(final String mapName, final Set<Bot> bots) {
-        return createInternal(mapName, bots, null);
+    public static GameEngine createDebug(final GameConfig gameConfig, final Arena arena, final Set<Bot> bots) {
+        return createInternal(gameConfig, arena, bots, null);
     }
 
-    public static GameEngine create(final String mapName, final Set<Bot> bots) {
-        return createInternal(mapName, bots, Executors.defaultThreadFactory());
+    public static GameEngine create(final GameConfig gameConfig, final Arena arena, final Set<Bot> bots) {
+        return createInternal(gameConfig, arena, bots, Executors.defaultThreadFactory());
     }
 
-    public static GameEngine create(final String mapName, final Set<Bot> bots, ThreadFactory botThreadFactory) {
-        return createInternal(mapName, bots, Objects.requireNonNull(botThreadFactory));
+    public static GameEngine create(final GameConfig gameConfig, final Arena arena, final Set<Bot> bots, ThreadFactory botThreadFactory) {
+        return createInternal(gameConfig, arena, bots, Objects.requireNonNull(botThreadFactory));
     }
 
     private static GameEngine createInternal(
-            final String mapName,
+            final GameConfig gameConfig,
+            final Arena arena,
             final Set<Bot> bots,
             final ThreadFactory botThreadFactory)
             throws MapLoadException {
 
-        final MapDetails mapDetails = new MapFileReader().readMapFile(mapName);
+        final GameConfig aggregatedConfig = gameConfig.withOverrides(arena.getMapSpecificConfig());
 
-        final GameConfigLayer configFromConfigFile = new GameConfigFileReader().read("config.properties");
-
-        final GameConfig aggregatedConfig = GameConfig
-            .createFromDefaultsWithOverrides(
-                mapDetails.getMapSpecificConfig(),
-                configFromConfigFile);
+        final Arena postProcessedArena = new FoodSpawnPositionPopulator().populateFoodSpawnPositions(arena, aggregatedConfig);
 
         if (botThreadFactory == null) {
-            return new GameEngine(mapDetails.getArena(), bots, Runnable::run, () -> {}, aggregatedConfig);
+            return new GameEngine(postProcessedArena, bots, Runnable::run, () -> {}, aggregatedConfig);
         } else {
             final ExecutorService executorService = Executors.newFixedThreadPool(bots.size(), botThreadFactory);
-            return new GameEngine(mapDetails.getArena(), bots, executorService, executorService::shutdown, aggregatedConfig);
+            return new GameEngine(postProcessedArena, bots, executorService, executorService::shutdown, aggregatedConfig);
         }
     }
 
-    private GameEngine(final Arena map, final Set<Bot> bots, final Executor executor, final Runnable onShutdown, final GameConfig gameConfig) {
-        this.map = map;
+    private GameEngine(final Arena arena, final Set<Bot> bots, final Executor executor, final Runnable onShutdown, final GameConfig gameConfig) {
+        this.map = arena;
         this.bots = bots;
         this.executor = executor;
         this.onShutdown = onShutdown;
         this.gameConfig = gameConfig;
+        this.foodPlacementStrategy = new FoodPlacementStrategy(arena);
 
         if (bots.size() < 2) {
             throw new IllegalArgumentException("must have at least 2 bots");
@@ -119,10 +111,6 @@ public class GameEngine {
         if (bots.size() > map.getSpawnPointPositions().size()) {
             throw new IllegalArgumentException("must have a spawn point for each bot");
         }
-    }
-
-    public Arena getMap() {
-        return map;
     }
 
     /**
@@ -440,61 +428,46 @@ public class GameEngine {
 
     private void spawn() {
         spawnPlayers();
-        spawnCollectables();
+        maybeSpawnFood();
     }
 
-    private void spawnCollectables() {
+    private void maybeSpawnFood() {
         final Random random = new Random();
-        final Collectable.Type[] types = Collectable.Type.values();
 
-        for (final Collectable.Type type : types) {
-            if (random.nextDouble() < gameConfig.getFoodSpawnProbability()) {
-                // generate a random count of food to spawn, but limit it so we don't go over the map's maximum
-                final int count = Math.min(
-                    1 + random.nextInt(gameConfig.getMaxFoodSpawnedPerTurn() - 1),
-                    gameConfig.getMaximumFoodCount() - collectables.size());
-
-                for (int i = 0; i < count; i++) {
-                    spawnCollectable(type);
-                }
-            }
+        if (random.nextDouble() >= gameConfig.getFoodSpawnProbability()) {
+            return;
         }
+
+        // generate a random count of food to spawn, but limit it so we don't go over the map's maximum
+        final int count = Math.min(
+            1 + random.nextInt(gameConfig.getMaxFoodSpawnedPerTurn() - 1),
+            gameConfig.getMaximumFoodCount() - collectables.size());
+
+        spawnFood(count);
     }
 
-    private void spawnCollectable(final Collectable.Type type) {
-        final Random random = new Random();
+    private void spawnFood(int count) {
+        final Set<Position> excludedPositions =
+            Stream.of(
+                    collectables.stream().map(CollectableImpl::getPosition),
+                    players.stream().map(PlayerImpl::getPosition),
+                    spawnPoints.stream().flatMap(base -> map.getGeometry().getSurroundingPositions(
+                        base.getPosition(),
+                        gameConfig.getMinFoodDistanceFromSpawn() - 1)))
+                .flatMap(Function.identity())
+                .collect(Collectors.toSet());
 
-        final Set<Position> excludedPositions = Stream.concat(
-                map.getOutOfBoundsPositions().stream(),
-                Stream.concat(collectables.stream().map(CollectableImpl::getPosition),
-                        spawnPoints.stream().map(SpawnPointImpl::getPosition)))
-                    .collect(Collectors.toSet());
-
-        Position position;
-        int attempts = 0;
-        do {
-            final int x = random.nextInt(map.getGeometry().getWidth());
-            final int y = random.nextInt(map.getGeometry().getHeight());
-            position = map.getGeometry().getPosition(x, y);
-            if (attempts++ > 100) {
-                throw new RuntimeException("Too many positions are excluded to allow use to find a free position");
-            }
-        } while (excludedPositions.contains(position) || tooCloseToSpawnPoint(position, gameConfig.getMinFoodDistanceFromSpawn()));
-
-        final CollectableImpl collectable = new CollectableImpl(type, position);
-        collectables.add(collectable);
-    }
-
-    private boolean tooCloseToSpawnPoint(final Position source, final int distance) {
-        return spawnPoints
-                .stream()
-                .anyMatch(spawnPoint -> map.getGeometry().distance(source, spawnPoint.getPosition()) <= distance);
+        foodPlacementStrategy
+            .getRandomPositions(excludedPositions::contains)
+            .limit(count)
+            .forEach(position -> collectables.add(
+                new CollectableImpl(
+                    Collectable.Type.PLAYER,
+                    position)));
     }
 
     private void spawnPlayers() {
         for (final SpawnPointImpl spawnPoint : spawnPoints) {
-
-
             if (spawnPoint.shouldSpawnPlayer()) {
                 spawnPlayer(spawnPoint);
             }

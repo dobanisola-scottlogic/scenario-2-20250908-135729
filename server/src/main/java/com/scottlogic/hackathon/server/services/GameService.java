@@ -3,6 +3,11 @@ package com.scottlogic.hackathon.server.services;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.game.Bot;
 import com.scottlogic.hackathon.game.engine.GameEngine;
+import com.scottlogic.hackathon.game.engine.config.GameConfig;
+import com.scottlogic.hackathon.game.engine.config.GameConfigFileReader;
+import com.scottlogic.hackathon.game.engine.config.GameConfigLayer;
+import com.scottlogic.hackathon.game.engine.config.GameConfigLayerBuilder;
+import com.scottlogic.hackathon.game.engine.maps.MapFileReader;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.Game;
 import com.scottlogic.hackathon.server.models.GameConfiguration;
@@ -14,12 +19,8 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadFactory;
-import java.util.stream.Collectors;
 
 public class GameService {
     private final Logger logger;
@@ -37,24 +38,34 @@ public class GameService {
 
     public GameResult playGame(final User user, final GameConfiguration gameConfiguration, Map<Team, Bot> teamBotMap) {
         final Game game = gameFactory.create(teamBotMap, gameConfiguration);
-        GameResult gameResult = null;
-        if (game != null) {
-            final Set<Bot> bots = teamBotMap
-                    .values()
-                    .stream()
-                    .collect(Collectors.toSet());
-            final GameEngine gameEngine = GameEngine.create(gameConfiguration.getMap(), bots, botThreadFactory);
-            try {
-                final com.scottlogic.hackathon.game.GameResult engineGameResult = gameEngine.play();
-                gameResult = GameResult.create(game, engineGameResult);
-                gameStore.saveOrUpdate(gameResult);
-            } catch (final Exception ex) {
-                logger.error("Error playing game", ex);
-            } finally {
-                gameEngine.dispose();
-            }
+        if (game == null) {
+            return null;
         }
-        return gameResult;
+
+        final Set<Bot> bots = new HashSet<>(teamBotMap.values());
+
+        final GameConfigLayer configFromConfigFile = new GameConfigFileReader()
+            .readIfExists("config.properties")
+            .orElse(GameConfigLayerBuilder.createEmpty());
+
+        final GameEngine gameEngine = GameEngine.create(
+            GameConfig.defaults.withOverrides(configFromConfigFile),
+            new MapFileReader().readMapFile(gameConfiguration.getMap()),
+            bots,
+            botThreadFactory);
+
+        try {
+            final com.scottlogic.hackathon.game.GameResult engineGameResult = gameEngine.play();
+            final GameResult gameResult = GameResult.create(game, engineGameResult);
+            gameStore.saveOrUpdate(gameResult);
+            return gameResult;
+        } catch (final Exception ex) {
+            logger.error("Error playing game", ex);
+
+            return null;
+        } finally {
+            gameEngine.dispose();
+        }
     }
 
     public List<GameResult> getGameResults() {

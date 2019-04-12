@@ -1,12 +1,7 @@
 package com.scottlogic.hackathon.game.engine.config;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
 public class GameConfig {
-    private static GameConfig defaults = new GameConfig(
+    public static GameConfig defaults = new GameConfig(
         512,
         500,
         2000,
@@ -18,28 +13,28 @@ public class GameConfig {
         6,
         999999999);
 
-    private Integer turnLimit;
-    private Integer makeMovesTimeoutMillis;
-    private Integer initialiseTimeoutMillis;
-    private Double foodSpawnProbability;
-    private Integer battleRadius;
-    private Integer maxFoodSpawnedPerTurn;
-    private Integer minFoodDistanceFromSpawn;
-    private Integer initialUnitCount;
-    private Integer viewDistance;
-    private Integer maximumFoodCount;
+    private int turnLimit;
+    private int makeMovesTimeoutMillis;
+    private int initialiseTimeoutMillis;
+    private double foodSpawnProbability;
+    private int battleRadius;
+    private int maxFoodSpawnedPerTurn;
+    private int minFoodDistanceFromSpawn;
+    private int initialUnitCount;
+    private int viewDistance;
+    private int maximumFoodCount;
 
     private GameConfig(
-        Integer turnLimit,
-        Integer makeMovesTimeoutMillis,
-        Integer initialiseTimeoutMillis,
-        Double foodSpawnProbability,
-        Integer battleRadius,
-        Integer maxFoodSpawnedPerTurn,
-        Integer minFoodDistanceFromSpawn,
-        Integer initialUnitCount,
-        Integer viewDistance,
-        Integer maximumFoodCount) {
+        int turnLimit,
+        int makeMovesTimeoutMillis,
+        int initialiseTimeoutMillis,
+        double foodSpawnProbability,
+        int battleRadius,
+        int maxFoodSpawnedPerTurn,
+        int minFoodDistanceFromSpawn,
+        int initialUnitCount,
+        int viewDistance,
+        int maximumFoodCount) {
 
         this.turnLimit = turnLimit;
         this.makeMovesTimeoutMillis = makeMovesTimeoutMillis;
@@ -53,75 +48,57 @@ public class GameConfig {
         this.maximumFoodCount = maximumFoodCount;
     }
 
-    /** Use the provided layers to override properties from the hardcoded defaults. Earlier-specified layers have precedence */
-    public static GameConfig createFromDefaultsWithOverrides(final GameConfigLayer... layers) {
-        List<GameConfigLayer> layerList = Arrays.asList(layers);
-
+    public GameConfig withOverrides(GameConfigLayer layer) {
         return new GameConfig(
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getTurnLimit, GameConfig::getTurnLimit),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getMakeMovesTimeoutMillis, GameConfig::getMakeMovesTimeoutMillis),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getInitialiseTimeoutMillis, GameConfig::getInitialiseTimeoutMillis),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getFoodSpawnProbability, GameConfig::getFoodSpawnProbability),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getBattleRadius, GameConfig::getBattleRadius),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getMaxFoodSpawnedPerTurn, GameConfig::getMaxFoodSpawnedPerTurn),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getMinFoodDistanceFromSpawn, GameConfig::getMinFoodDistanceFromSpawn),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getInitialUnitCount, GameConfig::getInitialUnitCount),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getViewDistance, GameConfig::getViewDistance),
-            getValueFromLayersOrDefaults(layerList, GameConfigLayer::getMaximumFoodCount, GameConfig::getMaximumFoodCount));
+            layer.getTurnLimit().orElse(getTurnLimit()),
+            layer.getMakeMovesTimeoutMillis().orElse(getMakeMovesTimeoutMillis()),
+            layer.getInitialiseTimeoutMillis().orElse(getInitialiseTimeoutMillis()),
+            layer.getFoodSpawnProbability().orElse(getFoodSpawnProbability()),
+            layer.getBattleRadius().orElse(getBattleRadius()),
+            layer.getMaxFoodSpawnedPerTurn().orElse(getMaxFoodSpawnedPerTurn()),
+            layer.getMinFoodDistanceFromSpawn().orElse(getMinFoodDistanceFromSpawn()),
+            layer.getInitialUnitCount().orElse(getInitialUnitCount()),
+            layer.getViewDistance().orElse(getViewDistance()),
+            layer.getMaximumFoodCount().orElse(getMaximumFoodCount()));
     }
 
-    private static <T> T getValueFromLayersOrDefaults(
-        List<GameConfigLayer> layers,
-        Function<GameConfigLayer, Optional<T>> getValueFromLayer,
-        Function<GameConfig, T> getValue) {
-
-        for (GameConfigLayer layer : layers) {
-            Optional<T> v = getValueFromLayer.apply(layer);
-
-            if (v.isPresent()) return v.get();
-        }
-
-        return getValue.apply(defaults);
-    }
-
-
-    public Integer getTurnLimit() {
+    public int getTurnLimit() {
         return turnLimit;
     }
 
-    public Integer getMakeMovesTimeoutMillis() {
+    public int getMakeMovesTimeoutMillis() {
         return makeMovesTimeoutMillis;
     }
 
-    public Integer getInitialiseTimeoutMillis() {
+    public int getInitialiseTimeoutMillis() {
         return initialiseTimeoutMillis;
     }
 
-    public Double getFoodSpawnProbability() {
+    public double getFoodSpawnProbability() {
         return foodSpawnProbability;
     }
 
-    public Integer getBattleRadius() {
+    public int getBattleRadius() {
         return battleRadius;
     }
 
-    public Integer getMaxFoodSpawnedPerTurn() {
+    public int getMaxFoodSpawnedPerTurn() {
         return maxFoodSpawnedPerTurn;
     }
 
-    public Integer getMinFoodDistanceFromSpawn() {
+    public int getMinFoodDistanceFromSpawn() {
         return minFoodDistanceFromSpawn;
     }
 
-    public Integer getInitialUnitCount() {
+    public int getInitialUnitCount() {
         return initialUnitCount;
     }
 
-    public Integer getViewDistance() {
+    public int getViewDistance() {
         return viewDistance;
     }
 
-    public Integer getMaximumFoodCount() {
+    public int getMaximumFoodCount() {
         return maximumFoodCount;
     }
 }

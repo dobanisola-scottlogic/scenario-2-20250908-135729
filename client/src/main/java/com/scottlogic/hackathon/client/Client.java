@@ -8,6 +8,13 @@ import com.scottlogic.hackathon.game.PhaseResult;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Rejection;
 import com.scottlogic.hackathon.game.engine.GameEngine;
+import com.scottlogic.hackathon.game.engine.config.GameConfig;
+import com.scottlogic.hackathon.game.engine.config.GameConfigFileReader;
+import com.scottlogic.hackathon.game.engine.config.GameConfigLayer;
+import com.scottlogic.hackathon.game.engine.config.GameConfigLayerBuilder;
+import com.scottlogic.hackathon.game.engine.maps.Arena;
+import com.scottlogic.hackathon.game.engine.maps.MapFileReader;
+import com.scottlogic.hackathon.game.engine.maps.MapLoadException;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.lang.reflect.Constructor;
@@ -33,65 +40,73 @@ public class Client {
         if (optArgs.isPresent()) {
             Arguments arguments = optArgs.get();
 
-            final Set<Bot> bots = Stream.of(arguments.getBots()).map(this::loadDefaultBot)
-                    .collect(Collectors.toCollection(HashSet::new));
+            final Set<Bot> bots = Stream.of(arguments.getBots())
+                .map(this::loadDefaultBot)
+                .collect(Collectors.toCollection(HashSet::new));
             bots.add(loadBot(arguments.getClassName()));
 
-            GameEngine gameEngine = null;
+            final Arena arena;
             try {
-                gameEngine = arguments.isDebug()
-                    ? GameEngine.createDebug(arguments.getMap(), bots)
-                    : GameEngine.create(arguments.getMap(), bots);
-            } catch (final IllegalArgumentException e) {
-                System.err.printf("couldn't create map %s", arguments.getMap())
-                        .println();
+                arena = new MapFileReader().readMapFile(arguments.getMap());
+            } catch (final MapLoadException e) {
+                System.err.printf("couldn't create map %s: %s", arguments.getMap(), e.getMessage())
+                    .println();
+
+                return;
             }
 
-            if (gameEngine != null) {
-                try {
-                    final Scanner scanner = new Scanner(System.in);
-                    final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, gameEngine.getMap());
-                    final GameResult gameResult = gameEngine.play((phase, cutoff) -> {
-                        phaseResultPrinter.print(phase, 0);
-                        System.out.println("Type 'q' to quit or press enter to continue");
-                        return !scanner.nextLine().equals("q");
-                    });
+            final GameConfigLayer configFromConfigFile = new GameConfigFileReader()
+                .readIfExists("config.properties")
+                .orElse(GameConfigLayerBuilder.createEmpty());
+            final GameConfig config = GameConfig.defaults.withOverrides(configFromConfigFile);
 
-                    printGameResult(gameResult, bots);
+            GameEngine gameEngine = arguments.isDebug()
+                ? GameEngine.createDebug(config, arena, bots)
+                : GameEngine.create(config, arena, bots);
 
-                    System.out.println("Type 'p' to review game steps or press enter to quit");
-                    if (scanner.nextLine().equals("p")) {
-                        final List<PhaseResult> phaseResults = gameResult.getPhaseResults();
-                        int phase = 1;
-                        while (phase < phaseResults.size()) {
-                            phaseResultPrinter.print(phaseResults.get(phase), phaseResults.size());
-                            System.out.println("Type 'q' to quit, a number to jump to a phase or press enter to continue");
+            try {
+                final Scanner scanner = new Scanner(System.in);
+                final PhaseResultPrinter phaseResultPrinter = new PhaseResultPrinter(bots, arena);
+                final GameResult gameResult = gameEngine.play((phase, cutoff) -> {
+                    phaseResultPrinter.print(phase, 0);
+                    System.out.println("Type 'q' to quit or press enter to continue");
+                    return !scanner.nextLine().equals("q");
+                });
 
-                            final String input = scanner.nextLine();
-                            if (input.equals("q")) {
-                                phase = phaseResults.size();
-                            } else {
-                                try {
-                                    final int nextPhase = Integer.parseInt(input);
-                                    if (nextPhase < 0 || nextPhase >= phaseResults.size()) {
-                                        System.out.println("Phase out of range");
-                                    } else {
-                                        phase = nextPhase + 1;
-                                    }
-                                } catch (final Exception ex) {
-                                    phase++;
+                printGameResult(gameResult, bots);
+
+                System.out.println("Type 'p' to review game steps or press enter to quit");
+                if (scanner.nextLine().equals("p")) {
+                    final List<PhaseResult> phaseResults = gameResult.getPhaseResults();
+                    int phase = 1;
+                    while (phase < phaseResults.size()) {
+                        phaseResultPrinter.print(phaseResults.get(phase), phaseResults.size());
+                        System.out.println("Type 'q' to quit, a number to jump to a phase or press enter to continue");
+
+                        final String input = scanner.nextLine();
+                        if (input.equals("q")) {
+                            phase = phaseResults.size();
+                        } else {
+                            try {
+                                final int nextPhase = Integer.parseInt(input);
+                                if (nextPhase < 0 || nextPhase >= phaseResults.size()) {
+                                    System.out.println("Phase out of range");
+                                } else {
+                                    phase = nextPhase + 1;
                                 }
+                            } catch (final Exception ex) {
+                                phase++;
                             }
                         }
                     }
-                    scanner.close();
-                    System.exit(0);
-                } catch (final Exception ex) {
-                    ex.printStackTrace(System.out);
-                    System.exit(1);
-                } finally {
-                    gameEngine.dispose();
                 }
+                scanner.close();
+                System.exit(0);
+            } catch (final Exception ex) {
+                ex.printStackTrace(System.out);
+                System.exit(1);
+            } finally {
+                gameEngine.dispose();
             }
         }
     }

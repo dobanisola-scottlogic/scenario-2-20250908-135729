@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -13,9 +14,14 @@ import java.util.function.Function;
 public class GameConfigFileReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameConfigFileReader.class);
 
-    public GameConfigLayer read(String filePath) {
+    public Optional<GameConfigLayer> readIfExists(String filePath) {
+        File file = new File(filePath);
+        if (!file.isFile()) {
+            return Optional.empty();
+        }
+
         GameConfigLayerBuilder configBuilder = new GameConfigLayerBuilder();
-        Properties props = loadProperties(filePath);
+        Properties props = loadProperties(file);
 
         readIntegerIfPresent(props, "maxPhases", configBuilder::setTurnLimit);
         readIntegerIfPresent(props, "makeMovesTimeoutMillis", configBuilder::setMakeMovesTimeoutMillis);
@@ -27,22 +33,17 @@ public class GameConfigFileReader {
         readIntegerIfPresent(props, "spawnPhases", configBuilder::setInitialUnitCount);
         readIntegerIfPresent(props, "maxVisibleDistance", configBuilder::setViewDistance);
 
-        return configBuilder.build();
+        return Optional.of(configBuilder.build());
     }
 
-    private static Properties loadProperties(String filePath) {
-        Properties props = new Properties();
-
-        File file = new File(filePath);
-        if (file.isFile()) {
-            try (InputStream inputStream = new FileInputStream(file)) {
-                props.load(inputStream);
-            } catch (Exception e) {
-                LOGGER.error("Error loading config file: ", e);
-            }
+    private static Properties loadProperties(File file) {
+        try (InputStream inputStream = new FileInputStream(file)) {
+            Properties props = new Properties();
+            props.load(inputStream);
+            return props;
+        } catch (Exception e) {
+            throw new ConfigLoadException("Couldn't interpret config file");
         }
-
-        return props;
     }
 
     private static void readIntegerIfPresent(Properties props, String fieldName, Consumer<Integer> handleValue) {

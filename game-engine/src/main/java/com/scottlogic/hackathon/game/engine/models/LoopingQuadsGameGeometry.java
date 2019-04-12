@@ -61,14 +61,8 @@ public class LoopingQuadsGameGeometry implements GameGeometry {
 
     @Override
     public Position getPosition(int x, int y) {
-        return new Position(mod(x, getWidth()), mod(y, getHeight()));
-    }
-
-    private int mod(int val, int mod) {
-        val %= mod;
-        if(val < 0) {
-            val += mod;
-        }
-        return val;
+        return new Position(
+            Math.floorMod(x, getWidth()),
+            Math.floorMod(y, getHeight()));
     }
 }

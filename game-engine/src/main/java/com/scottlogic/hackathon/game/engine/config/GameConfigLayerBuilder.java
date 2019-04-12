@@ -3,6 +3,10 @@ package com.scottlogic.hackathon.game.engine.config;
 import java.util.Optional;
 
 public class GameConfigLayerBuilder {
+    public static GameConfigLayer createEmpty() {
+        return new GameConfigLayerBuilder().build();
+    }
+
     private Optional<Integer> turnLimit = Optional.empty();
     private Optional<Integer> makeMovesTimeoutMillis = Optional.empty();
     private Optional<Integer> initialiseTimeoutMillis = Optional.empty();
