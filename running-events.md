@@ -249,3 +249,38 @@ rather than the losers.
   
   - The event was generally well-received, and people seemed to enjoy themselves.
     One attendee emailed after the event to ask if there was a way for him to keep developing and testing his strategy.
+    
+### Nortumbria, February 2019
+Recap of how the event was ran at Northumbria University
+
+## Setup
+- We walked through the setup of the contestant code multiple times before the event, to iron out any issues that may have cropped up
+- Also wrote a simple bot ourselves, to figure out how the code worked
+- Started service on AWS (cloud formation template)
+- Put the contestant code into a zip on S3 (saved needing git installed)
+- Created bitly links for everything
+
+## Arrival
+- Arrived at the venue, put link to code on screen
+- As students arrived, tell them to download the code and start the setup
+  - Setup worked very well mainly
+  - Some seemed to have issues on uni pc's with java download not starting (admin permissions?)
+  - One student was using linux, had one issue with scripts not being executable
+- Once all students arrived, gather to do introductions/explain aim of the hackathon
+- Make sure all teams get setup correctly, and getting them to upload bots (even just the example bot) as early as possible
+
+## Scoring
+- First few hours of the event, only friendly games were played (+ games against the pre built bots)
+- Approx 30 minutes before the end, started league (each team played 5 games on three player maps)
+- 3 Points for 1st, 2 for 2nd, 1 for 3rd, 0 for disqualification
+- Top 3 did a first to 3 decider on the other 3 player map
+- Play winner against FastExpansionBot (😄)
+
+Overall, event was a success! Some possible improvements:
+- Tutorials: 
+  - Cut down amount of instructions as they were a bit complex for the students to follow
+  - Could start from a bot with a couple more features, rather than the blank example bot
+  - Bug in one tutorial (tutorial 3?)
+- Viewer should not pause when losing focus, would help when we only had 1 admin/laptop
+- Rewrite/export documentation to PDFs (no-one had markdown viewers, difficult to constantly refer to in Intellij, ended up hosting just the docs on Github)
+- Should run newly added games automatically in viewer, when new games are added, the viewer would continue to play the same game (in live mode)
