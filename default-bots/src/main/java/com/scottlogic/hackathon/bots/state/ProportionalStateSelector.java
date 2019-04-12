@@ -1,7 +1,7 @@
 package com.scottlogic.hackathon.bots.state;
 
 import com.scottlogic.hackathon.bots.move.MoveBase;
-import com.scottlogic.hackathon.game.GameMap;
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Player;
 
 import java.lang.reflect.Constructor;
@@ -13,13 +13,13 @@ public class ProportionalStateSelector {
     private MoveBase move;
 
     public ProportionalStateSelector(java.util.Map<Class, Integer> moveCounts, HashMap<Class, Integer> spawnProfile,
-            GameMap map, Player player)
+            GameGeometry map, Player player)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this.move = findMinimumSquaresSolution(moveCounts, spawnProfile, map, player);
     }
 
     private MoveBase findMinimumSquaresSolution(java.util.Map<Class, Integer> moveCounts,
-            HashMap<Class, Integer> desiredProportionsMap, GameMap map, Player player)
+            HashMap<Class, Integer> desiredProportionsMap, GameGeometry map, Player player)
             throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         double minimumSquaresValue = 0;
         Class moveClass = null;
@@ -43,7 +43,7 @@ public class ProportionalStateSelector {
         }
 
         if (moveClass != null) {
-            Constructor constructor = moveClass.getConstructor(GameMap.class, Player.class);
+            Constructor constructor = moveClass.getConstructor(GameGeometry.class, Player.class);
             return (MoveBase) constructor.newInstance(map, player);
         } else {
             RandomStateSelector randomStateSelector = new RandomStateSelector(map, player);

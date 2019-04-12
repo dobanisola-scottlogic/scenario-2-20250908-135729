@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface GameResult {
     UUID getId();
     List<PhaseResult> getPhaseResults();
-    GameMap getMap();
+    GameGeometry getMap();
     Set<Position> getOutOfBoundPositions();
     CutoffCondition getCutoffCondition();
 }

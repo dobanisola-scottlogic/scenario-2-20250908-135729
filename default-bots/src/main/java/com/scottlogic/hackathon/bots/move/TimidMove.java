@@ -1,17 +1,17 @@
 package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.GameMap;
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
 public class TimidMove extends MoveBase {
 
-    public TimidMove(GameMap map, final Player fullPlayer) {
+    public TimidMove(GameGeometry map, final Player fullPlayer) {
         super(map, fullPlayer);
     }
 
-    public TimidMove(Direction direction, int distance, GameMap map, final Player fullPlayer) {
+    public TimidMove(Direction direction, int distance, GameGeometry map, final Player fullPlayer) {
         super(direction, distance, map, fullPlayer);
     }
 

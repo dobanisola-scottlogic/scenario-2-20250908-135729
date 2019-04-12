@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class GameStateBuilder {
     private int phase;
-    private GameMap map;
+    private GameGeometry map;
     private Set<Position> outOfBoundsPositions;
     private Set<Player> players;
     private Set<Player> removedPlayers;
@@ -20,7 +20,7 @@ public class GameStateBuilder {
         return this;
     }
 
-    public GameStateBuilder setMap(final GameMap map) {
+    public GameStateBuilder setMap(final GameGeometry map) {
         this.map = map;
         return this;
     }

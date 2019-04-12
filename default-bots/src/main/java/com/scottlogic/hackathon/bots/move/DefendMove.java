@@ -1,7 +1,7 @@
 package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.GameMap;
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
@@ -17,12 +17,12 @@ public class DefendMove extends MoveBase {
     private static final int MAXIMUM_SPAWN_POINT_TETHER = 6;
     private static final int RANDOM_MOVEMENT_PERCENTAGE = 25;
 
-    public DefendMove(GameMap map, final Player fullPlayer) {
+    public DefendMove(GameGeometry map, final Player fullPlayer) {
         super(map, fullPlayer);
         this.tetherDistance = randomTetherDistance();
     }
 
-    public DefendMove(Direction direction, int distance, GameMap map, final Player fullPlayer) {
+    public DefendMove(Direction direction, int distance, GameGeometry map, final Player fullPlayer) {
         super(direction, distance, map, fullPlayer);
         this.tetherDistance = randomTetherDistance();
     }

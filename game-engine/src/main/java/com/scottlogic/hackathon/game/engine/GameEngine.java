@@ -18,15 +18,8 @@ import com.scottlogic.hackathon.game.engine.maps.Arena;
 import com.scottlogic.hackathon.game.engine.maps.MapDetails;
 import com.scottlogic.hackathon.game.engine.maps.MapFileReader;
 import com.scottlogic.hackathon.game.engine.maps.MapLoadException;
-import com.scottlogic.hackathon.game.engine.models.BotExceptionRejection;
-import com.scottlogic.hackathon.game.engine.models.CollectableImpl;
-import com.scottlogic.hackathon.game.engine.models.DisqualifiedBotImpl;
-import com.scottlogic.hackathon.game.engine.models.GameResultImpl;
-import com.scottlogic.hackathon.game.engine.models.GameMapImpl;
-import com.scottlogic.hackathon.game.engine.models.MoveRejection;
-import com.scottlogic.hackathon.game.engine.models.PlayerImpl;
-import com.scottlogic.hackathon.game.engine.models.SimpleRejection;
-import com.scottlogic.hackathon.game.engine.models.SpawnPointImpl;
+import com.scottlogic.hackathon.game.engine.models.*;
+import com.scottlogic.hackathon.game.engine.models.GameGeometryImpl;
 import com.scottlogic.hackathon.game.engine.models.builders.GameStateBuilder;
 import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 import org.slf4j.Logger;
@@ -182,7 +175,7 @@ public class GameEngine {
 
         LOGGER.info("Cut Off Condition: " + cutoffCondition);
 
-        return new GameResultImpl(phaseResults, new GameMapImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
+        return new GameResultImpl(phaseResults, new GameGeometryImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
     }
 
     public void dispose() {
@@ -325,7 +318,7 @@ public class GameEngine {
     private GameState createGameState(final Bot bot) {
         final GameStateBuilder gameStateBuilder = new GameStateBuilder()
                 .setPhase(phase)
-                .setMap(new GameMapImpl(map.getWidth(), map.getHeight()));
+                .setMap(new GameGeometryImpl(map.getWidth(), map.getHeight()));
 
         final Set<Player> ownPlayers = getOwnedItems(players.stream(), player -> player.getOwner() == bot.getId());
 

@@ -2,16 +2,16 @@ package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Collectable;
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.GameMap;
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Player;
 
 public class CollectableMove extends MoveBase {
 
-    public CollectableMove(GameMap map, final Player fullPlayer) {
+    public CollectableMove(GameGeometry map, final Player fullPlayer) {
         super(map, fullPlayer);
     }
 
-    public CollectableMove(Direction direction, int distance, GameMap map, final Player fullPlayer) {
+    public CollectableMove(Direction direction, int distance, GameGeometry map, final Player fullPlayer) {
         super(direction, distance, map, fullPlayer);
     }
 

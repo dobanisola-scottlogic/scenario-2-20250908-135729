@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class StateAnalyser {
 
-    private final GameMap map;
+    private final GameGeometry map;
 
     private Player player;
     private ProportionalTransitionSelector proportionalTransitionSelector = null;

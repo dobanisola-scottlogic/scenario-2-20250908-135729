@@ -1,17 +1,17 @@
 package com.scottlogic.hackathon.bots.move;
 
 import com.scottlogic.hackathon.game.Direction;
-import com.scottlogic.hackathon.game.GameMap;
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 
 public class AttackMove extends MoveBase {
 
-    public AttackMove(final GameMap map, final Player fullPlayer) {
+    public AttackMove(final GameGeometry map, final Player fullPlayer) {
         super(map, fullPlayer);
     }
 
-    public AttackMove(Direction direction, int distance, GameMap map, final Player fullPlayer) {
+    public AttackMove(Direction direction, int distance, GameGeometry map, final Player fullPlayer) {
         super(direction, distance, map, fullPlayer);
     }
 

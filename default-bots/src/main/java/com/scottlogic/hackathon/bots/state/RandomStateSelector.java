@@ -1,7 +1,7 @@
 package com.scottlogic.hackathon.bots.state;
 
 import com.scottlogic.hackathon.bots.move.*;
-import com.scottlogic.hackathon.game.GameMap;
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Player;
 
 import java.util.Random;
@@ -18,7 +18,7 @@ public class RandomStateSelector {
 
     private MoveBase move;
 
-    public RandomStateSelector(GameMap map, Player player) {
+    public RandomStateSelector(GameGeometry map, Player player) {
         // Determines which bot is selected
         int stateProportionsSum = IntStream.of(STATEPROPORTIONS).sum();
         int randomState = new Random().nextInt(stateProportionsSum);

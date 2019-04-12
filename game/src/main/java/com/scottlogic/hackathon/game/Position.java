@@ -10,15 +10,15 @@ public class Position {
     /**
      * Constructs and initialises a position at the specified coordinates.
      * This does not perform any checking of whether the given coordinates are within the bounds of a particular
-     * {@linkplain GameMap}, and will throw an exception if either coordinate is negative.
-     * Consider using {@link GameMap#createPosition(int, int)} instead of this constructor for a safer way of creating
+     * {@linkplain GameGeometry}, and will throw an exception if either coordinate is negative.
+     * Consider using {@link GameGeometry#createPosition(int, int)} instead of this constructor for a safer way of creating
      * positions.
      *
      * @param x the X coordinate of the newly constructed Position
      * @param y the Y coordinate of the newly constructed Position
      * @throws IllegalArgumentException if either given value is less than 0
      *
-     * @see GameMap#createPosition(int, int)
+     * @see GameGeometry#createPosition(int, int)
      */
     public Position(final int x, final int y) throws IllegalArgumentException {
         if (x < 0) {

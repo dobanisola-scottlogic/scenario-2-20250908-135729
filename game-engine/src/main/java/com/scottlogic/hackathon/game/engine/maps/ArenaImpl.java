@@ -1,7 +1,7 @@
 package com.scottlogic.hackathon.game.engine.maps;
 
 import com.scottlogic.hackathon.game.Position;
-import com.scottlogic.hackathon.game.engine.models.GameMapImpl;
+import com.scottlogic.hackathon.game.engine.models.GameGeometryImpl;
 
 import java.util.Collections;
 import java.util.Set;
@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-class ArenaImpl extends GameMapImpl implements Arena {
+class ArenaImpl extends GameGeometryImpl implements Arena {
     private final String name;
     private final Set<Position> outOfBoundsPositions;
     private final Set<Position> spawnPointPositions;

@@ -13,7 +13,7 @@ abstract class AbstractRouteSpec extends Specification {
         public static final String UNROLL = '#featureName (seed: #random.seed)'
     }
 
-    @Shared GameMap map = new AlmostInfiniteMap()
+    @Shared GameGeometry map = new AlmostInfiniteGeometry()
     @Shared Direction[] directions = Direction.values()
 
     abstract Route createARouteStartingAt(Position position, Random random)
@@ -142,7 +142,7 @@ abstract class AbstractRouteSpec extends Specification {
     }
 
     @CompileStatic
-    static class AlmostInfiniteMap implements GameMap {
+    static class AlmostInfiniteGeometry implements GameGeometry {
 
         @Override
         int getWidth() {
@@ -186,12 +186,12 @@ abstract class AbstractRouteSpec extends Specification {
 
         @Override
         Route route(Position start, List<Direction> route) {
-            throw new AssertionError('A Route implementation should not call GameMap.route(...)')
+            throw new AssertionError('A Route implementation should not call GameGeometry.route(...)')
         }
 
         @Override
         Route straightLineRoute(Position start, Direction direction, int length) {
-            throw new AssertionError('A Route implementation should not call GameMap.straightLineRoute(...)')
+            throw new AssertionError('A Route implementation should not call GameGeometry.straightLineRoute(...)')
         }
 
         @Override

@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * and will be limited by what your players can see.
  * Information in <em>this class</em> is universal, and does not depend on the position of your players.
  */
-public interface GameMap {
+public interface GameGeometry {
 
     /**
      * @return The width of the map

@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Graph search algorithms for {@linkplain GameMap Maps}.
+ * Graph search algorithms for {@linkplain GameGeometry Maps}.
  */
 class Graph {
 
     /**
-     * Finds (one of) the shortest route between the two given {@linkplain Position positions} on the {@linkplain GameMap},
+     * Finds (one of) the shortest route between the two given {@linkplain Position positions} on the {@linkplain GameGeometry},
      * avoiding any positions that match the given predicate.
      * This method uses the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* search algorithm</a>.
      * <p>
@@ -23,7 +23,7 @@ class Graph {
      * if the set of positions that must be avoided forms an unbroken barrier between the start and target positions.
      * In this situation, and empty {@linkplain Optional} will be returned.
      *
-     * @param map The GameMap on which to find a route
+     * @param map The GameGeometry on which to find a route
      * @param from The Position to find a route from
      * @param to The Position to find a route to
      * @param avoid A {@linkplain Predicate} specifying which positions to avoid.
@@ -31,7 +31,7 @@ class Graph {
      * @return An Optional containing an ordered list of the directions to move in to traverse the found route,
      *         or {@linkplain Optional#empty() empty} if no route could be found
      */
-    public static Optional<Route> findRoute(GameMap map, Position from, Position to, Predicate<Position> avoid) {
+    public static Optional<Route> findRoute(GameGeometry map, Position from, Position to, Predicate<Position> avoid) {
         return AStar.findIntRoute(Objects.requireNonNull(from), Objects.requireNonNull(to),
                         new MapGraph(Objects.requireNonNull(map), Objects.requireNonNull(avoid)), map::distance)
                 .map(route -> new RouteImpl(map, from, to, route.getEdges().stream().map(Edge::getDirection).collect(Collectors.toList())));
@@ -72,10 +72,10 @@ class Graph {
 
     private static class MapGraph implements DirectedGraph<Position, Edge, Integer> {
 
-        private final GameMap map;
+        private final GameGeometry map;
         private final Predicate<Position> avoid;
 
-        MapGraph(GameMap map, Predicate<Position> avoid) {
+        MapGraph(GameGeometry map, Predicate<Position> avoid) {
             this.map = map;
             this.avoid = avoid;
         }

@@ -8,7 +8,7 @@ you should start to win some of those games against the default Bot and be able 
 Bots included in the starter kit.
 
 Along with the example Bot the starter kit includes some helper functions that you will make use of when adding the new
-features, see `com.scottlogic.hackathon.game.GameMap` for more details.
+features, see `com.scottlogic.hackathon.game.GameGeometry` for more details.
 
 ### Step One
 Moving each player away from the spawn point will allow the next player to appear without eliminating both itself and
@@ -39,7 +39,7 @@ This tutorial should have improved the capabilities of your Bot to give it a fig
 more that could be done, here are a few ideas:
 
 - the routing algorithm is very basic and assumes your players can travel over water, perhaps some form of path finding
-would work better in more complex maps. The `com.scottlogic.hackathon.game.GameMap.findRoute()` method may help you here
+would work better in more complex maps. The `com.scottlogic.hackathon.game.GameGeometry.findRoute()` method may help you here
 - the battle rules are such that your players can eliminate enemy players without taking losses, you could add some
 logic to ensure you outnumber your enemies
 - be careful that you don't leave your own spawn point undefended, if it gets destroyed then you cannot spawn more
