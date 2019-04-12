@@ -34,8 +34,8 @@ public class ArenaModel {
     public static ArenaModel create(final Arena arena) {
         return new ArenaModel(
                 arena.getName(),
-                arena.getWidth(),
-                arena.getHeight(),
+                arena.getGeometry().getWidth(),
+                arena.getGeometry().getHeight(),
                 arena.getOutOfBoundsPositions()
                         .stream()
                         .map(Position::create)

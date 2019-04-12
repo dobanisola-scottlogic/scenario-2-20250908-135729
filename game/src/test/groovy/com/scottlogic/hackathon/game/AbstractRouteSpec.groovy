@@ -195,7 +195,7 @@ abstract class AbstractRouteSpec extends Specification {
         }
 
         @Override
-        Position createPosition(int x, int y) {
+        Position getPosition(int x, int y) {
             return new Position(x, y)
         }
     }

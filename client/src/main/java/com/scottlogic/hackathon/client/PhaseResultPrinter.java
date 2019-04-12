@@ -47,13 +47,13 @@ public class PhaseResultPrinter {
 
         this.ownerIndices = Collections.unmodifiableList(bots.stream().map(Bot::getId).collect(Collectors.toList()));
 
-        this.seperator = new char[map.getWidth()];
+        this.seperator = new char[map.getGeometry().getWidth()];
         Arrays.fill(seperator, SEPARATOR);
     }
 
 
     public void print(PhaseResult phaseResult, int totalPhases) {
-        TileCanvas tiles = new TileCanvas(map.getWidth(), map.getHeight(), ownerIndices);
+        TileCanvas tiles = new TileCanvas(map.getGeometry().getWidth(), map.getGeometry().getHeight(), ownerIndices);
 
         phaseResult.getPlayers().forEach(tiles::addTile);
         phaseResult.getSpawnPoints().forEach(tiles::addTile);

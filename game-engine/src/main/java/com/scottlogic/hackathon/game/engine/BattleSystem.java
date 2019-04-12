@@ -1,7 +1,7 @@
 package com.scottlogic.hackathon.game.engine;
 
+import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.TrackedSet;
-import com.scottlogic.hackathon.game.engine.maps.Arena;
 import com.scottlogic.hackathon.game.engine.models.PlayerImpl;
 
 import java.util.List;
@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 public class BattleSystem {
     private final int battleRadius;
     private final TrackedSet<PlayerImpl> players;
-    private final Arena map;
+    private final GameGeometry map;
     private final Logger logger;
 
-    BattleSystem(final TrackedSet<PlayerImpl> players, final Arena map, final int battleRadius) {
+    BattleSystem(final TrackedSet<PlayerImpl> players, final GameGeometry map, final int battleRadius) {
         this.players = players;
         this.map = map;
         this.battleRadius = battleRadius;

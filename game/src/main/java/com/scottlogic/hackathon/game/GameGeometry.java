@@ -3,7 +3,9 @@ package com.scottlogic.hackathon.game;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -38,7 +40,7 @@ public interface GameGeometry {
      * @param y The (vertical) y-coordinate of the position to create
      * @return A position with equivalent coordinates
      */
-    Position createPosition(int x, int y);
+    Position getPosition(int x, int y);
 
     /**
      * Calculates the position on the current map that is displaced by the specified distance and direction from the
@@ -148,6 +150,14 @@ public interface GameGeometry {
                 .filter(d -> distance(getNeighbour(from, d), awayFrom) > distance);
     }
 
+    /** Returns a stream of all positions within a specified distance (inclusively) of an origin position */
+    default Stream<Position> getSurroundingPositions(final Position position, final int distance) {
+        return IntStream.rangeClosed(position.getX() - distance, position.getX() + distance)
+            .mapToObj(x -> IntStream.rangeClosed(position.getY() - distance, position.getY() + distance)
+                .mapToObj(y -> getPosition(x, y)))
+            .flatMap(Function.identity());
+    }
+
     /**
      * Creates a {@linkplain Route} through this map, starting from the given position and taking a single step
      * in each of the given directions.
@@ -220,5 +230,4 @@ public interface GameGeometry {
     default Optional<Route> findRoute(Position from, Position to, Collection<Position> avoid) {
         return findRoute(from, to, avoid::contains);
     }
-
 }

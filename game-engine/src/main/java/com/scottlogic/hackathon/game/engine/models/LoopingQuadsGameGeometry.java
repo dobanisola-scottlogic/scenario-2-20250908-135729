@@ -4,11 +4,11 @@ import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.GameGeometry;
 import com.scottlogic.hackathon.game.Position;
 
-public class GameGeometryImpl implements GameGeometry {
+public class LoopingQuadsGameGeometry implements GameGeometry {
     private final int width;
     private final int height;
 
-    public GameGeometryImpl(final int width, final int height) {
+    public LoopingQuadsGameGeometry(final int width, final int height) {
         this.width = width;
         this.height = height;
     }
@@ -40,7 +40,7 @@ public class GameGeometryImpl implements GameGeometry {
             y += distance;
         }
 
-        return createPosition(x, y);
+        return getPosition(x, y);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GameGeometryImpl implements GameGeometry {
     }
 
     @Override
-    public Position createPosition(int x, int y) {
+    public Position getPosition(int x, int y) {
         return new Position(mod(x, getWidth()), mod(y, getHeight()));
     }
 

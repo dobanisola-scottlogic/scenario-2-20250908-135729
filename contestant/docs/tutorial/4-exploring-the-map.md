@@ -105,7 +105,7 @@ or does it need adjusting?
 private Stream<Position> getSurroundingPositions(final GameState gameState, final Position position, final int distance) {
     return IntStream.rangeClosed(-distance, distance)
             .mapToObj(x -> IntStream.rangeClosed(-distance, distance)
-                    .mapToObj(y -> gameState.getMap().createPosition(x,y)))
+                    .mapToObj(y -> gameState.getMap().getPosition(x,y)))
             .flatMap(Function.identity());
 }
 ```

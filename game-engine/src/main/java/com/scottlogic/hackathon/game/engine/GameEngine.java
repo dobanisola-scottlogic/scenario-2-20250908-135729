@@ -19,7 +19,7 @@ import com.scottlogic.hackathon.game.engine.maps.MapDetails;
 import com.scottlogic.hackathon.game.engine.maps.MapFileReader;
 import com.scottlogic.hackathon.game.engine.maps.MapLoadException;
 import com.scottlogic.hackathon.game.engine.models.*;
-import com.scottlogic.hackathon.game.engine.models.GameGeometryImpl;
+import com.scottlogic.hackathon.game.engine.models.LoopingQuadsGameGeometry;
 import com.scottlogic.hackathon.game.engine.models.builders.GameStateBuilder;
 import com.scottlogic.hackathon.game.engine.models.builders.PhaseResultBuilder;
 import org.slf4j.Logger;
@@ -175,7 +175,7 @@ public class GameEngine {
 
         LOGGER.info("Cut Off Condition: " + cutoffCondition);
 
-        return new GameResultImpl(phaseResults, new GameGeometryImpl(map.getWidth(), map.getHeight()), map.getOutOfBoundsPositions(), cutoffCondition);
+        return new GameResultImpl(phaseResults, map.getGeometry(), map.getOutOfBoundsPositions(), cutoffCondition);
     }
 
     public void dispose() {
@@ -318,14 +318,14 @@ public class GameEngine {
     private GameState createGameState(final Bot bot) {
         final GameStateBuilder gameStateBuilder = new GameStateBuilder()
                 .setPhase(phase)
-                .setMap(new GameGeometryImpl(map.getWidth(), map.getHeight()));
+                .setMap(map.getGeometry());
 
         final Set<Player> ownPlayers = getOwnedItems(players.stream(), player -> player.getOwner() == bot.getId());
 
         final Set<Position> visiblePositions = ownPlayers
                 .stream()
                 .map(Player::getPosition)
-                .flatMap(position -> map.getSurroundingPositions(position, gameConfig.getViewDistance()))
+                .flatMap(position -> map.getGeometry().getSurroundingPositions(position, gameConfig.getViewDistance()))
                 .collect(Collectors.toSet());
 
         gameStateBuilder
@@ -433,7 +433,7 @@ public class GameEngine {
     private void applyMoves(final List<Move> moves, Map<UUID, PlayerImpl> playerIdMap) {
         for (final Move move : moves) {
             final PlayerImpl player = playerIdMap.get(move.getPlayer());
-            final Position position = map.getNeighbour(player.getPosition(), move.getDirection());
+            final Position position = map.getGeometry().getNeighbour(player.getPosition(), move.getDirection());
             players.replace(player, player.move(position));
         }
     }
@@ -473,9 +473,9 @@ public class GameEngine {
         Position position;
         int attempts = 0;
         do {
-            final int x = random.nextInt(map.getWidth());
-            final int y = random.nextInt(map.getHeight());
-            position = new Position(x, y);
+            final int x = random.nextInt(map.getGeometry().getWidth());
+            final int y = random.nextInt(map.getGeometry().getHeight());
+            position = map.getGeometry().getPosition(x, y);
             if (attempts++ > 100) {
                 throw new RuntimeException("Too many positions are excluded to allow use to find a free position");
             }
@@ -488,7 +488,7 @@ public class GameEngine {
     private boolean tooCloseToSpawnPoint(final Position source, final int distance) {
         return spawnPoints
                 .stream()
-                .anyMatch(spawnPoint -> map.distance(source, spawnPoint.getPosition()) <= distance);
+                .anyMatch(spawnPoint -> map.getGeometry().distance(source, spawnPoint.getPosition()) <= distance);
     }
 
     private void spawnPlayers() {
@@ -534,7 +534,7 @@ public class GameEngine {
     }
 
     private void battlePlayers() {
-        final BattleSystem battleSystem = new BattleSystem(players, map, gameConfig.getBattleRadius());
+        final BattleSystem battleSystem = new BattleSystem(players, map.getGeometry(), gameConfig.getBattleRadius());
         final Set<PlayerImpl> deadPlayers = battleSystem.runBattle();
 
         if (deadPlayers.size() > 0) {
