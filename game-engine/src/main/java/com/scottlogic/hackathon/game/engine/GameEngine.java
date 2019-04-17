@@ -457,11 +457,11 @@ public class GameEngine {
         for (final Collectable.Type type : types) {
             if (random.nextDouble() < gameConfig.getFoodSpawnProbability()) {
                 // generate a random count of food to spawn, but limit it so we don't go over the map's maximum
-                final int count = Math.min(
-                    1 + random.nextInt(gameConfig.getMaxFoodSpawnedPerTurn() - 1),
-                    gameConfig.getMaximumFoodCount() - collectables.size());
+                final int idealSpawnAmount = 1 + random.nextInt(gameConfig.getMaxFoodSpawnedPerTurn() - 1);
+                final int maximumAllowedSpawnAmount = gameConfig.getMaximumFoodCount() - collectables.size();
+                final int amountToSpawn = Math.min(idealSpawnAmount, maximumAllowedSpawnAmount);
 
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < amountToSpawn; i++) {
                     spawnCollectable(type);
                 }
             }

@@ -12,11 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MapFileReader {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     public MapDetails readMapFile(String mapName) throws MapLoadException {
         final LoadableMap map;
         final String mapFilePath = "maps/" + mapName + ".json";
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(mapFilePath)) {
-            final ObjectMapper objectMapper = new ObjectMapper();
             map = objectMapper.readValue(inputStream, LoadableMap.class);
         }
         catch(JsonParseException | JsonMappingException e) {
