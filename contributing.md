@@ -3,6 +3,7 @@
 :tada: Thanks for taking the time to contribute to this repo! :tada:
 
 General Guidelines:
+* For general discussion, use the internal slack channel `hackathon-ai-game`
 * Any bugs found and/or feature requests should be raised via issues on this repository
 * Any changes should be made via merge requests
 
