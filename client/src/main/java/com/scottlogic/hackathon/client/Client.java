@@ -56,13 +56,12 @@ public class Client {
             }
 
             final GameConfigLayer configFromConfigFile = new GameConfigFileReader()
-                .readIfExists("config.properties")
+                .readIfExists("forced-overrides.properties")
                 .orElse(GameConfigLayerBuilder.createEmpty());
-            final GameConfig config = GameConfig.defaults.withOverrides(configFromConfigFile);
 
             GameEngine gameEngine = arguments.isDebug()
-                ? GameEngine.createDebug(config, arena, bots)
-                : GameEngine.create(config, arena, bots);
+                ? GameEngine.createDebug(configFromConfigFile, arena, bots)
+                : GameEngine.create(configFromConfigFile, arena, bots);
 
             try {
                 final Scanner scanner = new Scanner(System.in);

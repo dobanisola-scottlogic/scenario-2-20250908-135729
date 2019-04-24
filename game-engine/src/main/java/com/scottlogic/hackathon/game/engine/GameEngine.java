@@ -2,6 +2,7 @@ package com.scottlogic.hackathon.game.engine;
 
 import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.game.engine.config.GameConfig;
+import com.scottlogic.hackathon.game.engine.config.GameConfigLayer;
 import com.scottlogic.hackathon.game.engine.maps.Arena;
 import com.scottlogic.hackathon.game.engine.maps.FoodSpawnPositionPopulator;
 import com.scottlogic.hackathon.game.engine.maps.MapLoadException;
@@ -65,26 +66,28 @@ public class GameEngine {
     private TrackedSetImpl<DisqualifiedBotImpl> disqualifiedBots;
     private int phase;
 
-    public static GameEngine createDebug(final GameConfig gameConfig, final Arena arena, final Set<Bot> bots) {
-        return createInternal(gameConfig, arena, bots, null);
+    public static GameEngine createDebug(final GameConfigLayer forcedConfigOverrides, final Arena arena, final Set<Bot> bots) {
+        return createInternal(forcedConfigOverrides, arena, bots, null);
     }
 
-    public static GameEngine create(final GameConfig gameConfig, final Arena arena, final Set<Bot> bots) {
-        return createInternal(gameConfig, arena, bots, Executors.defaultThreadFactory());
+    public static GameEngine create(final GameConfigLayer forcedConfigOverrides, final Arena arena, final Set<Bot> bots) {
+        return createInternal(forcedConfigOverrides, arena, bots, Executors.defaultThreadFactory());
     }
 
-    public static GameEngine create(final GameConfig gameConfig, final Arena arena, final Set<Bot> bots, ThreadFactory botThreadFactory) {
-        return createInternal(gameConfig, arena, bots, Objects.requireNonNull(botThreadFactory));
+    public static GameEngine create(final GameConfigLayer forcedConfigOverrides, final Arena arena, final Set<Bot> bots, ThreadFactory botThreadFactory) {
+        return createInternal(forcedConfigOverrides, arena, bots, Objects.requireNonNull(botThreadFactory));
     }
 
     private static GameEngine createInternal(
-            final GameConfig gameConfig,
+            final GameConfigLayer forcedConfigOverrides,
             final Arena arena,
             final Set<Bot> bots,
             final ThreadFactory botThreadFactory)
             throws MapLoadException {
 
-        final GameConfig aggregatedConfig = gameConfig.withOverrides(arena.getMapSpecificConfig());
+        final GameConfig aggregatedConfig = GameConfig.defaults
+            .withOverrides(arena.getMapSpecificConfig())
+            .withOverrides(forcedConfigOverrides);
 
         final Arena postProcessedArena = new FoodSpawnPositionPopulator().populateFoodSpawnPositions(arena, aggregatedConfig);
 

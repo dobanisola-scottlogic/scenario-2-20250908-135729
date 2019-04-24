@@ -45,11 +45,11 @@ public class GameService {
         final Set<Bot> bots = new HashSet<>(teamBotMap.values());
 
         final GameConfigLayer configFromConfigFile = new GameConfigFileReader()
-            .readIfExists("config.properties")
+            .readIfExists("forced-overrides.properties")
             .orElse(GameConfigLayerBuilder.createEmpty());
 
         final GameEngine gameEngine = GameEngine.create(
-            GameConfig.defaults.withOverrides(configFromConfigFile),
+            configFromConfigFile,
             new MapFileReader().readMapFile(gameConfiguration.getMap()),
             bots,
             botThreadFactory);
