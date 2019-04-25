@@ -1,9 +1,11 @@
 package com.scottlogic.hackathon.game.engine.models;
 
+import com.scottlogic.hackathon.game.Player;
 import com.scottlogic.hackathon.game.Position;
 import com.scottlogic.hackathon.game.SpawnPoint;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpawnPointImpl implements SpawnPoint {
@@ -44,13 +46,14 @@ public class SpawnPointImpl implements SpawnPoint {
         queuedPlayers++;
     }
 
-    public boolean shouldSpawnPlayer() {
-        final boolean shouldSpawnPlayer = queuedPlayers > 0;
-        if (shouldSpawnPlayer) {
-            queuedPlayers--;
+    public Optional<PlayerImpl> createPlayerIfAble() {
+        if (queuedPlayers == 0) {
+            return Optional.empty();
         }
 
-        return shouldSpawnPlayer;
+        queuedPlayers--;
+        return Optional.of(
+            new PlayerImpl(owner, position));
     }
 
     @Override

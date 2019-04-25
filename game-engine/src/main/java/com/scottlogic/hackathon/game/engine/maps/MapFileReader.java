@@ -11,12 +11,13 @@ import java.io.InputStream;
 import java.util.*;
 
 public class MapFileReader {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     public MapDetails readMapFile(String mapName) throws MapLoadException {
         final MapDto json;
         final String mapFilePath = "maps/" + mapName + ".json";
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(mapFilePath)) {
-            final ObjectMapper objectMapper = new ObjectMapper();
-            json = objectMapper.readValue(inputStream, MapDto.class);
+            json = objectMapper.readValue(inputStream, LoadableMap.class);
         }
         catch(JsonParseException | JsonMappingException e) {
             throw new MapLoadException("Couldn't read JSON from json file: " + mapFilePath);
