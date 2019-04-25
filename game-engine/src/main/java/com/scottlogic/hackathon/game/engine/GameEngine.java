@@ -500,18 +500,18 @@ public class GameEngine {
 
     private void spawnPlayers() {
         for (final SpawnPointImpl spawnPoint : spawnPoints) {
+            final Position spawnPosition = spawnPoint.getPosition();
 
-
-            if (spawnPoint.shouldSpawnPlayer()) {
-                spawnPlayer(spawnPoint);
+            if (players.stream().anyMatch(p -> p.getPosition().equals(spawnPosition))) {
+                continue; // the spawn position is blocked; don't spawn anything
             }
-        }
-    }
 
-    private void spawnPlayer(final SpawnPoint spawnPoint) {
-        final PlayerImpl player = new PlayerImpl(spawnPoint.getOwner(), spawnPoint.getPosition());
-        players.add(player);
-        LOGGER.info("Player Spawned: " + player.toString());
+            spawnPoint.createPlayerIfAble()
+                .ifPresent(p -> {
+                    players.add(p);
+                    LOGGER.info("Player Spawned: " + p.toString());
+                });
+        }
     }
 
     private void collideOutOfBoundsTiles() {

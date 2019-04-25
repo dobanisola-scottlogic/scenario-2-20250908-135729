@@ -42,7 +42,7 @@ class GameSelectorController {
                     type: uiGridConstants.filter.SELECT,
                     condition: uiGridConstants.filter.EXACT,
                     selectOptions: this.maps.map(({ display, value }) => ({ label: display, value }))
-                  }
+                }
                 },
                 { name: 'Game Time', field: 'timeString', type: 'date'}
             ],
