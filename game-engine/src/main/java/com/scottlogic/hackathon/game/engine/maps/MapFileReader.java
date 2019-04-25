@@ -17,7 +17,7 @@ public class MapFileReader {
         final MapDto json;
         final String mapFilePath = "maps/" + mapName + ".json";
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(mapFilePath)) {
-            json = objectMapper.readValue(inputStream, LoadableMap.class);
+            json = objectMapper.readValue(inputStream, MapDto.class);
         }
         catch(JsonParseException | JsonMappingException e) {
             throw new MapLoadException("Couldn't read JSON from json file: " + mapFilePath);
