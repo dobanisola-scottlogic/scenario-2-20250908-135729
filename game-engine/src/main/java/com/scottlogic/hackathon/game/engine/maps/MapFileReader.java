@@ -8,46 +8,75 @@ import com.scottlogic.hackathon.game.engine.config.GameConfigLayerBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class MapFileReader {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public MapDetails readMapFile(String mapName) throws MapLoadException {
-        final LoadableMap map;
+        final MapDto json;
         final String mapFilePath = "maps/" + mapName + ".json";
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(mapFilePath)) {
-            map = objectMapper.readValue(inputStream, LoadableMap.class);
+            json = objectMapper.readValue(inputStream, MapDto.class);
         }
         catch(JsonParseException | JsonMappingException e) {
-            throw new MapLoadException("Couldn't read JSON from map file: " + mapFilePath);
+            throw new MapLoadException("Couldn't read JSON from json file: " + mapFilePath);
         }
         catch(IOException e) {
-            throw new MapLoadException("Couldn't open map file: " + mapFilePath);
+            throw new MapLoadException("Couldn't open json file: " + mapFilePath);
         }
 
+        final int width;
+        final int height;
 
         final Set<Position> outOfBoundsPositions = new HashSet<>();
         final Set<Position> spawnPointPositions = new HashSet<>();
 
-        final int width = map.getWidth();
-        final int height = map.getHeight();
-        final int[] data = map.getData();
+        if (json.data != null) {
+            width = json.width;
+            height = json.height;
+            final int[] data = json.data;
 
-        if (height * width != data.length) {
-            throw new MapLoadException("Map is invalid; wrong number of cells");
-        }
+            if (height * width != data.length) {
+                throw new MapLoadException("Map is invalid; wrong number of cells");
+            }
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                final int datum = data[(y * width) + x];
-                if (datum == 1) {
-                    outOfBoundsPositions.add(new Position(x, y));
-                } else if (datum == 2) {
-                    spawnPointPositions.add(new Position(x, y));
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    final int datum = data[(y * width) + x];
+                    if (datum == 1) {
+                        outOfBoundsPositions.add(new Position(x, y));
+                    } else if (datum == 2) {
+                        spawnPointPositions.add(new Position(x, y));
+                    }
                 }
             }
+        }
+        else if (json.map != null) {
+            List<String> mapAsAscii = Arrays.asList(json.map);
+            height = mapAsAscii.size();
+            width = mapAsAscii.stream()
+                .map(String::length)
+                .findFirst()
+                .orElseThrow(() -> new MapLoadException("Map file had empty ASCII map"));
+
+            if (!mapAsAscii.stream().allMatch(line -> line.length() == width)) {
+                throw new MapLoadException("Map file's ASCII map had inconsistent line lengths");
+            }
+
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    final char datum = mapAsAscii.get(y).charAt(x);
+                    if (datum == 'X') {
+                        outOfBoundsPositions.add(new Position(x, y));
+                    } else if (datum == 'B') {
+                        spawnPointPositions.add(new Position(x, y));
+                    }
+                }
+            }
+        }
+        else {
+            throw new MapLoadException("Maps must have either data (plus width and height) or map populated");
         }
 
         final Arena arena;
@@ -64,20 +93,19 @@ public class MapFileReader {
             throw new MapLoadException("Map details were invalid: " + e.getMessage());
         }
 
-        if (map.getPerTurnFoodSpawnProbability().isPresent() && (map.getPerTurnFoodSpawnProbability().get() < 0 || map.getPerTurnFoodSpawnProbability().get() > 1)) {
+        if (json.perTurnFoodSpawnProbability != null && (json.perTurnFoodSpawnProbability < 0 || json.perTurnFoodSpawnProbability > 1)) {
             throw new MapLoadException("perTurnFoodSpawnProbability must be >=0 and <=1");
         }
 
         GameConfigLayerBuilder configBuilder = new GameConfigLayerBuilder();
 
-        map.getMaximumFoodCount().ifPresent(configBuilder::setMaximumFoodCount);
-        map.getPerTurnFoodSpawnProbability().ifPresent(configBuilder::setFoodSpawnProbability);
-        map.getMaximumTurnCount().ifPresent(configBuilder::setTurnLimit);
-        map.getInitialUnitSpawnCount().ifPresent(configBuilder::setInitialUnitCount);
-        map.getBattleRadius().ifPresent(configBuilder::setBattleRadius);
-        map.getViewDistance().ifPresent(configBuilder::setViewDistance);
+        if (json.maximumFoodCount != null) configBuilder.setMaximumFoodCount(json.maximumFoodCount);
+        if (json.perTurnFoodSpawnProbability != null) configBuilder.setFoodSpawnProbability(json.perTurnFoodSpawnProbability);
+        if (json.maximumTurnCount != null) configBuilder.setTurnLimit(json.maximumTurnCount);
+        if (json.initialUnitSpawnCount != null) configBuilder.setInitialUnitCount(json.initialUnitSpawnCount);
+        if (json.battleRadius != null) configBuilder.setBattleRadius(json.battleRadius);
+        if (json.viewDistance != null) configBuilder.setViewDistance(json.viewDistance);
 
         return new MapDetails(arena, configBuilder.build());
     }
 }
-
