@@ -1,7 +1,7 @@
 Param (
     [Parameter(Mandatory=$true)][String]$dest,
 
-    $javaVersion = "8",
+    $javaVersion = "11",
     $releaseType = "releases",
     $impl = "hotspot",
     $os = "windows",

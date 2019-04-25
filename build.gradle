@@ -2,7 +2,7 @@ group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
 wrapper {
-    gradleVersion = "4.10.2"
+    gradleVersion = "5.3.1"
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -16,6 +16,6 @@ subprojects {
             jcenter()
         }
 
-        sourceCompatibility = 1.8
+        sourceCompatibility = 8
     }
 }

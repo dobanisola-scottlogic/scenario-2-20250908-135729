@@ -15,11 +15,12 @@ import java.util.*;
 
 /** Given the name of a map, tries to read it from the program's resources, throwing exceptions on failure. */
 public class MapFileReader {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     public Arena readMapFile(String mapName) throws MapLoadException {
         final MapDto json;
         final String mapFilePath = "maps/" + mapName + ".json";
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(mapFilePath)) {
-            final ObjectMapper objectMapper = new ObjectMapper();
             json = objectMapper.readValue(inputStream, MapDto.class);
         }
         catch(JsonParseException | JsonMappingException e) {

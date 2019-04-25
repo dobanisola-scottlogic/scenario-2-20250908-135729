@@ -9,7 +9,7 @@ The event should be advertised in advance to make sure:
   - Attendees have a rough idea of what they'll be doing
   - Organizers have a rough idea of how many people will attend
   - Attendees are aware of any pre-requisites they must fulfil (this will depend on how the event is run)
-  
+
 At the event, attendees will need to be organised into teams of 2-4.
 They can come 'as a team', or can be grouped with other lone attendees when they arrive.
 At past events, there were a mixture of pre- and jit-organised teams.
@@ -30,7 +30,7 @@ There should be a number of organisers at the event:
   - Several other 'helpers' with some experience of the software from a competitor's viewpoint,
     to provide assistance to attendees. This could be technical set-up assistance,
     help or advice with strategy and teamwork, or just making sure that people aren't bored.
-    
+
 ### Tutorial
 
 There is a [tutorial](contestant/docs/tutorial/index.md) that contestants can follow to get them started with
@@ -59,7 +59,7 @@ Here is one format that worked well at the Durham 2018 event:
     These were tracked on an Excel spreadsheet.
   - At the end of the event, the 3 teams with the highest score were pitted against each other in a
     best-of-3/sudden-death final.
-    
+
 An advantage of this format is that it encourages teams to upload implementations early, and refine later.
 Without this, there's a tendency for teams to put off running/testing/submitting an implementation until the very last
 minute, only to discover that it has a bug, so is disqualified.
@@ -73,7 +73,7 @@ The following resources are required:
   - A computer with a large format display, such as a projector, for screening the competition.
   - A deployed [server](server) to upload bots to and run the competition on.
   - A means of distributing the [contestant stub project](contestant) to attendees.
-  
+
 ### Server Deployment
 
 The [deployment](deployment) subproject describes some ways of deploying the server.
@@ -94,7 +94,7 @@ zip/tar archive. Both these methods are described below, or you can see the
       This will extract the stub project into a git repository in the `contestant/build/gitRepo` subfolder.
   2. Create an empty public project on public Git server (e.g. GitHub)
   3. Add the repository created in step 2 as a remote to the repository created in step 1, and push.
-   
+
 #### As A Zip/Tar
 
    1. From the root of this project, run:
@@ -104,7 +104,7 @@ zip/tar archive. Both these methods are described below, or you can see the
       This will create 2 archive files in the `contestant/build/distributions` subfolder:
       a `.zip` for Windows, and a `.tar.gz` for Linux and Mac.
    2. Distribute copies of these archives to attendees; as a download, by email, by USB, or however.
-   
+
 ## Issues and Lessons Learnt
 
 ### IDE Setup
@@ -130,14 +130,14 @@ There are a number of known issues with having unaudited contestant code run on 
     See [GitHub issue #64](https://github.com/ScottLogic/hackathon-ai-game/issues/64).
   - The server application does not currently set up a SecurityManager, or any other means of restricting bots' access
     to privileged code. See [GitHub issue #85](https://github.com/ScottLogic/hackathon-ai-game/issues/85).
-    
+
 In practice, these issues have not caused a problem at past events. However, aside from fixing the associated bugs,
 it's worth taking a few steps to mitigate the chances of this causing a problem:
   - Ensure we have the means to restart the server during an event.
   - Warn attendees against accidentally introducing an infinite loop. This can happen quite easily:
     for instance, code may pick directions for a player to move in randomly until they find one that is not obstructed,
     but a player can become surrounded by obstructions, so there is no available direction to move in.
-    
+
 ### Unknown Server Performance Bug
 
 [GitHub issue #93](https://github.com/ScottLogic/hackathon-ai-game/issues/93) details a bug that causes the server to
@@ -153,7 +153,7 @@ Beyond putting time into fixing the bug, actions that may reduce the chance of t
   - As a temporary work-around, one could alter the code to disable the "Play Against Current Milestone" button,
     and/or automatically discard all but the latest result of each team playing against the built in "Miletone" bots.
   - Preemptively wipe/reboot the server at a convenient moment.
-  
+
 ### Runner-Up or Last Place Prizes
 
 At the Durham event, a conciliatory prize was awarded to the team that came last.
@@ -168,64 +168,64 @@ may have been a little unjust to other teams.
 
 In future events if more than one prize is available, it would be recommended that this be given to the runners-up,
 rather than the losers.
-  
+
 ## Past Experience
 
 ### Durham, November 2018
 
   - The event was organised with the help of the University's Computing Society by John Wright.
-  
+
   - It ran from 1pm to 6pm on a Saturday, and was followed by food and drinks at a local pub (organised by the CompSoc).
-  
+
   - Scott Logic provided free soft drinks.
-  
+
   - The server was deployed on Amazon CloudFormation stacks
-  
+
   - The contestant stub repository was published via GitHub
-  
+
   - There were about 15 attendees, organised into 6 teams. Only 1 team had organised themselves ahead of the event,
     but most of the rest of the attendees happily grouped themselves into teams.
-  
+
   - Attendees brought their own laptops, mostly running Linux or OSX.
-  
+
   - Most attendees used IntelliJ. There were a couple of issues with IDE setup, as documented [above](#ide-setup),
     but people mostly got going fairly quickly. One attendee insisted on developing in Vim,
     which caused discoverability problems particularly as he wasn't familiar with Java.
-  
+
   - Some teams followed the tutorial extensively, whereas others basically ignored it.
-  
+
   - Most teams chose to collaborate via GitHub, although it is not known how much they actually ended up relying on it.
-  
+
   - The competition was run using the points based system described [above](#competition-format).
-  
+
   - The server stack had to be rebuilt towards the end of the event, due to a [bug](#unknown-server-performance-bug),
     which meant team credentials had to be recreated, and teams were asked to re-upload their final bots.
-  
+
   - Prizes were awarded to the team that came first, and [the team that came last](#runner-up-or-last-place-prizes).
-  
+
   - The event was generally well-received, and people seemed to enjoy themselves.
-  
+
 ### Heriot-Watt, October 2018
 
   - The event was organised by Matthew Nicholson, with the help of a professor from the University Computing Department.
-  
+
   - It ran from 2pm to 6pm on a Wednesday.
   - Scott Logic provided free soft drinks, beer, and snacks.
-  
+
   - There were about 30 attendees, organised into 10 teams. Only 1 team had organised themselves ahead of the event,
     but most of the rest of the attendees happily grouped themselves into teams.
-  
+
   - Attendees brought their own laptops, mostly running Windows.
-  
+
   - Most attendees used Eclipse, as this was what they were familiar with. Setup took a long time,
     as Eclipse had not been properly tested, and there were incompatibilities between Eclipse, Java 9, and Gradle.
     Most attendees had no experience with any development tool use, and were used to having everything pre-packaged for
     them. The professor even spoke of providing students with VMs including everything pre-set-up.
-  
+
   - Almost all teams followed the tutorial for a significant portion of time before diverging.
-  
+
   - Teams generally collaborated via pair programming, or by sending code snippets to each other via messengers.
-  
+
   - The server, and a Git server hosting the contestant stub repository, were deployed using Docker Compose to a laptop
     brought to the event. Upon arriving, it was discovered that this laptop would be on a segregated network,
     so attendees couldn't actually access it. To work around this:
@@ -234,18 +234,53 @@ rather than the losers.
       them. This caused quite a few problems, as several uploads were rejected by the server,
       which had to be communicated back to the contestants for them to rectify, so the process could be repeated
       (sometimes several times).
-  
+
   - Time limits on contestant code execution were laxer than they are now
     (see [PR #96](https://github.com/ScottLogic/hackathon-ai-game/pull/96)),
     which meant games took a long time to simulate on the server.
-  
+
   - Due to the issues with uploading to the server and long-running simulations, there was only time to play each
     team's submission in a single game, against one opponent. The winners of each game were ranked based on on the
     number of players they had on the board at the end of the game. This was unsatisfactory, particularly as one team
     developed a very good strategy that allowed them to win their game very quickly without building up their army of
     players. The second place prize was awarded to them, even though they were not second according to the rankings.
-  
+
   - There were two prizes, given to the teams that came "first" and "second" (see previous bullet).
-  
+
   - The event was generally well-received, and people seemed to enjoy themselves.
     One attendee emailed after the event to ask if there was a way for him to keep developing and testing his strategy.
+
+### Nortumbria, February 2019
+Recap of how the event was ran at Northumbria University
+
+#### Setup
+- We walked through the setup of the contestant code multiple times before the event, to iron out any issues that may have cropped up
+- Also wrote a simple bot ourselves, to figure out how the code worked
+- Started service on AWS (cloud formation template)
+- Put the contestant code into a zip on S3 (saved needing git installed)
+- Created bitly links for everything
+
+#### Arrival
+- Arrived at the venue, put link to code on screen
+- As students arrived, tell them to download the code and start the setup
+  - Setup worked very well mainly
+  - Some seemed to have issues on uni pc's with java download not starting (admin permissions?)
+  - One student was using linux, had one issue with scripts not being executable
+- Once all students arrived, gather to do introductions/explain aim of the hackathon
+- Make sure all teams get setup correctly, and getting them to upload bots (even just the example bot) as early as possible
+
+#### Scoring
+- First few hours of the event, only friendly games were played (+ games against the pre built bots)
+- Approx 30 minutes before the end, started league (each team played 5 games on three player maps)
+- 3 Points for 1st, 2 for 2nd, 1 for 3rd, 0 for disqualification
+- Top 3 did a first to 3 decider on the other 3 player map
+- Play winner against FastExpansionBot (😄)
+
+Overall, event was a success! Some possible improvements:
+- Tutorials:
+  - Cut down amount of instructions as they were a bit complex for the students to follow
+  - Could start from a bot with a couple more features, rather than the blank example bot
+  - Bug in one tutorial (tutorial 3?)
+- Viewer should not pause when losing focus, would help when we only had 1 admin/laptop
+- Rewrite/export documentation to PDFs (no-one had markdown viewers, difficult to constantly refer to in Intellij, ended up hosting just the docs on Github)
+- Should run newly added games automatically in viewer, when new games are added, the viewer would continue to play the same game (in live mode)
