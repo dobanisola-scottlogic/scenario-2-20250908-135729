@@ -5,7 +5,6 @@ import com.scottlogic.hackathon.game.GameMap;
 import com.scottlogic.hackathon.game.Position;
 
 public class GameMapImpl implements GameMap {
-
     private final int width;
     private final int height;
 

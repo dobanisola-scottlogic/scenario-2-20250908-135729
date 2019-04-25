@@ -30,7 +30,7 @@ public class Client {
 
     private void run(final String[] args) throws Exception {
         Optional<Arguments> optArgs = ArgumentsParser.create(getClass(), args);
-        if(optArgs.isPresent()) {
+        if (optArgs.isPresent()) {
             Arguments arguments = optArgs.get();
 
             final Set<Bot> bots = Stream.of(arguments.getBots()).map(this::loadDefaultBot)
@@ -39,8 +39,9 @@ public class Client {
 
             GameEngine gameEngine = null;
             try {
-                gameEngine = arguments.isDebug() ? GameEngine.createDebug(arguments.getMap(), bots) :
-                        GameEngine.create(arguments.getMap(), bots);
+                gameEngine = arguments.isDebug()
+                    ? GameEngine.createDebug(arguments.getMap(), bots)
+                    : GameEngine.create(arguments.getMap(), bots);
             } catch (final IllegalArgumentException e) {
                 System.err.printf("couldn't create map %s", arguments.getMap())
                         .println();
