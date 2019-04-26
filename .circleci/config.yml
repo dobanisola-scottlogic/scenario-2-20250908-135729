@@ -51,7 +51,7 @@ jobs:
     - restore_caches
     - run:
         name: Run checks
-        command: ./gradlew check
+        command: ./gradlew check --no-daemon
     - save_caches
 
 workflows:
