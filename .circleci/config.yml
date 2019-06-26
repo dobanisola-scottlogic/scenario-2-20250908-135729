@@ -55,6 +55,9 @@ jobs:
         command: ./gradlew check
     - save_caches
 
+    - store_artifacts:
+        path: .
+
 workflows:
   version: 2
   check:
