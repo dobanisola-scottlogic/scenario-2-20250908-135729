@@ -45,7 +45,7 @@ jobs:
     environment:
       TERM: dumb
       GRADLE_OPTS: -Dorg.gradle.daemon=false
-      JAVA_OPTS: "-Xmx64m -XX:+HeapDumpOnOutOfMemoryError"
+      JAVA_OPTS: "-Xmx64m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump"
 
     steps:
     - checkout
@@ -56,7 +56,8 @@ jobs:
     - save_caches
 
     - store_artifacts:
-        path: .
+        when: on_fail
+        path: /heapdump
 
 workflows:
   version: 2
