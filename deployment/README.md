@@ -11,17 +11,11 @@ This deployment strategy uses Docker compose to deploy the following services to
 
   - The game server, accessible on port 8080
   - A PostgreSQL database for the game server to use
-  - A [Gitea](https://gitea.io) Git server, hosting the [contestant repo](../contestant) at
-    `ScottLogic/coding-challenge`, accessible on port 3000
-  - A [Nexus](https://www.sonatype.com/nexus-repository-sonatype) repository, that can act as a proxy for downloading
-    JDKs and Gradle distributions if Internet bandwidth is poor.
     
 ### Advantages
 
   - Fully automated setup
   - Free if hosted on a local machine
-  - Also provides contestant repo
-  - If hosted on local machine, can reduce Internet bandwidth requirements
   
 ### Disadvantages
 
@@ -35,7 +29,7 @@ This deployment strategy uses Docker compose to deploy the following services to
   2. Clone this repository onto the server machine
   3. Open a shell in the root of the cloned repository, and run
       ```bash
-      ./gradlew up
+      docker-compose up
       ```
       
 The deployment can be brought down again with `./gradlew down`.

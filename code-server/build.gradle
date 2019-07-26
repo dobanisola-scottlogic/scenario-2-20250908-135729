@@ -1,0 +1,38 @@
+plugins {
+    id 'base'
+}
+
+
+
+task copyPythonFiles(type: Copy) {
+    dependsOn  ':python-contestant:tgzContestant'
+    into('project') {
+        from '../python-contestant/build/python-contestant.tgz'
+    }
+    into 'build'
+}
+
+task copyJavaFiles(type: Copy) {
+    dependsOn  ':java-contestant:tgzContestant'
+    into('project') {
+        from '../java-contestant/build/java-contestant.tgz'
+    }
+    into 'build'
+}
+
+task copyFiles(type: Copy) {
+    dependsOn 'copyPythonFiles'
+    finalizedBy 'copyJavaFiles'
+
+    from 'src'
+    into 'build/project'
+}
+
+
+
+task('dockerBuild', type: Exec) {
+    dependsOn 'copyFiles'
+    executable = 'docker'
+    args 'build', '-t', 'hackathon-contestant', '.'
+
+}

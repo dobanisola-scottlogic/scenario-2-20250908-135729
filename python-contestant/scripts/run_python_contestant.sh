@@ -1,0 +1,1 @@
+java -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss:SSS Z" -Dorg.slf4j.simpleLogger.defaultLogLevel=all -jar libs/remote-1.0-SNAPSHOT-all.jar --command "python3 main.py" --team ${TEAM_NAME} --host ${GAME_SERVER_HOST} --port ${GAME_SERVER_PORT}

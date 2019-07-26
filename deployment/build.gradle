@@ -4,58 +4,9 @@ plugins {
 
 import org.apache.tools.ant.DirectoryScanner
 
-sourceSets {
-    nexus
-    gitea
-}
-
-ext {
-    nexusVersion = '3.13.0-01'
-    nexusDistDir = file("$buildDir/docker/nexus")
-    giteaDistDir = file("$buildDir/docker/gitea")
-}
-
-dependencies {
-    nexusImplementation "org.sonatype.nexus:nexus-script:${nexusVersion}"
-    nexusImplementation "org.sonatype.nexus:nexus-rest-client:${nexusVersion}"
-    nexusImplementation "org.sonatype.nexus:nexus-security:${nexusVersion}"
-
-    nexusRuntimeOnly "org.sonatype.nexus:nexus-rest-jackson2:${nexusVersion}"
-    nexusRuntimeOnly "org.slf4j:slf4j-simple:1.7.+"
-
-    nexusCompileOnly "org.sonatype.nexus:nexus-repository:${nexusVersion}"
-    nexusCompileOnly "org.sonatype.nexus:nexus-blobstore:${nexusVersion}"
-    nexusCompileOnly "org.sonatype.nexus:nexus-core:${nexusVersion}"
-    nexusCompileOnly "org.sonatype.nexus.plugins:nexus-blobstore-tasks:${nexusVersion}"
-    nexusCompileOnly "org.sonatype.nexus.plugins:nexus-repository-maven:${nexusVersion}"
-    nexusCompileOnly "org.sonatype.nexus.plugins:nexus-script-plugin:${nexusVersion}"
-    
-    giteaRuntime project(path: ':contestant', configuration: 'repo')
-}
-
-task ('gatherNexus', type: Sync) {
-    destinationDir = nexusDistDir
-    from(sourceSets.nexus.runtimeClasspath) {
-        into 'jars'
-        exclude 'groovy-*'
-    }
-    from(file("src/nexus"))
-}
-
-task ('gatherGitea', type: Sync) {
-    destinationDir = giteaDistDir
-    from(configurations.giteaRuntime) {
-        into 'repo'
-    }
-    from(file("src/gitea"))
-
-    // The following 2 lines are a workaround for https://github.com/gradle/gradle/issues/1348
-    doFirst { DirectoryScanner.getDefaultExcludes().each { DirectoryScanner.removeDefaultExclude(it) } }
-    doLast { DirectoryScanner.resetDefaultExcludes() }
-}
 
 task up(type: Exec) {
-    dependsOn gatherNexus, ':server:dockerBuild', gatherGitea
+    dependsOn  ':server:dockerBuild'
     workingDir = projectDir
     commandLine 'docker-compose', 'up', '-d', '--build'
 }

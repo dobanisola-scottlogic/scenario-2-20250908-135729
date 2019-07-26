@@ -1,0 +1,32 @@
+plugins {
+    id 'base'
+}
+
+task copyContestantFiles(type: Copy) {
+    dependsOn  ':remote:build'
+
+    doFirst {
+        project.file('build/java-contestant/libs').mkdirs()
+    }
+    into('libs') {
+        from '../remote/build/libs/remote-1.0-SNAPSHOT-all.jar'
+    }
+
+    into('src') {
+        from 'src'
+    }
+
+    
+    from 'scripts'
+    from 'docs'
+    into 'build/java-contestant'
+}
+
+
+task tgzContestant(type: Tar) {
+    dependsOn 'copyContestantFiles'
+    archiveFileName = "java-contestant.tgz"
+    destinationDirectory = file("build")
+    compression = Compression.GZIP
+    from "build/java-contestant"
+}

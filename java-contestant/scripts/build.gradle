@@ -1,0 +1,19 @@
+
+plugins {
+    id "java"
+}
+
+group "com.scottlogic.hackathon-contestant"
+version "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+    jcenter()
+    flatDir {
+        dirs "libs"
+    }
+
+}
+dependencies {
+    compileOnly name: 'remote-1.0-SNAPSHOT-all'
+}
