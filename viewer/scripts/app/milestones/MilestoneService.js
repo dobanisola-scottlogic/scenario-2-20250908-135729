@@ -1,9 +1,8 @@
 class MilestoneService {
-    constructor($http, $q, apiPath, Upload) {
+    constructor($http, $q, apiPath) {
         this.apiPath = apiPath;
         this.$http = $http;
         this.$q = $q;
-        this.Upload = Upload;
     }
 
     getMilestones() {
@@ -11,6 +10,6 @@ class MilestoneService {
     }
 }
 
-MilestoneService.$inject = ['$http', '$q', 'API_PATH', 'Upload'];
+MilestoneService.$inject = ['$http', '$q', 'API_PATH'];
 
 module.exports = MilestoneService;

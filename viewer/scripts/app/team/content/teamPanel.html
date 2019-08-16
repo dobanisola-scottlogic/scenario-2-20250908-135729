@@ -35,29 +35,5 @@
         <button type="button" class="btn btn-danger pull-right" ng-click="controller.onDelete()" ng-disabled="controller.deleteButtonDisabled">Delete Team</button>
     </form>
     <hr></hr>
-    <hack-bot-upload
-        on-upload="controller.onBotUpload(bot)"
-        is-admin-user="true"
-        select-file-disabled="controller.selectFileDisabled"
-        team-name="{{controller.selectedTeam.name}}">
-    </hack-bot-upload>
-    <div class="list-group">
-        <div class="list-group-item" ng-if="controller.currentTeamBots.length === 0">No bots found.</div>
-        <hack-bot
-            ng-repeat="bot in controller.currentTeamBots track by bot.id"
-            ng-click="controller.onBotSelected(bot)"
-            ng-class="{'active': controller.isBotSelected(bot)}"
-            is-active="controller.isActive(bot)"
-            bot="bot">
-        </hack-bot>
-    </div>
-    <button class="btn btn-default"
-            ng-disabled="controller.editButtonsDisabled"
-            ng-click="controller.onMakeActive()">Make Active</button>
-    <button class="btn btn-danger pull-right"
-            ng-disabled="controller.editButtonsDisabled"
-            ng-click="controller.onBotDelete()">Delete</button>
-    <div class="spinner-container" ng-show="controller.makingCall">
-        <div class="spinner"></div>
-    </div>
+
 </div>

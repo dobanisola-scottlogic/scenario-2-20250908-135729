@@ -10,7 +10,7 @@ import com.scottlogic.hackathon.remote.RemoteBotConnector;
 import com.scottlogic.hackathon.remote.notify.ChangeEventListener;
 import com.scottlogic.hackathon.remote.notify.RemoteBotChangeEvent;
 import com.scottlogic.hackathon.server.models.Team;
-import com.scottlogic.hackathon.server.models.UploadedBot;
+import com.scottlogic.hackathon.server.models.TeamBot;
 import com.scottlogic.hackathon.server.services.stores.BotStore;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
@@ -47,10 +47,10 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
 
     }
 
-    public void save(Team team, RemoteBotConnector remote) {
+    void save(Team team, RemoteBotConnector remote) {
         remote.addRemoteBotListener(this);
         teamBotMap.put(remote.getTeam(), remote);
-        remote.getRemoteBot().ifPresent(bot -> storeUploadedBot(team, bot));
+        remote.getRemoteBot().ifPresent(bot -> storeTeamBot(team, bot));
     }
 
 
@@ -79,11 +79,9 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
         return state;
     }
 
-    private UploadedBot storeUploadedBot(Team team, RemoteBot bot) {
-        UploadedBot upBot = new UploadedBot(team, bot.getId());
-        botStore.setActiveBot(upBot);
-        logger.debug("storeUploadedBot " + team.getName());
-        return botStore.saveOrUpdate(upBot);
+    private TeamBot storeTeamBot(Team team, RemoteBot bot) {
+        logger.debug("storeTeamBot " + team.getName());
+        return botStore.saveOrUpdate(new TeamBot(team, bot.getId()));
     }
 
     @Override
@@ -91,7 +89,7 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
     public void onChangeEvent(RemoteBotChangeEvent changeEvent) {
         botStore.runInSession(() -> {
             Team team = teamService.getTeam(changeEvent.getTarget());
-            storeUploadedBot(team, changeEvent.getNewValue());
+            storeTeamBot(team, changeEvent.getNewValue());
         });
     }
 }

@@ -15,6 +15,10 @@ class RemoteService {
     test(teamName, milestone, map) {
         return this.$http.post(`${this.apiPath}/remotebot/test`, {teamName, milestone, map}).then(response => response.data);
     }
+
+    getBotsByTeamName(teamName) {
+        return this.$http.get(`${this.apiPath}/remotebot/?teamName=${teamName}`).then(response => response.data);
+    }
 }
 
 RemoteService.$inject = ['$http', 'API_PATH'];

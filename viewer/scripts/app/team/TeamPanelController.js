@@ -13,7 +13,6 @@ class TeamPanelController {
         this.hackathons = [];
 
         this.currentTeamBots = [];
-        this.activeBots = [];
 
         this.newTeamDetails = {
             name: '',
@@ -53,19 +52,11 @@ class TeamPanelController {
         );
     }
 
-    onBotUpload(bot) {
-        this.refreshBots();
-    }
 
     refreshBots() {
         this.makingCall = true;
 
         this.botService.getBotsByTeamName(this.selectedTeam.name).then(
-            currentTeamBots => {
-                this.currentTeamBots = currentTeamBots;
-                this.activeBots = currentTeamBots.filter(bot => bot.active);
-                this.makingCall = false;
-            },
             () => {
                 this.makingCall = false;
             }
@@ -74,13 +65,9 @@ class TeamPanelController {
 
     onTeamSelected(selectedTeam) {
         this.selectedTeam = selectedTeam;
-        this.selectedBot = null;
         this.refreshBots();
     }
 
-    isActive(bot) {
-        return this.activeBots && this.activeBots.some(activeBot => activeBot.id === bot.id);
-    }
 
     initialiseHackathons() {
         this.makingCall = true;
@@ -115,9 +102,7 @@ class TeamPanelController {
 
     onHackathonSelected() {
         this.selectedTeam = null;
-        this.selectedBot = null;
         this.teams = [];
-        this.currentTeamBots = [];
         this.refreshTeams();
     }
 
@@ -171,42 +156,8 @@ class TeamPanelController {
         return this.selectedTeam && this.selectedTeam.id === team.id;
     }
 
-    onBotSelected(bot) {
-        this.selectedBot = bot;
-    }
 
-    isBotSelected(bot) {
-        return this.selectedBot && this.selectedBot.id === bot.id;
-    }
 
-    onBotDelete() {
-        this.makingCall = true;
-        this.refreshAlerts();
-        this.botService.deleteBot(this.selectedBot).then(
-            () => {
-                this.selectedBot = undefined;
-                this.refreshBots();
-            },
-            () => {
-                this.makingCall = false;
-                this.alert = Error;
-            }
-        );
-    }
-
-    onMakeActive() {
-        this.makingCall = true;
-        this.refreshAlerts();
-        this.botService.makeActive(this.selectedBot).then(
-            () => {
-                this.refreshBots();
-            },
-            () => {
-                this.makingCall = false;
-                this.alert = Error;
-            }
-        );
-    }
 
     get addButtonDisabled() {
         return (this.newTeamDetails.name.length === 0) ||
@@ -229,15 +180,11 @@ class TeamPanelController {
         return this.userInterfaceDisabled || !this.selectedTeam;
     }
 
-    get selectFileDisabled() {
-        return this.userInterfaceDisabled || !this.selectedTeam;
-    }
 
-    get editButtonsDisabled() {
-        return this.userInterfaceDisabled || !this.selectedBot;
-    }
+
+
 }
 
-TeamPanelController.$inject = ['$scope', '$rootScope', 'TeamService', 'HackathonService', 'BotService'];
+TeamPanelController.$inject = ['$scope', '$rootScope', 'TeamService', 'HackathonService', 'RemoteService'];
 
 module.exports = TeamPanelController;

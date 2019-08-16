@@ -36,10 +36,10 @@ createRepo () {
     echo Created ECR repository: $IMAGE_NAME.
 }
 
-if git diff-index --quiet HEAD; then
-    echo "There are uncommitted changes in the repository." >&2
-    echo "Please commit them then rerun." >&2
-    exit 1
+if [ -n "$(git status --porcelain)" ]; then
+  echo "There are uncommitted changes in the repository." >&2
+  echo "Please commit them then rerun." >&2
+  exit 1
 fi
 
 ./gradlew check code-server:dockerBuild || exit $?

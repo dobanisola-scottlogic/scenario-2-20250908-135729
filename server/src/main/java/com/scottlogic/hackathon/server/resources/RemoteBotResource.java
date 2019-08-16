@@ -6,9 +6,8 @@ import com.scottlogic.hackathon.server.authentication.Authorizer;
 import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.GameResult;
 import com.scottlogic.hackathon.server.models.Team;
-import com.scottlogic.hackathon.server.models.UploadedBot;
+import com.scottlogic.hackathon.server.models.TeamBot;
 import com.scottlogic.hackathon.server.services.*;
-import com.scottlogic.hackathon.server.services.stores.ActiveBot;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
@@ -89,34 +88,16 @@ public class RemoteBotResource {
     @UnitOfWork
     @Timed
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
-    public List<UploadedBot> getUploadedBots(@Auth final User user,
-                                             @QueryParam("teamName") String teamName) {
-        List<UploadedBot> uploadedBots;
+    public List<TeamBot> getTeamBots(@Auth final User user,
+                                     @QueryParam("teamName") String teamName) {
+        List<TeamBot> teamBots;
         if (teamName != null && user.isAdmin()) {
-            uploadedBots = botService.getUploadedBots(teamName);
+            teamBots = botService.getTeamBots(teamName);
         } else {
-            uploadedBots = botService.getUploadedBots(user);
+            teamBots = botService.getTeamBots(user);
         }
-        return uploadedBots;
+        return teamBots;
     }
 
-    @DELETE
-    @UnitOfWork
-    @Timed
-    @Path("/{id}")
-    @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
-    public void deleteBot(@Auth final User user, @PathParam("id") final UUID id) {
-        botService.deleteUploadedBot(user, id);
-    }
 
-    @PUT
-    @UnitOfWork
-    @Timed
-    @Path("/active")
-    @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public UploadedBot setActiveBot(@Auth final User user, final ActiveBot activeBot) {
-        return botService.setActiveBot(user, activeBot);
-    }
 }

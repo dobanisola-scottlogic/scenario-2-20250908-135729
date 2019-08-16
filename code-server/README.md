@@ -67,6 +67,19 @@ where
 -   TEAM_NAME:         The name by which the Game Server identifies the contestant
 -   PASSWORD:          The password to use to access code server
 
+If you want to run the code-server on a different internal port then you can pass an additional environment variable
+
+-   CODE_SERVER_PORT:  The internal port that code server should run on. Defaults to 8443 if not supplied
+
+This can be useful when developing locally and you want to run two clients on the same docker host network where ports are not published
+
+for example
+
+```bash
+docker  run -it --rm --network="host" -e GAME_SERVER_HOST=127.0.0.1 -e GAME_SERVER_PORT=8080 -e TEAM_NAME=team1 -e PASSWORD='pass1'  --name code-server --security-opt=seccomp:unconfined hackathon-contestant:latest --allow-http --no-auth
+docker  run -it --rm --network="host" -e GAME_SERVER_HOST=127.0.0.1 -e GAME_SERVER_PORT=8080 -e TEAM_NAME=team2 -e PASSWORD='pass2' -e CODE_SERVER_PORT=8445 --name code-server1 --security-opt=seccomp:unconfined hackathon-contestant:latest --allow-http --no-auth
+``` 
+ would spin up two containers one on the default 8443 port and the second on 8445 port
 
 ###### Pushing to AWS ECR
 

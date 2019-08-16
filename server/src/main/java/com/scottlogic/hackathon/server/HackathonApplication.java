@@ -12,8 +12,7 @@ import com.scottlogic.hackathon.server.models.GameTeam;
 import com.scottlogic.hackathon.server.models.Hackathon;
 import com.scottlogic.hackathon.server.models.MilestoneBot;
 import com.scottlogic.hackathon.server.models.Team;
-import com.scottlogic.hackathon.server.models.UploadedBot;
-import com.scottlogic.hackathon.server.models.UploadedJar;
+import com.scottlogic.hackathon.server.models.TeamBot;
 import com.scottlogic.hackathon.server.resources.*;
 import com.scottlogic.hackathon.server.services.AdminService;
 import com.scottlogic.hackathon.server.services.TeamService;
@@ -56,14 +55,13 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         bootstrap.addBundle(GuiceBundle.builder().useWebInstallers().extensions(RemoteBotWebSocketServlet.class).build());
     }
 
-    private final HibernateBundle<HackathonConfiguration> hibernateBundle = new HibernateBundle<HackathonConfiguration>(
+    private final HibernateBundle<HackathonConfiguration> hibernateBundle = new HibernateBundle<>(
             GameTeam.class,
             GameResult.class,
             Team.class,
-            UploadedBot.class,
+            TeamBot.class,
             Hackathon.class,
             MilestoneBot.class,
-            UploadedJar.class,
             AdminUser.class
     ) {
         @Override
@@ -99,7 +97,6 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
         environment.jersey().register(injector.getInstance(AdminResource.class));
         environment.jersey().register(injector.getInstance(GameResource.class));
         environment.jersey().register(injector.getInstance(TeamResource.class));
-        environment.jersey().register(injector.getInstance(BotResource.class));
         environment.jersey().register(injector.getInstance(RemoteBotResource.class));
         environment.jersey().register(injector.getInstance(MilestoneResource.class));
         environment.jersey().register(injector.getInstance(LoginResource.class));

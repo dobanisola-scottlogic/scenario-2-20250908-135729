@@ -33,7 +33,7 @@ public class MilestoneResource {
     @UnitOfWork
     @Timed
     @RolesAllowed({Authorizer.ROLE_ADMIN, Authorizer.ROLE_TEAM})
-    public List<MilestoneBot> getUploadedMilestones(@Auth final User user) {
+    public List<MilestoneBot> getMilestones(@Auth final User user) {
         return milestoneService.getMilestones();
     }
 
