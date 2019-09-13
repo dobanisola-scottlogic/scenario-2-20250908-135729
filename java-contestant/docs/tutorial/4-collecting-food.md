@@ -29,7 +29,7 @@ private void collectFood(GameState gameState){
 ```
 
 This will go through all of your players, and for each player loop through all of the food items. If the distance is less than 10, the player will move
-towards that food. Note that a player will move towards the last food it finds that is less than 10 this is not necessarily the closest food and may not be the same food each turn. We then need to add a call to `collectFood` in the `makeMoves` method, so add `collectFood(gameState);` just
+towards that food. Note that a player will move towards the last food it finds that is less than 10. This is not necessarily the closest food and may not be the same food each turn. We then need to add a call to `collectFood` in the `makeMoves` method, so add `collectFood(gameState);` just
 before `List<Move> moves = extractMoves(gameState);`
 
 ### Testing

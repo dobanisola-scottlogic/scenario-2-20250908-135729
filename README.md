@@ -69,7 +69,7 @@ After some time when it is complete you will see a message showing the public ur
 
 Point your browser at <http://some_aws_domain/application> and login with username 'admin' and password 'secret'.
 
-![define a new hackathon](https://github.com/ScottLogic/hackathon-ai-game/blob/deployment/images/definehackathon.png)
+![define a new hackathon](images/definehackathon.png)
 
 
 ### 4 - Deploy Contestant Code Server (VS Code) to AWS
@@ -89,12 +89,12 @@ If  later to remove an individual team this can be done with the  command
 One you have the public DNS of the teams instance navigate to the following url for the Java contestant
 http://public_dns/?folder=/home/coder/project/java-contestant
 
-![java contestant](https://github.com/ScottLogic/hackathon-ai-game/blob/deployment/images/javacontestant.png)
+![java contestant](images/javacontestant.png)
 
 or
 http://public_dns/?folder=/home/coder/project/python-contestant for the Python Contestant
 
-![python contestant](https://github.com/ScottLogic/hackathon-ai-game/blob/deployment/images/pythoncontestant.png)
+![python contestant](images/pythoncontestant.png)
 
 The password is the team name
 
@@ -103,7 +103,7 @@ The password is the team name
 
 Return to the Admin page for the Game Server
 
-![define contestant team](https://github.com/ScottLogic/hackathon-ai-game/blob/deployment/images/defineteam.png)
+![define contestant team](images/defineteam.png)
 
 Here you should define a new team for the chosen Hackathon using the team name from step 4 as password
 

@@ -53,7 +53,7 @@ Now that we have generated entries into the HashMap, we need a way of extracting
 ```
 private List<Move> extractMoves(GameState gameState){
     List<Move> moves = new ArrayList<>();
-    for (Map.Entry<Id, Direction> item : playerDirectionHashMap.entrySet()) {
+    for (Entry<Id, Direction> item : playerDirectionHashMap.entrySet()) {
         Id playerID = item.getKey();
         Direction direction = item.getValue();
         moves.add(new MoveImpl(playerID, direction));

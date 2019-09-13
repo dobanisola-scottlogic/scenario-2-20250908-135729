@@ -33,7 +33,7 @@ List<Move> moves = moveNorth(gameState);
 return moves;
 ```
 
-###Logging
+### Logging
 
 Logging can be useful to debug your code however it will also make your test runs longer. To enable logging call the
 `process` method of `gameStateLoggerBuilder` on the first line of `makeMoves` with `gameState` as the
@@ -50,7 +50,7 @@ gameStateLoggerBuilder.withPlayers().withOutOfBounds().process(gameState);
 Now you're ready to send your initial Bot into battle, so rebuild and reconnect your bot (as explained in the
 [readme](readme.md)) to test it.
 
-The game should now have lasted 21 phases, but still end with the `Game Over. One team remaining.` end condition as
+The game should now have lasted 22 phases, but still end with the `Game Over. One team remaining.` end condition as
 all your players march in a neat line directly northwards and straight into the nearby water!
 
 In the [next step](2-maintaining-history.md) we will look at maintaining a history the directions

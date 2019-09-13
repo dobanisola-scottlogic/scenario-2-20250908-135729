@@ -6,10 +6,17 @@ import com.scottlogic.hackathon.game.Direction;
 import com.scottlogic.hackathon.game.GameState;
 import com.scottlogic.hackathon.game.Move;
 import com.scottlogic.hackathon.game.MoveImpl;
+import com.scottlogic.hackathon.game.Player;
+import com.scottlogic.hackathon.game.Id;
+import com.scottlogic.hackathon.game.Position;
+import com.scottlogic.hackathon.game.Collectable;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class ExampleBot extends Bot {
     private GameStateLogger.GameStateLoggerBuilder gameStateLoggerBuilder;
@@ -21,21 +28,6 @@ public class ExampleBot extends Bot {
 
     @Override
     public List<Move> makeMoves(final GameState gameState) {
-        List<Move> moves = new ArrayList<>();
-
-        moves.addAll(doExplore(gameState));
-
-        return moves;
-    }
-
-    private List<Move> doExplore(final GameState gameState) {
-        List<Move> exploreMoves = new ArrayList<>();
-
-        exploreMoves.addAll(gameState.getPlayers().stream()
-                .map(player -> new MoveImpl(player.getId(), Direction.NORTH))
-                .collect(Collectors.toList()));
-
-        System.out.println(exploreMoves.size() + " players exploring");
-        return exploreMoves;
+        return new ArrayList<>();
     }
 }

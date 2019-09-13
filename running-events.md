@@ -33,7 +33,7 @@ There should be a number of organisers at the event:
 
 ### Tutorial
 
-There are [tutorials](contestant/docs/tutorials) that contestants can follow to get them started with
+There are tutorials that contestants can follow to get them started with
 development. Following it to completion will likely take up a significant portion of the available time,
 so in previous events we have warned attendees of this and suggested that they skim it for reference instead.
 Some of the algorithms it suggests lead to sub-optimal solutions, so it's also worth explicitly
@@ -69,33 +69,21 @@ minute, only to discover that it has a bug, so is disqualified.
 The following resources are required:
 
   - Computers for development, at least one per team. Past events have operated a 'bring your own laptop' system.
-    Windows, Mac and Linux are supported.
+    A Web Browser with internet access is required.
   - A computer with a large format display, such as a projector, for screening the competition.
-  - A deployed [server](server) to upload bots to and run the competition on.
-  - A means of distributing the [contestant stub project](contestant) to attendees.
+  - A deployed game server infrastructure to aws
+  - A deployed contestant infrastructure to aws.
 
-### Server Deployment
+###  Deployment
 
 The [deployment](deployment) subproject describes some ways of deploying the server.
 
-### Contestant Stub Project
+### NOTE: The Game Server and Contestants are now all deployed to AWS and accessible via a web browser
 
-The stub contestant project needs to be available on the computers that attendees will use for development.
-If attendees bring their own laptops to the event, the stub project can be delivered as a
-zip/tar archive. Both these methods are described below, or you can see the
-[README of the contestant subproject](contestant) for more details.
+The infrastructure should be setup before the event with the urls for each team and the game server distributed at the event.
 
-####A Zip/Tar
+## Legacy Issues and Lessons Learnt
 
-   1. From the root of this project, run:
-      ```bash
-      ./gradlew contestant:assemble
-      ```
-      This will create 2 archive files in the `contestant/build/distributions` subfolder:
-      a `.zip` for Windows, and a `.tar.gz` for Linux and Mac.
-   2. Distribute copies of these archives to attendees; as a download, by email, by USB, or however.
-
-## Issues and Lessons Learnt
 
 ### IDE Setup
 

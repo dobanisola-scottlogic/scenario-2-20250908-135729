@@ -24,6 +24,7 @@ task copyContestantFiles(type: Copy) {
         include 'docs/**'
         include 'main.py'
         include 'setup.py'
+        include 'README.md'
     }
     from 'scripts'
 

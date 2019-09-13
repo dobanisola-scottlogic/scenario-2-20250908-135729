@@ -12,27 +12,27 @@ features, see `com.scottlogic.hackathon.game.GameGeometry` for more details.
 
 ### Step One
 Moving each player away from the spawn point will allow the next player to appear without eliminating both itself and
-the previous player, see [adding player movement](1-adding-player-movement.md).
+the previous player, see [adding player movement](/tutorial/1-adding-movement.md).
 
 ### Step Two
 Now that your players are moving around the map your games will be lasting slightly longer.  Unfortunately, due to the
 naive approach adopted, your players are now marching north and into the water to drown, let's fix that and also ensure
-that they don't [collide with each other](2-avoiding-out-of-bounds.md).
+that they don't [collide with each other](/tutorial/2-avoiding-out-of-bounds.md).
 
 ### Step Three
 So your players can now move around the map and don't drown or eliminate each other by accident, but what about all
-that food that keeps appearing, how do you [gather enough items](3-gathering-collectables.md) to ensure that your army
+that food that keeps appearing, how do you [gather enough items](/tutorial/3-gathering-collectables.md) to ensure that your army
 continues to grow?
 
 ### Step Four
 If your players cannot see anything to collect they just stand still and wait for something to appear which is not the
-best approach, they should be [exploring the map](4-exploring-the-map.md) to increase the chances of spotting
+best approach, they should be [exploring the map](/tutorial/4-exploring-the-map.md) to increase the chances of spotting
 collectables. 
 
 ### Step Five
 The best defence is a strong offence, the best way to prevent players from other Bots from attacking you is to prevent
 them from spawning more players.  You can do this by moving a player onto their spawn point to
-[destroy it](5-destroying-spawn-points.md).
+[destroy it](/tutorial/5-destroying-spawn-points.md).
 
 ## Next steps
 This tutorial should have improved the capabilities of your Bot to give it a fighting chance, but there is definitely

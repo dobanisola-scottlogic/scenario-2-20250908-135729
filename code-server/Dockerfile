@@ -41,14 +41,16 @@ RUN python3 -m pip install --upgrade setuptools \
     && python3 -m pip install pylint==2.3.1 \
     && python3 -m pip install Sphinx==2.1.1 \
     && python3 -m pip install sphinx-rtd-theme==0.4.3 \
-    && python3 -m pip install sphinx-tabs==1.1.11
+    && python3 -m pip install sphinx-tabs==1.1.11 \
+    && python3 -m pip install pycodestyle==2.5.0 \
+    && python3 -m pip install autopep8==1.4.4
+
 
 
 
 RUN localedef --i en_GB -c -f UTF-8 -A /usr/share/locale/locale.alias en_GB.UTF-8
 ENV LANG=en_GB.UTF-8 \
     DISABLE_TELEMETRY=true \
-    # CODE_VERSION="1.1156-vsc1.33.1" \
     CODE_VERSION="2.preview.11-vsc1.37.0" \
     VSCODE_USER="/home/coder/.local/share/code-server/User" \
     VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
@@ -75,6 +77,8 @@ RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-test/0.18.1/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-test extension \
     && mkdir -p ${VSCODE_EXTENSIONS}/html-preview \
     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/tht13/vsextensions/html-preview-vscode/0.2.5/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/html-preview extension \
+    && mkdir -p ${VSCODE_EXTENSIONS}/vscode-auto-open-markdown-preview \
+    && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hnw/vsextensions/vscode-auto-open-markdown-preview/0.0.4/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/vscode-auto-open-markdown-preview extension \
     # Setup User Workspace
     && mkdir -p ${PROJ_DIR}
 
