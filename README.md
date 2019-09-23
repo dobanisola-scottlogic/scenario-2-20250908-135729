@@ -118,10 +118,12 @@ To delete an existing team in the hackathon
 
 **Delete Stack**
 
+To save money delete the stack when you are finished, it takes a while.
 To delete both of the CloudFormation stacks
 ```bash
 ./cli delete
 ```
+If you are not sure whether it was successful or not you can check on aws that both the ECS cluster and EC2 instance no longer exist.
 
 ## Subprojects
 
