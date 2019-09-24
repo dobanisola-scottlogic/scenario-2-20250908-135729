@@ -3,12 +3,15 @@ Adding Player Movement
 
 **The Plan**
 
-Move your players off the spawn point so that they do not eliminate players spawned in the following turns.
+Move your players off the spawn point so that they do not eliminate players spawned in the following turns. The code
+that you will write will be in the `ExampleBot` class in the file `contestant/bot.py` and should implement the
+`make_moves` method.
 
-**The Move Class**
+**Logging**
 
-Have a look at the :class:`Move<game.move.Move>` class (game/move.py). It defines a movement by a player in a compass
-direction. On each turn, you will need to return a list of moves for each of your own players in order to move them.
+To print something to the console you will need to use the logger. The logger is defined in the outer scope already
+`logger = logging.getLogger()` and to use it simple insert to your code `logger.info('what you wish to log')`. Remember
+python is slow and logging will make your code slower so we recommend only logging when you need it.
 
 **Issuing Orders**
 
@@ -21,7 +24,8 @@ class:
     def make_player_move(self, player: Player) -> Move:
         return Move(player=player.id, direction=Direction.NORTH)
 
-This will take a player argument and return a new North movement for that player.
+This will take a player argument and return a new North movement for that player. Move is implemented in game/move.py,
+it defines a movement by a player in a compass direction.
 
 Remember to add import statements for each new class we introduce to our Bot:
 
