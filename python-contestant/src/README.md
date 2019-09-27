@@ -50,6 +50,6 @@ There are only a few restrictions
 
 ## Next Steps Tutorial
 
-When you're ready to move on to this [tutorial](docs_html/index.html) provides a step-by-step guide to addingsome basic intelligence to your bot.
+When you're ready to move on to this [tutorial](docs_html/index.html) provides a step-by-step guide to adding some basic intelligence to your bot.
 
 
