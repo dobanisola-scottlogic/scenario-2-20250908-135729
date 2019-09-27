@@ -51,7 +51,7 @@ RUN python3 -m pip install --upgrade setuptools \
 RUN localedef --i en_GB -c -f UTF-8 -A /usr/share/locale/locale.alias en_GB.UTF-8
 ENV LANG=en_GB.UTF-8 \
     DISABLE_TELEMETRY=true \
-    CODE_VERSION="2.1523-vsc1.38.1" \
+    CODE_VERSION="2.preview.11-vsc1.37.0" \
     VSCODE_USER="/home/coder/.local/share/code-server/User" \
     VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
     PROJ_DIR="/home/coder/project"
