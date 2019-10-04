@@ -78,6 +78,10 @@ public class BotService {
         return remoteBotStore.getConnectionState(team.getName());
     }
 
+    public void disconnectRemoteTeamBot(final Team team){
+        remoteBotStore.disconnect(team);
+    }
+
 
     public List<TeamBot> getTeamBots(final User user) {
         final List<TeamBot> allVisibleBots;

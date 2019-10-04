@@ -3,6 +3,7 @@ package com.scottlogic.hackathon.remote.server;
 import com.scottlogic.hackathon.remote.Turn;
 import com.scottlogic.hackathon.remote.notify.ConnectionChangeSupport;
 
+
 import java.io.IOException;
 
 public class Interactor implements Sender, Receiver {

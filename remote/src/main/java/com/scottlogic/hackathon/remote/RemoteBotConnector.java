@@ -111,4 +111,8 @@ public class RemoteBotConnector {
         remoteBotObservable.addChangeEventListener(listener);
     }
 
+    public boolean isConnected(){
+        return CONNECTED == state;
+    }
+
 }

@@ -51,6 +51,19 @@ public class RemoteBotResource {
         botService.addRemoteTeamBot(team);
     }
 
+
+    @POST
+    @UnitOfWork
+    @Timed
+    @Path("/disconnect")
+    @RolesAllowed(Authorizer.ROLE_TEAM)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public void disconnectTeam(@Auth final User user, final String teamName) {
+        logger.info("Disconnect remote bot {}", teamName);
+        Team team = teamService.getTeam(teamName);
+        botService.disconnectRemoteTeamBot(team);
+    }
+
     @POST
     @UnitOfWork
     @Timed
@@ -82,6 +95,7 @@ public class RemoteBotResource {
             return "";
         }
     }
+
 
 
     @GET

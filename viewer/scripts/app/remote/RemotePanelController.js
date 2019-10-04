@@ -67,6 +67,25 @@ class RemotePanelController {
         );
     }
 
+    onDisconnect() {
+        this.$interval.cancel(this.connectionPolling);
+        this.$scope.connected = 'WAITING';
+        this.remoteService.disconnect(this.teamName).then(
+            () => {
+                this.updateConnection();
+                this.initialiseConnectionPolling();
+            },
+            () => {
+                this.alert = {
+                    type: AlertTypes.ERROR,
+                    message: 'Failed to disconnect'
+                };
+                this.$scope.connected = '';
+                this.initialiseConnectionPolling();
+            }
+        );
+    }
+
     onTest() {
         this.testing = true;
         this.remoteService.test(this.teamName, this.selectedMilestone, this.selectedMap).then(

@@ -59,7 +59,6 @@ public class InteractorTest {
 
         doNothing().when(adapter).close();
         doNothing().when(protocol).cancelHeartBeat();
-
         interactor.sendDisconnect();
 
         verify(adapter, times(1)).close();

@@ -9,7 +9,12 @@
         ng-disabled="controller.showStatus">
         Connect
     </button>
-    <p ng-if="controller.showStatus">
+    <button class="btn btn-default"
+            ng-click="controller.onDisconnect()"
+            ng-disabled="!controller.isConnected">
+        Disconnect
+    </button>
+    <p>
         Connected: {{connected}}
     </p>
     <hr ng-show="controller.isConnected"></hr>

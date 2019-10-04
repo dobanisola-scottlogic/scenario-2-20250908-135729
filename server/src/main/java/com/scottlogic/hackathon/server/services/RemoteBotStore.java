@@ -9,6 +9,7 @@ import com.scottlogic.hackathon.remote.RemoteBot;
 import com.scottlogic.hackathon.remote.RemoteBotConnector;
 import com.scottlogic.hackathon.remote.notify.ChangeEventListener;
 import com.scottlogic.hackathon.remote.notify.RemoteBotChangeEvent;
+import com.scottlogic.hackathon.remote.server.Sender;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.TeamBot;
 import com.scottlogic.hackathon.server.services.stores.BotStore;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+import java.io.IOException;
 import java.util.*;
 
 import static java.util.Optional.ofNullable;
@@ -65,10 +67,21 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
         return teamBotMap.get(teamName).getRemoteBot();
     }
 
-    public boolean remove(RemoteBotConnector remote) {
-        return teamBotMap.remove(remote.getTeam(), remote);
+    public void disconnect(Team team) {
+        ofNullable(teamBotMap.get(team.getName()))
+                .filter(RemoteBotConnector::isConnected)
+                .flatMap(RemoteBotConnector::getRemoteSender)
+                .ifPresent(this::attemptDisconnect);
     }
 
+    private void attemptDisconnect(Sender sender){
+        try{
+            logger.info("RemoteBotStore -> attempting disconnect");
+            sender.sendDisconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     RemoteBotConnector.State getConnectionState(String teamName) {
         RemoteBotConnector.State state = ofNullable(teamBotMap.get(teamName))

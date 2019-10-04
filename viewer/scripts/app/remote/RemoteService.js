@@ -8,6 +8,10 @@ class RemoteService {
         return this.$http.post(`${this.apiPath}/remotebot/connect`, teamName, {'headers': {'Content-Type': 'text/plain'}}).then(response => response.data);
     }
 
+    disconnect(teamName) {
+        return this.$http.post(`${this.apiPath}/remotebot/disconnect`, teamName, {'headers': {'Content-Type': 'text/plain'}}).then(response => response.data);
+    }
+
     getConnectedState(teamName) {
         return this.$http.get(`${this.apiPath}/remotebot/connectedState?teamName=${teamName}`).then(response => response.data);
     }
