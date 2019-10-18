@@ -3,7 +3,7 @@
 ## The Plan
 
 Move your players off the spawn point so that they do not eliminate players spawned in the following turns. The code
-that you will write will be in the `com.scottlogic.hackathon.game.ExampleBot` class and should implement the
+that you will write will be in the `com.contestantbots.team.ExampleBot` class and should implement the
 `make_moves` method.
 
 ## Code Updates

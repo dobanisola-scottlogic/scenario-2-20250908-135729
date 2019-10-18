@@ -9,15 +9,15 @@
 ## Building & Running
 
 ### Login to Game Server
-Before you can test your Bot you need to login to the Game Server and set it up to wait for a connection form your bot.
+Before you can test your Bot you need to login to the Game Server and set it up to wait for a connection from your bot.
 
-Log in to the Game Server (You should have been given the URL) using your team name and password. Select the Remote Bot heading and hit the `Connect` button in the dialog. You should see the status change to `Waiting` indicating that the Game Server is awaitng your bot.
+Log in to the Game Server (You should have been given the URL) using your team name and password. Click on `Remote Bot` and hit the `Connect` button in the dialog. You should see the status change to `Waiting` indicating that the Game Server is awaitng your bot.
 
 Be sure to leave the page open in your browser
 
 ### Java Contestant Build, Execute, Repeat
 
-The code that you will write will be in the `com.scottlogic.hackathon.game.ExampleBot` class and should implement the makeMoves method.  You will learn how to do this in the tutorial.
+The code that you will write will be in the `com.contestantbots.team.ExampleBot` class and should implement the makeMoves method.  You will learn how to do this in the tutorial.
 
 Initially it takes a maybe 30 seconds for the Java extension to run and build the workspace.  After it is built the workspace the first time you will see a bin directory appear in the explorer tab indicating there are now compiled classes needed to now run your bot.
 
@@ -36,7 +36,7 @@ Once you have the next version of your code ready to test then rerun the `run-ja
 
 #### Restrictions
 There are only a few restrictions on the compiled code:
-- the com.contestant bots.team package should only contain  `com.scottlogic.hackathon.game.ExampleBot`
+- the com.contestant bots.team package should only contain  `com.contestantbots.team.ExampleBot`
 - any helper or utility classes should either be
   - inner classes of your Bot, or
   - not have a public constructor

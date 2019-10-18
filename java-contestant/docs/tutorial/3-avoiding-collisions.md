@@ -97,7 +97,7 @@ Now you're ready to send your Bot into battle, so run another game.
 
 ## Stop moving enemy players
 
-If you run the game now, your players should much longer. You may even meet enemy teams players. However, if you try and move an enemy teams
+If you run the game now, your players should last much longer. You may even meet enemy teams players. However, if you try and move an enemy teams
 player, your bot will be disqualified. To avoid this, we need to not add players to our HashMap if they belong to an enemy. To achieve this,
 add a helper function
 
