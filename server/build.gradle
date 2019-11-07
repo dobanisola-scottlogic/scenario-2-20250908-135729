@@ -102,7 +102,7 @@ task('dockerBuild', type: Exec) {
 
     workingDir = dockerContext.destinationDir
     executable = 'docker'
-    args 'build', '-t', project.dockerImageName, '.'
+    args 'build', '--no-cache', '-t', project.dockerImageName, '.'
 
     doFirst {
         inputs.properties.each { k,v ->

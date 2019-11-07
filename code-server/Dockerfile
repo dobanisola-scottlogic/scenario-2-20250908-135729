@@ -52,7 +52,7 @@ RUN python3 -m pip install --upgrade setuptools \
 RUN localedef --i en_GB -c -f UTF-8 -A /usr/share/locale/locale.alias en_GB.UTF-8
 ENV LANG=en_GB.UTF-8 \
     DISABLE_TELEMETRY=true \
-    CODE_VERSION="2.1523-vsc1.38.1" \
+    CODE_VERSION="2.1665-vsc1.39.2" \
     VSCODE_USER="/home/coder/.local/share/code-server/User" \
     VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
     PROJ_DIR="/home/coder/project"
@@ -71,11 +71,9 @@ COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User
 RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-python/vsextensions/python/2019.6.24221/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/python extension \
     && mkdir -p ${VSCODE_EXTENSIONS}/java \
-    && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/0.47.0/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java extension \
+    && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/0.50.0/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java extension \
     && mkdir -p ${VSCODE_EXTENSIONS}/java-debugger \
-    && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/0.20.0/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-debugger extension \
-    && mkdir -p ${VSCODE_EXTENSIONS}/java-test \
-    && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-test/0.18.1/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-test extension \
+    && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/0.23.0/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-debugger extension \
     && mkdir -p ${VSCODE_EXTENSIONS}/html-preview \
     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/tht13/vsextensions/html-preview-vscode/0.2.5/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/html-preview extension \
     && mkdir -p ${VSCODE_EXTENSIONS}/vscode-auto-open-markdown-preview \

@@ -25,11 +25,11 @@ aws="cmd \/c aws"
 
 # Pushes the latest version of the image both with the `latest` and specific version tags
 pushImage () {
-    docker tag $IMAGE_NAME:latest $FULLY_QUALIFIED_IMAGE_NAME:latest \
-        && docker tag $IMAGE_NAME:latest $FULLY_QUALIFIED_IMAGE_NAME:"$IMAGE_VERSION" \
+    docker tag $IMAGE_NAME:latest "$FULLY_QUALIFIED_IMAGE_NAME":latest \
+        && docker tag $IMAGE_NAME:latest "$FULLY_QUALIFIED_IMAGE_NAME":"$IMAGE_VERSION" \
         && eval "$($aws ecr get-login --region eu-west-2 --no-include-email)" \
-        && docker push $FULLY_QUALIFIED_IMAGE_NAME:latest  \
-        && docker push $FULLY_QUALIFIED_IMAGE_NAME:"$IMAGE_VERSION"
+        && docker push "$FULLY_QUALIFIED_IMAGE_NAME":latest  \
+        && docker push "$FULLY_QUALIFIED_IMAGE_NAME":"$IMAGE_VERSION"
 }
 
 createRepo () {

@@ -235,6 +235,7 @@ Resources:
 
   Database:
     Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
     Properties:
       Engine: postgres
       DBInstanceClass: db.t2.micro
