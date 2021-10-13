@@ -144,11 +144,15 @@ function getEc2Template({
       Tags: [
         {
           Key: "Project",
-          Value: "Hackathon"
+          Value: "Hackathon Q3 2021"
         },
         {
           Key: 'Client',
           Value: 'Scott Logic'
+        },
+        {
+          Key: 'Owner',
+          Value: 'parmstrong@scottlogic.com'
         },
         {
           Key: "Name",
