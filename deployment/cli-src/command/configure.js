@@ -2,6 +2,8 @@ const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
 const { questionPromptFactory } = require('../utils/question');
+const os = require('os');
+const _ = require('lodash');
 
 const configFile = path.join(__dirname, '.cli-config');
 
@@ -15,7 +17,9 @@ const configDefaults = {
     dbUser: 'hackathon',
     // URLs available on aws in services -> ECR -> Repositories
     serverImage: '032044580362.dkr.ecr.eu-west-2.amazonaws.com/hackathon-gameserver:latest',
-    clientImage: '032044580362.dkr.ecr.eu-west-2.amazonaws.com/hackathon-contestant:latest'
+    clientImage: '032044580362.dkr.ecr.eu-west-2.amazonaws.com/hackathon-contestant:latest',
+    owner: os.userInfo().username,
+    client: 'Scott Logic'
 }
 
 const configPrompt = async () => {
@@ -38,10 +42,12 @@ const configPrompt = async () => {
         const dbUser = await questionPrompt(`Database User (${configDefaults.dbUser})> `);
         const dbPassword = await questionPrompt('Database Password (8 characters min)> ');
         const serverImage = await questionPrompt(`Hackathon Gameserver Image URI (${configDefaults.serverImage})> `);
-        const clientImage = await questionPrompt(`Hackathon Contestant Image URI> (${configDefaults.clientImage}})`);
-        const creator = await questionPrompt('Creator [your name - used for tagging]> ');
+        const clientImage = await questionPrompt(`Hackathon Contestant Image URI> (${configDefaults.clientImage})> `);
+        const owner = await questionPrompt(`Owner [used for tagging] (${configDefaults.owner})> `);
+        const project = await questionPrompt('Project [used for tagging]> ');
+        const client = await questionPrompt(`Client [used for tagging]  (${configDefaults.client})> `);
 
-        return Object.assign({}, {
+        return _.assignWith({}, {
             region,
             infraStackName,
             serverStackName,
@@ -54,8 +60,10 @@ const configPrompt = async () => {
             dbPassword,
             serverImage,
             clientImage,
-            creator
-        }, configDefaults);
+            owner,
+            project,
+            client
+        }, configDefaults, (objValue, srcValue)=>{return objValue !== '' ? objValue: srcValue});
     } finally {
         rl.close();
     }

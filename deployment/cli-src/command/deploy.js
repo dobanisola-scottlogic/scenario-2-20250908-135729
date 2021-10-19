@@ -16,7 +16,10 @@ module.exports.deploy = async (config) => {
         dbName,
         dbUser,
         dbPassword,
-        serverImage
+        serverImage,
+        client,
+        project,
+        owner
     } = config;
 
     CloudFormation = new AWS.CloudFormation({ region });
@@ -29,9 +32,9 @@ module.exports.deploy = async (config) => {
             'CAPABILITY_IAM'
         ],
         Tags: [
-            { Key: 'Project', Value: 'Hackathon Q3 2021' },
-            { Key: 'Client', Value: 'Scott Logic' },
-            { Key: 'Owner', Value: 'parmstrong@scottlogic.com' },
+            { Key: 'Project', Value: project },
+            { Key: 'Client', Value: client },
+            { Key: 'Owner', Value: owner },
         ]
     }).promise();
 
