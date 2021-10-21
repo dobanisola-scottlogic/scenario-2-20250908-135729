@@ -34,7 +34,7 @@ module.exports.deploy = async (config) => {
         Tags: [
             { Key: 'Project', Value: project },
             { Key: 'Client', Value: client },
-            { Key: 'Owner', Value: owner },
+            { Key: 'owner', Value: owner },
         ]
     }).promise();
 
@@ -66,9 +66,9 @@ module.exports.deploy = async (config) => {
             'CAPABILITY_NAMED_IAM'
         ],
         Tags: [
-            { Key: 'Project', Value: 'Hackathon Q3 2021' },
-            { Key: 'Client', Value: 'Scott Logic' },
-            { Key: 'Owner', Value: 'parmstrong@scottlogic.com' },
+            { Key: 'Project', Value: project },
+            { Key: 'Client', Value: client },
+            { Key: 'owner', Value: owner },
         ]
     }).promise();
 

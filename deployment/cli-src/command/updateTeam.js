@@ -19,6 +19,9 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
     infraStackName,
     clientImage,
     serverHttpPort,
+    project,
+    client,
+    owner,
   } = config;
 
   assert(region, "Region cannot be empty");
@@ -68,7 +71,9 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
           region,
           serverHost: externalUrl.replace(/(^\w+:|^)\/\//, ''),  // remove protocol
           serverPort: serverHttpPort,
-
+          project,
+          client,
+          owner
         }
     )
   };
@@ -120,7 +125,10 @@ function getEc2Template({
   image,
   region,
   serverHost,
-  serverPort
+  serverPort,
+  project,
+  client,
+  owner
 }) {
   return {
     Type: "AWS::EC2::Instance",
@@ -144,15 +152,15 @@ function getEc2Template({
       Tags: [
         {
           Key: "Project",
-          Value: "Hackathon Q3 2021"
+          Value: project
         },
         {
           Key: 'Client',
-          Value: 'Scott Logic'
+          Value: client
         },
         {
-          Key: 'Owner',
-          Value: 'parmstrong@scottlogic.com'
+          Key: 'owner',
+          Value: owner
         },
         {
           Key: "Name",
