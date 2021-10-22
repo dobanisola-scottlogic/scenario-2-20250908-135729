@@ -76,8 +76,7 @@ module.exports.deploy = async (config) => {
         Tags: [
             { Key: 'Project', Value: project },
             { Key: 'Client', Value: client },
-            { Key: 'owner', Value: owner },
-            { Key: 'tag-test', Value: 'swatson'}
+            { Key: 'owner', Value: owner }
         ]
     }).promise();
 
