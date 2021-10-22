@@ -94,16 +94,6 @@ Resources:
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      Tags:
-        - Key: owner
-          Value:
-              Ref: 'owner'
-        - Key: Project
-          Value:
-              Ref: 'Project'
-        - Key: Client
-          Value:
-              Ref: 'Client' 
       VpcId: !Ref 'VPC'
   PublicRoute:
     Type: AWS::EC2::Route
@@ -150,16 +140,6 @@ Resources:
   PrivateRouteTableOne:
     Type: AWS::EC2::RouteTable
     Properties:
-      Tags:
-        - Key: owner
-          Value:
-              Ref: 'owner'
-        - Key: Project
-          Value:
-              Ref: 'Project'
-        - Key: Client
-          Value:
-              Ref: 'Client' 
       VpcId: !Ref 'VPC'
   PrivateRouteOne:
     Type: AWS::EC2::Route
@@ -175,16 +155,6 @@ Resources:
   PrivateRouteTableTwo:
     Type: AWS::EC2::RouteTable
     Properties:
-      Tags:
-        - Key: owner
-          Value:
-              Ref: 'owner'
-        - Key: Project
-          Value:
-              Ref: 'Project'
-        - Key: Client
-          Value:
-              Ref: 'Client' 
       VpcId: !Ref 'VPC'
   PrivateRouteTwo:
     Type: AWS::EC2::Route
