@@ -133,6 +133,7 @@ function getEc2Template({
   return {
     Type: "AWS::EC2::Instance",
     Properties: {
+      KeyName:"hackathon-key-pair",
       AvailabilityZone: "eu-west-2a",
       CreditSpecification: {
         CPUCredits: "standard"
@@ -174,7 +175,7 @@ function getEc2Template({
             [
               "#!/bin/bash -xe\n",
               `eval $(aws ecr get-login --region ${region} --no-include-email)\n`,
-              `docker run -d --rm -e GAME_SERVER_HOST=${serverHost} -e GAME_SERVER_PORT=80 -e TEAM_NAME=${teamName} -e PASSWORD=${password} --name code-server --security-opt=seccomp:unconfined -p 80:8080 -p 8081:8081 --expose 80 --expose 8081 ${image} --auth password \n`
+              `docker run --restart always -d -e GAME_SERVER_HOST=${serverHost} -e GAME_SERVER_PORT=80 -e TEAM_NAME=${teamName} -e PASSWORD=${password} --name code-server --security-opt=seccomp:unconfined -p 80:8080 -p 8081:8081 --expose 80 --expose 8081 ${image} --auth password \n`
             ]
           ]
         }
