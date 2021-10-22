@@ -1,5 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Network and security infrastructure for the hackathon AI game
+Parameters:
+  owner:
+    Type: String
+    Description: The owner of the resources being created
+  Project:
+    Type: String
+    Description: The name of the current iteration of the hackathon project
+  Client:
+    Type: String
+    Description: The business owner of the resources
+    Default: 'Scott Logic'
 Mappings:
   # Hard values for the subnet masks. These masks define
   # the range of internal IP addresses that can be assigned.
@@ -33,6 +44,16 @@ Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'           
       EnableDnsSupport: true
       EnableDnsHostnames: true
       CidrBlock:
@@ -42,6 +63,26 @@ Resources:
   PublicSubnetOne:
     Type: AWS::EC2::Subnet
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AvailabilityZone:
         Fn::Select:
         - 0
@@ -55,6 +96,16 @@ Resources:
   PublicSubnetTwo:
     Type: AWS::EC2::Subnet
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AvailabilityZone:
         Fn::Select:
         - 1
@@ -72,6 +123,16 @@ Resources:
   PrivateSubnetOne:
     Type: AWS::EC2::Subnet
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AvailabilityZone:
         Fn::Select:
         - 0
@@ -84,6 +145,16 @@ Resources:
   PrivateSubnetTwo:
     Type: AWS::EC2::Subnet
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AvailabilityZone:
         Fn::Select:
         - 1
@@ -109,12 +180,22 @@ Resources:
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       VpcId:
         Ref: 'VPC'
   PublicRoute:
     Type: AWS::EC2::Route
     DependsOn: GatewayAttachement
-    Properties:
+    Properties:    
       RouteTableId:
         Ref: 'PublicRouteTable'
       DestinationCidrBlock: '0.0.0.0/0'
@@ -122,14 +203,14 @@ Resources:
         Ref: 'InternetGateway'
   PublicSubnetOneRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
+    Properties:    
       SubnetId:
         Ref: PublicSubnetOne
       RouteTableId:
         Ref: PublicRouteTable
   PublicSubnetTwoRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
+    Properties:     
       SubnetId:
         Ref: PublicSubnetTwo
       RouteTableId:
@@ -143,15 +224,45 @@ Resources:
     Type: AWS::EC2::EIP
     DependsOn: GatewayAttachement
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Domain: vpc
   NatGatewayTwoAttachment:
     Type: AWS::EC2::EIP
     DependsOn: GatewayAttachement
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Domain: vpc
   NatGatewayOne:
     Type: AWS::EC2::NatGateway
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AllocationId:
         Fn::GetAtt: NatGatewayOneAttachment.AllocationId
       SubnetId:
@@ -159,6 +270,16 @@ Resources:
   NatGatewayTwo:
     Type: AWS::EC2::NatGateway
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AllocationId:
         Fn::GetAtt: NatGatewayTwoAttachment.AllocationId
       SubnetId:
@@ -166,11 +287,21 @@ Resources:
   PrivateRouteTableOne:
     Type: AWS::EC2::RouteTable
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       VpcId:
         Ref: 'VPC'
   PrivateRouteOne:
     Type: AWS::EC2::Route
-    Properties:
+    Properties:  
       RouteTableId:
         Ref: PrivateRouteTableOne
       DestinationCidrBlock: 0.0.0.0/0
@@ -178,7 +309,7 @@ Resources:
         Ref: NatGatewayOne
   PrivateRouteTableOneAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
+    Properties:   
       RouteTableId:
         Ref: PrivateRouteTableOne
       SubnetId:
@@ -186,11 +317,21 @@ Resources:
   PrivateRouteTableTwo:
     Type: AWS::EC2::RouteTable
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       VpcId:
         Ref: 'VPC'
   PrivateRouteTwo:
     Type: AWS::EC2::Route
-    Properties:
+    Properties:    
       RouteTableId:
         Ref: PrivateRouteTableTwo
       DestinationCidrBlock: 0.0.0.0/0
@@ -198,7 +339,7 @@ Resources:
         Ref: NatGatewayTwo
   PrivateRouteTableTwoAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
+    Properties:    
       RouteTableId:
         Ref: PrivateRouteTableTwo
       SubnetId:
@@ -211,7 +352,7 @@ Resources:
   # your other traffic.
   DynamoDBEndpoint:
     Type: AWS::EC2::VPCEndpoint
-    Properties:
+    Properties:     
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -236,12 +377,32 @@ Resources:
   FargateContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       GroupDescription: Access to the Fargate containers
       VpcId:
         Ref: 'VPC'
   EcsSecurityGroupIngressFromPublicALB:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Description: Ingress from the public ALB
       GroupId:
         Ref: 'FargateContainerSecurityGroup'
@@ -251,6 +412,16 @@ Resources:
   EcsSecurityGroupIngressFromPrivateALB:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Description: Ingress from the private ALB
       GroupId:
         Ref: 'FargateContainerSecurityGroup'
@@ -260,6 +431,16 @@ Resources:
   EcsSecurityGroupIngressFromSelf:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Description: Ingress from other containers in the same security group
       GroupId:
         Ref: 'FargateContainerSecurityGroup'
@@ -283,6 +464,16 @@ Resources:
   PublicLoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       GroupDescription: Access to the public facing load balancer
       VpcId:
         Ref: 'VPC'
@@ -293,6 +484,16 @@ Resources:
   PublicLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Scheme: internet-facing
       LoadBalancerAttributes:
       - Key: idle_timeout.timeout_seconds
@@ -308,6 +509,16 @@ Resources:
   DummyTargetGroupPublic:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       HealthCheckIntervalSeconds: 6
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
@@ -324,7 +535,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
     - PublicLoadBalancer
-    Properties:
+    Properties:  
       DefaultActions:
       - TargetGroupArn:
           Ref: 'DummyTargetGroupPublic'
@@ -340,12 +551,32 @@ Resources:
   PrivateLoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       GroupDescription: Access to the internal load balancer
       VpcId:
         Ref: 'VPC'
   PrivateLoadBalancerIngressFromECS:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Description: Only accept traffic from a container in the fargate container security group
       GroupId:
         Ref: 'PrivateLoadBalancerSG'
@@ -355,6 +586,16 @@ Resources:
   PrivateLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       Scheme: internal
       LoadBalancerAttributes:
       - Key: idle_timeout.timeout_seconds
@@ -370,6 +611,16 @@ Resources:
   DummyTargetGroupPrivate:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       HealthCheckIntervalSeconds: 6
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
@@ -386,7 +637,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
     - PrivateLoadBalancer
-    Properties:
+    Properties:    
       DefaultActions:
       - TargetGroupArn:
           Ref: 'DummyTargetGroupPrivate'
@@ -403,6 +654,16 @@ Resources:
   ECSRole:
     Type: AWS::IAM::Role
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AssumeRolePolicyDocument:
         Statement:
         - Effect: Allow
@@ -439,6 +700,16 @@ Resources:
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'      
       AssumeRolePolicyDocument:
         Statement:
         - Effect: Allow
@@ -465,7 +736,7 @@ Resources:
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup
-    Properties:
+    Properties:     
       LogGroupName:
         Fn::Join: ['-', [Ref: 'AWS::StackName', 'Logs']]
 
