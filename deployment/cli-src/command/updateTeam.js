@@ -48,8 +48,8 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
     .filter(summary => summary.StackName === infraStackName)[0].Outputs
     .find(output => output.OutputKey === 'ExternalUrl').OutputValue;
 
-
-  const template = YAML.parse(fs.readFileSync(path.join(__dirname, '../', 'cloudformation-server.yml'), 'utf8'));
+  
+    const template = YAML.parse(fs.readFileSync(path.join(__dirname, '../', 'cloudformation-server.yml'), 'utf8'));
   const teamsConfig = readTeamsConfig();
   if(updateMode === 'create'){
     if(!teamsConfig.teams.includes(teamName)) {
@@ -91,7 +91,10 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
       { ParameterKey: 'DBName', UsePreviousValue: true },
       { ParameterKey: 'DBUser', UsePreviousValue: true },
       { ParameterKey: 'DBPassword', UsePreviousValue: true },
-      { ParameterKey: 'ServerImage', UsePreviousValue: true }
+      { ParameterKey: 'ServerImage', UsePreviousValue: true },
+      { ParameterKey: 'owner', UsePreviousValue: true },
+      { ParameterKey: 'Project', UsePreviousValue: true },
+      { ParameterKey: 'Client', UsePreviousValue: true }
     ],
     Capabilities: [
       "CAPABILITY_NAMED_IAM"
