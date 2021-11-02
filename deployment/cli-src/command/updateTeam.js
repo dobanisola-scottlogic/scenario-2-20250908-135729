@@ -91,7 +91,10 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
       { ParameterKey: 'DBName', UsePreviousValue: true },
       { ParameterKey: 'DBUser', UsePreviousValue: true },
       { ParameterKey: 'DBPassword', UsePreviousValue: true },
-      { ParameterKey: 'ServerImage', UsePreviousValue: true }
+      { ParameterKey: 'ServerImage', UsePreviousValue: true },
+      { ParameterKey: 'owner', UsePreviousValue: true },
+      { ParameterKey: 'Project', UsePreviousValue: true },
+      { ParameterKey: 'Client', UsePreviousValue: true }
     ],
     Capabilities: [
       "CAPABILITY_NAMED_IAM"
