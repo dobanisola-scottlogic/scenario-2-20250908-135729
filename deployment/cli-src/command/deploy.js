@@ -28,15 +28,20 @@ module.exports.deploy = async (config) => {
     await CloudFormation.createStack({
         StackName: infraStackName,
         TemplateBody: infraTemplate,
+        Parameters: [
+            { ParameterKey: 'Project', ParameterValue: project },
+            { ParameterKey: 'Client', ParameterValue: client },
+            { ParameterKey: 'owner', ParameterValue: owner }
+        ],
         Capabilities: [
             'CAPABILITY_IAM'
         ],
         Tags: [
             { Key: 'Project', Value: project },
             { Key: 'Client', Value: client },
-            { Key: 'owner', Value: owner },
+            { Key: 'owner', Value: owner }
         ]
-    }).promise();
+    }).promise(); 
 
     await waitForCFStatus({
         stackname: infraStackName,
@@ -44,9 +49,9 @@ module.exports.deploy = async (config) => {
         doneStatuses: [ 'CREATE_COMPLETE' ],
         pendingStatues: [ 'CREATE_IN_PROGRESS' ],
     });
-
+    
     const serverTemplate = fs.readFileSync(path.join(__dirname, '../', 'cloudformation-server.yml'), 'utf8');
-
+    
     await CloudFormation.createStack({
         StackName: serverStackName,
         TemplateBody: serverTemplate,
@@ -59,7 +64,10 @@ module.exports.deploy = async (config) => {
             { ParameterKey: 'DBName', ParameterValue: dbName },
             { ParameterKey: 'DBUser', ParameterValue: dbUser },
             { ParameterKey: 'DBPassword', ParameterValue: dbPassword },
-            { ParameterKey: 'ServerImage', ParameterValue: serverImage }
+            { ParameterKey: 'ServerImage', ParameterValue: serverImage },
+            { ParameterKey: 'Project', ParameterValue: project },
+            { ParameterKey: 'Client', ParameterValue: client },
+            { ParameterKey: 'owner', ParameterValue: owner }
         ],
         Capabilities: [
             'CAPABILITY_IAM',
@@ -68,7 +76,7 @@ module.exports.deploy = async (config) => {
         Tags: [
             { Key: 'Project', Value: project },
             { Key: 'Client', Value: client },
-            { Key: 'owner', Value: owner },
+            { Key: 'owner', Value: owner }
         ]
     }).promise();
 

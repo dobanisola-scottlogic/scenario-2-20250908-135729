@@ -41,6 +41,16 @@ Parameters:
   ServerImage:
     Type: String
     Description: The fully-qualified name of the server Docker image to use
+  owner:
+    Type: String
+    Description: The owner of the resources being created
+  Project:
+    Type: String
+    Description: The name of the current iteration of the hackathon project
+  Client:
+    Type: String
+    Description: The business owner of the resources
+    Default: 'Scott Logic'
 
 Resources:
 
@@ -48,6 +58,16 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'                          
       ClusterName:
         Ref: 'AWS::StackName'
 
@@ -56,6 +76,16 @@ Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       Family:
         Ref: 'ServerServiceName'
       Cpu:
@@ -126,6 +156,16 @@ Resources:
     - LoadBalancerRule
     - Database
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       ServiceName:
         Ref: 'ServerServiceName'
       Cluster:
@@ -175,6 +215,16 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       HealthCheckIntervalSeconds: 6
       HealthCheckPath: "/admin/healthcheck"
       HealthCheckProtocol: HTTP
@@ -198,7 +248,7 @@ Resources:
   # Create a rule on the load balancer for routing traffic to the target group
   LoadBalancerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    Properties:
+    Properties:        
       Actions:
       - TargetGroupArn:
           Ref: 'TargetGroup'
@@ -218,6 +268,16 @@ Resources:
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       DBSubnetGroupDescription: VPC subnets for the database
       SubnetIds:
         - Fn::ImportValue:
@@ -237,6 +297,16 @@ Resources:
     Type: AWS::RDS::DBInstance
     DeletionPolicy: Delete
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       Engine: postgres
       DBInstanceClass: db.t3.micro
       AllocatedStorage: 5
@@ -260,6 +330,16 @@ Resources:
   HackathonContestantSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       GroupDescription: 'Security group for the hackathon contestant instances'
       GroupName: 'HackathonContestantSecurityGroup'
       SecurityGroupIngress:
@@ -287,6 +367,16 @@ Resources:
   ECRReadOnlyRole:
     Type: AWS::IAM::Role
     Properties:
+      Tags:
+        - Key: owner
+          Value:
+              Ref: 'owner'
+        - Key: Project
+          Value:
+              Ref: 'Project'
+        - Key: Client
+          Value:
+              Ref: 'Client'        
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -322,7 +412,7 @@ Resources:
 
   ContestantInstanceProfile:
     Type: AWS::IAM::InstanceProfile
-    Properties:
+    Properties:      
       InstanceProfileName: 'ContestantInstanceProfile'
       Roles:
         - Ref: ECRReadOnlyRole
