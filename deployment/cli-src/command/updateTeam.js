@@ -48,8 +48,8 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
     .filter(summary => summary.StackName === infraStackName)[0].Outputs
     .find(output => output.OutputKey === 'ExternalUrl').OutputValue;
 
-  
-    const template = YAML.parse(fs.readFileSync(path.join(__dirname, '../', 'cloudformation-server.yml'), 'utf8'));
+
+  const template = YAML.parse(fs.readFileSync(path.join(__dirname, '../', 'cloudformation-server.yml'), 'utf8'));
   const teamsConfig = readTeamsConfig();
   if(updateMode === 'create'){
     if(!teamsConfig.teams.includes(teamName)) {
