@@ -136,7 +136,7 @@ function getEc2Template({
   return {
     Type: "AWS::EC2::Instance",
     Properties: {
-      KeyName:"hackathon-key-pair",
+      KeyName:"parmstrong-hackathon",
       AvailabilityZone: "eu-west-2a",
       CreditSpecification: {
         CPUCredits: "standard"
