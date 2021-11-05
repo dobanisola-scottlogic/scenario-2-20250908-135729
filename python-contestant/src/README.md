@@ -30,7 +30,7 @@ Be sure to leave the page open in your browser
 ### Python Contestant Build, Execute, Repeat
 The code that you will write will be in the `ExampleBot` class in the file `contestant/bot.py` and should implement the make_moves method.  You will learn how to do this in the tutorial.
 
-In the Menu: _`Terminal ->  Run Terminal `_ 
+In the Menu: _`Terminal ->  New Terminal `_ 
 In the terminal type _` ./run_python_contestant.sh`_ 
 
 If the bot has successfully connected to the Game Server you should see the page change to show options to choose Maps and Milestones to test your bot
@@ -51,6 +51,4 @@ There are only a few restrictions
 
 ## Next Steps Tutorial
 
-When you're ready to move on to this tutorial (goto port 8081 in your web browser at this domain) provides a step-by-step guide to adding some basic intelligence to your bot.
-
-
+When you're ready to move on you can follow the tutorial which provides a step-by-step guide to adding some basic intelligence to your bot. You can access the tutorial by removing `/?folder=/home/coder/project/python-contestant` from the end of the URL used to access VSCode in the browser (i.e. the URL you are at now) and replacing it with `:8081`.

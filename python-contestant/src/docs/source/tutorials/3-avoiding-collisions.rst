@@ -3,7 +3,7 @@ Avoiding Collisions
 
 **The Plan**
 
-Currently the players will move wherever you tell them to, even if it results colliding into water or each other.
+Currently the players will move wherever you tell them to, even if it results in colliding with water or each other.
 We will add some logic to prevent this.
 
 **Tracking the next positions**
@@ -22,7 +22,7 @@ We will also add a method called `can_move` which will which will determine whet
 specific direction. It will return ``True`` only if the move:
 
 - Would not result in crashing to another player on the same team (through our use of `next_positions`).
-- Would not result walking into water.
+- Would not result in walking into water.
 
 We also want `can_move` to update `next_positions` if it finds that the new calculated position is available:
 

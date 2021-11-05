@@ -40,7 +40,7 @@ return moves;
 Logging can be useful to debug your code however it will also make your test runs longer. To enable logging call the
 `process` method of `gameStateLoggerBuilder` on the first line of `makeMoves` with `gameState` as the
 only parameter. The turn number will log by default but you can enable logging of the players, collectables,
-spawn points or/and the out of bounds positions but calling `withPlayers()`, `withCollectables()`, `withSpawnPoints()`
+spawn points or/and the out of bounds positions by calling `withPlayers()`, `withCollectables()`, `withSpawnPoints()`
 or/and `withOutOfBounds()`. An example is given below where we wish to log the players,
 
 ```

@@ -22,7 +22,7 @@ The code that you will write will be in the `com.contestantbots.team.ExampleBot`
 Initially it takes a maybe 30 seconds for the Java extension to run and build the workspace.  After it is built the workspace the first time you will see a bin directory appear in the explorer tab indicating there are now compiled classes needed to now run your bot.
 
 
-In the Menu: _`Terminal ->  Run Terminal `_ 
+In the Menu: _`Terminal ->  New Terminal `_ 
 In the terminal type _` ./run_java_contestant.sh `_ 
 If the bot has successfully connected to the Game Server you should see the page change to show options to choose Maps and Milestones to test your bot
 

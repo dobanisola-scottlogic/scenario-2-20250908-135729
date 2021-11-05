@@ -77,7 +77,7 @@ which you can catch and handle:
     except StopIteration:
         # Iterator exhausted
 
-If you want to then to get the opposite direction (perhaps to make the players move away from the water), it can be
+If you want to then get the opposite direction (perhaps to make the players move away from the water), it can be
 achieved by using :meth:`Direction.get_opposite()<game.direction.Direction.get_opposite>`. If you want an iterator
 generating directions away from a position, you can use :meth:`Map.directions_away<game.map.Map.directions_away>` in
 a similar way as directions_towards().

@@ -51,7 +51,7 @@ if (direction.isPresent()){
 }
 ```
 
-If you want to then to get the opposite direction (perhaps to make the players move away from the water), it can be achieved by `Direction opposite = d.getOpposite();`
+If you want to then get the opposite direction (perhaps to make the players move away from the water), it can be achieved by `Direction opposite = d.getOpposite();`
 
 A slightly more advanced method it provides is the `findRoute` method. You provide this a destination, a start and a list of positions to be avoided. This
 uses the A\* algorithm to calculate the route, but it is advised to only calculate routes with this method for short distances, else your bot may take longer than 0.5s.

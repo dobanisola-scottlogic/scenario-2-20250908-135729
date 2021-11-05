@@ -2,7 +2,7 @@
 
 ## The Plan
 
-Currently the players will move wherever you tell them to, even if it results colliding into the water or each other. We will
+Currently the players will move wherever you tell them to, even if it results in colliding with the water or each other. We will
 add some logic to prevent this.
 
 ## Code Updates
@@ -22,7 +22,7 @@ We will add a method called `canMove` which will determine whether a given playe
 It will return _True_ only if the move
 
 - Would not result in crashing to another player on the same team (through our use of `nextPositions`)
-- Would not result walking into water
+- Would not result in walking into water
 
 ```
 private boolean canMove(final GameState gameState, final Player player, final Direction direction) {
