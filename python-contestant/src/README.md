@@ -51,6 +51,4 @@ There are only a few restrictions
 
 ## Next Steps Tutorial
 
-When you're ready to move on to this tutorial (goto port 8081 in your web browser at this domain) provides a step-by-step guide to adding some basic intelligence to your bot.
-
-
+When you're ready to move on you can follow the tutorial which provides a step-by-step guide to adding some basic intelligence to your bot. You can access the tutorial by removing `/?folder=/home/coder/project/python-contestant` from the end of the URL used to access VSCode in the browser (i.e. the URL you are at now) and replacing it with `:8081`.
