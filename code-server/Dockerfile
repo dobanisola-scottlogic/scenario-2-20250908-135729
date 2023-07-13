@@ -73,21 +73,6 @@ USER coder
 RUN mkdir -p ${VSCODE_USER}
 COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User/
 
-# Setup Python & Java Extensions
-# RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
-#     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-python/vsextensions/python/2019.6.24221/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/python extension \
-#     && mkdir -p ${VSCODE_EXTENSIONS}/java \
-#     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/0.50.0/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java extension \
-#     && mkdir -p ${VSCODE_EXTENSIONS}/java-debugger \
-#     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/0.23.0/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-debugger extension \
-#     && mkdir -p ${VSCODE_EXTENSIONS}/html-preview \
-#     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/tht13/vsextensions/html-preview-vscode/0.2.5/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/html-preview extension \
-#     && mkdir -p ${VSCODE_EXTENSIONS}/vscode-auto-open-markdown-preview \
-#     && curl -JLs --retry 10 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hnw/vsextensions/vscode-auto-open-markdown-preview/0.0.4/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/vscode-auto-open-markdown-preview extension \
-#     # Setup User Workspace
-#     && mkdir -p ${PROJ_DIR}
-
-
 WORKDIR ${PROJ_DIR}
 USER root
 RUN chmod 755 ${PROJ_DIR} \
