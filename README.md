@@ -1,17 +1,5 @@
 # Coding Challenge
 
-> **Warning**: These are a list of things that are needed to get the service up and running
-> * Gradle build fails (Possibly due to my Java version being 17)
-> * CLI tool requires `export AWS_SDK_LOAD_CONFIG=1` to be set, and an active profile `export AWS_PROFILE=my-profile-name`
-> * CLI tool does not validate inputs (db name cannot contain hyphens, all tags must be set)
-> * AWS SDK needs updating (displays warning message)
-> * Defaults for docker images work ok (the images exist), but these are likely very old
-> * RDS postgres version is out of date (14.7 is latest)
-> * Error handling in the CLI tool is non existant
-> * DB takes forever to start (Use Aurora Serverless instead?)
-> * Admin server does not start in AWS
-
-
 This is a programming challenge where contestants must write code that can play a simple strategy game.
 Typically, this is used to run events with university students,
 where attendees spend several hours in teams developing strategies and playing against each other.
