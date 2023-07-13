@@ -4,6 +4,10 @@ const { deploy } = require('./command/deploy');
 const { readSavedConfig, configure } = require('./command/configure');
 const { deleteStacks } = require('./command/delete');
 
+process.env.AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE = '1';
+process.env.AWS_SDK_LOAD_CONFIG = '1';
+
+
 program
   .command('configure')
   .description('Configure the hackathon deployer')

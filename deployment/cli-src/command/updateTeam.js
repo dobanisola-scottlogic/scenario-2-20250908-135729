@@ -118,7 +118,7 @@ module.exports.updateTeam = async (config, teamName, updateMode) => {
   }).promise();
 
   if(updateMode === 'create'){
-    console.log('Public URL of instance is: http://' + response.Reservations[0].Instances[0].PublicDnsName);
+    console.log(`Public URL of instance is: http://${response.Reservations[0].Instances[0].PublicDnsName}/?folder=/home/coder/project/java-contestant`);
   }
 }
 
@@ -136,7 +136,7 @@ function getEc2Template({
   return {
     Type: "AWS::EC2::Instance",
     Properties: {
-      KeyName:"parmstrong-hackathon",
+      KeyName:"benl-hackathon",
       AvailabilityZone: "eu-west-2a",
       CreditSpecification: {
         CPUCredits: "standard"
