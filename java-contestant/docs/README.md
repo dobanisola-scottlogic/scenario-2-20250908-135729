@@ -7,6 +7,7 @@
 # Java Contestant Instructions
 
 ## Building & Running
+Run `./gradlew build` to build your bot
 
 ### Login to Game Server
 Before you can test your Bot you need to login to the Game Server and set it up to wait for a connection from your bot.
