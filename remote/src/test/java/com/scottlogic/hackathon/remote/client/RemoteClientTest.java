@@ -8,9 +8,7 @@ import com.scottlogic.hackathon.remote.serialization.MakeMovesFixture;
 import com.scottlogic.hackathon.remote.serialization.TeamIdBroker;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.UpgradeRequest;
 import org.eclipse.jetty.websocket.api.UpgradeResponse;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.eclipse.jetty.websocket.client.io.WebSocketClientConnection;
 
 import org.eclipse.jetty.websocket.common.WebSocketRemoteEndpoint;
@@ -22,7 +20,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import static com.scottlogic.hackathon.remote.client.RemoteClient.GAME_OVER_MESSAGE;
 import static org.junit.Assert.assertEquals;

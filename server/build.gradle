@@ -37,7 +37,7 @@ dependencies {
     implementation group: "io.dropwizard", name: "dropwizard-forms", version: dropWizardVersion
     implementation group: "io.dropwizard", name: "dropwizard-hibernate", version: dropWizardVersion
 
-    compile group: 'ru.vyarus', name: 'dropwizard-guicey', version: '4.2.0'
+    implementation group: 'ru.vyarus', name: 'dropwizard-guicey', version: '4.2.0'
 
 
     implementation group: "com.google.inject", name: "guice", version: "3.0"

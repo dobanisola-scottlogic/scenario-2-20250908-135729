@@ -145,6 +145,7 @@ class Sprite {
             }
             this.pauseCache = null;
         } else {
+            // eslint-disable-next-line no-console
             console.log('ERROR : Attempted to resume pause state of an item which was never paused.');
         }
     }

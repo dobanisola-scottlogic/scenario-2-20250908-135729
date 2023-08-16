@@ -3,10 +3,7 @@ package com.scottlogic.hackathon.remote.serialization;
 import com.scottlogic.hackathon.game.*;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GameStateFixture {

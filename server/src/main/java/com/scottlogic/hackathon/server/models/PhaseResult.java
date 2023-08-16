@@ -10,8 +10,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
+
+
 public class PhaseResult {
     @JsonView(Views.List.class)
+    @Column(columnDefinition = "uuid")
     private UUID id;
     @JsonView(Views.List.class)
     private int phase;

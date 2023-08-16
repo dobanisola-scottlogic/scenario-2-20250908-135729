@@ -1,8 +1,8 @@
 package com.scottlogic.hackathon.server.models;
 
-import io.dropwizard.auth.basic.BasicCredentials;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -12,6 +12,7 @@ public class AdminUser {
     private static UUID adminId;
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @NotNull

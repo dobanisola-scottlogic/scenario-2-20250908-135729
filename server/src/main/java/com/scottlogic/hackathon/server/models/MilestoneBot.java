@@ -5,6 +5,7 @@ import com.scottlogic.hackathon.game.Bot;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Entity
 public class MilestoneBot {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
     private String milestoneClassName;
     private Date timeStamp;

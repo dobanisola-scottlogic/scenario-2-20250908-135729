@@ -3,9 +3,7 @@ package com.scottlogic.hackathon.server.services;
 import com.google.inject.Inject;
 import com.scottlogic.hackathon.server.models.AdminUser;
 import com.scottlogic.hackathon.server.services.stores.AdminStore;
-import org.hibernate.criterion.Restrictions;
 
-import java.util.UUID;
 
 public class AdminService {
     private final AdminStore adminStore;

@@ -9,8 +9,6 @@ import com.scottlogic.hackathon.remote.serialization.MakeMovesBroker;
 import com.scottlogic.hackathon.remote.serialization.TeamIdBroker;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -118,17 +116,6 @@ public class RemoteClient {
 
     private void updateBotId(long serverGeneratedId){
         logger.info("id -> " + serverGeneratedId);
-        try {
-            Field field = this.contestantBot.getClass().getSuperclass().getDeclaredField("id");
-            field.setAccessible(true);
-            int modifiers = field.getModifiers();
-            Field modifierField = field.getClass().getDeclaredField("modifiers");
-            modifiers = modifiers & ~Modifier.FINAL;
-            modifierField.setAccessible(true);
-            modifierField.setInt(field, modifiers);
-            field.set(contestantBot, new Id(serverGeneratedId));
-        }catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
+        this.contestantBot.setId(new Id(serverGeneratedId));
     }
 }

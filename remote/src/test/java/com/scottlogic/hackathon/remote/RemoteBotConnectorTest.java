@@ -1,8 +1,6 @@
 package com.scottlogic.hackathon.remote;
 
 
-import com.scottlogic.hackathon.game.GameState;
-import com.scottlogic.hackathon.remote.notify.ConnectionChangeEvent;
 import com.scottlogic.hackathon.remote.notify.RemoteBotChangeEvent;
 import com.scottlogic.hackathon.remote.notify.RemoteBotChangeSupport;
 import com.scottlogic.hackathon.remote.server.RemoteBotSocketCreator;
@@ -12,10 +10,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -25,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import static com.scottlogic.hackathon.remote.RemoteBotConnector.State.CONNECTED;
 import static com.scottlogic.hackathon.remote.RemoteBotConnector.State.WAITING;
 import static org.awaitility.Awaitility.await;
-import static org.awaitility.Awaitility.given;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;

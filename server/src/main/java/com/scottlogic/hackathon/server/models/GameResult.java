@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Entity
 public class GameResult {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
     @JsonRawValue
     @Column(columnDefinition = "TEXT")

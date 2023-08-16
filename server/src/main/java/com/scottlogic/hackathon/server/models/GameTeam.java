@@ -3,13 +3,14 @@ package com.scottlogic.hackathon.server.models;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.scottlogic.hackathon.game.Id;
 import lombok.Getter;
-import lombok.Value;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 
 public class GameTeam {
 
+    @Column(columnDefinition = "uuid")
     private UUID id;
     @JsonView(Views.List.class)
     @Getter

@@ -4,7 +4,6 @@ import com.scottlogic.hackathon.game.Id;
 import com.scottlogic.hackathon.game.UniqueIdGenerator;
 import com.scottlogic.hackathon.remote.TeamId;
 
-import java.util.UUID;
 
 public class TeamIdFixture {
 
