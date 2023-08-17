@@ -37,6 +37,7 @@ shadowJar {
     archiveBaseName = 'remote'
     archiveClassifier = 'all'
 }
+
 jar {
     dependsOn(shadowJar)
     manifest {
@@ -44,12 +45,5 @@ jar {
                 "Implementation-Title": "hackathon-remote",
                 "Implementation-Version": version,
                 "Main-Class": "com.scottlogic.hackathon.remote.client.Main")
-    }
-
-    configurations.implementation.setCanBeResolved(true)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    from {
-        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
