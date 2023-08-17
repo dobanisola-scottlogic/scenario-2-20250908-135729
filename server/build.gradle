@@ -12,7 +12,7 @@ version "1.0-SNAPSHOT"
 def mainClassName = "com.scottlogic.hackathon.server.HackathonApplication"
 def applicationName = "hackathon-gameserver"
 
-ext {
+project.ext {
     dockerImageName = "${applicationName}"
     defaultConfigFile = file('server.yml')
     httpPort = '8080'
