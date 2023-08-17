@@ -9,13 +9,19 @@ repositories {
 group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
-mainClassName = "com.scottlogic.hackathon.server.HackathonApplication"
-applicationName = 'hackathon-gameserver'
+def mainClassName = "com.scottlogic.hackathon.server.HackathonApplication"
+def applicationName = "hackathon-gameserver"
+
 ext {
-    dockerImageName = applicationName
+    dockerImageName = "${applicationName}"
     defaultConfigFile = file('server.yml')
     httpPort = '8080'
 }
+
+application {
+    mainClass.set("${mainClassName}")
+}
+
 
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -62,7 +68,7 @@ jar {
         attributes(
                 "Implementation-Title": "hackathon-server",
                 "Implementation-Version": version,
-                "Main-Class": mainClassName
+                "Main-Class": "${mainClassName}"
         )
     }
 }
@@ -98,7 +104,7 @@ task('dockerBuild', type: Exec) {
     inputs.properties(
             MAINTAINER: 'Scott Logic',
             PORT: project.httpPort,
-            APP_EXECUTABLE_NAME: applicationName,
+            APP_EXECUTABLE_NAME: "${applicationName}",
             CONF_FILE_NAME: defaultConfigFile.name
     )
 
