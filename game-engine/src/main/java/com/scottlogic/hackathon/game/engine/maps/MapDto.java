@@ -1,7 +1,5 @@
 package com.scottlogic.hackathon.game.engine.maps;
 
-import java.util.Optional;
-
 class MapDto {
     public int width;
     public int height;

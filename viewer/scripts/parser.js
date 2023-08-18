@@ -11,6 +11,7 @@ function preprocessJson(gameData) {
     };
     let finishTime = performance.now();
 
+    // eslint-disable-next-line no-console
     console.log('Parsing took', Math.round(finishTime - startTime), 'milliseconds!');
 
     return parsedObjects;

@@ -1,7 +1,6 @@
 package com.scottlogic.hackathon.server.models;
 
 import java.util.Set;
-import java.util.UUID;
 
 public class GameConfiguration {
     private Set<String> teams;

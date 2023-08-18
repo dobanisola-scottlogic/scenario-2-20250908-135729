@@ -9,6 +9,7 @@ import java.util.UUID;
 @Entity
 public class Team {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @NotNull

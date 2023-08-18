@@ -8,6 +8,7 @@ version "1.0-SNAPSHOT"
 def jacksonVersion = "2.9.9"
 
 dependencies {
+    implementation group: "javax.persistence", name: "javax.persistence-api", version: "2.2"
     implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: jacksonVersion
     implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: jacksonVersion
     implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jacksonVersion

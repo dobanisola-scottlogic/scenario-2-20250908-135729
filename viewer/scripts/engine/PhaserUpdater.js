@@ -125,6 +125,7 @@ class PhaserUpdater {
                 }
             }
         } else {
+            // eslint-disable-next-line no-console
             console.log('ERROR : Attempted to render a phase outside of the game phase bounds. Max phase:', this.engine.getPhaseCount() - 1);
         }
     }
@@ -145,6 +146,7 @@ class PhaserUpdater {
                 this.engine.collectables[collectableIndex].destroy(true);
                 this.engine.collectables.splice(collectableIndex, 1);
             } else {
+                // eslint-disable-next-line no-console
                 console.log('ERROR : Failed to destroy collectable[' + collectable.id + '].');
             }
         });
@@ -163,6 +165,7 @@ class PhaserUpdater {
                                                     this.engine.getTeamColour(player.owner),
                                                     player.cell));
             } else {
+                // eslint-disable-next-line no-console
                 console.log('ERROR : Attempted to create player[' + player.id + '] without a matching owner.');
             }
         });
@@ -175,6 +178,7 @@ class PhaserUpdater {
                 this.engine.players[playerIndex].destroy(true);
                 this.engine.players.splice(playerIndex, 1);
             } else {
+                // eslint-disable-next-line no-console
                 console.log('ERROR : Failed to destroy player[' + player.id + '].');
             }
         });
@@ -195,6 +199,7 @@ class PhaserUpdater {
                                                               playerShift.columnShift,
                                                               playerShift.rowShift);
             } else {
+                // eslint-disable-next-line no-console
                 console.log('ERROR : Failed to move player[' + player.id + '].');
             }
         });

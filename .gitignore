@@ -42,3 +42,6 @@ bin/
 .vscode/
 .cli-config
 /deployment/cli-src/command/.cli-team-config
+
+# macOS 
+.DS_Store

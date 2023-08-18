@@ -28,7 +28,8 @@ class TeamPanelController {
 
     initialiseWatchers() {
         let self = this;
-        this.$scope.$on('hackathon:created', function(event, data) {
+        // eslint-disable-next-line space-before-function-paren
+        this.$scope.$on('hackathon:created', function (event, data) {
             self.refreshHackathons();
         });
     }
@@ -156,14 +157,11 @@ class TeamPanelController {
         return this.selectedTeam && this.selectedTeam.id === team.id;
     }
 
-
-
-
     get addButtonDisabled() {
         return (this.newTeamDetails.name.length === 0) ||
-        (this.newTeamDetails.password.length === 0) ||
-        (this.newTeamDetails.hackathonId.length === 0) ||
-        this.userInterfaceDisabled;
+            (this.newTeamDetails.password.length === 0) ||
+            (this.newTeamDetails.hackathonId.length === 0) ||
+            this.userInterfaceDisabled;
     }
 
     get userInterfaceDisabled() {
@@ -172,17 +170,13 @@ class TeamPanelController {
 
     get updatePasswordButtonDisabled() {
         return this.updatePassword.length === 0 ||
-        !this.selectedTeam ||
-        this.userInterfaceDisabled;
+            !this.selectedTeam ||
+            this.userInterfaceDisabled;
     }
 
     get deleteButtonDisabled() {
         return this.userInterfaceDisabled || !this.selectedTeam;
     }
-
-
-
-
 }
 
 TeamPanelController.$inject = ['$scope', '$rootScope', 'TeamService', 'HackathonService', 'RemoteService'];

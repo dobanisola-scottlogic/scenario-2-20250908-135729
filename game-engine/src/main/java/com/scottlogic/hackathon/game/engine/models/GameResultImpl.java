@@ -3,15 +3,17 @@ package com.scottlogic.hackathon.game.engine.models;
 import com.scottlogic.hackathon.game.*;
 import lombok.Getter;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
+
 
 public class GameResultImpl implements GameResult {
     @Getter
+    @Column(columnDefinition = "uuid")
     private final UUID id;
     private final List<PhaseResult> phaseResults;
     @Getter

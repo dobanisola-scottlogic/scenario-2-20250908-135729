@@ -1,10 +1,10 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath group: "net.sf.proguard", name: "proguard-gradle", version: "6.1.0beta2"
+        classpath group: "com.guardsquare", name: "proguard-gradle", version: "7.3.2"
     }
 }
 
@@ -56,7 +56,7 @@ tasks.withType(proguard.gradle.ProGuardTask) {
 }
 
 task obfuscate(dependsOn: configurations.obfuscated, type: Jar) {
-    classifier = 'obfuscated'
+    archiveClassifier = 'obfuscated'
     inputs.files(extractDefaultBot, extractMilestoneBots)
     from {zipTree(extractDefaultBot.outputs.files.singleFile)}
     from {zipTree(extractMilestoneBots.outputs.files.singleFile)}

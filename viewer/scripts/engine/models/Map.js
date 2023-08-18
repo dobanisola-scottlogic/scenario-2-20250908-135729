@@ -54,6 +54,7 @@ class Map {
             if (ownerColour) {
                 this.spawns.push(new Spawn(game, spawn.id, spawn.owner, ownerColour, spawn.cell));
             } else {
+                // eslint-disable-next-line no-console
                 console.log('ERROR : Failed to find associated owner for id[' + spawn.owner + '].');
             }
         });
@@ -65,6 +66,7 @@ class Map {
             this.spawns[spawnIndex].destroy(true, true);
             this.spawns.splice(spawnIndex, 1);
         } else {
+            // eslint-disable-next-line no-console
             console.log('ERROR : Failed to destroy spawn[' + spawnId + '].');
         }
     }

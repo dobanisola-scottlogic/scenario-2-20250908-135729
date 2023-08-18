@@ -135,6 +135,7 @@ function parseCollectablePositions(index, gameData, previousState) {
         if (idIndex !== -1) {
             collectables.splice(idIndex, 1);
         } else {
+            // eslint-disable-next-line no-console
             console.log('Tried to remove a collectable that did not exist with id', removedCollectable);
         }
     });

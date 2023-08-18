@@ -3,12 +3,8 @@ package com.scottlogic.hackathon.remote.client;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 
 import java.nio.file.Path;
@@ -17,7 +13,6 @@ import java.nio.file.Paths;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 
 public class JavaClientArgsTest {
