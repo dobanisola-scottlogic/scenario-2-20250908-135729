@@ -31,3 +31,23 @@ To build the application:
 ```
 npm run build
 ```
+
+## Linting
+
+The application uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) for linting and formatting on .ts and .tsx files in the src directory. Both are applied on commit using [Husky](https://typicode.github.io/husky/#/).
+
+To check for errors:
+
+```
+npm run lint # eslint only
+npm run prettier:check # prettier only
+npm run format # combines both the above commands
+```
+
+To fix errors:
+
+```
+npm run lint:fix # eslint only
+npm run prettier:write # prettier only
+npm run format:fix # combines both the above commands
+```
