@@ -1,0 +1,19 @@
+plugins {
+    id 'base'
+    id "com.github.node-gradle.node" version "7.0.0"
+}
+
+group "com.scottlogic.hackathon"
+version "1.0-SNAPSHOT"
+
+node {
+    download = true
+}
+
+task buildReactApp(type: NodeTask, dependsOn: npmInstall) {
+    group = 'Build'
+
+    script = file('node_modules/vite/bin/vite.js')
+    args = ['build']
+}
+assemble.dependsOn buildReactApp

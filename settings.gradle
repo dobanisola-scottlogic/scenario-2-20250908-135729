@@ -1,13 +1,13 @@
 rootProject.name = "hackathon"
-include "game", 
-        "game-engine", 
-        "server", 
-        "default-bots", 
-        "viewer", 
-        "deployment", 
+include 'game',
+        'game-engine',
+        'server',
+        'default-bots',
+        'viewer',
+        'deployment',
         'remote',  
-        "java-contestant",
-        "python-contestant",
-        "code-server"
-
+        'java-contestant',
+        'python-contestant',
+        'code-server',
+        'ui'
 
