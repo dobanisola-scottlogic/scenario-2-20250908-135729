@@ -23,9 +23,9 @@ module.exports = {
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
-    ]
+    ],
   },
   settings: {
-    react: { version: "detect" }
+    react: { version: "detect" },
   },
 };
