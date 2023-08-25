@@ -10,8 +10,17 @@ node {
     download = true
 }
 
+task formatReactApp(type: NpmTask, dependsOn: npmInstall) {
+    group = 'Verification'
+    description = 'Runs prettier and eslint to format UI code'
+
+    args = ['run', 'format:fix']
+}
+check.dependsOn formatReactApp
+
 task buildReactApp(type: NodeTask, dependsOn: npmInstall) {
     group = 'Build'
+    description = 'Builds the UI'
 
     script = file('node_modules/vite/bin/vite.js')
     args = ['build']

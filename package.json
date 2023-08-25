@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "format:ui": "cd ui && npm run format:fix"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npm run format:ui"
+    ]
+  }
+}
