@@ -1,5 +1,10 @@
 plugins {
     id 'java'
+    id 'com.diffplug.spotless' version '6.20.0'
+}
+
+repositories {
+    mavenCentral()
 }
 
 group "com.scottlogic.hackathon"
@@ -14,6 +19,32 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
     }
+}
+
+spotless {
+  format 'misc', {
+    target '*.gradle', '*.md', '.gitignore'
+
+    trimTrailingWhitespace()
+    indentWithSpaces()
+    endWithNewline()
+  }
+  java {
+    target '*/**/java/**/*.java'
+    formatAnnotations()
+
+    removeUnusedImports()
+
+    importOrder(
+      'java|javax|com|lombok|',
+      'com.scottlogic',
+      '\\#',
+    )
+  }
+  yaml {
+    target '.circleci/config.yml'
+    prettier()
+  }
 }
 
 subprojects {
