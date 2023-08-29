@@ -1,128 +1,126 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.scottlogic.hackathon.game.Id;
-import com.scottlogic.hackathon.game.engine.ShortIdGenerator;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonView;
 
+import com.scottlogic.hackathon.game.Id;
+import com.scottlogic.hackathon.game.engine.ShortIdGenerator;
 
 public class PhaseResult {
-    @JsonView(Views.List.class)
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-    @JsonView(Views.List.class)
-    private int phase;
-    @JsonView(Views.Details.class)
-    private Set<PlayerPosition> playerPositions;
-    @JsonView(Views.Details.class)
-    private Set<Player> addedPlayers;
-    @JsonView(Views.Details.class)
-    private Set<Collectable> addedCollectables;
-    @JsonView(Views.Details.class)
-    private Set<Id> removedPlayers;
-    @JsonView(Views.Details.class)
-    private Set<Id> removedSpawnPoints;
-    @JsonView(Views.Details.class)
-    private Set<Id> removedCollectables;
-    @JsonView(Views.Details.class)
-    private Set<DisqualifiedBot> disqualifiedBots;
+  @JsonView(Views.List.class)
+  @Column(columnDefinition = "uuid")
+  private UUID id;
 
-    public PhaseResult() {
-    }
+  @JsonView(Views.List.class)
+  private int phase;
 
-    public PhaseResult(final int phase,
-            final Set<PlayerPosition> playerPositions,
-            final Set<Player> addedPlayers,
-            final Set<Collectable> addedCollectables,
-            final Set<Id> removedPlayers,
-            final Set<Id> removedSpawnPoints,
-            final Set<Id> removedCollectables,
-            final Set<DisqualifiedBot> disqualifiedBots) {
-        this.id = UUID.randomUUID();
-        this.phase = phase;
-        this.playerPositions = new HashSet<>(playerPositions);
-        this.addedPlayers = new HashSet<>(addedPlayers);
-        this.addedCollectables = new HashSet<>(addedCollectables);
-        this.removedPlayers = new HashSet<>(removedPlayers);
-        this.removedSpawnPoints = new HashSet<>(removedSpawnPoints);
-        this.removedCollectables = new HashSet<>(removedCollectables);
-        this.disqualifiedBots = new HashSet<>(disqualifiedBots);
-    }
+  @JsonView(Views.Details.class)
+  private Set<PlayerPosition> playerPositions;
 
-    public static PhaseResult create(ShortIdGenerator idGen, final com.scottlogic.hackathon.game.PhaseResult phaseResult) {
-        return new PhaseResult(
-                phaseResult.getPhase(),
-                phaseResult.getPlayers()
-                        .stream()
-                        .map(p -> PlayerPosition.create(idGen.next(), p))
-                        .collect(Collectors.toSet()),
-                phaseResult.getPlayers()
-                        .getAdded()
-                        .stream()
-                        .map(Player::create)
-                        .collect(Collectors.toSet()),
-                phaseResult.getCollectables()
-                        .getAdded()
-                        .stream()
-                        .map(Collectable::create)
-                        .collect(Collectors.toSet()),
-                phaseResult.getPlayers()
-                        .getRemoved()
-                        .stream()
-                        .map(com.scottlogic.hackathon.game.Player::getId)
-                        .collect(Collectors.toSet()),
-                phaseResult.getSpawnPoints()
-                        .getRemoved()
-                        .stream()
-                        .map(com.scottlogic.hackathon.game.SpawnPoint::getId)
-                        .collect(Collectors.toSet()),
-                phaseResult.getCollectables()
-                        .getRemoved()
-                        .stream()
-                        .map(com.scottlogic.hackathon.game.Collectable::getId)
-                        .collect(Collectors.toSet()),
-                phaseResult.getDisqualifiedBots()
-                        .stream()
-                        .map(db -> new DisqualifiedBot(db.getBot().getId(), db.getRejections().get(0).getMessage()))
-                        .collect(Collectors.toSet())
-        );
-    }
+  @JsonView(Views.Details.class)
+  private Set<Player> addedPlayers;
 
-    public int getPhase() {
-        return phase;
-    }
+  @JsonView(Views.Details.class)
+  private Set<Collectable> addedCollectables;
 
-    public Set<PlayerPosition> getPlayerPositions() {
-        return Collections.unmodifiableSet(playerPositions);
-    }
+  @JsonView(Views.Details.class)
+  private Set<Id> removedPlayers;
 
-    public Set<Player> getAddedPlayers() {
-        return Collections.unmodifiableSet(addedPlayers);
-    }
+  @JsonView(Views.Details.class)
+  private Set<Id> removedSpawnPoints;
 
-    public Set<Collectable> getAddedCollectables() {
-        return Collections.unmodifiableSet(addedCollectables);
-    }
+  @JsonView(Views.Details.class)
+  private Set<Id> removedCollectables;
 
-    public Set<Id> getRemovedPlayers() {
-        return Collections.unmodifiableSet(removedPlayers);
-    }
+  @JsonView(Views.Details.class)
+  private Set<DisqualifiedBot> disqualifiedBots;
 
-    public Set<Id> getRemovedSpawnPoints() {
-        return Collections.unmodifiableSet(removedSpawnPoints);
-    }
+  public PhaseResult() {}
 
-    public Set<Id> getRemovedCollectables() {
-        return Collections.unmodifiableSet(removedCollectables);
-    }
+  public PhaseResult(
+      final int phase,
+      final Set<PlayerPosition> playerPositions,
+      final Set<Player> addedPlayers,
+      final Set<Collectable> addedCollectables,
+      final Set<Id> removedPlayers,
+      final Set<Id> removedSpawnPoints,
+      final Set<Id> removedCollectables,
+      final Set<DisqualifiedBot> disqualifiedBots) {
+    this.id = UUID.randomUUID();
+    this.phase = phase;
+    this.playerPositions = new HashSet<>(playerPositions);
+    this.addedPlayers = new HashSet<>(addedPlayers);
+    this.addedCollectables = new HashSet<>(addedCollectables);
+    this.removedPlayers = new HashSet<>(removedPlayers);
+    this.removedSpawnPoints = new HashSet<>(removedSpawnPoints);
+    this.removedCollectables = new HashSet<>(removedCollectables);
+    this.disqualifiedBots = new HashSet<>(disqualifiedBots);
+  }
 
-    public Set<DisqualifiedBot> getDisqualifiedBots() { return Collections.unmodifiableSet(disqualifiedBots); }
+  public static PhaseResult create(
+      ShortIdGenerator idGen, final com.scottlogic.hackathon.game.PhaseResult phaseResult) {
+    return new PhaseResult(
+        phaseResult.getPhase(),
+        phaseResult.getPlayers().stream()
+            .map(p -> PlayerPosition.create(idGen.next(), p))
+            .collect(Collectors.toSet()),
+        phaseResult.getPlayers().getAdded().stream()
+            .map(Player::create)
+            .collect(Collectors.toSet()),
+        phaseResult.getCollectables().getAdded().stream()
+            .map(Collectable::create)
+            .collect(Collectors.toSet()),
+        phaseResult.getPlayers().getRemoved().stream()
+            .map(com.scottlogic.hackathon.game.Player::getId)
+            .collect(Collectors.toSet()),
+        phaseResult.getSpawnPoints().getRemoved().stream()
+            .map(com.scottlogic.hackathon.game.SpawnPoint::getId)
+            .collect(Collectors.toSet()),
+        phaseResult.getCollectables().getRemoved().stream()
+            .map(com.scottlogic.hackathon.game.Collectable::getId)
+            .collect(Collectors.toSet()),
+        phaseResult.getDisqualifiedBots().stream()
+            .map(
+                db ->
+                    new DisqualifiedBot(
+                        db.getBot().getId(), db.getRejections().get(0).getMessage()))
+            .collect(Collectors.toSet()));
+  }
 
+  public int getPhase() {
+    return phase;
+  }
+
+  public Set<PlayerPosition> getPlayerPositions() {
+    return Collections.unmodifiableSet(playerPositions);
+  }
+
+  public Set<Player> getAddedPlayers() {
+    return Collections.unmodifiableSet(addedPlayers);
+  }
+
+  public Set<Collectable> getAddedCollectables() {
+    return Collections.unmodifiableSet(addedCollectables);
+  }
+
+  public Set<Id> getRemovedPlayers() {
+    return Collections.unmodifiableSet(removedPlayers);
+  }
+
+  public Set<Id> getRemovedSpawnPoints() {
+    return Collections.unmodifiableSet(removedSpawnPoints);
+  }
+
+  public Set<Id> getRemovedCollectables() {
+    return Collections.unmodifiableSet(removedCollectables);
+  }
+
+  public Set<DisqualifiedBot> getDisqualifiedBots() {
+    return Collections.unmodifiableSet(disqualifiedBots);
+  }
 }

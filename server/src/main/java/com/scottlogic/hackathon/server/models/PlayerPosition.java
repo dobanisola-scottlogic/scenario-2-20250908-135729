@@ -2,37 +2,29 @@ package com.scottlogic.hackathon.server.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.scottlogic.hackathon.game.Id;
-import com.scottlogic.hackathon.game.Player;
 import lombok.Getter;
 
-import java.util.UUID;
+import com.scottlogic.hackathon.game.Id;
+import com.scottlogic.hackathon.game.Player;
 
 public class PlayerPosition {
-    @JsonIgnore
-    @Getter
-    private Id id;
-    @JsonProperty("id")
-    @Getter
-    private Id playerId;
-    @Getter
-    private Position position;
+  @JsonIgnore @Getter private Id id;
 
-    public PlayerPosition() {
-    }
+  @JsonProperty("id")
+  @Getter
+  private Id playerId;
 
-    public PlayerPosition(final Id id, final Id playerId, final Position position) {
-        this.id = id;
-        this.playerId = playerId;
-        this.position = position;
-    }
+  @Getter private Position position;
 
-    public static PlayerPosition create(final Id id, final Player player) {
-        return new PlayerPosition(id,
-                player.getId(),
-                Position.create(player.getPosition())
-        );
-    }
+  public PlayerPosition() {}
 
+  public PlayerPosition(final Id id, final Id playerId, final Position position) {
+    this.id = id;
+    this.playerId = playerId;
+    this.position = position;
+  }
 
+  public static PlayerPosition create(final Id id, final Player player) {
+    return new PlayerPosition(id, player.getId(), Position.create(player.getPosition()));
+  }
 }

@@ -1,74 +1,73 @@
 package com.scottlogic.hackathon.server.models;
 
-import com.fasterxml.jackson.annotation.JsonView;
-
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
 public class Hackathon {
-    @Id
-    private String id;
-    private String name;
-    @JsonView(Views.List.class)
-    @OneToMany
-    private List<GameResult> games;
-    @JsonView(Views.List.class)
-    @OneToMany
-    private List<Team> teams;
-    private String currentMilestoneClassName;
-    private String currentMilestoneMap;
+  @Id private String id;
+  private String name;
 
-    public Hackathon() {
-    }
+  @JsonView(Views.List.class)
+  @OneToMany
+  private List<GameResult> games;
 
-    public Hackathon(final String name) {
-        this.id = name.toLowerCase().replace(" ", "-");
-        this.name = name;
-        this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "Milestone1Bot";
-        this.currentMilestoneMap = "Easy";
-    }
+  @JsonView(Views.List.class)
+  @OneToMany
+  private List<Team> teams;
 
-    public String getName() {
-        return name;
-    }
+  private String currentMilestoneClassName;
+  private String currentMilestoneMap;
 
-    public String getId() {
-        return this.id;
-    }
+  public Hackathon() {}
 
-    public List<GameResult> getGames() {
-        return this.games;
-    }
+  public Hackathon(final String name) {
+    this.id = name.toLowerCase().replace(" ", "-");
+    this.name = name;
+    this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "Milestone1Bot";
+    this.currentMilestoneMap = "Easy";
+  }
 
-    public void setGames(List<GameResult> games) {
-        this.games = games;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public List<Team> getTeams() {
-        return this.teams;
-    }
+  public String getId() {
+    return this.id;
+  }
 
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
-    }
+  public List<GameResult> getGames() {
+    return this.games;
+  }
 
-    public String getCurrentMilestoneClassName() {
-        return currentMilestoneClassName;
-    }
+  public void setGames(List<GameResult> games) {
+    this.games = games;
+  }
 
-    public void setCurrentMilestoneClassName(String milestoneClassName){
-        this.currentMilestoneClassName = milestoneClassName;
-    }
+  public List<Team> getTeams() {
+    return this.teams;
+  }
 
-    public String getCurrentMilestoneMap() {
-        return currentMilestoneMap;
-    }
+  public void setTeams(List<Team> teams) {
+    this.teams = teams;
+  }
 
-    public void setCurrentMilestoneMap(String map) {
-        this.currentMilestoneMap = map;
-    }
+  public String getCurrentMilestoneClassName() {
+    return currentMilestoneClassName;
+  }
+
+  public void setCurrentMilestoneClassName(String milestoneClassName) {
+    this.currentMilestoneClassName = milestoneClassName;
+  }
+
+  public String getCurrentMilestoneMap() {
+    return currentMilestoneMap;
+  }
+
+  public void setCurrentMilestoneMap(String map) {
+    this.currentMilestoneMap = map;
+  }
 }
