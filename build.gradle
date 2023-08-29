@@ -44,7 +44,8 @@ spotless {
   }
   yaml {
     target '.circleci/config.yml'
-    prettier()
+    jackson()
+      .yamlFeature('MINIMIZE_QUOTES', true)
   }
 }
 
