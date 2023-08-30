@@ -1,59 +1,57 @@
 package com.scottlogic.hackathon.server.models;
 
-import io.dropwizard.auth.basic.BasicCredentials;
-
+import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 @Entity
 public class Team {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
+  @Id
+  @Column(columnDefinition = "uuid")
+  private UUID id;
 
-    @NotNull
-    @Column(unique = true)
-    private String name;
-    private String password;
-    private String hackathonId;
+  @NotNull @Column(unique = true)
+  private String name;
 
-    public Team() {
-    }
+  private String password;
+  private String hackathonId;
 
-    public Team(final UUID id) {
-        this.id = id;
-    }
+  public Team() {}
 
-    public UUID getId() {
-        return id;
-    }
+  public Team(final UUID id) {
+    this.id = id;
+  }
 
-    public void setId(final UUID id) {
-        this.id = id;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setId(final UUID id) {
+    this.id = id;
+  }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setPassword(final String password) {
-        this.password = password;
-    }
+  public void setName(final String name) {
+    this.name = name;
+  }
 
-    public boolean authenticate(final BasicCredentials credentials) {
-        return credentials.getUsername().equals(name) && credentials.getPassword().equals(password);
-    }
+  public void setPassword(final String password) {
+    this.password = password;
+  }
 
-    public String getHackathonId() {
-        return hackathonId;
-    }
+  public boolean authenticate(final BasicCredentials credentials) {
+    return credentials.getUsername().equals(name) && credentials.getPassword().equals(password);
+  }
 
-    public void setHackathonId(final String hackathonId) {
-        this.hackathonId = hackathonId;
-    }
+  public String getHackathonId() {
+    return hackathonId;
+  }
+
+  public void setHackathonId(final String hackathonId) {
+    this.hackathonId = hackathonId;
+  }
 }

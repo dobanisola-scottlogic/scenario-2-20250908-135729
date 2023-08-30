@@ -1,34 +1,30 @@
 package com.scottlogic.hackathon.remote.notify;
 
-import com.scottlogic.hackathon.remote.ConnectionListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConnectionChangeSupport implements ChangeSupport<ConnectionListener, ConnectionChangeEvent> {
+import com.scottlogic.hackathon.remote.ConnectionListener;
 
-    private List<ConnectionListener> listeners = new ArrayList<>();
+public class ConnectionChangeSupport
+    implements ChangeSupport<ConnectionListener, ConnectionChangeEvent> {
 
-    @Override
-    public void addChangeEventListener(ConnectionListener toAdd) {
-        listeners.add(toAdd);
-    }
+  private List<ConnectionListener> listeners = new ArrayList<>();
 
-    @Override
-    public void fireChangeEvent(ConnectionChangeEvent event) {
-        listeners.forEach(l -> l.onChangeEvent(event));
-    }
+  @Override
+  public void addChangeEventListener(ConnectionListener toAdd) {
+    listeners.add(toAdd);
+  }
 
-    public int count(){
-       return listeners.size();
-    }
+  @Override
+  public void fireChangeEvent(ConnectionChangeEvent event) {
+    listeners.forEach(l -> l.onChangeEvent(event));
+  }
 
-    public boolean hasTargetListener(String target){
-        return listeners.stream().anyMatch(l -> l.isTeam(target));
-    }
+  public int count() {
+    return listeners.size();
+  }
 
-
+  public boolean hasTargetListener(String target) {
+    return listeners.stream().anyMatch(l -> l.isTeam(target));
+  }
 }
-
-
-

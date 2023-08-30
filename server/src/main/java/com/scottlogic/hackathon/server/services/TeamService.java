@@ -1,54 +1,54 @@
 package com.scottlogic.hackathon.server.services;
 
+import java.util.List;
+import java.util.UUID;
 import com.google.inject.Inject;
-import com.scottlogic.hackathon.server.models.Team;
-import com.scottlogic.hackathon.server.services.stores.TeamStore;
-import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.List;
-import java.util.UUID;
+import com.scottlogic.hackathon.server.models.Team;
+import com.scottlogic.hackathon.server.services.stores.TeamStore;
+import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
 
 public class TeamService {
-    private final TeamStore teamStore;
+  private final TeamStore teamStore;
 
-    @Inject
-    public TeamService(final TeamStore teamStore) {
-        this.teamStore = teamStore;
-    }
+  @Inject
+  public TeamService(final TeamStore teamStore) {
+    this.teamStore = teamStore;
+  }
 
-    public Team addTeam(final Team team) {
-        team.setId(UUID.randomUUID());
-        return teamStore.saveOrUpdate(team);
-    }
+  public Team addTeam(final Team team) {
+    team.setId(UUID.randomUUID());
+    return teamStore.saveOrUpdate(team);
+  }
 
-    public List<Team> getTeams() {
-        return teamStore.list();
-    }
+  public List<Team> getTeams() {
+    return teamStore.list();
+  }
 
-    public List<Team> getTeamsByHackathon(final String hackathonId) {
-        return teamStore.list(Restrictions.eq("hackathonId", hackathonId));
-    }
+  public List<Team> getTeamsByHackathon(final String hackathonId) {
+    return teamStore.list(Restrictions.eq("hackathonId", hackathonId));
+  }
 
-    public Team getTeam(final UUID id) {
-        return teamStore.get(id);
-    }
+  public Team getTeam(final UUID id) {
+    return teamStore.get(id);
+  }
 
-    public Team getTeam(final String name) {
-        return teamStore.get(Restrictions.eq("name", name));
-    }
+  public Team getTeam(final String name) {
+    return teamStore.get(Restrictions.eq("name", name));
+  }
 
-    public Team updateTeam(final UUID id, final TeamUpdate teamUpdate) {
-        return teamStore.update(id, teamUpdate);
-    }
+  public Team updateTeam(final UUID id, final TeamUpdate teamUpdate) {
+    return teamStore.update(id, teamUpdate);
+  }
 
-    public boolean deleteTeam(final UUID id) {
-        return teamStore.delete(id);
-    }
+  public boolean deleteTeam(final UUID id) {
+    return teamStore.delete(id);
+  }
 
-    public boolean authenticate(final BasicCredentials credentials) {
-        final Team team = getTeam(credentials.getUsername());
-        return team != null && team.authenticate(credentials);
-    }
+  public boolean authenticate(final BasicCredentials credentials) {
+    final Team team = getTeam(credentials.getUsername());
+    return team != null && team.authenticate(credentials);
+  }
 }

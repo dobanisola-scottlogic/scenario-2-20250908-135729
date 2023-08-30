@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class MoveImpl implements Move {
-    Id player;
-    Direction direction;
+  Id player;
+  Direction direction;
 }

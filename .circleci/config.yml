@@ -1,62 +1,57 @@
+---
 version: 2.1
-
 commands:
   restore_caches:
     description: Restore all caches
     steps:
-      - restore_cache:
-          name: Restore Gradle Wrapper
-          key: v1-gradle-wrapper-{{ arch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - restore_cache:
-          name: Restore Gradle Dependencies
-          keys:
-            - v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-
-            - v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-
-
+    - restore_cache:
+        name: Restore Gradle Wrapper
+        key: "v1-gradle-wrapper-{{ arch }}-{{ checksum \"gradle/wrapper/gradle-wrapper.properties\"\
+          \ }}"
+    - restore_cache:
+        name: Restore Gradle Dependencies
+        keys:
+        - "v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-"
+        - "v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-"
   save_caches:
     description: Save all caches
     steps:
-      - run:
-          name: Cleanup Gradle cache dir
-          command: |
-            rm -f ~/.gradle/caches/modules-2/modules-2.lock \
-              && ls -laR ~/.gradle/caches/modules-2 > ~/gradle-cache-listing
-      - save_cache:
-          name: Cache Gradle Dependencies
-          paths:
-            - ~/.gradle/caches/modules-2/
-          key: v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "~/gradle-cache-listing" }}
-
-      - save_cache:
-          name: Cache Gradle Wrapper
-          paths:
-            - ~/.gradle/wrapper/
-          key: v1-gradle-wrapper-{{ arch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-
+    - run:
+        name: Cleanup Gradle cache dir
+        command: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock \
+            && ls -laR ~/.gradle/caches/modules-2 > ~/gradle-cache-listing
+    - save_cache:
+        name: Cache Gradle Dependencies
+        paths:
+        - "~/.gradle/caches/modules-2/"
+        key: "v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{\
+          \ checksum \"~/gradle-cache-listing\" }}"
+    - save_cache:
+        name: Cache Gradle Wrapper
+        paths:
+        - "~/.gradle/wrapper/"
+        key: "v1-gradle-wrapper-{{ arch }}-{{ checksum \"gradle/wrapper/gradle-wrapper.properties\"\
+          \ }}"
 jobs:
   gradle_check_task:
     docker:
-      - image: cimg/openjdk:11.0
-
-    working_directory: ~/repo
-
+    - image: cimg/openjdk:11.0
+    working_directory: "~/repo"
     environment:
       TERM: dumb
       GRADLE_OPTS: -Dorg.gradle.daemon=false
-      JAVA_OPTS: "-Xmx64m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump"
-
+      JAVA_OPTS: -Xmx64m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump
     steps:
-      - checkout
-      - restore_caches
-      - run:
-          name: Run checks
-          command: ./gradlew check
-      - save_caches
-
-      - store_artifacts:
-          path: /heapdump
-
+    - checkout
+    - restore_caches
+    - run:
+        name: Run checks
+        command: ./gradlew check
+    - save_caches
+    - store_artifacts:
+        path: /heapdump
 workflows:
   check:
     jobs:
-      - gradle_check_task
+    - gradle_check_task
