@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "tests", "playwright.config.ts", "cucumber.report.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
