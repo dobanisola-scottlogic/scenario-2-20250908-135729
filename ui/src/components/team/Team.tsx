@@ -1,10 +1,26 @@
-import { useAppSelector } from '../../hooks';
-import { selectAuthName } from '../login/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { logout, selectAuthName } from '../login/authSlice';
+import { Button } from '@mui/material';
 
 function Team() {
   const name = useAppSelector(selectAuthName);
+  const dispatch = useAppDispatch();
 
-  return <>You are logged in as team with name: {name}</>;
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  return (
+    <>
+      <h1>You are logged in as team: {name} </h1>
+      <Button
+        onClick={handleLogout}
+      >
+        Logout
+      </Button>
+    </>
+  );
 }
 
 export default Team;

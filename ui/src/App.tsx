@@ -1,4 +1,3 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/login/Login';
 import Admin from './components/admin/Admin';
 import Team from './components/team/Team';
@@ -8,22 +7,24 @@ import { UserRole } from './enums/UserRole';
 
 function App() {
   const userRole = useAppSelector(selectAuthRole);
+  const status = useAppSelector((state) => state.auth.status);
+  console.log(status);
   console.log(userRole)
 
-  const redirectMap = {
-  [UserRole.NONE]: '/login',
-  [UserRole.ADMIN]: '/admin',
-  [UserRole.TEAM]: '/team',
-};
+const renderComponentBasedOnRole = () => {
+    switch (userRole) {
+      case UserRole.ADMIN:
+        return <Admin />;
+      case UserRole.TEAM:
+        return <Team />;
+      default:
+        return <Login />;
+    }
+  };
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Navigate to={redirectMap[userRole]}/>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/team" element={<Team />} />
-      </Routes>
+    {renderComponentBasedOnRole()}
     </>
   );
 }

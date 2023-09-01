@@ -16,17 +16,17 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { login, selectAuthRole } from './authSlice';
-import { UserRole } from '../../enums/UserRole';
-import { useNavigate} from 'react-router-dom';
+import { login, loginSuccess, setCredentials } from './authSlice';
+import { useLoginMutation } from '../../api/api';
 
 function Login() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const [login] = useLoginMutation();
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const loginTheme = createTheme(theme, {
     palette: {
@@ -40,23 +40,24 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
-  const role = useAppSelector(selectAuthRole);
-  console.log(role)
-
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const credentials: string = btoa(username + ':' + password);
-    const {payload} = await dispatch(login(credentials));
-
-    if (payload.role === UserRole.ADMIN) {
-      navigate('/admin');
-    } else if (payload.role === UserRole.TEAM) {
-      navigate('/team');
-    } else {
-      // error handling
-      console.log('error');
+    if (!username || !password) {
+      setError('Username and password are required.');
+      return;
     }
+
+    const credentials: string = btoa(username + ':' + password);
+    await dispatch(setCredentials(credentials));
+    const response: any = await login(credentials);
+    console.log(response.data);
+    // dispatch(loginSuccess(response.data))
+    // try {
+    //   await dispatch(login(credentials));
+    // } catch (e) {
+    //   setError('Login failed. Please check your credentials.');
+    // }
   };
 
   return (
@@ -158,6 +159,7 @@ function Login() {
                 >
                   Login
                 </Button>
+                {error && <div className="error-message">{error}</div>}
               </Box>
             </Box>
           </Box>
