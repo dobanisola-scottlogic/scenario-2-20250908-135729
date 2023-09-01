@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import theme from '../theme';
+import theme from '../../theme';
 import {
   AppBar,
   Box,
@@ -15,10 +15,18 @@ import {
   Typography,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { login, selectAuthRole } from './authSlice';
+import { UserRole } from '../../enums/UserRole';
+import { useNavigate} from 'react-router-dom';
 
-// to do : accessibility and tags - how to make it easier to test
 function Login() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const loginTheme = createTheme(theme, {
     palette: {
@@ -32,9 +40,23 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    return event.target;
+  const role = useAppSelector(selectAuthRole);
+  console.log(role)
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const credentials: string = btoa(username + ':' + password);
+    const {payload} = await dispatch(login(credentials));
+
+    if (payload.role === UserRole.ADMIN) {
+      navigate('/admin');
+    } else if (payload.role === UserRole.TEAM) {
+      navigate('/team');
+    } else {
+      // error handling
+      console.log('error');
+    }
   };
 
   return (
@@ -79,7 +101,7 @@ function Login() {
             </Typography>
             <Box
               component="form"
-              onSubmit={handleSubmit}
+              onSubmit={handleLogin}
               noValidate
               sx={{ mt: 1 }}
             >
@@ -92,6 +114,7 @@ function Login() {
                 label="Username"
                 autoComplete="username"
                 autoFocus
+                onChange={(e) => setUsername(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -102,6 +125,7 @@ function Login() {
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
