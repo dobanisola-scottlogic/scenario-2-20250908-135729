@@ -5,9 +5,13 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface GameResult {
-    UUID getId();
-    List<PhaseResult> getPhaseResults();
-    GameGeometry getMap();
-    Set<Position> getOutOfBoundPositions();
-    CutoffCondition getCutoffCondition();
+  UUID getId();
+
+  List<PhaseResult> getPhaseResults();
+
+  GameGeometry getMap();
+
+  Set<Position> getOutOfBoundPositions();
+
+  CutoffCondition getCutoffCondition();
 }

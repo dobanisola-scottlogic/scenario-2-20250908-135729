@@ -1,38 +1,38 @@
 package com.scottlogic.hackathon.server.models;
 
+import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import java.util.Set;
-
 public class Game {
-    @JsonView(Views.List.class)
-    private Long gameTime;
-    @JsonView(Views.List.class)
-    private Set<GameTeam> teams;
-    @JsonView(Views.List.class)
-    private ArenaModel arena;
-    private String hackathonId;
+  @JsonView(Views.List.class)
+  private Long gameTime;
 
-    public Game() {
-    }
+  @JsonView(Views.List.class)
+  private Set<GameTeam> teams;
 
-    public Game(final Set<GameTeam> teams, final ArenaModel arena, final String hackathonId) {
-        this.gameTime = System.currentTimeMillis();
-        this.teams = teams;
-        this.arena = arena;
-        this.hackathonId = hackathonId;
-    }
+  @JsonView(Views.List.class)
+  private ArenaModel arena;
 
-    public Set<GameTeam> getTeams() {
-        return teams;
-    }
+  private String hackathonId;
 
-    public ArenaModel getMap() {
-        return arena;
-    }
+  public Game() {}
 
-    public String getHackathonId() {
-        return hackathonId;
-    }
+  public Game(final Set<GameTeam> teams, final ArenaModel arena, final String hackathonId) {
+    this.gameTime = System.currentTimeMillis();
+    this.teams = teams;
+    this.arena = arena;
+    this.hackathonId = hackathonId;
+  }
+
+  public Set<GameTeam> getTeams() {
+    return teams;
+  }
+
+  public ArenaModel getMap() {
+    return arena;
+  }
+
+  public String getHackathonId() {
+    return hackathonId;
+  }
 }
-

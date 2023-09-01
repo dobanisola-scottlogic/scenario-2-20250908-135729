@@ -12,89 +12,97 @@ import java.util.stream.IntStream;
 
 class RouteImpl implements Route {
 
-    private final Position start;
-    private final GameGeometry map;
-    private final List<Direction> list;
-    private final int index;
-    private final Position destination;
+  private final Position start;
+  private final GameGeometry map;
+  private final List<Direction> list;
+  private final int index;
+  private final Position destination;
 
-    public RouteImpl(GameGeometry map, Position start, Position destination, Direction direction, int length) {
-        this(map, start, destination, IntStream.range(0, length).mapToObj(i -> direction)
-                .collect(Collectors.toCollection(() -> new ArrayList<>(length))));
-    }
+  public RouteImpl(
+      GameGeometry map, Position start, Position destination, Direction direction, int length) {
+    this(
+        map,
+        start,
+        destination,
+        IntStream.range(0, length)
+            .mapToObj(i -> direction)
+            .collect(Collectors.toCollection(() -> new ArrayList<>(length))));
+  }
 
-    public RouteImpl(GameGeometry map, Position start, Position destination, List<Direction> steps) {
-        this(map, start, destination, steps, 0);
-    }
+  public RouteImpl(GameGeometry map, Position start, Position destination, List<Direction> steps) {
+    this(map, start, destination, steps, 0);
+  }
 
-    private RouteImpl(GameGeometry map, Position start, Position destination, List<Direction> steps, int index) {
-        this.map = map;
-        this.start = start;
-        this.list = steps;
-        this.index = index;
-        this.destination = destination;
-    }
+  private RouteImpl(
+      GameGeometry map, Position start, Position destination, List<Direction> steps, int index) {
+    this.map = map;
+    this.start = start;
+    this.list = steps;
+    this.index = index;
+    this.destination = destination;
+  }
 
-    @Override
-    public int getLength() {
-        return list.size() - index;
-    }
+  @Override
+  public int getLength() {
+    return list.size() - index;
+  }
 
-    @Override
-    public Optional<Direction> getFirstDirection() {
-        return index < list.size() ? Optional.of(list.get(index)) : Optional.empty();
-    }
+  @Override
+  public Optional<Direction> getFirstDirection() {
+    return index < list.size() ? Optional.of(list.get(index)) : Optional.empty();
+  }
 
-    @Override
-    public Iterator<Direction> directionIterator() {
-        return list.listIterator(index);
-    }
+  @Override
+  public Iterator<Direction> directionIterator() {
+    return list.listIterator(index);
+  }
 
-    @Override
-    public Iterator<Position> iterator() {
-        return Spliterators.iterator(spliterator());
-    }
+  @Override
+  public Iterator<Position> iterator() {
+    return Spliterators.iterator(spliterator());
+  }
 
-    @Override
-    public Spliterator<Position> spliterator() {
-        return new Spliterators.AbstractSpliterator<Position>(getLength(),
-                Spliterator.SIZED | Spliterator.ORDERED | Spliterator.NONNULL) {
-            final Iterator<Direction> dirs = directionIterator();
-            Position position = getStart();
+  @Override
+  public Spliterator<Position> spliterator() {
+    return new Spliterators.AbstractSpliterator<Position>(
+        getLength(), Spliterator.SIZED | Spliterator.ORDERED | Spliterator.NONNULL) {
+      final Iterator<Direction> dirs = directionIterator();
+      Position position = getStart();
 
-            @Override
-            public boolean tryAdvance(Consumer<? super Position> action) {
-                Position pos = position;
-                if(pos==null) {
-                    return false;
-                }
-                position = dirs.hasNext() ? map.getNeighbour(pos, dirs.next()) : null;
-                action.accept(pos);
-                return true;
-            }
-        };
-    }
+      @Override
+      public boolean tryAdvance(Consumer<? super Position> action) {
+        Position pos = position;
+        if (pos == null) {
+          return false;
+        }
+        position = dirs.hasNext() ? map.getNeighbour(pos, dirs.next()) : null;
+        action.accept(pos);
+        return true;
+      }
+    };
+  }
 
-    @Override
-    public Position getStart() {
-        return start;
-    }
+  @Override
+  public Position getStart() {
+    return start;
+  }
 
-    @Override
-    public Position getDestination() {
-        return destination;
-    }
+  @Override
+  public Position getDestination() {
+    return destination;
+  }
 
-    @Override
-    public final Optional<Route> step() {
-        return getFirstDirection()
-                .map(d -> new RouteImpl(map, map.getNeighbour(start, d), destination, list, index+1));
-    }
+  @Override
+  public final Optional<Route> step() {
+    return getFirstDirection()
+        .map(d -> new RouteImpl(map, map.getNeighbour(start, d), destination, list, index + 1));
+  }
 
-    @Override
-    public Spliterator<Direction> directionSpliterator() {
-        return Spliterators.spliterator(directionIterator(), getLength(),
-                Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SIZED);
-    }
-
+  @Override
+  public Spliterator<Direction> directionSpliterator() {
+    return Spliterators.spliterator(
+        directionIterator(),
+        getLength(),
+        Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SIZED);
+  }
 }
