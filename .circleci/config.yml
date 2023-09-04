@@ -1,19 +1,18 @@
+---
 version: 2.1
-
 commands:
-
   restore_caches:
     description: Restore all caches
     steps:
     - restore_cache:
         name: Restore Gradle Wrapper
-        key: v1-gradle-wrapper-{{ arch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+        key: "v1-gradle-wrapper-{{ arch }}-{{ checksum \"gradle/wrapper/gradle-wrapper.properties\"\
+          \ }}"
     - restore_cache:
         name: Restore Gradle Dependencies
         keys:
-        - v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-
-        - v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-
-
+        - "v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-"
+        - "v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-"
   save_caches:
     description: Save all caches
     steps:
@@ -25,28 +24,24 @@ commands:
     - save_cache:
         name: Cache Gradle Dependencies
         paths:
-        - ~/.gradle/caches/modules-2/
-        key: v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "~/gradle-cache-listing" }}
-
+        - "~/.gradle/caches/modules-2/"
+        key: "v1-gradle-deps-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{\
+          \ checksum \"~/gradle-cache-listing\" }}"
     - save_cache:
         name: Cache Gradle Wrapper
         paths:
-        - ~/.gradle/wrapper/
-        key: v1-gradle-wrapper-{{ arch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-
-
+        - "~/.gradle/wrapper/"
+        key: "v1-gradle-wrapper-{{ arch }}-{{ checksum \"gradle/wrapper/gradle-wrapper.properties\"\
+          \ }}"
 jobs:
-  check:
+  gradle_check_task:
     docker:
-    - image: circleci/openjdk:11-jdk
-
-    working_directory: ~/repo
-
+    - image: cimg/openjdk:11.0
+    working_directory: "~/repo"
     environment:
       TERM: dumb
       GRADLE_OPTS: -Dorg.gradle.daemon=false
-      JAVA_OPTS: "-Xmx64m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump"
-
+      JAVA_OPTS: -Xmx64m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump
     steps:
     - checkout
     - restore_caches
@@ -54,13 +49,9 @@ jobs:
         name: Run checks
         command: ./gradlew check
     - save_caches
-
     - store_artifacts:
-        when: on_fail
         path: /heapdump
-
 workflows:
-  version: 2
   check:
     jobs:
-      - check
+    - gradle_check_task

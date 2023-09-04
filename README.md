@@ -22,7 +22,7 @@ and objects on the map that the bot can 'see', this includes:
   - All the bot's own currently living players
   - Any collectables, enemy spawn points, enemy players, or out-of-bounds positions that are within 5 moves of any
     of the bot's own players (effectively an 11&times;11 square around each player)
-    
+
 The `makeMoves` method must return a list of `Move` instances, each an instruction to move one of the bot's players in
 one of 8 possible directions.
 
@@ -64,8 +64,8 @@ Run:
 ```
 This will deploy the relevant cloud formation templates to aws
 After some time when it is complete you will see a message showing the public url of the Hackathon Game Server
- 
-### 3 - Define new Hackathon in Game Server Admin 
+
+### 3 - Define new Hackathon in Game Server Admin
 
 
 Point your browser at <http://some_aws_domain/application> and login with username 'admin' and password 'secret'.
@@ -81,8 +81,8 @@ To create a new team in the hackathon
 ```
 **This will print the public DNS of the teams instance.**
 
-It creates an entry in `.cli-team-config` to track the deployed teams.  
-If  later to remove an individual team this can be done with the  command 
+It creates an entry in `.cli-team-config` to track the deployed teams.
+If  later to remove an individual team this can be done with the  command
 ```bash
 ./cli delete-team -t <my teamname>
 ```
@@ -100,7 +100,7 @@ http://public_dns/?folder=/home/coder/project/python-contestant for the Python C
 The password is the team name
 
 
-### 5 - Define Contestant Team in Game Server Admin 
+### 5 - Define Contestant Team in Game Server Admin
 
 Return to the Admin page for the Game Server
 
@@ -130,11 +130,11 @@ If you are not sure whether it was successful or not you can check on aws that b
 
 This project is made up of a number of subcomponents:
   - [code-server](code-server) - Builds the docker image for a fully bootstrapped VS Code,
- 
+
   - [default-bots](default-bots) - A library containing built in game strategies that contestants can play against
     on the server.
   - [deployment](deployment) - Scripts and configs for automating cloud  production deployment
- 
+
   - [game](game) - A library containing the API of the game itself, including the interfaces available to contestants
     _and_ the game state model given to the server for rendering.
   - [game-engine](game-engine) - A library implementing the game API.
