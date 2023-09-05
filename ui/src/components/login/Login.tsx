@@ -18,7 +18,6 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch } from '../../hooks';
 import { setCredentials } from '../../auth/authSlice';
 import { useLoginMutation } from '../../api/api';
-import Navbar from '../navbar/Navbar';
 
 function Login() {
   const dispatch = useAppDispatch();
@@ -68,7 +67,6 @@ function Login() {
 
   return (
     <>
-      <Navbar />
       <ThemeProvider theme={loginTheme}>
         <CssBaseline />
         <Container
@@ -78,7 +76,7 @@ function Login() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '100vh',
+            minHeight: '90vh',
           }}
         >
           <Box

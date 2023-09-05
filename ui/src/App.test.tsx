@@ -11,6 +11,7 @@ describe('App Component', () => {
       },
     });
 
+    expect(screen.getAllByRole('banner')[1]).toHaveTextContent('Hackathon');
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
   });
 
@@ -21,6 +22,7 @@ describe('App Component', () => {
       },
     });
 
+    expect(screen.getAllByRole('banner')[1]).toHaveTextContent('Hackathon');
     expect(screen.getByRole('heading', { name: 'Admin' })).toBeInTheDocument();
   });
 
@@ -31,6 +33,7 @@ describe('App Component', () => {
       },
     });
 
+    expect(screen.getAllByRole('banner')[1]).toHaveTextContent('Hackathon');
     expect(
       screen.getByRole('heading', { name: 'Team: team' })
     ).toBeInTheDocument();

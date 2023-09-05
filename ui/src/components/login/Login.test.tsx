@@ -12,7 +12,6 @@ describe('Login', () => {
   });
 
   it('should render the Login component correctly', () => {
-    expect(screen.getAllByRole('banner')[1]).toHaveTextContent('Hackathon');
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
     expect(
       screen.getByRole('textbox', { name: 'Username' })
