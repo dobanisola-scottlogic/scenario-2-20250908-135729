@@ -29,7 +29,6 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-import lombok.Value;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import ru.vyarus.dropwizard.guice.GuiceBundle;
@@ -106,9 +105,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
     private void setupCrossOriginHeaders(final Environment environment) {
         final FilterRegistration.Dynamic filter = environment.servlets().addFilter("CrossOriginFilter", CrossOriginFilter.class);
 
-        String runEnv = System.getenv("ENVIRONMENT");
-
-        if ("dev".equals(runEnv)) {
+        if ("dev".equals(System.getenv("ENVIRONMENT"))) {
             filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
         } else {
             filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, environment.getApplicationContext().getContextPath() + "*");
