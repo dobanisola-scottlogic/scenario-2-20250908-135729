@@ -3,7 +3,11 @@ For unit and integration testing of the hackathon UI.
 
 ## Commands 
 
-**npx test playwright:** will run the Playwright tests against the current local Hackathon. 
+When running any of the below commands, make sure that your terminal window is located
+in the ui directory (e.g. if on the base directory, cd into 'ui' before running any
+tests).
+
+**npx playwright test:** will run the Playwright tests against the current local Hackathon. 
 For this to be functional, make sure that the hackathon is running in the background.
 
 These tests will also generate reports after completion. The report will be opened automatically
