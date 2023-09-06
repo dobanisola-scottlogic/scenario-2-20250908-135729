@@ -1,7 +1,7 @@
 import { UserRole } from '../enums/UserRole';
 
 export interface AuthState {
-  name: string;
+  name: string | null;
   role: UserRole;
-  credentials: string;
+  credentials: string | null;
 }

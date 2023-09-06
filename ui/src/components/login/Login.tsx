@@ -44,8 +44,8 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    if (!username || !password) {
-      setError('Username and password are required.');
+    if (!username.trim() || !password.trim()) {
+      setError('Username and password cannot be empty.');
       return;
     }
 
@@ -60,7 +60,7 @@ function Login() {
             'Invalid username or password. Please check your credentials.'
           );
         } else {
-          setError("Sorry we couldn't log you in. Please try again later.");
+          setError("Sorry, we couldn't log you in. Please try again later.");
         }
       });
   };

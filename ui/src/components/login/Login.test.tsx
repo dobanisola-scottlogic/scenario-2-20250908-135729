@@ -51,10 +51,14 @@ describe('Login', () => {
   });
 
   it('handles login with missing credentials correctly', () => {
+    // check whitespace is trimmed from username and password
+    fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
+      target: { value: ' ' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
     expect(screen.getByRole('alert').textContent).toContain(
-      'Username and password are required.'
+      'Username and password cannot be empty.'
     );
   });
 
@@ -70,7 +74,8 @@ describe('Login', () => {
 
     await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
-    expect(screen.getByRole('alert').textContent).toContain(
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent).toContain(
       'Invalid username or password. Please check your credentials.'
     );
   });
@@ -87,8 +92,9 @@ describe('Login', () => {
 
     await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
-    expect(screen.getByRole('alert').textContent).toContain(
-      "Sorry we couldn't log you in. Please try again later."
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent).toContain(
+      "Sorry, we couldn't log you in. Please try again later."
     );
   });
 });
