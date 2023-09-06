@@ -18,6 +18,14 @@ task formatReactApp(type: NpmTask, dependsOn: npmInstall) {
 }
 check.dependsOn formatReactApp
 
+task testReactApp(type: NpmTask, dependsOn: npmInstall) {
+    group = 'Verification'
+    description = 'Runs UI tests'
+
+    args = ['run', 'test']
+}
+check.dependsOn testReactApp
+
 task buildReactApp(type: NodeTask, dependsOn: npmInstall) {
     group = 'Build'
     description = 'Builds the UI'

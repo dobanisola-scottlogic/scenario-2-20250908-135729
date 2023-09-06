@@ -88,7 +88,7 @@ describe('Login', () => {
     await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
     expect(screen.getByRole('alert').textContent).toContain(
-      "Sorry we couldn't log you in"
+      "Sorry we couldn't log you in. Please try again later."
     );
   });
 });
