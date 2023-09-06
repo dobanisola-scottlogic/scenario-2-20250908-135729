@@ -10,11 +10,11 @@ interface Milestones {
 
 export type GetMilestoneResponse = Array<Milestones>;
 
-export interface Hackathon {
+export interface CreateHackathonServiceResponse {
     id: string;
     name: string;
-    games: null;
-    teams: null;
+    games: null; // Old service separates games into separate calls so returns null
+    teams: null; // Old service separates teams into separate calls so returns null
     currentMilestoneClassName: string;
     currentMilestoneMap: string;
 }

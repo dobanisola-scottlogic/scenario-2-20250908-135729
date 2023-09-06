@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
-import { GetMilestoneResponse, Hackathon } from '../interfaces/HackathonResponse';
+import { CreateHackathonServiceResponse, GetMilestoneResponse } from '../interfaces/HackathonResponse';
 import { LoginResponse } from '../interfaces/LoginResponse';
 
 // Define a service using a base URL and expected endpoints
@@ -29,7 +29,7 @@ export const api = createApi({
         method: 'GET'
       }),
     }),
-    createHackathon: builder.mutation<Hackathon, void>({
+    createHackathon: builder.mutation<CreateHackathonServiceResponse, void>({
       query: ({name}) => ({
         url: '/hackathon',
         method: 'POST',

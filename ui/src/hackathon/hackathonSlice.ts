@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { api } from '../api/api';
-import { Hackathon, Milestone } from '../interfaces/HackathonResponse';
+import { CreateHackathonServiceResponse, Milestone } from '../interfaces/HackathonResponse';
 import type { RootState } from '../store';
 
 interface HackathonState {
   milestones: Array<Milestone>;
-  hackathons: Array<Hackathon>;
+  hackathons: Array<CreateHackathonServiceResponse>;
 }
 
 const initialState: HackathonState = {
