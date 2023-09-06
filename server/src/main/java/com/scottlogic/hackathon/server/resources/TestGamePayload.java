@@ -6,12 +6,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TestGamePayload {
 
-    @Getter
-    private String teamName;
+  @Getter private String teamName;
 
-    @Getter
-    private String milestone;
+  @Getter private String milestone;
 
-    @Getter
-    private String map;
+  @Getter private String map;
 }

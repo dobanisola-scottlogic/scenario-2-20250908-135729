@@ -17,56 +17,54 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({PipedBot.class, ClientArgs.class})
 public class PythonClientArgsTest {
-    private static final String TEAM = "team";
-    private static final String HOST = "host";
-    private static final String PORT = "8080";
+  private static final String TEAM = "team";
+  private static final String HOST = "host";
+  private static final String PORT = "8080";
 
-    private static final String COMMAND = "command";
+  private static final String COMMAND = "command";
 
-    @Mock
-    PipedBot pipedBot;
+  @Mock PipedBot pipedBot;
 
-    @Test
-    public void testParsePythonClientArgs() {
-        ClientArgs clientArgs = new ClientArgs();
-        final CmdLineParser parser = new CmdLineParser(clientArgs);
+  @Test
+  public void testParsePythonClientArgs() {
+    ClientArgs clientArgs = new ClientArgs();
+    final CmdLineParser parser = new CmdLineParser(clientArgs);
 
-        String[] args = asList("--command", COMMAND, "--team", TEAM, "--host", HOST, "--port", PORT).toArray(new String[]{});
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            assertNull(e);
-        }
-
-        assertNull(clientArgs.getBotClassPath());
-        assertThat(clientArgs.getHost(), Is.is(HOST));
-        assertThat(clientArgs.getTeam(), Is.is(TEAM));
-        assertThat(clientArgs.getPort(), Is.is(Integer.valueOf(PORT)));
-        assertThat(clientArgs.getCommand(), is(COMMAND));
-
+    String[] args =
+        asList("--command", COMMAND, "--team", TEAM, "--host", HOST, "--port", PORT)
+            .toArray(new String[] {});
+    try {
+      parser.parseArgument(args);
+    } catch (CmdLineException e) {
+      assertNull(e);
     }
 
-    @Test
-    public void testInitPythonClientArgs() throws Exception {
-        whenNew(PipedBot.class).withAnyArguments().thenReturn(pipedBot);
+    assertNull(clientArgs.getBotClassPath());
+    assertThat(clientArgs.getHost(), Is.is(HOST));
+    assertThat(clientArgs.getTeam(), Is.is(TEAM));
+    assertThat(clientArgs.getPort(), Is.is(Integer.valueOf(PORT)));
+    assertThat(clientArgs.getCommand(), is(COMMAND));
+  }
 
-        ClientArgs clientArgs = new ClientArgs();
-        final CmdLineParser parser = new CmdLineParser(clientArgs);
+  @Test
+  public void testInitPythonClientArgs() throws Exception {
+    whenNew(PipedBot.class).withAnyArguments().thenReturn(pipedBot);
 
-        String[] args = asList("--command", COMMAND, "--team", TEAM, "--host", HOST, "--port",PORT).toArray(new String[]{});
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            assertNull(e);
-        }
+    ClientArgs clientArgs = new ClientArgs();
+    final CmdLineParser parser = new CmdLineParser(clientArgs);
 
-        clientArgs.init();
-
-
-        assertNull(clientArgs.getBotClassPath());
-        assertNotNull(clientArgs.getBot());
-
-
+    String[] args =
+        asList("--command", COMMAND, "--team", TEAM, "--host", HOST, "--port", PORT)
+            .toArray(new String[] {});
+    try {
+      parser.parseArgument(args);
+    } catch (CmdLineException e) {
+      assertNull(e);
     }
 
+    clientArgs.init();
+
+    assertNull(clientArgs.getBotClassPath());
+    assertNotNull(clientArgs.getBot());
+  }
 }

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import theme from '../../theme';
 import {
   Alert,
-  AppBar,
   Box,
   Button,
   Container,
@@ -13,7 +12,6 @@ import {
   LinearProgress,
   TextField,
   ThemeProvider,
-  Toolbar,
   Typography,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -71,22 +69,6 @@ function Login() {
     <>
       <ThemeProvider theme={loginTheme}>
         <CssBaseline />
-        <AppBar elevation={0} sx={{ backgroundColor: '#EFEFEF' }}>
-          <Toolbar>
-            <Typography
-              variant="h6"
-              component="header"
-              sx={{
-                flexGrow: 1,
-                textAlign: 'left',
-                color: '#000000DE',
-                fontWeight: 'bold',
-              }}
-            >
-              Hackathon
-            </Typography>
-          </Toolbar>
-        </AppBar>
         <Container
           component="main"
           maxWidth="xs"
@@ -94,7 +76,7 @@ function Login() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '100vh',
+            minHeight: '90vh',
           }}
         >
           <Box
@@ -102,6 +84,7 @@ function Login() {
               backgroundColor: 'white',
               borderRadius: '9px',
               padding: '40px 30px',
+              height: '23rem',
             }}
           >
             <Typography component="h1" variant="h6" fontWeight={'bold'}>
@@ -131,10 +114,14 @@ function Login() {
                 id="password"
                 name="password"
                 label="Password"
+                aria-label="Password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
                 InputProps={{
+                  inputProps: {
+                    'data-testid': 'password-input',
+                  },
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton

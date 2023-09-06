@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useAppDispatch } from '../../hooks';
 import { logout } from '../../auth/authSlice';
 
@@ -11,7 +11,9 @@ function Admin() {
 
   return (
     <>
-      <h1>You are logged in as admin</h1>
+      <Typography component="h1" variant="h6" fontWeight={'bold'}>
+        Admin
+      </Typography>
       <Button onClick={handleLogout}>Logout</Button>
     </>
   );

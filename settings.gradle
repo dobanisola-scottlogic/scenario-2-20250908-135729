@@ -5,9 +5,8 @@ include 'game',
         'default-bots',
         'viewer',
         'deployment',
-        'remote',  
+        'remote',
         'java-contestant',
         'python-contestant',
         'code-server',
         'ui'
-
