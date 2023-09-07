@@ -4,11 +4,9 @@ export interface Milestone {
     timeStamp: number;
 }
 
-interface Milestones {
-    [key: string]: Milestone;
-}
+type Milestones = Record<string, Milestone>;
 
-export type GetMilestoneResponse = Array<Milestones>;
+export type GetMilestoneResponse = Milestones[];
 
 export interface CreateHackathonServiceResponse {
     id: string;

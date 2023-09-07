@@ -4,8 +4,8 @@ import { CreateHackathonServiceResponse, Milestone } from '../interfaces/Hackath
 import type { RootState } from '../store';
 
 interface HackathonState {
-  milestones: Array<Milestone>;
-  hackathons: Array<CreateHackathonServiceResponse>;
+  milestones: Milestone[];
+  hackathons: CreateHackathonServiceResponse[];
 }
 
 const initialState: HackathonState = {
