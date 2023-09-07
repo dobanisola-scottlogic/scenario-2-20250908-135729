@@ -22,7 +22,7 @@ interface CreateHackathonProps {
     setCreateHackathonOpen: (createHackathonOpen: boolean) => void;
 };
 
-function CreateHackathon({ createHackathonOpen, setCreateHackathonOpen }: CreateHackathonProps) {
+const CreateHackathon = ({ createHackathonOpen, setCreateHackathonOpen }: CreateHackathonProps) => {
     const milestoneBots = useAppSelector(selectMilestones);
 
     const [createHackathon] = useCreateHackathonMutation();

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { api } from '../api/api';
-import { CreateHackathonServiceResponse, Milestone } from '../interfaces/HackathonResponse';
+import { CreateHackathonServiceResponse } from '../interfaces/HackathonResponse';
+import { Milestone } from '../interfaces/MilestonesResponse';
 import type { RootState } from '../store';
 
 interface HackathonState {
