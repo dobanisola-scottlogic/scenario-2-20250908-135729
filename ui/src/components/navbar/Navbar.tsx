@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { colours } from '../../theme';
 
-function Navbar() {
+const Navbar = () => {
   return (
     <>
       <AppBar
@@ -25,6 +25,6 @@ function Navbar() {
       </AppBar>
     </>
   );
-}
+};
 
 export default Navbar;

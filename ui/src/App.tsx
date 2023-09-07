@@ -8,7 +8,7 @@ import { theme } from './theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import Navbar from './components/navbar/Navbar';
 
-function App() {
+const App = () => {
   const userRole = useAppSelector(selectUserRole);
 
   const renderComponentBasedOnRole = () => {
@@ -31,6 +31,6 @@ function App() {
       </ThemeProvider>
     </>
   );
-}
+};
 
 export default App;

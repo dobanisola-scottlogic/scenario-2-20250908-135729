@@ -2,7 +2,7 @@ import { Button, Typography } from '@mui/material';
 import { useAppDispatch } from '../../hooks';
 import { logout } from '../../auth/authSlice';
 
-function Admin() {
+const Admin = () => {
   const dispatch = useAppDispatch();
 
   const handleLogout = () => {
@@ -17,6 +17,6 @@ function Admin() {
       <Button onClick={handleLogout}>Logout</Button>
     </>
   );
-}
+};
 
 export default Admin;

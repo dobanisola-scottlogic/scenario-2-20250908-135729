@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../hooks';
 import { setCredentials } from '../../auth/authSlice';
 import { useLoginMutation } from '../../api/api';
 
-function Login() {
+const Login = () => {
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
 
@@ -157,6 +157,6 @@ function Login() {
       </Container>
     </>
   );
-}
+};
 
 export default Login;
