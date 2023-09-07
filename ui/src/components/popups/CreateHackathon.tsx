@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Alert,
     Box,
@@ -12,9 +12,7 @@ import {
     Typography,
     Button,
 } from "@mui/material";
-import { useCreateHackathonMutation, useGetMilestonesMutation } from "../../api/api";
-import { useAppSelector } from "../../hooks";
-import { selectMilestones } from "../../hackathon/hackathonSlice";
+import { useCreateHackathonMutation, useGetMilestonesQuery } from "../../api/api";
 import { colours } from '../../theme';
 
 interface CreateHackathonProps {
@@ -23,10 +21,8 @@ interface CreateHackathonProps {
 };
 
 const CreateHackathon = ({ createHackathonOpen, setCreateHackathonOpen }: CreateHackathonProps) => {
-    const milestoneBots = useAppSelector(selectMilestones);
-
     const [createHackathon] = useCreateHackathonMutation();
-    const [getMilestones] = useGetMilestonesMutation();
+    const { data: milestoneBots } = useGetMilestonesQuery();
 
     const [hackathonName, setHackathonName] = useState<string>('');
     const [milestoneMapName, setMilestoneMapName] = useState<string>('');
@@ -65,19 +61,6 @@ const CreateHackathon = ({ createHackathonOpen, setCreateHackathonOpen }: Create
           });
       
     }
-
-    useEffect(() => {
-        const loadMilestones = () => {
-          getMilestones()
-          .unwrap() // success handled by the `fulfilled` action creator
-          .catch((getError: string) => {
-            setFormError(`Error fetching milestone bots: ${getError}.`);
-          });
-
-        };
-    
-        if (createHackathonOpen) loadMilestones();
-      }, [createHackathonOpen, getMilestones]);
     
     return (
     <Dialog onClose={handleClose} open={createHackathonOpen}>
@@ -103,7 +86,7 @@ const CreateHackathon = ({ createHackathonOpen, setCreateHackathonOpen }: Create
               value={milestoneBotName}
               onChange={(event) => setMilestoneBotName(event.target.value)}
             >
-              {milestoneBots.map((milestoneBot) => <MenuItem key={milestoneBot.id} value={milestoneBot.milestoneClassName}>{readableMilestoneBotClassName(milestoneBot.milestoneClassName)}</MenuItem> )}
+              {milestoneBots?.map((milestoneBot) => <MenuItem key={milestoneBot.id} value={milestoneBot.milestoneClassName}>{readableMilestoneBotClassName(milestoneBot.milestoneClassName)}</MenuItem> )}
             </Select>
         </FormControl>
 

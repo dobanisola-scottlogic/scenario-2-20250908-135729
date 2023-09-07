@@ -25,7 +25,7 @@ export const api = createApi({
         method: 'POST',
       }),
     }),
-    getMilestones: builder.mutation<GetMilestoneResponse, void>({
+    getMilestones: builder.query<GetMilestoneResponse, void>({
       query: () => ({
         url: '/milestone',
         method: 'GET'
@@ -43,4 +43,4 @@ export const api = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useCreateHackathonMutation, useGetMilestonesMutation, useLoginMutation } = api;
+export const { useCreateHackathonMutation, useGetMilestonesQuery, useLoginMutation } = api;
