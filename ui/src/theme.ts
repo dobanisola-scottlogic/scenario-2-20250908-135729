@@ -13,5 +13,8 @@ export const theme = createTheme({
     primary: {
       main: colours.darkPurple,
     },
+    background: {
+      default: colours.lightGrey,
+    },
   },
 });
