@@ -139,8 +139,8 @@ const CreateHackathon = ({ createHackathonOpen, setCreateHackathonOpen }: Create
           flexDirection: 'row',
           m: 1
         }}>
-            <Button onClick={handleClose} sx={{color: colours.buttonColour }} variant="text">CANCEL</Button>
-            <Button disabled={!hackathonName} onClick={submitForm} sx={{color: colours.buttonColour }} variant="text">ADD A NEW HACKATHON</Button>
+            <Button onClick={handleClose} sx={{color: colours.darkPurple }} variant="text">CANCEL</Button>
+            <Button disabled={!hackathonName} onClick={submitForm} sx={{color: colours.darkPurple }} variant="text">ADD A NEW HACKATHON</Button>
         </Box>
       </DialogContent>
       </Dialog>
