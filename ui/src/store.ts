@@ -4,7 +4,6 @@ import {
   configureStore,
 } from '@reduxjs/toolkit';
 import authReducer from './auth/authSlice';
-import hackathonReducer from './hackathon/hackathonSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import { api } from './api/api';
@@ -17,7 +16,6 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  hackathon: hackathonReducer,
   [api.reducerPath]: api.reducer,
 });
 
