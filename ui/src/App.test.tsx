@@ -4,12 +4,8 @@ import { UserRole } from './enums/UserRole';
 import { renderWithProviders } from './utils/test-utils';
 
 describe('App Component', () => {
-  it('renders the Login component when userRole is NONE', () => {
-    renderWithProviders(<App />, {
-      preloadedState: {
-        auth: { name: '', role: UserRole.NONE, credentials: '' },
-      },
-    });
+  it('renders the Login component when userRole is null', () => {
+    renderWithProviders(<App />);
 
     expect(screen.getAllByRole('banner')[1]).toHaveTextContent('Hackathon');
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();

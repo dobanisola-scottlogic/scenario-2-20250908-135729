@@ -50,10 +50,10 @@ describe('Login', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
-  it('handles login with missing credentials correctly', () => {
+  it('handles login with empty credentials correctly', () => {
     // check whitespace is trimmed from username and password
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
-      target: { value: ' ' },
+      target: { value: '   ' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 

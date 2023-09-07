@@ -30,7 +30,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
-    if (!username.trim() || !password.trim()) {
+    if (!username?.trim() || !password?.trim()) {
       setError('Username and password cannot be empty.');
       return;
     }
