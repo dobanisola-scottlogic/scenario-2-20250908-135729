@@ -11,7 +11,7 @@ const Admin = () => {
 
   return (
     <>
-      <Typography component="h1" variant="h6" fontWeight={'bold'}>
+      <Typography component="h1" variant="h6">
         Admin
       </Typography>
       <Button onClick={handleLogout}>Logout</Button>

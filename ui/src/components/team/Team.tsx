@@ -12,7 +12,7 @@ const Team = () => {
 
   return (
     <>
-      <Typography component="h1" variant="h6" fontWeight={'bold'}>
+      <Typography component="h1" variant="h6">
         Team: {name}
       </Typography>
       <Button onClick={handleLogout}>Logout</Button>
