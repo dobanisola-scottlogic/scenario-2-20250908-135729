@@ -120,14 +120,15 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
     final FilterRegistration.Dynamic filter =
         environment.servlets().addFilter("CrossOriginFilter", CrossOriginFilter.class);
 
-    filter.addMappingForUrlPatterns(
-        EnumSet.of(DispatcherType.REQUEST),
-        false,
-        environment.getApplicationContext().getContextPath() + "*");
-    filter.setInitParameter(
-        CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,PUT,DELETE,HEAD,OPTIONS,PATCH");
-    filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-    filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "*");
-    filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
-  }
+        if ("dev".equals(System.getenv("ENVIRONMENT"))) {
+            filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
+        } else {
+            filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, environment.getApplicationContext().getContextPath() + "*");
+        }
+
+        filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,PUT,DELETE,HEAD,OPTIONS,PATCH");
+        filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+        filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "*");
+        filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
+    }
 }

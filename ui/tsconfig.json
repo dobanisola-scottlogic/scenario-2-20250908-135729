@@ -18,8 +18,11 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Testing */
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src", "playwright", "playwright.config.ts"],
+  "include": ["src", "playwright", "playwright.config.ts", "setupTests.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

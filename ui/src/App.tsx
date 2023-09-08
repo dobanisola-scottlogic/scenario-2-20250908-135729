@@ -1,35 +1,36 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import Login from './components/login/Login';
+import Admin from './components/admin/Admin';
+import Team from './components/team/Team';
+import { useAppSelector } from './hooks';
+import { selectUserRole } from './auth/authSlice';
+import { UserRole } from './enums/UserRole';
+import { theme } from './theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import Navbar from './components/navbar/Navbar';
 
-function App() {
-  const [count, setCount] = useState(0);
+const App = () => {
+  const userRole = useAppSelector(selectUserRole);
+
+  const renderComponentBasedOnRole = () => {
+    switch (userRole) {
+      case UserRole.ADMIN:
+        return <Admin />;
+      case UserRole.TEAM:
+        return <Team />;
+      default:
+        return <Login />;
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Navbar />
+        {renderComponentBasedOnRole()}
+      </ThemeProvider>
     </>
   );
-}
+};
 
 export default App;
