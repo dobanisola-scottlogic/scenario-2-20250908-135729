@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Alert,
   Box,
+  Button,
   Dialog,
   DialogContent,
   FormControl,
@@ -11,7 +12,7 @@ import {
   TextField,
   Select,
   Typography,
-  Button,
+  Snackbar
 } from '@mui/material';
 import {
   useCreateHackathonMutation,
@@ -37,9 +38,9 @@ const CreateHackathon = ({
     useState<string>('');
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [createHackathonStatus, setCreateHackathonStatus] = useState<
-    string | undefined
-  >(undefined);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState<boolean>(false);
+
+  const handleCloseSnackbar = () => setShowSuccessSnackbar(false);
 
   const readableMilestoneBotClassName = (milestoneBotClassName: string) =>
     milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
@@ -47,7 +48,6 @@ const CreateHackathon = ({
   const handleClose = () => {
     clearForm();
     setCreateHackathonOpen(false);
-    setCreateHackathonStatus(undefined);
   };
 
   const clearForm = () => {
@@ -59,12 +59,11 @@ const CreateHackathon = ({
   };
 
   const submitForm = () => {
-    setCreateHackathonStatus(undefined);
     createHackathon({ name: hackathonName })
       .unwrap()
       .then(() => {
-        setCreateHackathonStatus('Hackathon created successfully!');
-        clearForm();
+        setShowSuccessSnackbar(true);
+        handleClose();
       }) // success handled by the `fulfilled` action creator
       .catch((createError: unknown) => {
         const { status } = createError as { status: number };
@@ -77,128 +76,144 @@ const CreateHackathon = ({
   };
 
   return (
-    <Dialog onClose={handleClose} open={createHackathonOpen}>
-      {formError && <Alert severity="error">{formError}</Alert>}
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={showSuccessSnackbar}
+        onClose={handleCloseSnackbar}
+        message={`${hackathonName} created successfully!`}
+        key={'top' + 'center'}
+      />
 
-      {createHackathonStatus && (
-        <Alert severity="success">{createHackathonStatus}</Alert>
-      )}
-
-      <DialogContent sx={{ width: 500 }}>
-        <Typography
-          sx={{ m: 1 }}
-          role="dialogHeading"
-        >
-          Add a new hackathon
-        </Typography>
-
-        <TextField
-          fullWidth
-          sx={{ m: 1 }}
-          id="outlined-basic"
-          label="Hackathon name"
-          variant="outlined"
-          value={hackathonName}
-          onChange={(e) => setHackathonName(e.target.value)}
-        />
-
-        <FormControl sx={{ m: 1 }} fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            Current milestone bot
-          </InputLabel>
-          <Select
-            disabled
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Current milestone bot"
-            value={milestoneBotName}
-            onChange={(event) => setMilestoneBotName(event.target.value)}
+      <Dialog onClose={handleClose} open={createHackathonOpen}>
+        <DialogContent sx={{ width: 500 }}>
+          <Typography
+            sx={{ m: 1, mx: 'auto' }}
+            role="dialogHeading"
           >
-            {milestoneBots?.map((milestoneBot) => (
-              <MenuItem
-                key={milestoneBot.id}
-                value={milestoneBot.milestoneClassName}
-              >
-                {readableMilestoneBotClassName(milestoneBot.milestoneClassName)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            Add a new hackathon
+          </Typography>
 
-        {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
-        <FormControl sx={{ m: 1 }} fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            Current milestone map
-          </InputLabel>
-          <Select
-            disabled
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Current milestone map"
-            value={milestoneMapName}
-            onChange={(event) => setMilestoneMapName(event.target.value)}
-          >
-            <MenuItem value="VeryEasy">Very Easy</MenuItem>
-            <MenuItem value="Easy">Easy</MenuItem>
-            <MenuItem value="Medium">Medium</MenuItem>
-            <MenuItem value="LargeMedium">Large Medium</MenuItem>
-            <MenuItem value="Hard">Hard</MenuItem>
-            <MenuItem value="ThreeStar">Three Star</MenuItem>
-            <MenuItem value="ThreeStraight">Three Straight</MenuItem>
-          </Select>
-        </FormControl>
+          <TextField
+            fullWidth
+            sx={{ m: 1, mx: 'auto' }}
+            id="outlined-basic"
+            label="Hackathon name"
+            variant="outlined"
+            value={hackathonName}
+            onChange={(e) => setHackathonName(e.target.value)}
+          />
 
-        <FormControl sx={{ m: 1 }} fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            Number of teams and users to create
-          </InputLabel>
-          <Select
-            disabled
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Number of teams and users to create"
-            value={numberOfTeamsAndUsers}
-            onChange={(event) => setNumberOfTeamsAndUsers(event.target.value)}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={6}>6</MenuItem>
-            <MenuItem value={7}>7</MenuItem>
-            <MenuItem value={8}>8</MenuItem>
-            <MenuItem value={9}>9</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-          </Select>
-        </FormControl>
+          <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Current milestone bot
+            </InputLabel>
+            <Select
+              disabled
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Current milestone bot"
+              value={milestoneBotName}
+              onChange={(event) => setMilestoneBotName(event.target.value)}
+            >
+              {milestoneBots?.map((milestoneBot) => (
+                <MenuItem
+                  key={milestoneBot.id}
+                  value={milestoneBot.milestoneClassName}
+                >
+                  {readableMilestoneBotClassName(milestoneBot.milestoneClassName)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            flexDirection: 'row',
-            m: 1,
-          }}
-        >
-          <Button
-            onClick={handleClose}
-            variant="text"
-          >
-            CANCEL
-          </Button>
-          <Button
-            disabled={!hackathonName.trim() || isLoading}
-            onClick={submitForm}
-            variant="text"
-          >
-            ADD A NEW HACKATHON
-          </Button>
-        </Box>
+          {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
+          <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Current milestone map
+            </InputLabel>
+            <Select
+              disabled
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Current milestone map"
+              value={milestoneMapName}
+              onChange={(event) => setMilestoneMapName(event.target.value)}
+            >
+              <MenuItem value="VeryEasy">Very Easy</MenuItem>
+              <MenuItem value="Easy">Easy</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="LargeMedium">Large Medium</MenuItem>
+              <MenuItem value="Hard">Hard</MenuItem>
+              <MenuItem value="ThreeStar">Three Star</MenuItem>
+              <MenuItem value="ThreeStraight">Three Straight</MenuItem>
+            </Select>
+          </FormControl>
 
-        {isLoading && <LinearProgress />}
-      </DialogContent>
-    </Dialog>
+          <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Number of teams and users to create
+            </InputLabel>
+            <Select
+              disabled
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Number of teams and users to create"
+              value={numberOfTeamsAndUsers}
+              onChange={(event) => setNumberOfTeamsAndUsers(event.target.value)}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              flexDirection: 'row',
+              m: 1,
+            }}
+          >
+            <Button
+              onClick={handleClose}
+              variant="text"
+            >
+              CANCEL
+            </Button>
+            <Button
+              disabled={!hackathonName.trim() || isLoading}
+              onClick={submitForm}
+              variant="text"
+            >
+              ADD A NEW HACKATHON
+            </Button>
+          </Box>
+
+          {formError && (
+            <Alert
+              severity="error"
+              sx={{
+                my: 2,
+                mr: 1,
+              }}
+            >
+              {formError}
+            </Alert>
+          )}
+
+          {isLoading && <LinearProgress />}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
