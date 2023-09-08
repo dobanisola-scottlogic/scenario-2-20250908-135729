@@ -32,8 +32,6 @@ export const handlers = [
   rest.post(baseUrl + '/hackathon', (req, res, ctx) => {
     const hackathonName = req.body.name as string;
 
-    console.log('hackathonName', hackathonName);
-
     if (hackathonName === 'Test Hackathon') {
       return res(
         ctx.status(200),

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
-import { CreateHackathonServiceResponse } from '../interfaces/HackathonResponse';
+import { HackathonResponse } from '../interfaces/HackathonResponse';
 import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
 import { LoginResponse } from '../interfaces/LoginResponse';
 
@@ -31,7 +31,7 @@ export const api = createApi({
         method: 'GET'
       }),
     }),
-    createHackathon: builder.mutation<CreateHackathonServiceResponse, string>({
+    createHackathon: builder.mutation<HackathonResponse, string>({
       query: ({name}: {name: string}) => ({
         url: '/hackathon',
         method: 'POST',

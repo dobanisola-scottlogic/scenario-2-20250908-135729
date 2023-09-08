@@ -1,4 +1,4 @@
-export interface CreateHackathonServiceResponse {
+export interface HackathonResponse {
     id: string;
     name: string;
     games: null; // Old service separates games into separate calls so returns null
