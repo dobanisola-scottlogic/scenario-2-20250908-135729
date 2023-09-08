@@ -1,151 +1,208 @@
 import { useState } from 'react';
 import {
-    Alert,
-    Box,
-    Dialog,
-    DialogContent,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    TextField,
-    Select,
-    Typography,
-    Button,
-} from "@mui/material";
-import { useCreateHackathonMutation, useGetMilestonesQuery } from "../../api/api";
+  Alert,
+  Box,
+  Dialog,
+  DialogContent,
+  FormControl,
+  InputLabel,
+  LinearProgress,
+  MenuItem,
+  TextField,
+  Select,
+  Typography,
+  Button,
+} from '@mui/material';
+import {
+  useCreateHackathonMutation,
+  useGetMilestonesQuery,
+} from '../../api/api';
 import { colours } from '../../theme';
 
 interface CreateHackathonProps {
-    createHackathonOpen: boolean;
-    setCreateHackathonOpen: (createHackathonOpen: boolean) => void;
-};
+  createHackathonOpen: boolean;
+  setCreateHackathonOpen: (createHackathonOpen: boolean) => void;
+}
 
-const CreateHackathon = ({ createHackathonOpen, setCreateHackathonOpen }: CreateHackathonProps) => {
-    const [createHackathon] = useCreateHackathonMutation();
-    const { data: milestoneBots } = useGetMilestonesQuery();
+const CreateHackathon = ({
+  createHackathonOpen,
+  setCreateHackathonOpen,
+}: CreateHackathonProps) => {
+  const [createHackathon, { isLoading }] = useCreateHackathonMutation();
+  const { data: milestoneBots } = useGetMilestonesQuery();
 
-    const [hackathonName, setHackathonName] = useState<string>('');
-    const [milestoneMapName, setMilestoneMapName] = useState<string>('');
-    const [milestoneBotName, setMilestoneBotName] = useState<string>('');
-    const [numberOfTeamsAndUsers, setNumberOfTeamsAndUsers] = useState<string>('');
-    
-    const [formError, setFormError] = useState<string | undefined>(undefined);
-    const [createHackathonStatus, setCreateHackathonStatus] = useState<string | undefined>(undefined);
+  const [hackathonName, setHackathonName] = useState<string>('');
+  const [milestoneMapName, setMilestoneMapName] = useState<string>('');
+  const [milestoneBotName, setMilestoneBotName] = useState<string>('');
+  const [numberOfTeamsAndUsers, setNumberOfTeamsAndUsers] =
+    useState<string>('');
 
-    const readableMilestoneBotClassName = (milestoneBotClassName: string) => milestoneBotClassName.replace("com.scottlogic.hackathon.bots.", ""); 
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [createHackathonStatus, setCreateHackathonStatus] = useState<
+    string | undefined
+  >(undefined);
 
-    const handleClose = () => {
-      clearForm(); 
-      setCreateHackathonOpen(false);
-      setCreateHackathonStatus(undefined);
-    }
+  const readableMilestoneBotClassName = (milestoneBotClassName: string) =>
+    milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
 
-    const clearForm = () => {
-        setHackathonName('');
-        setMilestoneMapName('');
-        setMilestoneBotName('');
-        setNumberOfTeamsAndUsers('');
-        setFormError(undefined);
-    }
+  const handleClose = () => {
+    clearForm();
+    setCreateHackathonOpen(false);
+    setCreateHackathonStatus(undefined);
+  };
 
-    const submitForm = () => {
-      setCreateHackathonStatus(undefined);
-      createHackathon({ name: hackathonName })
-          .unwrap().then(() => {
-            setCreateHackathonStatus('Hackathon created successfully!');
-            clearForm();
-          }) // success handled by the `fulfilled` action creator
-          .catch((createError: unknown) => {
-            const { status, data } = createError as { status: number; data: { message: string } };
-            setFormError(`Error creating hackathon: ${status} - ${data.message}`);
-          });
-      
-    }
-    
-    return (
+  const clearForm = () => {
+    setHackathonName('');
+    setMilestoneMapName('');
+    setMilestoneBotName('');
+    setNumberOfTeamsAndUsers('');
+    setFormError(undefined);
+  };
+
+  const submitForm = () => {
+    setCreateHackathonStatus(undefined);
+    createHackathon({ name: hackathonName })
+      .unwrap()
+      .then(() => {
+        setCreateHackathonStatus('Hackathon created successfully!');
+        clearForm();
+      }) // success handled by the `fulfilled` action creator
+      .catch((createError: unknown) => {
+        const { status } = createError as { status: number };
+        if (status === 400) {
+          setFormError('Error creating hackathon - bad request');
+        } else {
+          setFormError('Error creating hackathon - internal server error');
+        }
+      });
+  };
+
+  return (
     <Dialog onClose={handleClose} open={createHackathonOpen}>
+      {formError && <Alert severity="error">{formError}</Alert>}
 
-      {formError && (<Alert severity="error">{formError}</Alert>)}
-
-      {createHackathonStatus && (<Alert severity="success">{createHackathonStatus}</Alert>)}
+      {createHackathonStatus && (
+        <Alert severity="success">{createHackathonStatus}</Alert>
+      )}
 
       <DialogContent sx={{ width: 500 }}>
-        <Typography sx={{ fontSize: 'default', fontWeight: 'bold', m: 1 }} role="dialogHeading">
-            Add a new hackathon
+        <Typography
+          sx={{ fontSize: 'default', fontWeight: 'bold', m: 1 }}
+          role="dialogHeading"
+        >
+          Add a new hackathon
         </Typography>
 
-        <TextField fullWidth sx={{ m: 1 }} id="outlined-basic" label="Hackathon name" variant="outlined" value={hackathonName} onChange={e => setHackathonName(e.target.value)} />
+        <TextField
+          fullWidth
+          sx={{ m: 1 }}
+          id="outlined-basic"
+          label="Hackathon name"
+          variant="outlined"
+          value={hackathonName}
+          onChange={(e) => setHackathonName(e.target.value)}
+        />
 
-        <FormControl  sx={{ m: 1 }} fullWidth>
-            <InputLabel id="demo-simple-select-label">Current milestone bot</InputLabel>
-            <Select
-              disabled
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Current milestone bot"
-              value={milestoneBotName}
-              onChange={(event) => setMilestoneBotName(event.target.value)}
-            >
-              {milestoneBots?.map((milestoneBot) => <MenuItem key={milestoneBot.id} value={milestoneBot.milestoneClassName}>{readableMilestoneBotClassName(milestoneBot.milestoneClassName)}</MenuItem> )}
-            </Select>
+        <FormControl sx={{ m: 1 }} fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Current milestone bot
+          </InputLabel>
+          <Select
+            disabled
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Current milestone bot"
+            value={milestoneBotName}
+            onChange={(event) => setMilestoneBotName(event.target.value)}
+          >
+            {milestoneBots?.map((milestoneBot) => (
+              <MenuItem
+                key={milestoneBot.id}
+                value={milestoneBot.milestoneClassName}
+              >
+                {readableMilestoneBotClassName(milestoneBot.milestoneClassName)}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
 
         {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
-        <FormControl  sx={{ m: 1 }} fullWidth>
-            <InputLabel id="demo-simple-select-label">Current milestone map</InputLabel>
-            <Select
-              disabled
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Current milestone map"
-              value={milestoneMapName}
-              onChange={(event) => setMilestoneMapName(event.target.value)}
-            >
-                <MenuItem value='VeryEasy'>Very Easy</MenuItem>
-                <MenuItem value='Easy'>Easy</MenuItem>
-                <MenuItem value='Medium'>Medium</MenuItem>
-                <MenuItem value='LargeMedium'>Large Medium</MenuItem>
-                <MenuItem value='Hard'>Hard</MenuItem>
-                <MenuItem value='ThreeStar'>Three Star</MenuItem>
-                <MenuItem value='ThreeStraight'>Three Straight</MenuItem>
-            </Select>
+        <FormControl sx={{ m: 1 }} fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Current milestone map
+          </InputLabel>
+          <Select
+            disabled
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Current milestone map"
+            value={milestoneMapName}
+            onChange={(event) => setMilestoneMapName(event.target.value)}
+          >
+            <MenuItem value="VeryEasy">Very Easy</MenuItem>
+            <MenuItem value="Easy">Easy</MenuItem>
+            <MenuItem value="Medium">Medium</MenuItem>
+            <MenuItem value="LargeMedium">Large Medium</MenuItem>
+            <MenuItem value="Hard">Hard</MenuItem>
+            <MenuItem value="ThreeStar">Three Star</MenuItem>
+            <MenuItem value="ThreeStraight">Three Straight</MenuItem>
+          </Select>
         </FormControl>
 
-        <FormControl  sx={{ m: 1 }} fullWidth>
-            <InputLabel id="demo-simple-select-label">Number of teams and users to create</InputLabel>
-            <Select
-              disabled
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Number of teams and users to create"
-              value={numberOfTeamsAndUsers}
-              onChange={(event) => setNumberOfTeamsAndUsers(event.target.value)}
-            >
-                <MenuItem value={1}>1</MenuItem>
-                <MenuItem value={2}>2</MenuItem>
-                <MenuItem value={3}>3</MenuItem>
-                <MenuItem value={4}>4</MenuItem>
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={6}>6</MenuItem>
-                <MenuItem value={7}>7</MenuItem>
-                <MenuItem value={8}>8</MenuItem>
-                <MenuItem value={9}>9</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-            </Select>
+        <FormControl sx={{ m: 1 }} fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Number of teams and users to create
+          </InputLabel>
+          <Select
+            disabled
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Number of teams and users to create"
+            value={numberOfTeamsAndUsers}
+            onChange={(event) => setNumberOfTeamsAndUsers(event.target.value)}
+          >
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={7}>7</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+            <MenuItem value={9}>9</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+          </Select>
         </FormControl>
-        
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          flexDirection: 'row',
-          m: 1
-        }}>
-            <Button onClick={handleClose} sx={{color: colours.darkPurple }} variant="text">CANCEL</Button>
-            <Button disabled={!hackathonName} onClick={submitForm} sx={{color: colours.darkPurple }} variant="text">ADD A NEW HACKATHON</Button>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+            m: 1,
+          }}
+        >
+          <Button
+            onClick={handleClose}
+            sx={{ color: colours.darkPurple }}
+            variant="text"
+          >
+            CANCEL
+          </Button>
+          <Button
+            disabled={!hackathonName || isLoading}
+            onClick={submitForm}
+            sx={{ color: colours.darkPurple }}
+            variant="text"
+          >
+            ADD A NEW HACKATHON
+          </Button>
         </Box>
+
+        {isLoading && <LinearProgress />}
       </DialogContent>
-      </Dialog>
+    </Dialog>
   );
-}
+};
 
 export default CreateHackathon;
