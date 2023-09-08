@@ -87,7 +87,7 @@ const CreateHackathon = ({
 
       <DialogContent sx={{ width: 500 }}>
         <Typography
-          sx={{ fontSize: 'default', fontWeight: 'bold', m: 1 }}
+          sx={{ m: 1 }}
           role="dialogHeading"
         >
           Add a new hackathon
@@ -184,7 +184,6 @@ const CreateHackathon = ({
         >
           <Button
             onClick={handleClose}
-            sx={{ color: colours.darkPurple }}
             variant="text"
           >
             CANCEL
@@ -192,7 +191,6 @@ const CreateHackathon = ({
           <Button
             disabled={!hackathonName || isLoading}
             onClick={submitForm}
-            sx={{ color: colours.darkPurple }}
             variant="text"
           >
             ADD A NEW HACKATHON
