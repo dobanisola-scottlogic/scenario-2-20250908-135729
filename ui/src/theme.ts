@@ -17,4 +17,30 @@ export const theme = createTheme({
       default: colours.lightGrey,
     },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontWeight: 'bold',
+          justifyItems: 'center',
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          color: colours.textBlack,
+          fontWeight: 'bold',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: colours.midGrey,
+          position: 'relative',
+        },
+      },
+    },
+  },
 });

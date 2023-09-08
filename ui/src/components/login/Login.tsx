@@ -4,27 +4,21 @@ import {
   Box,
   Button,
   Container,
-  IconButton,
-  InputAdornment,
   LinearProgress,
-  TextField,
   Typography,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch } from '../../hooks';
 import { setCredentials } from '../../auth/authSlice';
 import { useLoginMutation } from '../../api/api';
+import LoginTextField from './LoginTextField';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
 
-  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const handleTogglePassword = () => setShowPassword(!showPassword);
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,7 +65,7 @@ const Login = () => {
             height: '23rem',
           }}
         >
-          <Typography component="h1" variant="h6" fontWeight={'bold'}>
+          <Typography component="h1" variant="h6">
             Login
           </Typography>
           <Box
@@ -80,43 +74,13 @@ const Login = () => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              name="username"
-              label="Username"
-              autoComplete="username"
-              autoFocus
+            <LoginTextField
+              field="username"
               onChange={(e) => setUsername(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              aria-label="Password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="current-password"
+            <LoginTextField
+              field="password"
               onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                inputProps: {
-                  'data-testid': 'password-input',
-                },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleTogglePassword}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
             <Box
               sx={{
@@ -126,28 +90,17 @@ const Login = () => {
               }}
             >
               {error && (
-                <Box
-                  component="div"
+                <Alert
+                  severity="error"
                   sx={{
-                    mt: 2,
+                    my: 2,
                     mr: 1,
-                    color: 'red',
                   }}
                 >
-                  <Alert severity="error">{error}</Alert>
-                </Box>
+                  {error}
+                </Alert>
               )}
-              <Button
-                type="submit"
-                variant="text"
-                disabled={isLoading}
-                sx={{
-                  mt: 3,
-                  mb: 4,
-                  fontWeight: 'bold',
-                  justifyItems: 'center',
-                }}
-              >
+              <Button type="submit" disabled={isLoading} sx={{ my: 4 }}>
                 Login
               </Button>
             </Box>
