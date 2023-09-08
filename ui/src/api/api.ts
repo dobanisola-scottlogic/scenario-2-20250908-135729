@@ -4,6 +4,10 @@ import { HackathonResponse } from '../interfaces/HackathonResponse';
 import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
 import { LoginResponse } from '../interfaces/LoginResponse';
 
+enum RequestType {
+  POST = 'POST'
+}
+
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
   reducerPath: 'api',
@@ -22,19 +26,18 @@ export const api = createApi({
     login: builder.mutation<LoginResponse, void>({
       query: () => ({
         url: '/login',
-        method: 'POST',
+        method: RequestType.POST,
       }),
     }),
     getMilestones: builder.query<GetMilestoneResponse, void>({
       query: () => ({
-        url: '/milestone',
-        method: 'GET'
+        url: '/milestone'
       }),
     }),
     createHackathon: builder.mutation<HackathonResponse, string>({
       query: ({name}: {name: string}) => ({
         url: '/hackathon',
-        method: 'POST',
+        method: RequestType.POST,
         body: {name}
       }),
       invalidatesTags: ['Hackathon']
