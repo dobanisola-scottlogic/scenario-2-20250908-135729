@@ -37,6 +37,7 @@ export const api = createApi({
         method: 'POST',
         body: {name}
       }),
+      invalidatesTags: ['Hackathon']
     })
   }),
 });
