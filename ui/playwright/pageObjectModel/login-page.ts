@@ -12,7 +12,7 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameField = page.getByLabel('Username *');
+    this.usernameField = page.getByRole('textbox', { name: 'Username'});
     this.passwordField = page.getByTestId('password-input');
     this.visibilityButton = page.getByLabel('toggle password visibility');
     this.loginButton = page.getByRole('button', { name: 'Login' });
