@@ -24,6 +24,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'no-console': 'error',
   },
   settings: {
     react: { version: 'detect' },
