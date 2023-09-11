@@ -9,8 +9,8 @@
     "test": "vitest run",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "prettier:check": "prettier src/**/*.{ts,tsx} --check",
-    "prettier:write": "prettier src/**/*.{ts,tsx} --write",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write .",
     "format": "npm run prettier:check && npm run lint",
     "format:fix": "npm run prettier:write && npm run lint:fix",
     "preview": "vite preview"

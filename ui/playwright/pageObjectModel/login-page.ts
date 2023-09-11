@@ -8,9 +8,9 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameField = page.getByPlaceholder("Team Name");
-    this.passwordField = page.getByPlaceholder("Password");
-    this.loginButton = page.getByRole("button", {name: "Login"})
+    this.usernameField = page.getByPlaceholder('Team Name');
+    this.passwordField = page.getByPlaceholder('Password');
+    this.loginButton = page.getByRole('button', { name: 'Login' });
   }
 
   async inputUsername(username: string) {
