@@ -32,6 +32,7 @@ const CreateHackathon = ({
   const { data: milestoneBots } = useGetMilestonesQuery();
 
   const [hackathonName, setHackathonName] = useState<string>('');
+  const [createdHackathonName, setCreatedHackathonName] = useState<string>('');
   const [milestoneMapName, setMilestoneMapName] = useState<string>('');
   const [milestoneBotName, setMilestoneBotName] = useState<string>('');
   const [numberOfTeamsAndUsers, setNumberOfTeamsAndUsers] =
@@ -59,9 +60,13 @@ const CreateHackathon = ({
   };
 
   const submitForm = () => {
+    setFormError(undefined);
+    setCreatedHackathonName('');
+
     createHackathon({ name: hackathonName })
       .unwrap()
       .then(() => {
+        setCreatedHackathonName(hackathonName);
         setShowSuccessSnackbar(true);
         handleClose();
       }) // success handled by the `fulfilled` action creator
@@ -77,13 +82,17 @@ const CreateHackathon = ({
 
   return (
     <>
-      <Snackbar
+      <Snackbar 
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={showSuccessSnackbar}
-        onClose={handleCloseSnackbar}
-        message={`${hackathonName} created successfully!`}
+        autoHideDuration={3000}
         key={'top' + 'center'}
-      />
+        open={showSuccessSnackbar}  
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {`Hackathon '${createdHackathonName}' created successfully!`}
+        </Alert>
+      </Snackbar>
 
       <Dialog onClose={handleClose} open={createHackathonOpen}>
         <DialogContent sx={{ width: 500 }}>
