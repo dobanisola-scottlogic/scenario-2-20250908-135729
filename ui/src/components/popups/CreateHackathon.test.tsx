@@ -68,8 +68,8 @@ describe('Create Hackathon Popup Component', () => {
 
       await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
-      // Closes popup on success
-      expect(screen.getByText('Add a new hackathon')).toBeInTheDocument();
+      // Displays success message
+      expect(screen.getByText( "Hackathon 'Test Hackathon' created successfully!")).toBeInTheDocument();
     });
 
     it('displays an error when the create hackathon function returns unsuccessfully with an internal server error', async () => {
