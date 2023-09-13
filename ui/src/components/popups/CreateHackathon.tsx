@@ -9,7 +9,6 @@ import {
   LinearProgress,
   MenuItem,
   Select,
-  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
@@ -19,6 +18,7 @@ import {
   useGetMilestonesQuery,
 } from '../../api/api';
 import { PopupProps } from '../../interfaces/PopupTypes';
+import PopupMessage from '../popupMessage/PopupMessage';
 
 const CreateHackathon = ({
   isOpen,
@@ -35,10 +35,8 @@ const CreateHackathon = ({
     useState<string>('');
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [showSuccessSnackbar, setShowSuccessSnackbar] =
+  const [isSnackbarOpen, setSnackbarOpen] =
     useState<boolean>(false);
-
-  const handleCloseSnackbar = () => setShowSuccessSnackbar(false);
 
   const readableMilestoneBotClassName = (milestoneBotClassName: string) =>
     milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
@@ -64,7 +62,7 @@ const CreateHackathon = ({
       .unwrap()
       .then(() => {
         setCreatedHackathonName(hackathonName);
-        setShowSuccessSnackbar(true);
+        setSnackbarOpen(true);
         handleClose();
       })
       .catch((createError: unknown) => {
@@ -79,17 +77,11 @@ const CreateHackathon = ({
 
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        autoHideDuration={3000}
-        key={'top' + 'center'}
-        open={showSuccessSnackbar}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          {`Hackathon '${createdHackathonName}' created successfully!`}
-        </Alert>
-      </Snackbar>
+      <PopupMessage
+        isSnackbarOpen={isSnackbarOpen}
+        popupMessage={`Hackathon '${createdHackathonName}' created successfully!`}
+        setShowSnackbar={setSnackbarOpen}
+      />
 
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>

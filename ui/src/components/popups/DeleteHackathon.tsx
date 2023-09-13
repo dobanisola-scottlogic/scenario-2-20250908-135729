@@ -6,11 +6,11 @@ import {
   Dialog,
   DialogContent,
   LinearProgress,
-  Typography,
-  Snackbar
+  Typography
 } from '@mui/material';
 import { useDeleteHackathonMutation } from '../../api/api';
 import { PopupProps } from '../../interfaces/PopupTypes';
+import PopupMessage from '../popupMessage/PopupMessage';
 
 type DeleteHackathonProps = PopupProps & { hackathonId: string};
 
@@ -23,8 +23,7 @@ const DeleteHackathon = ({
     const [deleteHackathon, {isLoading: isDeleting}] = useDeleteHackathonMutation();
 
     const [formError, setFormError] = useState<string | undefined>(undefined);
-    const [showSuccessSnackbar, setShowSuccessSnackbar] = useState<boolean>(false);
-    const handleCloseSnackbar = () => setShowSuccessSnackbar(false);
+    const [isSnackbarOpen, setSnackbarOpen] = useState<boolean>(false);
     
     const handleClose = () => {
         setFormError(undefined);
@@ -37,7 +36,7 @@ const DeleteHackathon = ({
     deleteHackathon({ id: hackathonId })
     .unwrap()
     .then(() => {
-      setShowSuccessSnackbar(true);
+      setSnackbarOpen(true);
       handleClose();
     })
     .catch((createError: unknown) => {
@@ -52,17 +51,11 @@ const DeleteHackathon = ({
 
   return (
     <>
-      <Snackbar 
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        autoHideDuration={3000}
-        key={'top' + 'center'}
-        open={showSuccessSnackbar}  
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            Hackathon deleted successfully!
-        </Alert>
-      </Snackbar>
+      <PopupMessage
+        isSnackbarOpen={isSnackbarOpen}
+        popupMessage="Hackathon deleted successfully!"
+        setShowSnackbar={setSnackbarOpen}
+      />
 
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
