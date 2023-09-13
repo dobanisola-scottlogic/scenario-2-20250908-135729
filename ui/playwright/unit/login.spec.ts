@@ -8,8 +8,18 @@ const emptyFieldErrors: {
   password: string;
 }[] = [
   { usernameValue: '""', username: '', passwordValue: '""', password: '' },
-  { usernameValue: 'admin', username: 'admin', passwordValue: '""', password: ' ' },
-  { usernameValue: '""', username: ' ', passwordValue: 'secret', password: 'secret' },
+  {
+    usernameValue: 'admin',
+    username: 'admin',
+    passwordValue: '""',
+    password: ' ',
+  },
+  {
+    usernameValue: '""',
+    username: ' ',
+    passwordValue: 'secret',
+    password: 'secret',
+  },
 ];
 
 const test = base.extend<{ login: LoginPage }>({
@@ -37,13 +47,11 @@ test('team can successfully log in', async ({ login }) => {
 
 for (const creds of emptyFieldErrors) {
   test(`username ${creds.usernameValue} and password ${creds.passwordValue} returns empty fields error message`, async ({
-    login
+    login,
   }) => {
     await login.inputCredentials(creds.username, creds.password);
     await login.attemptLogin();
-    await login.verifyLoginErrorIs(
-      'Username and password cannot be empty.'
-      );
+    await login.verifyLoginErrorIs('Username and password cannot be empty.');
   });
 }
 
@@ -67,13 +75,11 @@ test("uncaught error returns 'please try again later' error message", async ({
   );
 });
 
-test("password visibility can be toggled on and off", async ({
-  login,
-}) => {
+test('password visibility can be toggled on and off', async ({ login }) => {
   await login.inputPassword('toggleVisibility');
-  await login.verifyPasswordIs("hidden");
+  await login.verifyPasswordIs('hidden');
   await login.clickVisibilityButton();
-  await login.verifyPasswordIs("visible");
+  await login.verifyPasswordIs('visible');
   await login.clickVisibilityButton();
-  await login.verifyPasswordIs("hidden");
+  await login.verifyPasswordIs('hidden');
 });

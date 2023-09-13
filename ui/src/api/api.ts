@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../store';
 import { HackathonResponse } from '../interfaces/HackathonResponse';
-import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
 import { LoginResponse } from '../interfaces/LoginResponse';
+import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
+import { RootState } from '../store';
 
 enum RequestType {
-  POST = 'POST'
+  POST = 'POST',
 }
 
 // Define a service using a base URL and expected endpoints
@@ -32,20 +32,24 @@ export const api = createApi({
     }),
     getMilestones: builder.query<GetMilestoneResponse, void>({
       query: () => ({
-        url: '/milestone'
+        url: '/milestone',
       }),
     }),
     createHackathon: builder.mutation<HackathonResponse, string>({
-      query: ({name}: {name: string}) => ({
+      query: ({ name }: { name: string }) => ({
         url: '/hackathon',
         method: RequestType.POST,
-        body: {name}
+        body: { name },
       }),
-      invalidatesTags: ['Hackathon']
-    })
+      invalidatesTags: ['Hackathon'],
+    }),
   }),
 });
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useCreateHackathonMutation, useGetMilestonesQuery, useLoginMutation } = api;
+export const {
+  useCreateHackathonMutation,
+  useGetMilestonesQuery,
+  useLoginMutation,
+} = api;
