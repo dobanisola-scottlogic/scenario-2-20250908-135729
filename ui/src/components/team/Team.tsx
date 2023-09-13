@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { logout, selectTeamName } from '../../auth/authSlice';
 import { Button, Typography } from '@mui/material';
+import { logout, selectTeamName } from '../../auth/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 const Team = () => {
   const name = useAppSelector(selectTeamName);

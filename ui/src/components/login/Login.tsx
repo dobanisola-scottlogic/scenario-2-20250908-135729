@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Alert,
   Box,
@@ -7,9 +6,10 @@ import {
   LinearProgress,
   Typography,
 } from '@mui/material';
-import { useAppDispatch } from '../../hooks';
-import { setCredentials } from '../../auth/authSlice';
+import { useState } from 'react';
 import { useLoginMutation } from '../../api/api';
+import { setCredentials } from '../../auth/authSlice';
+import { useAppDispatch } from '../../hooks';
 import LoginTextField from './LoginTextField';
 
 const Login = () => {

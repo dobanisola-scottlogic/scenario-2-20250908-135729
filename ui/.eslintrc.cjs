@@ -18,12 +18,14 @@ module.exports = {
     project: ['./tsconfig.json', './tsconfig.node.json'],
     tsconfigRootDir: __dirname,
   },
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', '@emotion'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
+    'no-console': 'error',
+    '@emotion/syntax-preference': [2, 'object'],
   },
   settings: {
     react: { version: 'detect' },

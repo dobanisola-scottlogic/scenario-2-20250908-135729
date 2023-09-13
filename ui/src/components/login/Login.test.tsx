@@ -3,8 +3,8 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
-import Login from './Login';
 import { renderWithProviders } from '../../utils/test-utils';
+import Login from './Login';
 
 describe('Login', () => {
   beforeEach(() => {

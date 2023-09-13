@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { useState } from 'react';
 
 interface LoginTextFieldProps {
   field: string;

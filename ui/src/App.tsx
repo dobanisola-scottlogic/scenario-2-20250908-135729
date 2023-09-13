@@ -1,12 +1,12 @@
-import Login from './components/login/Login';
-import Admin from './components/admin/Admin';
-import Team from './components/team/Team';
-import { useAppSelector } from './hooks';
-import { selectUserRole } from './auth/authSlice';
-import { UserRole } from './enums/UserRole';
-import { theme } from './theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { selectUserRole } from './auth/authSlice';
+import Admin from './components/admin/Admin';
+import Login from './components/login/Login';
 import Navbar from './components/navbar/Navbar';
+import Team from './components/team/Team';
+import { UserRole } from './enums/UserRole';
+import { useAppSelector } from './hooks';
+import { theme } from './theme';
 
 const App = () => {
   const userRole = useAppSelector(selectUserRole);

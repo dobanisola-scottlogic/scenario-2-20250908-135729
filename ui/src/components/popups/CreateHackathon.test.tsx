@@ -1,11 +1,11 @@
+import '@testing-library/jest-dom';
 import {
   fireEvent,
   screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import CreateHackathon from './CreateHackathon';
 import { renderWithProviders } from '../../utils/test-utils';
+import CreateHackathon from './CreateHackathon';
 
 describe('Create Hackathon Popup Component', () => {
   const mockFunction = () => null;
@@ -69,7 +69,9 @@ describe('Create Hackathon Popup Component', () => {
       await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
       // Displays success message
-      expect(screen.getByText( "Hackathon 'Test Hackathon' created successfully!")).toBeInTheDocument();
+      expect(
+        screen.getByText("Hackathon 'Test Hackathon' created successfully!")
+      ).toBeInTheDocument();
     });
 
     it('displays an error when the create hackathon function returns unsuccessfully with an internal server error', async () => {

@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
@@ -12,7 +12,7 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameField = page.getByRole('textbox', { name: 'Username'});
+    this.usernameField = page.getByRole('textbox', { name: 'Username' });
     this.passwordField = page.getByTestId('password-input');
     this.visibilityButton = page.getByLabel('toggle password visibility');
     this.loginButton = page.getByRole('button', { name: 'Login' });
@@ -49,9 +49,7 @@ export class LoginPage {
     await this.page.route(
       'http://localhost:8080/application/api/login',
       async (route) => {
-        await route.fulfill(
-          {status: 500}
-        )
+        await route.fulfill({ status: 500 });
       }
     );
     await this.attemptLogin();
@@ -71,7 +69,7 @@ export class LoginPage {
   }
 
   async verifyPasswordIs(visibleOrHidden: string) {
-    const requiredType = (visibleOrHidden == "visible") ? "text" : "password"
-    await expect(this.passwordField).toHaveAttribute("type", requiredType)
+    const requiredType = visibleOrHidden == 'visible' ? 'text' : 'password';
+    await expect(this.passwordField).toHaveAttribute('type', requiredType);
   }
 }

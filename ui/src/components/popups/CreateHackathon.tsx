@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Alert,
   Box,
@@ -9,11 +8,12 @@ import {
   InputLabel,
   LinearProgress,
   MenuItem,
-  TextField,
   Select,
+  Snackbar,
+  TextField,
   Typography,
-  Snackbar
 } from '@mui/material';
+import { useState } from 'react';
 import {
   useCreateHackathonMutation,
   useGetMilestonesQuery,
@@ -39,7 +39,8 @@ const CreateHackathon = ({
     useState<string>('');
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState<boolean>(false);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] =
+    useState<boolean>(false);
 
   const handleCloseSnackbar = () => setShowSuccessSnackbar(false);
 
@@ -82,11 +83,11 @@ const CreateHackathon = ({
 
   return (
     <>
-      <Snackbar 
+      <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         autoHideDuration={3000}
         key={'top' + 'center'}
-        open={showSuccessSnackbar}  
+        open={showSuccessSnackbar}
         onClose={handleCloseSnackbar}
       >
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
@@ -96,10 +97,7 @@ const CreateHackathon = ({
 
       <Dialog onClose={handleClose} open={createHackathonOpen}>
         <DialogContent sx={{ width: 500 }}>
-          <Typography
-            sx={{ m: 1, mx: 'auto' }}
-            role="dialogHeading"
-          >
+          <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
             Add a new hackathon
           </Typography>
 
@@ -130,7 +128,9 @@ const CreateHackathon = ({
                   key={milestoneBot.id}
                   value={milestoneBot.milestoneClassName}
                 >
-                  {readableMilestoneBotClassName(milestoneBot.milestoneClassName)}
+                  {readableMilestoneBotClassName(
+                    milestoneBot.milestoneClassName
+                  )}
                 </MenuItem>
               ))}
             </Select>
@@ -192,10 +192,7 @@ const CreateHackathon = ({
               m: 1,
             }}
           >
-            <Button
-              onClick={handleClose}
-              variant="text"
-            >
+            <Button onClick={handleClose} variant="text">
               CANCEL
             </Button>
             <Button

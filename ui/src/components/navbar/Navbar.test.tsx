@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
-import Navbar from './Navbar';
 import { renderWithProviders } from '../../utils/test-utils';
+import Navbar from './Navbar';
 
 describe('Navbar', () => {
   it('should render the Navbar component correctly', () => {

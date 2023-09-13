@@ -1,6 +1,6 @@
 import { Button, Typography } from '@mui/material';
-import { useAppDispatch } from '../../hooks';
 import { logout } from '../../auth/authSlice';
+import { useAppDispatch } from '../../hooks';
 
 const Admin = () => {
   const dispatch = useAppDispatch();
