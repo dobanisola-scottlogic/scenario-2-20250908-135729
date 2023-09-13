@@ -2,24 +2,12 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '../pageObjectModel/login-page';
 
 const emptyFieldErrors: {
-  usernameValue: string;
   username: string;
-  passwordValue: string;
   password: string;
 }[] = [
-  { usernameValue: '""', username: '', passwordValue: '""', password: '' },
-  {
-    usernameValue: 'admin',
-    username: 'admin',
-    passwordValue: '""',
-    password: ' ',
-  },
-  {
-    usernameValue: '""',
-    username: ' ',
-    passwordValue: 'secret',
-    password: 'secret',
-  },
+  { username: '', password: '' },
+  { username: 'admin', password: ' ' },
+  { username: ' ', password: 'secret' },
 ];
 
 const test = base.extend<{ login: LoginPage }>({
@@ -46,7 +34,7 @@ test('team can successfully log in', async ({ login }) => {
 });
 
 for (const creds of emptyFieldErrors) {
-  test(`username ${creds.usernameValue} and password ${creds.passwordValue} returns empty fields error message`, async ({
+  test(`username '${creds.username}' and password '${creds.password}' returns empty fields error message`, async ({
     login,
   }) => {
     await login.inputCredentials(creds.username, creds.password);
