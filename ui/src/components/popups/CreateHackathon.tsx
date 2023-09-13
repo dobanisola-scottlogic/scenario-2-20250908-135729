@@ -18,16 +18,12 @@ import {
   useCreateHackathonMutation,
   useGetMilestonesQuery,
 } from '../../api/api';
-
-interface CreateHackathonProps {
-  createHackathonOpen: boolean;
-  setCreateHackathonOpen: (createHackathonOpen: boolean) => void;
-}
+import { PopupProps } from '../../interfaces/PopupTypes';
 
 const CreateHackathon = ({
-  createHackathonOpen,
-  setCreateHackathonOpen,
-}: CreateHackathonProps) => {
+  isOpen,
+  setIsOpen,
+}: PopupProps) => {
   const [createHackathon, { isLoading }] = useCreateHackathonMutation();
   const { data: milestoneBots } = useGetMilestonesQuery();
 
@@ -49,7 +45,7 @@ const CreateHackathon = ({
 
   const handleClose = () => {
     clearForm();
-    setCreateHackathonOpen(false);
+    setIsOpen(false);
   };
 
   const clearForm = () => {
@@ -95,7 +91,7 @@ const CreateHackathon = ({
         </Alert>
       </Snackbar>
 
-      <Dialog onClose={handleClose} open={createHackathonOpen}>
+      <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
             Add a new hackathon

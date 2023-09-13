@@ -10,17 +10,14 @@ import {
   Snackbar
 } from '@mui/material';
 import { useDeleteHackathonMutation } from '../../api/api';
+import { PopupProps } from '../../interfaces/PopupTypes';
 
-interface DeleteHackathonProps {
-  deleteHackathonOpen: boolean;
-  hackathonId: string;
-  setDeleteHackathonOpen: (createHackathonOpen: boolean) => void;
-}
+type DeleteHackathonProps = PopupProps & { hackathonId: string};
 
 const DeleteHackathon = ({
-  deleteHackathonOpen,
+  isOpen,
   hackathonId,
-  setDeleteHackathonOpen,
+  setIsOpen,
 }: DeleteHackathonProps) => {
 
     const [deleteHackathon, {isLoading: isDeleting}] = useDeleteHackathonMutation();
@@ -31,7 +28,7 @@ const DeleteHackathon = ({
     
     const handleClose = () => {
         setFormError(undefined);
-        setDeleteHackathonOpen(false);
+        setIsOpen(false);
     }
 
   const handleDelete = () => {
@@ -65,7 +62,7 @@ const DeleteHackathon = ({
         </Alert>
       </Snackbar>
 
-      <Dialog onClose={handleClose} open={deleteHackathonOpen}>
+      <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
             <Typography
                 sx={{ m: 1, mx: 'auto' }}
