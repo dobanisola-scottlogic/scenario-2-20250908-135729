@@ -5,7 +5,7 @@ export const colours = {
   darkPurple: '#6200EE',
   midGrey: '#EFEFEF',
   lightGrey: '#F5F5F5',
-  textBlack: '#000000DE',
+  textBlack: '#000000DE'
 };
 
 export const theme = createTheme({

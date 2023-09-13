@@ -29,6 +29,37 @@ export const handlers = [
       );
     }
   }),
+  rest.post(baseUrl + '/hackathon', (req, res, ctx) => {
+    const hackathonName = req.body.name as string;
+
+    if (hackathonName === 'Test Hackathon') {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          id: 'test-hackathon-id',
+          name: 'Test Hackathon',
+          games: null,
+          teams: null,
+          currentMilestoneClassName: 'Milestone1Bot', // Old service returns a default milestone class
+          currentMilestoneMap: 'VeryEasy', // Old service returns a default milestone map
+        })
+      );
+    } else if (hackathonName === 'Bad Request Hackathon') {
+      return res(
+        ctx.status(400),
+        ctx.json({
+          message: 'An error occurred - bad request.',
+        })
+      );
+    } else if (hackathonName === 'Error Hackathon') {
+      return res(
+        ctx.status(500),
+        ctx.json({
+          message: 'An error occurred.',
+        })
+      );
+    }
+  }),
   rest.delete(baseUrl + '/hackathon/test-id', (req, res, ctx) => {
     return res(ctx.status(204));
   }),

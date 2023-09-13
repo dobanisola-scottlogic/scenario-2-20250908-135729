@@ -1,6 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
+import { HackathonResponse } from '../interfaces/HackathonResponse';
+import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
 import { LoginResponse } from '../interfaces/LoginResponse';
+
+enum RequestType {
+  DELETE = 'DELETE',
+  POST = 'POST'
+}
 
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
@@ -16,22 +23,37 @@ export const api = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Hackathon'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, void>({
       query: () => ({
         url: '/login',
-        method: 'POST',
+        method: RequestType.POST,
       }),
+    }),
+    getMilestones: builder.query<GetMilestoneResponse, void>({
+      query: () => ({
+        url: '/milestone'
+      }),
+    }),
+    createHackathon: builder.mutation<HackathonResponse, string>({
+      query: ({name}: {name: string}) => ({
+        url: '/hackathon',
+        method: RequestType.POST,
+        body: {name}
+      }),
+      invalidatesTags: ['Hackathon']
     }),
     deleteHackathon: builder.mutation<void, string>({
       query: ({ id }: { id: string }) => ({
         url: `/hackathon/${id}`,
-        method: 'DELETE',
+        method: RequestType.DELETE,
       }),
+      invalidatesTags: ['Hackathon']
     }),
   }),
 });
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useDeleteHackathonMutation, useLoginMutation } = api;
+export const { useCreateHackathonMutation, useDeleteHackathonMutation, useGetMilestonesQuery, useLoginMutation } = api;
