@@ -37,7 +37,7 @@ const DeleteHackathon = ({
     .then(() => {
       setShowSuccessSnackbar(true);
       handleClose();
-    }) // success handled by the `fulfilled` action creator
+    })
     .catch((createError: unknown) => {
       const { status } = createError as { status: number };
       if (status === 400) {
@@ -86,18 +86,8 @@ const DeleteHackathon = ({
                 m: 1,
                 }}
             >
-                <Button
-                    onClick={handleClose}
-                    variant="text"
-                >
-                    CANCEL
-                </Button>
-                <Button
-                    onClick={handleDelete}
-                    variant="text"
-                >
-                    DELETE HACKATHON
-                </Button>
+                <Button onClick={handleClose}>CANCEL</Button>
+                <Button onClick={handleDelete}>DELETE HACKATHON</Button>
           </Box>
 
           {formError && (

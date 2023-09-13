@@ -14,9 +14,9 @@ describe('Delete Hackathon Popup Component', () => {
       it('renders the delete hackathon popup', () => {
         renderWithProviders(
           <DeleteHackathon
-            deleteHackathonOpen
+            isOpen
             hackathonId="test-id"
-            setDeleteHackathonOpen={mockFunction}
+            setIsOpen={mockFunction}
           />
         );
   
@@ -35,9 +35,9 @@ describe('Delete Hackathon Popup Component', () => {
       it('calls the delete hackathon function successfully', async () => {
         renderWithProviders(
           <DeleteHackathon
-            deleteHackathonOpen
+            isOpen
             hackathonId="test-id"
-            setDeleteHackathonOpen={mockFunction}
+            setIsOpen={mockFunction}
           />
         );
   
@@ -54,9 +54,9 @@ describe('Delete Hackathon Popup Component', () => {
       it('displays an error when the delete hackathon function returns unsuccessfully with an internal server error', async () => {
         renderWithProviders(
           <DeleteHackathon
-            deleteHackathonOpen
+            isOpen
             hackathonId="400"
-            setDeleteHackathonOpen={mockFunction}
+            setIsOpen={mockFunction}
           />
         );
   
@@ -74,12 +74,12 @@ describe('Delete Hackathon Popup Component', () => {
   
       it('displays an error when the delete hackathon function returns unsuccessfully with an internal server error', async () => {
         renderWithProviders(
-            <DeleteHackathon
-              deleteHackathonOpen
-              hackathonId="500"
-              setDeleteHackathonOpen={mockFunction}
-            />
-          );
+          <DeleteHackathon
+            isOpen
+            hackathonId="500"
+            setIsOpen={mockFunction}
+          />
+        );
     
         fireEvent.click(
         screen.getByRole('button', { name: 'DELETE HACKATHON' })

@@ -66,7 +66,7 @@ const CreateHackathon = ({
         setCreatedHackathonName(hackathonName);
         setShowSuccessSnackbar(true);
         handleClose();
-      }) // success handled by the `fulfilled` action creator
+      })
       .catch((createError: unknown) => {
         const { status } = createError as { status: number };
         if (status === 400) {
@@ -188,13 +188,10 @@ const CreateHackathon = ({
               m: 1,
             }}
           >
-            <Button onClick={handleClose} variant="text">
-              CANCEL
-            </Button>
+            <Button onClick={handleClose}>CANCEL</Button>
             <Button
               disabled={!hackathonName.trim() || isLoading}
               onClick={submitForm}
-              variant="text"
             >
               ADD A NEW HACKATHON
             </Button>

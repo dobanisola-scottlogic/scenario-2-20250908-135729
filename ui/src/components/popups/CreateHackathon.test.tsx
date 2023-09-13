@@ -14,8 +14,8 @@ describe('Create Hackathon Popup Component', () => {
     it('renders the create hackathon popup', () => {
       renderWithProviders(
         <CreateHackathon
-          createHackathonOpen
-          setCreateHackathonOpen={mockFunction}
+          isOpen
+          setIsOpen={mockFunction}
         />
       );
 
@@ -31,8 +31,8 @@ describe('Create Hackathon Popup Component', () => {
     it('disables the add hackathon button until a name is entered', () => {
       renderWithProviders(
         <CreateHackathon
-          createHackathonOpen
-          setCreateHackathonOpen={mockFunction}
+          isOpen
+          setIsOpen={mockFunction}
         />
       );
 
@@ -54,8 +54,8 @@ describe('Create Hackathon Popup Component', () => {
     it('calls the create hackathon function successfully', async () => {
       renderWithProviders(
         <CreateHackathon
-          createHackathonOpen
-          setCreateHackathonOpen={mockFunction}
+          isOpen
+          setIsOpen={mockFunction}
         />
       );
 
@@ -77,8 +77,8 @@ describe('Create Hackathon Popup Component', () => {
     it('displays an error when the create hackathon function returns unsuccessfully with an internal server error', async () => {
       renderWithProviders(
         <CreateHackathon
-          createHackathonOpen
-          setCreateHackathonOpen={mockFunction}
+          isOpen
+          setIsOpen={mockFunction}
         />
       );
 
@@ -100,8 +100,8 @@ describe('Create Hackathon Popup Component', () => {
     it('displays an error when the create hackathon function returns unsuccessfully with a bad request error', async () => {
       renderWithProviders(
         <CreateHackathon
-          createHackathonOpen
-          setCreateHackathonOpen={mockFunction}
+          isOpen
+          setIsOpen={mockFunction}
         />
       );
 
