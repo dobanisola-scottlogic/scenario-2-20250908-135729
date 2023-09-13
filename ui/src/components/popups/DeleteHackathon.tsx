@@ -32,6 +32,8 @@ const DeleteHackathon = ({
     }
 
   const handleDelete = () => {
+    setFormError(undefined);
+
     deleteHackathon({ id: hackathonId })
     .unwrap()
     .then(() => {
