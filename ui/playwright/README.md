@@ -8,15 +8,16 @@ When running any of the below commands, make sure that your terminal window is l
 in the ui directory (e.g. if on the base directory, cd into 'ui' before running any
 tests).
 
-**npx playwright test:** will run the Playwright tests against the current local Hackathon.
-For this to be functional, make sure that both the hackathon and the application is running
-in the background.
+**npx playwright test:** will run the Playwright tests against the current local Hackathon. 
+For this to be functional, make sure that the hackathon server, with "ENVIRONMENT=dev" set 
+as an environment variable, is running. The dev server is automatically run as part of
+test configuration.
 
 These tests will also generate reports after completion. The report will be opened automatically
-on test failure, or can be opened with the following command (the quotes are needed):
+on test failure, or can be opened with the following command:
 
 ```
-npx playwright show-report 'playwright\test-results'
+npx playwright show-report 'playwright\report\results'
 
 ```
 
