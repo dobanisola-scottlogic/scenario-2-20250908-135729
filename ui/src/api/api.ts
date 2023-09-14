@@ -37,7 +37,7 @@ export const api = createApi({
       }),
     }),
     createHackathon: builder.mutation<HackathonResponse, string>({
-      query: ({ name }: { name: string }) => ({
+      query: (name) => ({
         url: '/hackathon',
         method: RequestType.POST,
         body: { name },
@@ -45,7 +45,7 @@ export const api = createApi({
       invalidatesTags: ['Hackathon']
     }),
     deleteHackathon: builder.mutation<void, string>({
-      query: ({ id }: { id: string }) => ({
+      query: (id) => ({
         url: `/hackathon/${id}`,
         method: RequestType.DELETE,
       }),

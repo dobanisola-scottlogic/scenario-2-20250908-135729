@@ -33,7 +33,7 @@ const DeleteHackathon = ({
   const handleDelete = () => {
     setFormError(undefined);
 
-    deleteHackathon({ id: hackathonId })
+    deleteHackathon(hackathonId)
     .unwrap()
     .then(() => {
       setSnackbarOpen(true);

@@ -58,7 +58,7 @@ const CreateHackathon = ({
     setFormError(undefined);
     setCreatedHackathonName('');
 
-    createHackathon({ name: hackathonName })
+    createHackathon(hackathonName)
       .unwrap()
       .then(() => {
         setCreatedHackathonName(hackathonName);
