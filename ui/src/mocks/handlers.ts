@@ -60,4 +60,23 @@ export const handlers = [
       );
     }
   }),
+  rest.delete(baseUrl + '/hackathon/test-id', (req, res, ctx) => {
+    return res(ctx.status(204));
+  }),
+  rest.delete(baseUrl + '/hackathon/400', (req, res, ctx) => {
+    return res(
+      ctx.status(400),
+      ctx.json({
+        message: 'An error occurred - bad request.',
+      })
+    );
+  }),
+  rest.delete(baseUrl + '/hackathon/500', (req, res, ctx) => {
+    return res(
+      ctx.status(500),
+      ctx.json({
+        message: 'An error occurred.',
+      })
+    );
+  })
 ];

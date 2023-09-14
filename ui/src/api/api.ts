@@ -5,7 +5,8 @@ import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
 import { RootState } from '../store';
 
 enum RequestType {
-  POST = 'POST',
+  DELETE = 'DELETE',
+  POST = 'POST'
 }
 
 // Define a service using a base URL and expected endpoints
@@ -36,12 +37,19 @@ export const api = createApi({
       }),
     }),
     createHackathon: builder.mutation<HackathonResponse, string>({
-      query: ({ name }: { name: string }) => ({
+      query: (name) => ({
         url: '/hackathon',
         method: RequestType.POST,
         body: { name },
       }),
-      invalidatesTags: ['Hackathon'],
+      invalidatesTags: ['Hackathon']
+    }),
+    deleteHackathon: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/hackathon/${id}`,
+        method: RequestType.DELETE,
+      }),
+      invalidatesTags: ['Hackathon']
     }),
   }),
 });
@@ -50,6 +58,7 @@ export const api = createApi({
 // auto-generated based on the defined endpoints
 export const {
   useCreateHackathonMutation,
+  useDeleteHackathonMutation,
   useGetMilestonesQuery,
   useLoginMutation,
 } = api;

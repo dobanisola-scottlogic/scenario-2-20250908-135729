@@ -9,7 +9,6 @@ import {
   LinearProgress,
   MenuItem,
   Select,
-  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
@@ -18,16 +17,13 @@ import {
   useCreateHackathonMutation,
   useGetMilestonesQuery,
 } from '../../api/api';
-
-interface CreateHackathonProps {
-  createHackathonOpen: boolean;
-  setCreateHackathonOpen: (createHackathonOpen: boolean) => void;
-}
+import { PopupProps } from '../../interfaces/PopupTypes';
+import PopupMessage from '../popupMessage/PopupMessage';
 
 const CreateHackathon = ({
-  createHackathonOpen,
-  setCreateHackathonOpen,
-}: CreateHackathonProps) => {
+  isOpen,
+  setIsOpen,
+}: PopupProps) => {
   const [createHackathon, { isLoading }] = useCreateHackathonMutation();
   const { data: milestoneBots } = useGetMilestonesQuery();
 
@@ -39,17 +35,15 @@ const CreateHackathon = ({
     useState<string>('');
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [showSuccessSnackbar, setShowSuccessSnackbar] =
+  const [isSnackbarOpen, setSnackbarOpen] =
     useState<boolean>(false);
-
-  const handleCloseSnackbar = () => setShowSuccessSnackbar(false);
 
   const readableMilestoneBotClassName = (milestoneBotClassName: string) =>
     milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
 
   const handleClose = () => {
     clearForm();
-    setCreateHackathonOpen(false);
+    setIsOpen(false);
   };
 
   const clearForm = () => {
@@ -64,13 +58,13 @@ const CreateHackathon = ({
     setFormError(undefined);
     setCreatedHackathonName('');
 
-    createHackathon({ name: hackathonName })
+    createHackathon(hackathonName)
       .unwrap()
       .then(() => {
         setCreatedHackathonName(hackathonName);
-        setShowSuccessSnackbar(true);
+        setSnackbarOpen(true);
         handleClose();
-      }) // success handled by the `fulfilled` action creator
+      })
       .catch((createError: unknown) => {
         const { status } = createError as { status: number };
         if (status === 400) {
@@ -83,19 +77,13 @@ const CreateHackathon = ({
 
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        autoHideDuration={3000}
-        key={'top' + 'center'}
-        open={showSuccessSnackbar}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          {`Hackathon '${createdHackathonName}' created successfully!`}
-        </Alert>
-      </Snackbar>
+      <PopupMessage
+        isSnackbarOpen={isSnackbarOpen}
+        popupMessage={`Hackathon '${createdHackathonName}' created successfully!`}
+        setShowSnackbar={setSnackbarOpen}
+      />
 
-      <Dialog onClose={handleClose} open={createHackathonOpen}>
+      <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
             Add a new hackathon
@@ -192,13 +180,10 @@ const CreateHackathon = ({
               m: 1,
             }}
           >
-            <Button onClick={handleClose} variant="text">
-              CANCEL
-            </Button>
+            <Button onClick={handleClose}>CANCEL</Button>
             <Button
               disabled={!hackathonName.trim() || isLoading}
               onClick={submitForm}
-              variant="text"
             >
               ADD A NEW HACKATHON
             </Button>
