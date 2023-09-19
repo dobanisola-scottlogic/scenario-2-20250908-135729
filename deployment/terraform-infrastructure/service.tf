@@ -1,6 +1,6 @@
 # ECS (Elastic Container Service) Cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.project}-ecs-cluster"
+  name = "${local.workspace}-ecs-cluster"
 
   configuration {
     execute_command_configuration {
@@ -13,7 +13,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   }
 
   tags = {
-    Name = "${var.project}-ecs-cluster"
+    Name = "${local.workspace}-ecs-cluster"
   }
 }
 
@@ -76,7 +76,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   ])
 
   tags = {
-    Name = "${var.project}-ecs-task-definition"
+    Name = "${local.workspace}-ecs-task-definition"
   }
 }
 
@@ -110,6 +110,6 @@ resource "aws_ecs_service" "service" {
   }
 
   tags = {
-    Name = "${var.project}-ecs-service"
+    Name = "${local.workspace}-ecs-service"
   }
 }

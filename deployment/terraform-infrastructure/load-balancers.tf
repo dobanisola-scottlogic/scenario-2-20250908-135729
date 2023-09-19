@@ -5,12 +5,12 @@ resource "aws_lb" "public_load_balancer" {
   idle_timeout               = 30
   internal                   = false
   load_balancer_type         = "application"
-  name                       = "${var.project}-public-load-balancer"
+  name                       = "${local.workspace}-public-load-balancer"
   security_groups            = [aws_security_group.public_load_balancer_sg.id]
   subnets                    = aws_subnet.public_subnets[*].id
 
   tags = {
-    Name = "${var.project}-public-load-balancer"
+    Name = "${local.workspace}-public-load-balancer"
   }
 }
 
@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "public_load_balancer_target_group" {
   }
 
   tags = {
-    Name = "${var.project}-public-load-balancer-target-group"
+    Name = "${local.workspace}-public-load-balancer-target-group"
   }
 }
 
@@ -44,7 +44,7 @@ resource "aws_lb_listener" "public_load_balancer_listener" {
   }
 
   tags = {
-    Name = "${var.project}-public-load-balancer-listener"
+    Name = "${local.workspace}-public-load-balancer-listener"
   }
 }
 
@@ -58,12 +58,12 @@ resource "aws_lb" "private_load_balancer" {
   idle_timeout               = 30
   internal                   = true
   load_balancer_type         = "application"
-  name                       = "${var.project}-private-load-balancer"
+  name                       = "${local.workspace}-private-load-balancer"
   security_groups            = [aws_security_group.private_load_balancer_sg.id]
   subnets                    = aws_subnet.private_subnets[*].id
 
   tags = {
-    Name = "${var.project}-private-load-balancer"
+    Name = "${local.workspace}-private-load-balancer"
   }
 }
 
@@ -82,7 +82,7 @@ resource "aws_lb_target_group" "private_load_balancer_target_group" {
   }
 
   tags = {
-    Name = "${var.project}-private-load-balancer-target-group"
+    Name = "${local.workspace}-private-load-balancer-target-group"
   }
 }
 
@@ -97,7 +97,7 @@ resource "aws_lb_listener" "private_load_balancer_listener" {
   }
 
   tags = {
-    Name = "${var.project}-private-load-balancer-listener"
+    Name = "${local.workspace}-private-load-balancer-listener"
   }
 }
 
@@ -125,7 +125,7 @@ resource "aws_lb_target_group" "ecs_service_target_group" {
   }
 
   tags = {
-    Name = "${var.project}-ecs-service-target-group"
+    Name = "${local.workspace}-ecs-service-target-group"
   }
 }
 

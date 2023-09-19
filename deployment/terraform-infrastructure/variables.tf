@@ -38,6 +38,10 @@ variable "project" {
   default     = "Hackathon"
 }
 
+locals {
+  workspace = terraform.workspace == "default" ? var.project : terraform.workspace
+}
+
 variable "server_service_name" {
   description = "A name for the ECS service running the Hackathon server"
   type        = string

@@ -8,7 +8,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.project}-vpc"
+    Name = "${local.workspace}-vpc"
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   tags = {
-    Name = "${var.project}-public-subnet-${count.index}"
+    Name = "${local.workspace}-public-subnet-${count.index}"
   }
 }
 
@@ -38,7 +38,7 @@ resource "aws_subnet" "private_subnets" {
   vpc_id            = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.project}-private-subnet-${count.index}"
+    Name = "${local.workspace}-private-subnet-${count.index}"
   }
 }
 
@@ -49,7 +49,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.project}-internet-gateway"
+    Name = "${local.workspace}-internet-gateway"
   }
 }
 
@@ -62,7 +62,7 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = {
-    Name = "${var.project}-public-route-table"
+    Name = "${local.workspace}-public-route-table"
   }
 }
 
@@ -82,7 +82,7 @@ resource "aws_nat_gateway" "nat_gateways" {
   subnet_id         = aws_subnet.public_subnets[count.index].id
 
   tags = {
-    Name = "${var.project}-nat-gateway-${count.index}"
+    Name = "${local.workspace}-nat-gateway-${count.index}"
   }
 }
 
@@ -96,7 +96,7 @@ resource "aws_route_table" "private_route_tables" {
   }
 
   tags = {
-    Name = "${var.project}-private-route-table-${count.index}"
+    Name = "${local.workspace}-private-route-table-${count.index}"
   }
 }
 
@@ -113,7 +113,7 @@ resource "aws_eip" "eip_nat_gateway_one" {
   domain     = "vpc"
 
   tags = {
-    Name = "${var.project}-eip-nat-gateway-1"
+    Name = "${local.workspace}-eip-nat-gateway-1"
   }
 }
 
@@ -123,6 +123,6 @@ resource "aws_eip" "eip_nat_gateway_two" {
   domain     = "vpc"
 
   tags = {
-    Name = "${var.project}-eip-nat-gateway-2"
+    Name = "${local.workspace}-eip-nat-gateway-2"
   }
 }

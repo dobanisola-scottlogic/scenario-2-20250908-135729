@@ -3,7 +3,7 @@
 # balancer, a private internal load balancer, and from other members
 # of the security group.
 resource "aws_security_group" "fargate_container_security_group" {
-  name        = "${var.project}-fargate-container-security-group"
+  name        = "${local.workspace}-fargate-container-security-group"
   description = "Access to the Fargate containers"
   vpc_id      = aws_vpc.vpc.id
 
@@ -18,12 +18,12 @@ resource "aws_security_group" "fargate_container_security_group" {
   }
 
   tags = {
-    Name = "${var.project}-fargate-container-security-group"
+    Name = "${local.workspace}-fargate-container-security-group"
   }
 }
 
 resource "aws_security_group" "aws_db_security_group" {
-  name        = "${var.project}-aws-db-security-group"
+  name        = "${local.workspace}-aws-db-security-group"
   description = "Security group for DB access"
   vpc_id      = aws_vpc.vpc.id
 
@@ -35,7 +35,7 @@ resource "aws_security_group" "aws_db_security_group" {
   }
 
   tags = {
-    Name = "${var.project}-aws-db-security-group"
+    Name = "${local.workspace}-aws-db-security-group"
   }
 }
 
@@ -44,7 +44,7 @@ resource "aws_security_group" "public_load_balancer_sg" {
   vpc_id      = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.project}-public-load-balancer-security-group"
+    Name = "${local.workspace}-public-load-balancer-security-group"
   }
 }
 
@@ -71,7 +71,7 @@ resource "aws_security_group" "private_load_balancer_sg" {
   vpc_id      = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.project}-private-load-balancer-security-group"
+    Name = "${local.workspace}-private-load-balancer-security-group"
   }
 }
 
@@ -81,19 +81,19 @@ resource "aws_vpc_security_group_ingress_rule" "public_load_balancer_sg_ingress_
   security_group_id = aws_security_group.public_load_balancer_sg.id
 
   tags = {
-    Name = "${var.project}-public-load-balancer-security-group-ingress-rule"
+    Name = "${local.workspace}-public-load-balancer-security-group-ingress-rule"
   }
 }
 
 resource "aws_vpc_security_group_egress_rule" "public_load_balancer_sg_egress_rule" {
-  cidr_ipv4 = var.vpc_cidr_block
-  from_port = 8080
-  to_port = 8080
-  ip_protocol = "tcp"
+  cidr_ipv4         = var.vpc_cidr_block
+  from_port         = 8080
+  to_port           = 8080
+  ip_protocol       = "tcp"
   security_group_id = aws_security_group.public_load_balancer_sg.id
 
   tags = {
-    Name = "${var.project}-public-load-balancer-security-group-egress-rule"
+    Name = "${local.workspace}-public-load-balancer-security-group-egress-rule"
   }
 }
 
@@ -104,7 +104,7 @@ resource "aws_vpc_security_group_ingress_rule" "ecs_security_group_ingress_from_
   security_group_id            = aws_security_group.fargate_container_security_group.id
 
   tags = {
-    Name = "${var.project}-ecs-security-group-ingress-from-public-alb"
+    Name = "${local.workspace}-ecs-security-group-ingress-from-public-alb"
   }
 }
 
@@ -115,7 +115,7 @@ resource "aws_vpc_security_group_ingress_rule" "ecs_security_group_ingress_from_
   security_group_id            = aws_security_group.fargate_container_security_group.id
 
   tags = {
-    Name = "${var.project}-ecs-security-group-ingress-from-self"
+    Name = "${local.workspace}-ecs-security-group-ingress-from-self"
   }
 }
 
@@ -126,7 +126,7 @@ resource "aws_vpc_security_group_ingress_rule" "ecs_security_group_ingress_from_
   security_group_id            = aws_security_group.private_load_balancer_sg.id
 
   tags = {
-    Name = "${var.project}-ecs-security-group-ingress-from-fargate-container-security-group"
+    Name = "${local.workspace}-ecs-security-group-ingress-from-fargate-container-security-group"
   }
 }
 
@@ -141,7 +141,7 @@ resource "aws_security_group" "contestant_security_group" {
   vpc_id      = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.project}-contestant-security-group"
+    Name = "${local.workspace}-contestant-security-group"
   }
 }
 
@@ -153,7 +153,7 @@ resource "aws_vpc_security_group_ingress_rule" "contestant_security_group_ingres
   security_group_id = aws_security_group.contestant_security_group.id
 
   tags = {
-    Name = "${var.project}-contestant-security-group-ingress-rule-1"
+    Name = "${local.workspace}-contestant-security-group-ingress-rule-1"
   }
 }
 
@@ -165,7 +165,7 @@ resource "aws_vpc_security_group_ingress_rule" "contestant_security_group_ingres
   security_group_id = aws_security_group.contestant_security_group.id
 
   tags = {
-    Name = "${var.project}-contestant-security-group-ingress-rule-2"
+    Name = "${local.workspace}-contestant-security-group-ingress-rule-2"
   }
 }
 
@@ -178,7 +178,7 @@ resource "aws_vpc_security_group_egress_rule" "contestant_security_group_egress_
   to_port     = 65535
 
   tags = {
-    Name = "${var.project}-contestant-security-group-egress-rule"
+    Name = "${local.workspace}-contestant-security-group-egress-rule"
   }
 }
 

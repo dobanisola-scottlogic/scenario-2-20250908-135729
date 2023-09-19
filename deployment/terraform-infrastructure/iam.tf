@@ -7,7 +7,7 @@
 # details of where your containers are, so that traffic can reach your
 # containers.
 resource "aws_iam_role" "ecs_manage_resources_iam_role" {
-  name = "${var.project}-ecs-manage-resources-iam-role"
+  name = "${local.workspace}-ecs-manage-resources-iam-role"
   assume_role_policy = jsonencode({
     Statement = [
       {
@@ -24,12 +24,12 @@ resource "aws_iam_role" "ecs_manage_resources_iam_role" {
   path                  = "/"
 
   tags = {
-    Name = "${var.project}-ecs-manage-resources-iam-role"
+    Name = "${local.workspace}-ecs-manage-resources-iam-role"
   }
 }
 
 resource "aws_iam_policy" "ecs_manage_resources_iam_role_policy" {
-  name = "${var.project}-ecs-manage-resources-iam-role-policy"
+  name = "${local.workspace}-ecs-manage-resources-iam-role-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -60,13 +60,13 @@ resource "aws_iam_policy" "ecs_manage_resources_iam_role_policy" {
   })
 
   tags = {
-    Name = "${var.project}-ecs-manage-resources-iam-role-policy"
+    Name = "${local.workspace}-ecs-manage-resources-iam-role-policy"
   }
 }
 
 # This is a role which is used by the ECS tasks
 resource "aws_iam_role" "ecs_task_execution_iam_role" {
-  name = "${var.project}-ecs-task-execution-iam-role"
+  name = "${local.workspace}-ecs-task-execution-iam-role"
   assume_role_policy = jsonencode({
     Statement = [
       {
@@ -80,19 +80,19 @@ resource "aws_iam_role" "ecs_task_execution_iam_role" {
     ]
     Version = "2012-10-17"
   })
-  
+
   # HAC-116 - Are these fields required?
   # force_detach_policies = true
   # managed_policy_arns   = [aws_iam_policy.ecs_task_execution_iam_role_policy.arn]
   # path                  = "/"
 
   tags = {
-    Name = "${var.project}-ecs-task-execution-iam-role"
+    Name = "${local.workspace}-ecs-task-execution-iam-role"
   }
 }
 
 resource "aws_iam_policy" "ecs_task_execution_iam_role_policy" {
-  name = "${var.project}-ecs-task-execution-iam-role-policy"
+  name = "${local.workspace}-ecs-task-execution-iam-role-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -118,18 +118,18 @@ resource "aws_iam_policy" "ecs_task_execution_iam_role_policy" {
   })
 
   tags = {
-    Name = "${var.project}-ecs-task-execution-iam-role-policy"
+    Name = "${local.workspace}-ecs-task-execution-iam-role-policy"
   }
 }
 
 resource "aws_iam_policy_attachment" "attach" {
-  name       = "${var.project}-ecs-task-execution-iam-role-policy-attachment"
+  name       = "${local.workspace}-ecs-task-execution-iam-role-policy-attachment"
   roles      = [aws_iam_role.ecs_task_execution_iam_role.name]
   policy_arn = aws_iam_policy.ecs_task_execution_iam_role_policy.arn
 }
 
 resource "aws_iam_role" "ecr_read_only_role" {
-  name = "${var.project}-ecr-read-only-role"
+  name = "${local.workspace}-ecr-read-only-role"
   assume_role_policy = jsonencode({
     Statement = [
       {
@@ -148,12 +148,12 @@ resource "aws_iam_role" "ecr_read_only_role" {
   path                  = "/"
 
   tags = {
-    Name = "${var.project}-ecr-read-only-role"
+    Name = "${local.workspace}-ecr-read-only-role"
   }
 }
 
 resource "aws_iam_policy" "ecr_readonly_iam_role_policy" {
-  name = "${var.project}-ecr-read-only-iam-role-policy"
+  name = "${local.workspace}-ecr-read-only-iam-role-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -178,7 +178,7 @@ resource "aws_iam_policy" "ecr_readonly_iam_role_policy" {
   })
 
   tags = {
-    Name = "${var.project}-ecr-read-only-iam-role-policy"
+    Name = "${local.workspace}-ecr-read-only-iam-role-policy"
   }
 }
 
@@ -191,6 +191,6 @@ resource "aws_iam_instance_profile" "contestant_instance_profile" {
   role = aws_iam_role.ecr_read_only_role.name
 
   tags = {
-    Name = "${var.project}-contestant-instance-profile"
+    Name = "${local.workspace}-contestant-instance-profile"
   }
 }

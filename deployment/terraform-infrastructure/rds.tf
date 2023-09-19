@@ -4,7 +4,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   subnet_ids  = aws_subnet.private_subnets[*].id
 
   tags = {
-    Name = "${var.project}-database-subnet-group"
+    Name = "${local.workspace}-database-subnet-group"
   }
 }
 
@@ -23,6 +23,6 @@ resource "aws_db_instance" "database" {
   vpc_security_group_ids     = [aws_security_group.aws_db_security_group.id]
 
   tags = {
-    Name = "${var.project}-database"
+    Name = "${local.workspace}-database"
   }
 }
