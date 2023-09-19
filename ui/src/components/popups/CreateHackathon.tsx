@@ -20,10 +20,7 @@ import {
 import { PopupProps } from '../../interfaces/PopupTypes';
 import PopupMessage from '../popupMessage/PopupMessage';
 
-const CreateHackathon = ({
-  isOpen,
-  setIsOpen,
-}: PopupProps) => {
+const CreateHackathon = ({ isOpen, setIsOpen }: PopupProps) => {
   const [createHackathon, { isLoading }] = useCreateHackathonMutation();
   const { data: milestoneBots } = useGetMilestonesQuery();
 
@@ -35,8 +32,7 @@ const CreateHackathon = ({
     useState<string>('');
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [isSnackbarOpen, setSnackbarOpen] =
-    useState<boolean>(false);
+  const [isSnackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
   const readableMilestoneBotClassName = (milestoneBotClassName: string) =>
     milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');

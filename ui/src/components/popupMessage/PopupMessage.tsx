@@ -1,13 +1,18 @@
-import { Alert, Snackbar} from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
 
 interface PopupMessageProps {
-    isSnackbarOpen: boolean;
-    popupMessage: string;
-    severity?: string;
-    setShowSnackbar: (showSuccessSnackbar: boolean) => void;
+  isSnackbarOpen: boolean;
+  popupMessage: string;
+  severity?: string;
+  setShowSnackbar: (showSuccessSnackbar: boolean) => void;
 }
 
-const PopupMessage = ({ isSnackbarOpen, popupMessage, severity = 'success', setShowSnackbar }: PopupMessageProps) => {
+const PopupMessage = ({
+  isSnackbarOpen,
+  popupMessage,
+  severity = 'success',
+  setShowSnackbar,
+}: PopupMessageProps) => {
   const handleClose = () => setShowSnackbar(false);
 
   return (

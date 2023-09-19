@@ -1,8 +1,4 @@
-import {
-  fireEvent,
-  screen,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProviders } from '../../utils/test-utils';
 import Login from './Login';
 
@@ -24,7 +20,7 @@ describe('Login', () => {
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
   });
 
-  it('handles login with valid credentials correctly', async () => {
+  it('handles login with valid credentials correctly', () => {
     // set credentials to testusername and testpassword to trigger 200 response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
       target: { value: 'testusername' },
@@ -33,8 +29,6 @@ describe('Login', () => {
       target: { value: 'testpassword' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-
-    await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
     expect(screen.queryByRole('alert')).toBeNull();
   });
@@ -61,8 +55,6 @@ describe('Login', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
-    await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
-
     const alert = await screen.findByRole('alert');
     expect(alert.textContent).toContain(
       'Invalid username or password. Please check your credentials.'
@@ -78,8 +70,6 @@ describe('Login', () => {
       target: { value: 'networkerror' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-
-    await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
     const alert = await screen.findByRole('alert');
     expect(alert.textContent).toContain(

@@ -78,5 +78,5 @@ export const handlers = [
         message: 'An error occurred.',
       })
     );
-  })
+  }),
 ];

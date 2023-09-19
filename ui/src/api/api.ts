@@ -6,7 +6,7 @@ import { RootState } from '../store';
 
 enum RequestType {
   DELETE = 'DELETE',
-  POST = 'POST'
+  POST = 'POST',
 }
 
 // Define a service using a base URL and expected endpoints
@@ -42,14 +42,14 @@ export const api = createApi({
         method: RequestType.POST,
         body: { name },
       }),
-      invalidatesTags: ['Hackathon']
+      invalidatesTags: ['Hackathon'],
     }),
     deleteHackathon: builder.mutation<void, string>({
       query: (id) => ({
         url: `/hackathon/${id}`,
         method: RequestType.DELETE,
       }),
-      invalidatesTags: ['Hackathon']
+      invalidatesTags: ['Hackathon'],
     }),
   }),
 });

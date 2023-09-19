@@ -1,9 +1,5 @@
 import '@testing-library/jest-dom';
-import {
-  fireEvent,
-  screen,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProviders } from '../../utils/test-utils';
 import CreateHackathon from './CreateHackathon';
 
@@ -12,12 +8,7 @@ describe('Create Hackathon Popup Component', () => {
 
   describe('When the create Hackathon popup is opened', () => {
     it('renders the create hackathon popup', () => {
-      renderWithProviders(
-        <CreateHackathon
-          isOpen
-          setIsOpen={mockFunction}
-        />
-      );
+      renderWithProviders(<CreateHackathon isOpen setIsOpen={mockFunction} />);
 
       expect(screen.getByText('Add a new hackathon')).toBeInTheDocument();
       expect(
@@ -29,12 +20,7 @@ describe('Create Hackathon Popup Component', () => {
     });
 
     it('disables the add hackathon button until a name is entered', () => {
-      renderWithProviders(
-        <CreateHackathon
-          isOpen
-          setIsOpen={mockFunction}
-        />
-      );
+      renderWithProviders(<CreateHackathon isOpen setIsOpen={mockFunction} />);
 
       expect(screen.getByText('Add a new hackathon')).toBeInTheDocument();
       expect(
@@ -52,12 +38,7 @@ describe('Create Hackathon Popup Component', () => {
 
   describe('When the create button is pressed', () => {
     it('calls the create hackathon function successfully', async () => {
-      renderWithProviders(
-        <CreateHackathon
-          isOpen
-          setIsOpen={mockFunction}
-        />
-      );
+      renderWithProviders(<CreateHackathon isOpen setIsOpen={mockFunction} />);
 
       const textInput = screen.getByRole('textbox', { name: 'Hackathon name' });
       fireEvent.change(textInput, { target: { value: 'Test Hackathon' } });
@@ -66,21 +47,15 @@ describe('Create Hackathon Popup Component', () => {
         screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
       );
 
-      await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
-
       // Displays success message
-      expect(
-        screen.getByText("Hackathon 'Test Hackathon' created successfully!")
-      ).toBeInTheDocument();
+      const successMessage = await screen.findByText(
+        "Hackathon 'Test Hackathon' created successfully!"
+      );
+      expect(successMessage).toBeInTheDocument();
     });
 
     it('displays an error when the create hackathon function returns unsuccessfully with an internal server error', async () => {
-      renderWithProviders(
-        <CreateHackathon
-          isOpen
-          setIsOpen={mockFunction}
-        />
-      );
+      renderWithProviders(<CreateHackathon isOpen setIsOpen={mockFunction} />);
 
       const textInput = screen.getByRole('textbox', { name: 'Hackathon name' });
       fireEvent.change(textInput, { target: { value: 'Error Hackathon' } });
@@ -89,8 +64,6 @@ describe('Create Hackathon Popup Component', () => {
         screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
       );
 
-      await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
-
       const alert = await screen.findByRole('alert');
       expect(alert.textContent).toContain(
         'Error creating hackathon - internal server error'
@@ -98,12 +71,7 @@ describe('Create Hackathon Popup Component', () => {
     });
 
     it('displays an error when the create hackathon function returns unsuccessfully with a bad request error', async () => {
-      renderWithProviders(
-        <CreateHackathon
-          isOpen
-          setIsOpen={mockFunction}
-        />
-      );
+      renderWithProviders(<CreateHackathon isOpen setIsOpen={mockFunction} />);
 
       const textInput = screen.getByRole('textbox', { name: 'Hackathon name' });
       fireEvent.change(textInput, {
@@ -112,8 +80,6 @@ describe('Create Hackathon Popup Component', () => {
       fireEvent.click(
         screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
       );
-
-      await waitForElementToBeRemoved(() => screen.getByRole('progressbar'));
 
       const alert = await screen.findByRole('alert');
       expect(alert.textContent).toContain(
