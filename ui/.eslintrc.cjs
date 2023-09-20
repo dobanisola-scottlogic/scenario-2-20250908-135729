@@ -25,6 +25,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'no-console': 'error',
+    curly: 'error',
     '@emotion/syntax-preference': [2, 'object'],
   },
   settings: {

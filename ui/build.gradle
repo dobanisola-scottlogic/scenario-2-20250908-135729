@@ -14,7 +14,7 @@ task formatReactApp(type: NpmTask, dependsOn: npmInstall) {
     group = 'Verification'
     description = 'Runs prettier and eslint to format UI code'
 
-    args = ['run', 'format:fix']
+    args = ['run', 'format']
 }
 check.dependsOn formatReactApp
 

@@ -5,11 +5,15 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "format:ui": "cd ui && npm run format:fix"
+    "prettier:ui": "cd ui && npm run prettier:write",
+    "lint:ui": "cd ui && npm run lint:fix"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "npm run format:ui"
+      "npm run lint:ui"
+    ],
+    "*": [
+      "npm run prettier:ui"
     ]
   }
 }
