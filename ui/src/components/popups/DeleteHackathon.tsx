@@ -67,7 +67,7 @@ const DeleteHackathon = ({
             role="dialogHeading"
           >
             This will delete teams and games in the hackathon as well. You
-            <strong>cannot</strong> undo this action.
+            <strong> cannot</strong> undo this action.
           </Typography>
 
           <Box

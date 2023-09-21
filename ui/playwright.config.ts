@@ -11,6 +11,10 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'retain-on-failure',
+    httpCredentials: {
+      username: 'admin',
+      password: 'secret',
+    },
   },
   projects: [
     {
