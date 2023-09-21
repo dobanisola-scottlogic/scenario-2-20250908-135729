@@ -187,7 +187,7 @@ resource "aws_iam_policy" "ecr_readonly_iam_role_policy" {
 ################################################################################
 
 resource "aws_iam_instance_profile" "contestant_instance_profile" {
-  name = "contestant-instance-profile"
+  name = "${local.workspace}-contestant-instance-profile"
   role = aws_iam_role.ecr_read_only_role.name
 
   tags = {

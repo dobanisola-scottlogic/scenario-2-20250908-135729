@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "db_subnet_group" {
   description = "VPC subnets for the database"
-  name        = "hackathon_database_subnet_group"
+  name        = "${local.workspace}_database_subnet_group"
   subnet_ids  = aws_subnet.private_subnets[*].id
 
   tags = {
@@ -12,10 +12,10 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 resource "aws_db_instance" "database" {
   allocated_storage          = 5
   auto_minor_version_upgrade = true
-  db_name                    = var.db_name
+  db_name                    = local.db_name
   db_subnet_group_name       = aws_db_subnet_group.db_subnet_group.name
   engine                     = var.db_type
-  identifier                 = var.db_name
+  identifier                 = local.db_name
   instance_class             = "db.t3.micro"
   password                   = var.db_password
   skip_final_snapshot        = true

@@ -38,16 +38,6 @@ variable "project" {
   default     = "Hackathon"
 }
 
-locals {
-  workspace = terraform.workspace == "default" ? var.project : lower(terraform.workspace)
-}
-
-variable "server_service_name" {
-  description = "A name for the ECS service running the Hackathon server"
-  type        = string
-  default     = "hackathon-server"
-}
-
 variable "server_http_port" {
   description = "The port used by the server application, to which the load balancer will route traffic from the publicly exposed port (i.e. port 80)"
   type        = string
@@ -70,12 +60,6 @@ variable "db_type" {
   description = "The type of the database"
   type        = string
   default     = "postgres"
-}
-
-variable "db_name" {
-  description = "The name of the database to create and link to"
-  type        = string
-  default     = "hackathon"
 }
 
 variable "db_user" {

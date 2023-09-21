@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   cpu                      = var.server_container_cpu
   execution_role_arn       = aws_iam_role.ecs_task_execution_iam_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_iam_role.arn
-  family                   = var.server_service_name
+  family                   = local.server_service_name
   memory                   = var.server_container_memory
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -32,7 +32,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       cpu    = tonumber(var.server_container_cpu)
       image  = var.server_image
       memory = tonumber(var.server_container_memory)
-      name   = var.server_service_name
+      name   = local.server_service_name
       portMappings = [
         {
           containerPort = tonumber(var.server_http_port)
@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       environment = [
         {
           name  = "DB_NAME"
-          value = var.db_name
+          value = local.db_name
         },
         {
           name  = "DB_TYPE"
@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "task_definition" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.cloudwatch_logs_group.name
           awslogs-region        = var.aws_region
-          awslogs-stream-prefix = var.server_service_name
+          awslogs-stream-prefix = local.server_service_name
         }
       }
     }
@@ -91,11 +91,11 @@ resource "aws_ecs_service" "service" {
   deployment_minimum_healthy_percent = 100
   desired_count                      = 1
   launch_type                        = "FARGATE"
-  name                               = var.server_service_name
+  name                               = local.server_service_name
   task_definition                    = aws_ecs_task_definition.task_definition.arn
 
   load_balancer {
-    container_name   = var.server_service_name
+    container_name   = local.server_service_name
     container_port   = var.server_http_port
     target_group_arn = aws_lb_target_group.ecs_service_target_group.arn
   }

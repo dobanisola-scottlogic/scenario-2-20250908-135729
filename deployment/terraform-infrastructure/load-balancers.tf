@@ -107,7 +107,7 @@ resource "aws_lb_listener" "private_load_balancer_listener" {
 # connected to an application load balancer, or network load balancer, so
 # it can automatically distribute traffic across all the targets.
 resource "aws_lb_target_group" "ecs_service_target_group" {
-  name        = var.server_service_name
+  name        = local.server_service_name
   port        = var.server_http_port
   protocol    = "HTTP"
   target_type = "ip"

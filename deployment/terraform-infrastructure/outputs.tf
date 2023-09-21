@@ -2,7 +2,7 @@
 # external_url: definitely needed
 output "vpc_arn" {
   description = "The ARN of the VPC in which this stack is deployed"
-  value       = aws_vpc.vpc.arn
+  value       = data.aws_vpc.vpc.arn
 }
 
 output "public_subnet_one" {
@@ -31,8 +31,8 @@ output "fargate_container_security_group" {
 }
 
 output "external_url" {
-  description = "Public DNS for the external application load balancer"
-  value       = "http://${aws_lb.public_load_balancer.dns_name}"
+  description = "Public URL for the external application"
+  value       = "http://${aws_lb.public_load_balancer.dns_name}/application"
 }
 
 output "public_listener_arn" {
