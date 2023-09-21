@@ -10,6 +10,10 @@ export default defineConfig({
   reporter: [['html', { outputFolder: 'playwright/report/results' }]],
   use: {
     baseURL: 'http://localhost:5173',
+    httpCredentials: {
+      username: 'admin',
+      password: 'secret',
+    },
     trace: 'retain-on-failure',
     httpCredentials: {
       username: 'admin',
