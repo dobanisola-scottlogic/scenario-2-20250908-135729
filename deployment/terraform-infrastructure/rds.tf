@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "db_subnet_group" {
   description = "VPC subnets for the database"
-  name        = "${local.workspace}_database_subnet_group"
+  name        = "${local.workspace}-database-subnet-group"
   subnet_ids  = aws_subnet.private_subnets[*].id
 
   tags = {

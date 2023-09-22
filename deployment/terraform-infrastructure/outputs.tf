@@ -64,3 +64,15 @@ output "log_group_arn" {
   description = "A CloudWatch log group that can be logged to"
   value       = aws_cloudwatch_log_group.cloudwatch_logs_group.arn
 }
+
+output "cloud9_url" {
+  value = module.contestant.cloud9_url
+}
+
+output "hackathon_contestant_arn" {
+  value = module.contestant.hackathon_contestant_arn
+}
+
+output "hackathon_contestant_password" {
+  value = module.contestant.hackathon_contestant_password
+}

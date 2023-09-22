@@ -45,3 +45,6 @@ bin/
 
 # macOS 
 .DS_Store
+
+# Terraform
+*.plan
