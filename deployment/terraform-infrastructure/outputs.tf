@@ -2,7 +2,7 @@
 # external_url: definitely needed
 output "vpc_arn" {
   description = "The ARN of the VPC in which this stack is deployed"
-  value       = data.aws_vpc.vpc.arn
+  value       = aws_vpc.vpc.arn
 }
 
 output "public_subnet_one" {
