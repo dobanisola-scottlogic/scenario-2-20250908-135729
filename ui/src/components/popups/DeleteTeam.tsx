@@ -8,13 +8,12 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useDeleteHackathonMutation } from '../../api/api';
+import { useDeleteTeamMutation } from '../../api/api';
 import { PopupProps } from '../../interfaces/PopupTypes';
 import PopupMessage from '../popupMessage/PopupMessage';
 
-const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
-  const [deleteHackathon, { isLoading: isDeleting }] =
-    useDeleteHackathonMutation();
+const DeleteTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
+  const [deleteTeam, { isLoading: isDeleting }] = useDeleteTeamMutation();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [isSnackbarOpen, setSnackbarOpen] = useState<boolean>(false);
@@ -27,7 +26,7 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
   const handleDelete = () => {
     setFormError(undefined);
 
-    deleteHackathon(id!)
+    deleteTeam(id!)
       .unwrap()
       .then(() => {
         setSnackbarOpen(true);
@@ -36,9 +35,9 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
       .catch((createError: unknown) => {
         const { status } = createError as { status: number };
         if (status === 400) {
-          setFormError('Error deleting hackathon - bad request');
+          setFormError('Error deleting team - bad request');
         } else {
-          setFormError('Error deleting hackathon - internal server error');
+          setFormError('Error deleting team - internal server error');
         }
       });
   };
@@ -47,20 +46,20 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
     <>
       <PopupMessage
         isSnackbarOpen={isSnackbarOpen}
-        popupMessage="Hackathon deleted successfully!"
+        popupMessage="Team deleted successfully!"
         setShowSnackbar={setSnackbarOpen}
       />
 
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
-            Are you sure you want to delete the hackathon?
+            Are you sure you want to delete the team?
           </Typography>
           <Typography
             sx={{ fontWeight: 'normal', m: 1, mx: 'auto' }}
             role="dialogHeading"
           >
-            This will delete teams and games in the hackathon as well. You{' '}
+            This will delete the team&apos;s games as well. You{' '}
             <strong>cannot</strong> undo this action.
           </Typography>
 
@@ -73,7 +72,7 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
             }}
           >
             <Button onClick={handleClose}>CANCEL</Button>
-            <Button onClick={handleDelete}>DELETE HACKATHON</Button>
+            <Button onClick={handleDelete}>DELETE TEAM</Button>
           </Box>
 
           {formError && (
@@ -95,4 +94,4 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
   );
 };
 
-export default DeleteHackathon;
+export default DeleteTeam;

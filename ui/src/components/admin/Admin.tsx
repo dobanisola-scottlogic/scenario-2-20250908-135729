@@ -2,13 +2,17 @@ import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import CreateUpdateHackathon from '../popups/CreateUpdateHackathon';
 import DeleteHackathon from '../popups/DeleteHackathon';
+import DeleteTeam from '../popups/DeleteTeam';
 
 const Admin = () => {
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
+  const [isTeamDeleteOpen, setIsTeamDeleteOpen] = useState<boolean>(false);
+
   const handleDeleteOpen = () => setIsDeleteOpen(true);
   const handleCreateOpen = () => setIsCreateOpen(true);
+  const handleTeamDeleteOpen = () => setIsTeamDeleteOpen(true);
 
   return (
     <>
@@ -25,8 +29,15 @@ const Admin = () => {
       <Button onClick={handleDeleteOpen}>Delete Hackathon</Button>
       <DeleteHackathon
         isOpen={isDeleteOpen}
-        hackathonId="test"
+        id="test"
         setIsOpen={setIsDeleteOpen}
+      />
+
+      <Button onClick={handleTeamDeleteOpen}>Delete Team</Button>
+      <DeleteTeam
+        isOpen={isTeamDeleteOpen}
+        id="test"
+        setIsOpen={setIsTeamDeleteOpen}
       />
     </>
   );

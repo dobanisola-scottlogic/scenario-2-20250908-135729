@@ -22,19 +22,15 @@ import {
 import { PopupProps } from '../../interfaces/PopupTypes';
 import PopupMessage from '../popupMessage/PopupMessage';
 
-const CreateUpdateHackathon = ({
-  hackathonId,
-  isOpen,
-  setIsOpen,
-}: PopupProps) => {
-  const isEditing = Boolean(hackathonId);
+const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
+  const isEditing = Boolean(id);
 
   const {
     data: hackathon,
     isLoading: isFetching,
     error: fetchError,
-  } = useGetHackathonQuery(hackathonId, {
-    skip: Boolean(hackathonId) === false, // Prevent query running when no hackathon ID is passed
+  } = useGetHackathonQuery(id, {
+    skip: Boolean(id) === false, // Prevent query running when no hackathon ID is passed
   });
   const { data: milestoneBots } = useGetMilestonesQuery();
   const [createHackathon, { isLoading: isCreating }] =
@@ -99,7 +95,7 @@ const CreateUpdateHackathon = ({
 
   const handleUpdateHackathon = () => {
     const updateHackathonRequest = {
-      id: hackathonId,
+      id,
       milestoneMap: milestoneMapName,
       milestoneClassName: milestoneBotName,
     };

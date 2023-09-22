@@ -49,8 +49,9 @@ export const handlers = [
       );
     }
   }),
-  rest.post(baseUrl + '/hackathon', (req, res, ctx) => {
-    const hackathonName = req.body.name as string;
+  rest.post(baseUrl + '/hackathon', async (req, res, ctx) => {
+    const requestData: Record<string, string> = await req.json();
+    const hackathonName = requestData.name;
 
     if (hackathonName === 'Test Hackathon') {
       return res(ctx.status(200), ctx.json(testHackathonBody));
@@ -70,10 +71,10 @@ export const handlers = [
       );
     }
   }),
-  rest.delete(baseUrl + '/hackathon/test-id', (req, res, ctx) => {
+  rest.delete(baseUrl + '/hackathon/test-id', (_, res, ctx) => {
     return res(ctx.status(204));
   }),
-  rest.delete(baseUrl + '/hackathon/400', (req, res, ctx) => {
+  rest.delete(baseUrl + '/hackathon/400', (_, res, ctx) => {
     return res(
       ctx.status(400),
       ctx.json({
@@ -81,7 +82,7 @@ export const handlers = [
       })
     );
   }),
-  rest.delete(baseUrl + '/hackathon/500', (req, res, ctx) => {
+  rest.delete(baseUrl + '/hackathon/500', (_, res, ctx) => {
     return res(
       ctx.status(500),
       ctx.json({
@@ -89,16 +90,35 @@ export const handlers = [
       })
     );
   }),
-  rest.get(baseUrl + '/hackathon/test-id', (req, res, ctx) => {
+  rest.get(baseUrl + '/hackathon/test-id', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(testHackathonBody));
   }),
-  rest.get(baseUrl + '/hackathon/not-found-id', (req, res, ctx) => {
+  rest.get(baseUrl + '/hackathon/not-found-id', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(null));
   }),
-  rest.put(baseUrl + '/hackathon/test-id', (req, res, ctx) => {
+  rest.put(baseUrl + '/hackathon/test-id', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(testHackathonBody));
   }),
-  rest.get(baseUrl + '/milestone', (req, res, ctx) => {
+  rest.get(baseUrl + '/milestone', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(getMilestonesResponse));
+  }),
+  rest.delete(baseUrl + '/team/test-id', (_, res, ctx) => {
+    return res(ctx.status(204));
+  }),
+  rest.delete(baseUrl + '/team/400', (_, res, ctx) => {
+    return res(
+      ctx.status(400),
+      ctx.json({
+        message: 'An error occurred - bad request.',
+      })
+    );
+  }),
+  rest.delete(baseUrl + '/team/500', (_, res, ctx) => {
+    return res(
+      ctx.status(500),
+      ctx.json({
+        message: 'An error occurred.',
+      })
+    );
   }),
 ];

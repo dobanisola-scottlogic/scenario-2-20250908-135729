@@ -24,7 +24,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Hackathon'],
+  tagTypes: ['Hackathon', 'Team'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, void>({
       query: () => ({
@@ -69,6 +69,13 @@ export const api = createApi({
       }),
       invalidatesTags: ['Hackathon'],
     }),
+    deleteTeam: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/team/${id}`,
+        method: RequestType.DELETE,
+      }),
+      invalidatesTags: ['Team'],
+    }),
   }),
 });
 
@@ -80,5 +87,6 @@ export const {
   useUpdateHackathonMutation,
   useGetHackathonQuery,
   useGetMilestonesQuery,
+  useDeleteTeamMutation,
   useLoginMutation,
 } = api;

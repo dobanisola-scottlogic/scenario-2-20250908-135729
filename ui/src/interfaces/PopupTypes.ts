@@ -1,5 +1,5 @@
 export interface PopupProps {
-  hackathonId?: string;
+  id?: string;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
