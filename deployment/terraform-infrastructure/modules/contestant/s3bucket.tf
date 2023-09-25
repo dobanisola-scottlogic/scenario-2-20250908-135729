@@ -1,6 +1,6 @@
 locals {
   python_contestant_tgz = "${path.root}/../../python-contestant/build/python-contestant.tgz"
-  java_contestant_tgz   = "${path.root}/../../python-contestant/build/python-contestant.tgz"
+  java_contestant_tgz   = "${path.root}/../../java-contestant/build/java-contestant.tgz"
 }
 
 # Create S3 bucket for Python contestant
