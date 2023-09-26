@@ -6,6 +6,8 @@ export const colours = {
   midGrey: '#EFEFEF',
   lightGrey: '#F5F5F5',
   textBlack: '#000000DE',
+  outlineGrey: '#0000001F',
+  errorRed: '#D8332E',
 };
 
 export const theme = createTheme({
@@ -23,6 +25,9 @@ export const theme = createTheme({
         root: {
           fontWeight: 'bold',
           justifyItems: 'center',
+          '&.MuiButton-outlined': {
+            borderColor: colours.outlineGrey,
+          },
         },
       },
     },
@@ -31,7 +36,6 @@ export const theme = createTheme({
         root: {
           color: colours.textBlack,
           fontWeight: 'bold',
-          flexGrow: 1,
         },
       },
     },
@@ -40,6 +44,23 @@ export const theme = createTheme({
         root: {
           backgroundColor: colours.midGrey,
           position: 'relative',
+        },
+      },
+    },
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          '& .MuiTableCell-head': {
+            fontWeight: 'bold',
+            background: 'white',
+          },
+        },
+      },
+    },
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          justifyContent: 'space-between',
         },
       },
     },

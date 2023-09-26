@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { HackathonResponse } from '../interfaces/HackathonResponse';
+import { Hackathon } from '../interfaces/Hackathon';
 import { LoginResponse } from '../interfaces/LoginResponse';
-import { GetMilestoneResponse } from '../interfaces/MilestonesResponse';
+import { Milestone } from '../interfaces/Milestone';
 import { RootState } from '../store';
 
 enum RequestType {
@@ -9,6 +9,10 @@ enum RequestType {
   POST = 'POST',
   PUT = 'PUT',
 }
+
+const removeMilestoneBotPrefix = (milestoneBotClassName: string) => {
+  return milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
+};
 
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
@@ -32,18 +36,26 @@ export const api = createApi({
         method: RequestType.POST,
       }),
     }),
-    getHackathon: builder.query<HackathonResponse, string>({
+    getHackathon: builder.query<Hackathon, string>({
       query: (id) => ({
         url: `/hackathon/${id}`,
       }),
       providesTags: ['Hackathon'],
     }),
-    getMilestones: builder.query<GetMilestoneResponse, void>({
+    getMilestones: builder.query<Milestone[], void>({
       query: () => ({
         url: '/milestone',
       }),
+      transformResponse: (response: Milestone[]) => {
+        return response.map((milestone) => ({
+          ...milestone,
+          readableMilestoneClassName: removeMilestoneBotPrefix(
+            milestone.milestoneClassName
+          ),
+        }));
+      },
     }),
-    createHackathon: builder.mutation<HackathonResponse, string>({
+    createHackathon: builder.mutation<Hackathon, string>({
       query: (name) => ({
         url: '/hackathon',
         method: RequestType.POST,
@@ -59,7 +71,7 @@ export const api = createApi({
       invalidatesTags: ['Hackathon'],
     }),
     updateHackathon: builder.mutation<
-      HackathonResponse,
+      Hackathon,
       { id: string; milestoneClassName: string; milestoneMap: string }
     >({
       query: ({ id, milestoneClassName, milestoneMap }) => ({
@@ -76,6 +88,20 @@ export const api = createApi({
       }),
       invalidatesTags: ['Team'],
     }),
+    getHackathons: builder.query<Hackathon[], void>({
+      query: () => ({
+        url: '/hackathon',
+      }),
+      transformResponse: (response: Hackathon[]) => {
+        return response.map((hackathon) => ({
+          ...hackathon,
+          readableCurrentMilestoneClassName: removeMilestoneBotPrefix(
+            hackathon.currentMilestoneClassName
+          ),
+        }));
+      },
+      providesTags: ['Hackathon'],
+    }),
   }),
 });
 
@@ -89,4 +115,5 @@ export const {
   useGetMilestonesQuery,
   useDeleteTeamMutation,
   useLoginMutation,
+  useGetHackathonsQuery,
 } = api;

@@ -1,12 +1,12 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProviders } from '../../utils/test-utils';
+import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import LoginTextField from './LoginTextField';
 
 const mockOnChange = vi.fn();
 
 describe('LoginTextField', () => {
   it('should render the LoginTextField component correctly when field is username', () => {
-    renderWithProviders(
+    renderWithRouterAndProvider(
       <LoginTextField field="username" onChange={mockOnChange} />
     );
 
@@ -19,7 +19,7 @@ describe('LoginTextField', () => {
   });
 
   it('should render the LoginTextField component correctly when field is password', () => {
-    renderWithProviders(
+    renderWithRouterAndProvider(
       <LoginTextField field="password" onChange={mockOnChange} />
     );
 
@@ -31,7 +31,7 @@ describe('LoginTextField', () => {
   });
 
   it('should show password when toggle password visibility button is clicked', () => {
-    renderWithProviders(
+    renderWithRouterAndProvider(
       <LoginTextField field="password" onChange={mockOnChange} />
     );
 

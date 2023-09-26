@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProviders } from '../../utils/test-utils';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import DeleteTeam from './DeleteTeam';
 
 describe('Delete Team Popup Component', () => {
@@ -8,7 +8,7 @@ describe('Delete Team Popup Component', () => {
 
   describe('When the delete team popup is opened', () => {
     it('renders the delete team popup', () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <DeleteTeam isOpen id="test-id" setIsOpen={mockFunction} />
       );
 
@@ -27,21 +27,23 @@ describe('Delete Team Popup Component', () => {
 
   describe('When the delete button is pressed', () => {
     it('calls the delete team function successfully', async () => {
-      renderWithProviders(
+      const { store } = renderWithRouterAndProvider(
         <DeleteTeam isOpen id="test-id" setIsOpen={mockFunction} />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'DELETE TEAM' }));
 
-      // Displays success message
-      const successMessage = await screen.findByText(
-        'Team deleted successfully!'
-      );
-      expect(successMessage).toBeInTheDocument();
+      await waitFor(() => {
+        const reduxState = store.getState();
+        expect(reduxState.snackbar.message).toEqual(
+          'Team deleted successfully!'
+        );
+        expect(reduxState.snackbar.isOpen).toBeTruthy();
+      });
     });
 
     it('displays an error when the delete team function returns unsuccessfully with a bad request', async () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <DeleteTeam isOpen id="400" setIsOpen={mockFunction} />
       );
 
@@ -52,7 +54,7 @@ describe('Delete Team Popup Component', () => {
     });
 
     it('displays an error when the delete team function returns unsuccessfully with an internal server error', async () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <DeleteTeam isOpen id="500" setIsOpen={mockFunction} />
       );
 

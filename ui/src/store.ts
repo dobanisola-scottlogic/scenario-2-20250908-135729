@@ -6,7 +6,8 @@ import {
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { api } from './api/api';
-import authReducer from './auth/authSlice';
+import authReducer from './slices/authSlice';
+import snackbarReducer from './slices/snackbarSlice';
 
 const persistConfig = {
   key: 'root',
@@ -16,6 +17,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  snackbar: snackbarReducer,
   [api.reducerPath]: api.reducer,
 });
 

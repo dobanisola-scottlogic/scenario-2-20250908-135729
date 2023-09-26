@@ -2,7 +2,6 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
-  readonly loggedInTitle: Locator;
   readonly usernameField: Locator;
   readonly passwordField: Locator;
   readonly visibilityButton: Locator;
@@ -15,14 +14,9 @@ export class LoginPage {
     this.usernameField = page.getByRole('textbox', { name: 'Username' });
     this.passwordField = page.getByTestId('password-input');
     this.visibilityButton = page.getByLabel('toggle password visibility');
-    this.loggedInTitle = page.getByRole('heading');
     this.loginButton = page.getByRole('button', { name: 'Login' });
     this.errorLogo = page.getByTestId('ErrorOutlineIcon');
     this.errorMessage = page.getByRole('alert');
-  }
-
-  async verifyLoginSuccessWithRole(role: string) {
-    await expect(this.loggedInTitle).toContainText(role);
   }
 
   async inputPassword(password: string) {

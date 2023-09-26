@@ -1,11 +1,11 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { UserRole } from '../../enums/UserRole';
-import { renderWithProviders } from '../../utils/test-utils';
+import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import NavbarMenu from './NavbarMenu';
 
 describe('NavbarMenu', () => {
   beforeEach(() => {
-    renderWithProviders(<NavbarMenu />, {
+    renderWithRouterAndProvider(<NavbarMenu />, {
       preloadedState: {
         auth: { name: 'admin', role: UserRole.ADMIN, credentials: '' },
       },

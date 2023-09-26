@@ -20,10 +20,13 @@ import {
   useGetMilestonesQuery,
   useUpdateHackathonMutation,
 } from '../../api/api';
-import { PopupProps } from '../../interfaces/PopupTypes';
-import PopupMessage from '../popupMessage/PopupMessage';
+import { useAppDispatch } from '../../hooks';
+import { PopupProps } from '../../interfaces/PopupProps';
+import { setSnackbarState } from '../../slices/snackbarSlice';
 
 const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
+  const dispatch = useAppDispatch();
+
   const isEditing = Boolean(id);
 
   const {
@@ -45,10 +48,6 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
   const [milestoneBotName, setMilestoneBotName] = useState<string>('');
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [isSnackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-
-  const readableMilestoneBotClassName = (milestoneBotClassName: string) =>
-    milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
 
   useEffect(() => {
     // Load data where passed into form
@@ -79,7 +78,12 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
     createHackathon(hackathonName)
       .unwrap()
       .then(() => {
-        setSnackbarOpen(true);
+        dispatch(
+          setSnackbarState({
+            isOpen: true,
+            message: 'Hackathon created successfully!',
+          })
+        );
         handleClose();
       })
       .catch((createError: unknown) => {
@@ -102,7 +106,12 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
     updateHackathon(updateHackathonRequest)
       .unwrap()
       .then(() => {
-        setSnackbarOpen(true);
+        dispatch(
+          setSnackbarState({
+            isOpen: true,
+            message: 'Hackathon updated successfully!',
+          })
+        );
         handleClose();
       })
       .catch((createError: unknown) => {
@@ -127,14 +136,6 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
 
   return (
     <>
-      <PopupMessage
-        isSnackbarOpen={isSnackbarOpen}
-        popupMessage={`Hackathon ${
-          isEditing ? 'updated' : 'created'
-        } successfully!`}
-        setShowSnackbar={setSnackbarOpen}
-      />
-
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
@@ -171,9 +172,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
                   key={milestoneBot.id}
                   value={milestoneBot.milestoneClassName}
                 >
-                  {readableMilestoneBotClassName(
-                    milestoneBot.milestoneClassName
-                  )}
+                  {milestoneBot.readableMilestoneClassName}
                 </MenuItem>
               ))}
             </Select>

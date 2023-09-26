@@ -2,7 +2,6 @@ import { APIResponse, expect, type Locator, type Page } from '@playwright/test';
 
 export class DeleteHackathonPage {
   readonly page: Page;
-  readonly popupButton: Locator;
   readonly popupBox: Locator;
   readonly popupHeaderText: Locator;
   readonly popupBodyText: Locator;
@@ -15,9 +14,6 @@ export class DeleteHackathonPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.popupButton = page.getByRole('button', {
-      name: 'Delete Hackathon',
-    });
     this.popupBox = page.getByRole('dialog');
     this.popupHeaderText = page.locator('[role="dialogHeading"]').nth(0);
     this.popupBodyText = page.locator('[role="dialogHeading"]').nth(1);
@@ -51,10 +47,6 @@ export class DeleteHackathonPage {
     );
     const hackResJSON = (await hackRes.json()) as [];
     expect(hackResJSON).toHaveLength(hackNum);
-  }
-
-  async openDeleteHackathonPopup() {
-    await this.popupButton.click();
   }
 
   async confirmPopupIsVisible() {

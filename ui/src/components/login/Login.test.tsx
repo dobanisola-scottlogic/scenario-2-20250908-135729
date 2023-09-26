@@ -1,13 +1,11 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProviders } from '../../utils/test-utils';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { UserRole } from '../../enums/UserRole';
+import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import Login from './Login';
 
 describe('Login', () => {
-  beforeEach(() => {
-    renderWithProviders(<Login />);
-  });
-
   it('should render the Login component correctly', () => {
+    renderWithRouterAndProvider(<Login />);
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
     expect(
       screen.getByRole('textbox', { name: 'Username' })
@@ -20,7 +18,9 @@ describe('Login', () => {
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
   });
 
-  it('handles login with valid credentials correctly', () => {
+  it('handles login with valid credentials correctly', async () => {
+    const { store } = renderWithRouterAndProvider(<Login />);
+
     // set credentials to testusername and testpassword to trigger 200 response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
       target: { value: 'testusername' },
@@ -30,10 +30,14 @@ describe('Login', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
-    expect(screen.queryByRole('alert')).toBeNull();
+    await waitFor(() => {
+      const reduxState = store.getState();
+      expect(reduxState.auth.role).toEqual(UserRole.ADMIN);
+    });
   });
 
   it('handles login with empty credentials correctly', () => {
+    renderWithRouterAndProvider(<Login />);
     // check whitespace is trimmed from username and password
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
       target: { value: '   ' },
@@ -46,6 +50,7 @@ describe('Login', () => {
   });
 
   it('handles login with invalid credentials correctly', async () => {
+    renderWithRouterAndProvider(<Login />);
     // set credentials to invalidusername and invalidpassword to trigger 401 response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
       target: { value: 'invalidusername' },
@@ -62,6 +67,7 @@ describe('Login', () => {
   });
 
   it('handles login where server connection is refused correctly', async () => {
+    renderWithRouterAndProvider(<Login />);
     // set credentials to networkerror to trigger network error response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
       target: { value: 'networkerror' },

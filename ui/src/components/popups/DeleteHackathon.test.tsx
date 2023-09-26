@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProviders } from '../../utils/test-utils';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import DeleteHackathon from './DeleteHackathon';
 
 describe('Delete Hackathon Popup Component', () => {
@@ -8,7 +8,7 @@ describe('Delete Hackathon Popup Component', () => {
 
   describe('When the delete Hackathon popup is opened', () => {
     it('renders the delete hackathon popup', () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <DeleteHackathon isOpen id="test-id" setIsOpen={mockFunction} />
       );
 
@@ -27,21 +27,23 @@ describe('Delete Hackathon Popup Component', () => {
 
   describe('When the delete button is pressed', () => {
     it('calls the delete hackathon function successfully', async () => {
-      renderWithProviders(
+      const { store } = renderWithRouterAndProvider(
         <DeleteHackathon isOpen id="test-id" setIsOpen={mockFunction} />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'DELETE HACKATHON' }));
 
-      // Displays success message
-      const successMessage = await screen.findByText(
-        'Hackathon deleted successfully!'
-      );
-      expect(successMessage).toBeInTheDocument();
+      await waitFor(() => {
+        const reduxState = store.getState();
+        expect(reduxState.snackbar.message).toEqual(
+          'Hackathon deleted successfully!'
+        );
+        expect(reduxState.snackbar.isOpen).toBeTruthy();
+      });
     });
 
     it('displays an error when the delete hackathon function returns unsuccessfully with a bad request', async () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <DeleteHackathon isOpen id="400" setIsOpen={mockFunction} />
       );
 
@@ -54,7 +56,7 @@ describe('Delete Hackathon Popup Component', () => {
     });
 
     it('displays an error when the delete hackathon function returns unsuccessfully with an internal server error', async () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <DeleteHackathon isOpen id="500" setIsOpen={mockFunction} />
       );
 

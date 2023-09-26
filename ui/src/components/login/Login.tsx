@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useLoginMutation } from '../../api/api';
-import { setCredentials } from '../../auth/authSlice';
 import { useAppDispatch } from '../../hooks';
+import { setCredentials } from '../../slices/authSlice';
 import LoginTextField from './LoginTextField';
 
 const Login = () => {

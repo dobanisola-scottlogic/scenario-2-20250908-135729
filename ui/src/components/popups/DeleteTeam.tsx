@@ -9,14 +9,16 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useDeleteTeamMutation } from '../../api/api';
-import { PopupProps } from '../../interfaces/PopupTypes';
-import PopupMessage from '../popupMessage/PopupMessage';
+import { useAppDispatch } from '../../hooks';
+import { PopupProps } from '../../interfaces/PopupProps';
+import { setSnackbarState } from '../../slices/snackbarSlice';
 
 const DeleteTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
+  const dispatch = useAppDispatch();
+
   const [deleteTeam, { isLoading: isDeleting }] = useDeleteTeamMutation();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [isSnackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
   const handleClose = () => {
     setFormError(undefined);
@@ -29,7 +31,12 @@ const DeleteTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
     deleteTeam(id!)
       .unwrap()
       .then(() => {
-        setSnackbarOpen(true);
+        dispatch(
+          setSnackbarState({
+            isOpen: true,
+            message: 'Team deleted successfully!',
+          })
+        );
         handleClose();
       })
       .catch((createError: unknown) => {
@@ -44,12 +51,6 @@ const DeleteTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
 
   return (
     <>
-      <PopupMessage
-        isSnackbarOpen={isSnackbarOpen}
-        popupMessage="Team deleted successfully!"
-        setShowSnackbar={setSnackbarOpen}
-      />
-
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">

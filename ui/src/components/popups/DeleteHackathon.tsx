@@ -9,15 +9,17 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useDeleteHackathonMutation } from '../../api/api';
-import { PopupProps } from '../../interfaces/PopupTypes';
-import PopupMessage from '../popupMessage/PopupMessage';
+import { useAppDispatch } from '../../hooks';
+import { PopupProps } from '../../interfaces/PopupProps';
+import { setSnackbarState } from '../../slices/snackbarSlice';
 
 const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
+  const dispatch = useAppDispatch();
+
   const [deleteHackathon, { isLoading: isDeleting }] =
     useDeleteHackathonMutation();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [isSnackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
   const handleClose = () => {
     setFormError(undefined);
@@ -30,7 +32,12 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
     deleteHackathon(id!)
       .unwrap()
       .then(() => {
-        setSnackbarOpen(true);
+        dispatch(
+          setSnackbarState({
+            isOpen: true,
+            message: 'Hackathon deleted successfully!',
+          })
+        );
         handleClose();
       })
       .catch((createError: unknown) => {
@@ -45,12 +52,6 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
 
   return (
     <>
-      <PopupMessage
-        isSnackbarOpen={isSnackbarOpen}
-        popupMessage="Hackathon deleted successfully!"
-        setShowSnackbar={setSnackbarOpen}
-      />
-
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">

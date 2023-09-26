@@ -1,5 +1,7 @@
 import { test as base } from '@playwright/test';
+import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
 import { LoginPage } from '../pageObjectModel/login-page';
+import { TeamDashboardPage } from '../pageObjectModel/team-dashboard-page';
 
 const emptyFieldErrors: {
   username: string;
@@ -10,10 +12,22 @@ const emptyFieldErrors: {
   { username: ' ', password: 'secret' },
 ];
 
-const test = base.extend<{ login: LoginPage }>({
+const test = base.extend<{
+  login: LoginPage;
+  hackathonListPage: HackathonListPage;
+  teamDashboardPage: TeamDashboardPage;
+}>({
   login: async ({ page }, use) => {
     const login = new LoginPage(page);
     await use(login);
+  },
+  hackathonListPage: async ({ page }, use) => {
+    const hackathonListPage = new HackathonListPage(page);
+    await use(hackathonListPage);
+  },
+  teamDashboardPage: async ({ page }, use) => {
+    const teamDashboardPage = new TeamDashboardPage(page);
+    await use(teamDashboardPage);
   },
 });
 
@@ -21,16 +35,16 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('admin can successfully log in', async ({ login }) => {
+test('admin can successfully log in', async ({ login, hackathonListPage }) => {
   await login.inputCredentials('admin', 'secret');
   await login.attemptLogin();
-  await login.verifyLoginSuccessWithRole('Admin');
+  await hackathonListPage.verifyLoginSuccess();
 });
 
-test('team can successfully log in', async ({ login }) => {
+test('team can successfully log in', async ({ login, teamDashboardPage }) => {
   await login.inputCredentials('team', 'secret');
   await login.mockTeamLogin();
-  await login.verifyLoginSuccessWithRole('Team');
+  await teamDashboardPage.verifyLoginSuccess();
 });
 
 for (const creds of emptyFieldErrors) {

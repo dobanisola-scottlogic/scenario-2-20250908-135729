@@ -1,15 +1,15 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Logout from '@mui/icons-material/Logout';
 import { Button, ListItemIcon, Menu, MenuItem } from '@mui/material';
-import React from 'react';
-import { logout, selectTeamName } from '../../auth/authSlice';
+import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { logout, selectTeamName } from '../../slices/authSlice';
 
 function NavbarMenu() {
   const dispatch = useAppDispatch();
   const teamName = useAppSelector(selectTeamName);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

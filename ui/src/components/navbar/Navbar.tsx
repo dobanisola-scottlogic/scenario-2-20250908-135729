@@ -1,16 +1,27 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
-import { selectUserRole } from '../../auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
-import NavbarMenu from './NavbarMenu';
+import { selectUserRole } from '../../slices/authSlice';
+import NavbarMenu from '../menus/NavbarMenu';
 
 const Navbar = () => {
   const userRole = useAppSelector(selectUserRole);
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate('/');
+  };
 
   return (
     <>
       <AppBar elevation={0}>
         <Toolbar>
-          <Typography variant="h6" component="header">
+          <Typography
+            variant="h6"
+            component="header"
+            onClick={handleRedirect}
+            sx={{ cursor: 'pointer' }}
+          >
             Hackathon
           </Typography>
           {userRole && <NavbarMenu />}

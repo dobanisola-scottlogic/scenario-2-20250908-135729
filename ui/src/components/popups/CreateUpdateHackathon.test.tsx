@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithProviders } from '../../utils/test-utils';
+import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateUpdateHackathon from './CreateUpdateHackathon';
 
 describe('Create Update Hackathon Popup Component', () => {
@@ -9,7 +9,7 @@ describe('Create Update Hackathon Popup Component', () => {
   describe('Create Hackathon', () => {
     describe('When the create Hackathon popup is opened', () => {
       it('renders the create hackathon popup', () => {
-        renderWithProviders(
+        renderWithRouterAndProvider(
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
@@ -23,7 +23,7 @@ describe('Create Update Hackathon Popup Component', () => {
       });
 
       it('disables the add hackathon button until a name is entered', () => {
-        renderWithProviders(
+        renderWithRouterAndProvider(
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
@@ -45,7 +45,7 @@ describe('Create Update Hackathon Popup Component', () => {
 
     describe('When the create button is pressed', () => {
       it('calls the create hackathon function successfully', async () => {
-        renderWithProviders(
+        const { store } = renderWithRouterAndProvider(
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
@@ -58,15 +58,17 @@ describe('Create Update Hackathon Popup Component', () => {
           screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
         );
 
-        // Wait to display success message
-        const alert = await screen.findByText(
-          'Hackathon created successfully!'
-        );
-        expect(alert).toBeInTheDocument();
+        await waitFor(() => {
+          const reduxState = store.getState();
+          expect(reduxState.snackbar.message).toEqual(
+            'Hackathon created successfully!'
+          );
+          expect(reduxState.snackbar.isOpen).toBeTruthy();
+        });
       });
 
       it('displays an error when the create hackathon function returns unsuccessfully with an internal server error', async () => {
-        renderWithProviders(
+        renderWithRouterAndProvider(
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
@@ -86,7 +88,7 @@ describe('Create Update Hackathon Popup Component', () => {
       });
 
       it('displays an error when the create hackathon function returns unsuccessfully with a bad request error', async () => {
-        renderWithProviders(
+        renderWithRouterAndProvider(
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
@@ -110,7 +112,7 @@ describe('Create Update Hackathon Popup Component', () => {
 
   describe('Update Hackathon', () => {
     it('renders the update hackathon popup', () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <CreateUpdateHackathon id="test-id" isOpen setIsOpen={mockFunction} />
       );
 
@@ -124,7 +126,7 @@ describe('Create Update Hackathon Popup Component', () => {
     });
 
     it('renders the update hackathon popup with the correct data', async () => {
-      renderWithProviders(
+      renderWithRouterAndProvider(
         <CreateUpdateHackathon id="test-id" isOpen setIsOpen={mockFunction} />
       );
 
@@ -162,7 +164,7 @@ describe('Create Update Hackathon Popup Component', () => {
 
     describe('When the edit button is pressed', () => {
       it('calls the edit hackathon function successfully', async () => {
-        renderWithProviders(
+        const { store } = renderWithRouterAndProvider(
           <CreateUpdateHackathon id="test-id" isOpen setIsOpen={mockFunction} />
         );
 
@@ -177,15 +179,17 @@ describe('Create Update Hackathon Popup Component', () => {
           screen.getByRole('button', { name: 'UPDATE HACKATHON' })
         );
 
-        // Displays success message
-        await screen.findByText('Hackathon updated successfully!');
-        expect(
-          screen.getByText('Hackathon updated successfully!')
-        ).toBeInTheDocument();
+        await waitFor(() => {
+          const reduxState = store.getState();
+          expect(reduxState.snackbar.message).toEqual(
+            'Hackathon updated successfully!'
+          );
+          expect(reduxState.snackbar.isOpen).toBeTruthy();
+        });
       });
 
       it('disables update when the hackathon does not load correctly or is not found', async () => {
-        renderWithProviders(
+        renderWithRouterAndProvider(
           <CreateUpdateHackathon
             id="not-found-id"
             isOpen

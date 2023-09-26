@@ -121,4 +121,14 @@ export const handlers = [
       })
     );
   }),
+  rest.get(baseUrl + '/hackathon', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json([testHackathonBody]));
+  }),
 ];
+
+export const getHackathonsNetworkErrorResponseHandler = rest.get(
+  baseUrl + '/hackathon',
+  (_, res) => {
+    return res.networkError('Network error occurred.');
+  }
+);

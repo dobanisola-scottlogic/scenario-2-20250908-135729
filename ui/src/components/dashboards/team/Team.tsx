@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import { selectTeamName } from '../../auth/authSlice';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../../hooks';
+import { selectTeamName } from '../../../slices/authSlice';
 
 const Team = () => {
   const name = useAppSelector(selectTeamName);
