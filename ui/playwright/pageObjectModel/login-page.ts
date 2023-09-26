@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
+  readonly loginTitle: Locator;
   readonly usernameField: Locator;
   readonly passwordField: Locator;
   readonly visibilityButton: Locator;
@@ -11,6 +12,7 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.loginTitle = page.getByRole('heading');
     this.usernameField = page.getByRole('textbox', { name: 'Username' });
     this.passwordField = page.getByTestId('password-input');
     this.visibilityButton = page.getByLabel('toggle password visibility');
@@ -65,5 +67,9 @@ export class LoginPage {
   async verifyPasswordIs(visibleOrHidden: string) {
     const requiredType = visibleOrHidden == 'visible' ? 'text' : 'password';
     await expect(this.passwordField).toHaveAttribute('type', requiredType);
+  }
+
+  async verifyLogoutSuccess() {
+    await expect(this.loginTitle).toContainText('Login');
   }
 }

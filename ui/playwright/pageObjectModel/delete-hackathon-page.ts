@@ -1,4 +1,4 @@
-import { APIResponse, expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class DeleteHackathonPage {
   readonly page: Page;
@@ -39,14 +39,6 @@ export class DeleteHackathonPage {
       }
     );
     expect(check.status()).toBe(200);
-  }
-
-  async expectNumberOfHackathonsToBe(hackNum: number) {
-    const hackRes: APIResponse = await this.page.request.get(
-      'http://localhost:8080/application/api/hackathon'
-    );
-    const hackResJSON = (await hackRes.json()) as [];
-    expect(hackResJSON).toHaveLength(hackNum);
   }
 
   async confirmPopupIsVisible() {

@@ -31,7 +31,7 @@ test('admin can create a new hackathon', async ({
   createHackathonPage,
   hackathonListPage,
 }) => {
-  await createHackathonPage.expectNumberOfHackathonsToBe(0);
+  await hackathonListPage.expectNumberOfHackathonsToBe(0);
   await hackathonListPage.openCreateHackathonPopup();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName('New Hackathon');
@@ -39,7 +39,7 @@ test('admin can create a new hackathon', async ({
   await createHackathonPage.verifyHackathonCreated(
     'Hackathon created successfully!'
   );
-  await createHackathonPage.expectNumberOfHackathonsToBe(1);
+  await hackathonListPage.expectNumberOfHackathonsToBe(1);
   await page.request.delete(
     'http://localhost:8080/application/api/hackathon/new-hackathon'
   );

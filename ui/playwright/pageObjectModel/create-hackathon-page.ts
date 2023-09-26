@@ -1,4 +1,4 @@
-import { APIResponse, expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class CreateHackathonPage {
   readonly page: Page;
@@ -51,13 +51,5 @@ export class CreateHackathonPage {
   async verifyHackathonCreated(alertMessage: string) {
     await expect(this.successIcon).toBeVisible();
     await expect(this.alertNotification).toContainText(alertMessage);
-  }
-
-  async expectNumberOfHackathonsToBe(hackathonNumber: number) {
-    const hackathonResponse: APIResponse = await this.page.request.get(
-      'http://localhost:8080/application/api/hackathon'
-    );
-    const hackathonResponseJSON = (await hackathonResponse.json()) as [];
-    expect(hackathonResponseJSON).toHaveLength(hackathonNumber);
   }
 }

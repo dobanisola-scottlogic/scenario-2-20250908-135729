@@ -21,7 +21,7 @@ test.beforeEach(async ({ page, deleteHackathonPage }) => {
   const login = new LoginPage(page);
   const hackathonListPage = new HackathonListPage(page);
   await deleteHackathonPage.createHackathon();
-  await deleteHackathonPage.expectNumberOfHackathonsToBe(1);
+  await hackathonListPage.expectNumberOfHackathonsToBe(1);
   await page.goto('/');
   await login.inputCredentials('admin', 'secret');
   await login.attemptLogin();
@@ -46,7 +46,7 @@ test('hackathon can be successfully deleted and subsequent alert can be closed',
   );
   await deleteHackathonPage.closeSuccessAlert();
   await deleteHackathonPage.confirmSuccessAlertDoesNotExist();
-  await deleteHackathonPage.expectNumberOfHackathonsToBe(0);
+  await hackathonListPage.expectNumberOfHackathonsToBe(0);
 });
 
 test('hackathon deletion can be cancelled', async ({

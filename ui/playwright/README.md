@@ -8,9 +8,10 @@ When running any of the below commands, make sure that your terminal window is l
 in the ui directory (e.g. if on the base directory, cd into 'ui' before running any
 tests).
 
+When running the server, ensure the environment variable is set to "ENVIRONMENT=dev". This can be done in IntelliJ by navigating to Run > Edit configurations. Then in the Gradle dropdown > select hackathon-ai-game:server > enter ENVIRONMENT=dev into the Environment variables section. Press OK.
+
 **npx playwright test:** will run the Playwright tests against the current local Hackathon.
-For this to be functional, make sure that the hackathon server, with "ENVIRONMENT=dev" set
-as an environment variable, is running. The dev server is automatically run as part of
+For this to be functional, make sure that the hackathon server is running. The dev server is automatically run as part of
 test configuration.
 
 These tests will also generate reports after completion. The report will be opened automatically
