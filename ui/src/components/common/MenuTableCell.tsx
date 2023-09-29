@@ -1,4 +1,4 @@
-import { TableCell } from '@mui/material';
+import { Box, TableCell } from '@mui/material';
 import { ReactNode } from 'react';
 
 interface MenuTableCellProps {
@@ -7,15 +7,18 @@ interface MenuTableCellProps {
 }
 
 const MenuTableCell = ({ text, menu }: MenuTableCellProps) => (
-  <TableCell
-    sx={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    }}
-  >
-    {text}
-    {menu}
+  <TableCell>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        overflowWrap: 'anywhere',
+      }}
+    >
+      {text}
+      {menu}
+    </Box>
   </TableCell>
 );
 

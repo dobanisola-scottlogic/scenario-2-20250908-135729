@@ -27,7 +27,6 @@ const KebabMenu = ({ options }: KebabMenuProps) => {
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
         onClick={handleClick}
-        sx={{ p: '0px' }}
       >
         <MoreVertIcon />
       </IconButton>
