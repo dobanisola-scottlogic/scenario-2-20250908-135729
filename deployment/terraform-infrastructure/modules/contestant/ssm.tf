@@ -1,4 +1,4 @@
-# Create an SSM document to populate the Cloud9 environments with contestant files from the S3 buckets
+# Create an SSM document to populate the Cloud9 environments with contestant files from the S3 bucket
 # The SSM document defines the scripts to be executed on the Cloud9-managed EC2 instances
 resource "aws_ssm_document" "s3_cloud9_sync_command" {
   name            = "${var.workspace}-s3-cloud9-sync-command"
@@ -13,10 +13,11 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
         "action" : "aws:runShellScript",
         "name" : "runShellScript",
         "inputs" : {
-          "runCommand" : [
-            "aws s3 sync s3://${aws_s3_bucket.python_contestant_bucket.bucket} /home/ec2-user/environment",
-            "aws s3 sync s3://${aws_s3_bucket.java_contestant_bucket.bucket} /home/ec2-user/environment",
-          ]
+          # Create a directory for each contestant archive
+          # Stream each contestant archive through tar to extract the files into the directory
+          "runCommand" : flatten([for c in var.contestants :
+            ["mkdir -p /home/ec2-user/environment/${c}-contestant",
+          "aws s3 cp s3://${aws_s3_bucket.contestant_bucket.bucket}/${c}-contestant.tgz - | tar -xz -C /home/ec2-user/environment/${c}-contestant"]])
         }
       }
     ]

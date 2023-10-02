@@ -12,3 +12,9 @@ variable "workspace" {
   type        = string
   description = "The name of the workspace to use for this deployment"
 }
+
+variable "contestants" {
+  type        = list(string)
+  description = "Available contestant templates"
+  default     = ["python", "java"]
+}

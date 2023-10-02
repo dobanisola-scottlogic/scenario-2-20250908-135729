@@ -73,11 +73,11 @@ resource "aws_iam_user_policy" "cloud_9_policy" {
   })
 }
 
-# Define an IAM policy allowing read access to S3 contestant buckets and attach it to the AWSCloud9SSMAccessRole
-# Grants Cloud9-managed EC2 instances permissions to sync contestant files from the S3 buckets
+# Define an IAM policy allowing read access to S3 contestant bucket and attach it to the AWSCloud9SSMAccessRole
+# Grants Cloud9-managed EC2 instances permissions to sync contestant files from the S3 bucket
 resource "aws_iam_policy" "s3_contestant_bucket_read_policy" {
   name        = "${var.workspace}-s3-contestant-bucket-read-policy"
-  description = "Policy to read from S3 contestant buckets"
+  description = "Policy to read from S3 contestant bucket"
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -89,10 +89,8 @@ resource "aws_iam_policy" "s3_contestant_bucket_read_policy" {
           "s3:ListBucket",
         ],
         "Resource" : [
-          "arn:aws:s3:::${aws_s3_bucket.python_contestant_bucket.bucket}/*",
-          "arn:aws:s3:::${aws_s3_bucket.python_contestant_bucket.bucket}",
-          "arn:aws:s3:::${aws_s3_bucket.java_contestant_bucket.bucket}/*",
-          "arn:aws:s3:::${aws_s3_bucket.java_contestant_bucket.bucket}"
+          "arn:aws:s3:::${aws_s3_bucket.contestant_bucket.bucket}/*",
+          "arn:aws:s3:::${aws_s3_bucket.contestant_bucket.bucket}"
         ]
       }
     ]
