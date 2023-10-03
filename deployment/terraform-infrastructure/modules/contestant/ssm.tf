@@ -26,10 +26,11 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
 
 # Associate the S3Cloud9SyncCommand SSM document with Cloud9-managed EC2 instances to execute the commands on those instances
 resource "aws_ssm_association" "execute_s3_cloud9_sync_command" {
-  name = aws_ssm_document.s3_cloud9_sync_command.name
+  for_each = data.aws_instance.cloud9_ec2_instance
+  name     = aws_ssm_document.s3_cloud9_sync_command.name
 
   targets {
     key    = "InstanceIds"
-    values = [data.aws_instance.cloud9_ec2_instance.id]
+    values = [each.value.id]
   }
 }

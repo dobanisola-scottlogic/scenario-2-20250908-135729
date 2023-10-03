@@ -10,11 +10,11 @@
     "lint-tsc:ui": "cd ui && npm run lint-tsc:staged"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "ui/**/*.{ts,tsx}": [
       "npm run eslint:ui",
       "npm run lint-tsc:ui"
     ],
-    "*": [
+    "ui/**/*": [
       "npm run prettier:ui"
     ]
   }

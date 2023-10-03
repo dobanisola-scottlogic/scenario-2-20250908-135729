@@ -1,5 +1,5 @@
-output "cloud9_url" {
-  value = "https://${var.aws_region}.console.aws.amazon.com/cloud9/ide/${aws_cloud9_environment_ec2.cloud9_instance.id}"
+output "cloud9_urls" {
+  value = [for instance in aws_cloud9_environment_ec2.cloud9_instance : "https://${var.aws_region}.console.aws.amazon.com/cloud9/ide/${instance.id}"]
 }
 
 output "hackathon_contestant_arn" {

@@ -1,45 +1,22 @@
-# Create the Cloud9 instance:
+# Create the Cloud9 instances
 resource "aws_cloud9_environment_ec2" "cloud9_instance" {
+  count                       = var.team_count
   automatic_stop_time_minutes = 30
   connection_type             = "CONNECT_SSM"
   instance_type               = "t2.micro"
-  name                        = "${var.workspace}-cloud9-instance-01"
+  name                        = "${var.workspace}-cloud9-instance-${count.index + 1}"
   owner_arn                   = aws_iam_user.hackathon_contestant.arn
   subnet_id                   = var.public_subnet_id
 
   depends_on = [aws_iam_user.hackathon_contestant]
 }
 
-# Get the cloud 9 security group using a filter:
-data "aws_security_group" "cloud9_security_group" {
-  filter {
-    name = "tag:aws:cloud9:environment"
-    values = [
-      aws_cloud9_environment_ec2.cloud9_instance.id
-    ]
-  }
-}
-
-# Configure the egress rule to allow the cloud 9 to access the internet:
-resource "aws_vpc_security_group_egress_rule" "cloud9_security_group_egress_rule" {
-  security_group_id = data.aws_security_group.cloud9_security_group.id
-
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 0
-  ip_protocol = "tcp"
-  to_port     = 65535
-
-  tags = {
-    Name = "${var.workspace}-cloud9-security-group-egress-rule"
-  }
-}
-
-# Get the cloud 9 instance using a filter
+# Get the Cloud9 EC2 instances using a filter
 data "aws_instance" "cloud9_ec2_instance" {
+  for_each = { for index, environment in aws_cloud9_environment_ec2.cloud9_instance : index => environment.id }
+
   filter {
-    name = "tag:aws:cloud9:environment"
-    values = [
-      aws_cloud9_environment_ec2.cloud9_instance.id
-    ]
+    name   = "tag:aws:cloud9:environment"
+    values = [each.value]
   }
 }

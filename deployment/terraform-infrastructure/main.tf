@@ -3,5 +3,6 @@ module "contestant" {
 
   aws_region       = var.aws_region
   public_subnet_id = aws_subnet.public_subnets[0].id
+  team_count       = var.team_count
   workspace        = local.workspace
 }

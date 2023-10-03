@@ -80,6 +80,12 @@ variable "server_image" {
   default     = "032044580362.dkr.ecr.eu-west-2.amazonaws.com/hackathon-gameserver:latest"
 }
 
+variable "team_count" {
+  type        = number
+  description = "The number of Cloud9 environments to create (number of teams required)"
+  default     = 3
+}
+
 variable "vpc_public_subnet_count" {
   description = "How many public subnets to create in the VPC"
   type        = number

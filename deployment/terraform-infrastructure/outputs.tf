@@ -65,8 +65,8 @@ output "log_group_arn" {
   value       = aws_cloudwatch_log_group.cloudwatch_logs_group.arn
 }
 
-output "cloud9_url" {
-  value = module.contestant.cloud9_url
+output "cloud9_urls" {
+  value = module.contestant.cloud9_urls
 }
 
 output "hackathon_contestant_arn" {
