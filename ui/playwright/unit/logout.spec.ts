@@ -18,6 +18,7 @@ const test = base.extend<{
 
 test.beforeEach(async ({ page, login, hackathonListPage }) => {
   await page.goto('/');
+  await page.getByText('Hackathon').click();
   await login.inputCredentials('admin', 'secret');
   await login.attemptLogin();
   await hackathonListPage.verifyLoginSuccess();

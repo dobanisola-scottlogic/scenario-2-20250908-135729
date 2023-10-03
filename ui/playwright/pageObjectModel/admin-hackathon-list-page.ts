@@ -5,7 +5,11 @@ export class HackathonListPage {
   readonly navigationBarDropdownButton: Locator;
   readonly logoutButton: Locator;
   readonly addNewHackathonButton: Locator;
-  readonly hackathonMenuButton: Locator;
+  readonly hackathonMenuButton: ({
+    hackathonName,
+  }: {
+    hackathonName: string;
+  }) => Locator;
   readonly deleteHackathonButton: Locator;
 
   constructor(page: Page) {
@@ -17,7 +21,8 @@ export class HackathonListPage {
     this.addNewHackathonButton = page.getByRole('button', {
       name: 'Add a new hackathon',
     });
-    this.hackathonMenuButton = page.getByLabel('more');
+    this.hackathonMenuButton = ({ hackathonName }) =>
+      page.getByRole('row', { name: `${hackathonName}` }).getByLabel('more');
     this.deleteHackathonButton = page.getByRole('menuitem', {
       name: 'Delete...',
     });
@@ -32,8 +37,8 @@ export class HackathonListPage {
     await this.addNewHackathonButton.click();
   }
 
-  async openDeleteHackathonPopup() {
-    await this.hackathonMenuButton.click();
+  async openDeletePopupOfHackathonWithName(hackathonName: string) {
+    await this.hackathonMenuButton({ hackathonName: hackathonName }).click();
     await this.deleteHackathonButton.click();
   }
 
@@ -47,5 +52,30 @@ export class HackathonListPage {
     );
     const hackathonResponseJSON = (await hackathonResponse.json()) as [];
     expect(hackathonResponseJSON).toHaveLength(hackathonNumber);
+  }
+
+  async checkExistenceOfHackathonInTableWithName(
+    hackathonName: string,
+    shouldExist: boolean
+  ) {
+    let expectedAmount = 0;
+    if (shouldExist) {
+      expectedAmount = 1;
+    }
+    expect(
+      await this.hackathonMenuButton({ hackathonName: hackathonName }).count()
+    ).toBe(expectedAmount);
+  }
+
+  async clearAnyExistingHackathonWithName(hackathonName: string) {
+    const hackathonPostResponse = await this.page.request.get(
+      `http://localhost:8080/application/api/hackathon/${hackathonName.toLowerCase()}`
+    );
+    if (hackathonPostResponse.status() == 200) {
+      const hackathonDeleteResponse = await this.page.request.delete(
+        `http://localhost:8080/application/api/hackathon/${hackathonName.toLowerCase()}`
+      );
+      expect(hackathonDeleteResponse.status()).toBe(204);
+    }
   }
 }

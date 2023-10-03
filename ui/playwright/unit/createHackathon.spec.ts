@@ -1,4 +1,5 @@
 import { test as base } from '@playwright/test';
+import { HackathonHelpers } from '../helpers';
 import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
 import { CreateHackathonPage } from '../pageObjectModel/create-hackathon-page';
 import { LoginPage } from '../pageObjectModel/login-page';
@@ -17,32 +18,35 @@ const test = base.extend<{
   },
 });
 
-test.beforeEach(async ({ page }) => {
+const uniqueHackId = new HackathonHelpers();
+let hackathonName = '';
+
+test.beforeEach(async ({ page, hackathonListPage }) => {
+  hackathonName = 'createHackathon_' + uniqueHackId.generateRandomString();
   const login = new LoginPage(page);
-  const hackathonListPage = new HackathonListPage(page);
   await page.goto('/');
+  await page.getByText('Hackathon').click();
   await login.inputCredentials('admin', 'secret');
   await login.attemptLogin();
   await hackathonListPage.verifyLoginSuccess();
 });
 
 test('admin can create a new hackathon', async ({
-  page,
   createHackathonPage,
   hackathonListPage,
 }) => {
-  await hackathonListPage.expectNumberOfHackathonsToBe(0);
   await hackathonListPage.openCreateHackathonPopup();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
-  await createHackathonPage.inputHackathonName('New Hackathon');
+  await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.addNewHackathon();
   await createHackathonPage.verifyHackathonCreated(
     'Hackathon created successfully!'
   );
-  await hackathonListPage.expectNumberOfHackathonsToBe(1);
-  await page.request.delete(
-    'http://localhost:8080/application/api/hackathon/new-hackathon'
+  await hackathonListPage.checkExistenceOfHackathonInTableWithName(
+    hackathonName,
+    true
   );
+  await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
 test('admin cannot create a new hackathon without a name', async ({
@@ -51,7 +55,7 @@ test('admin cannot create a new hackathon without a name', async ({
 }) => {
   await hackathonListPage.openCreateHackathonPopup();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
-  await createHackathonPage.inputHackathonName('New Hackathon');
+  await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.clearHackathonName();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
 });
@@ -62,6 +66,11 @@ test('admin can cancel creating a new hackathon', async ({
 }) => {
   await hackathonListPage.openCreateHackathonPopup();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
+  await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.cancelNewHackathon();
   await createHackathonPage.verifyCreateHackathonPopUpDoesNotExist();
+  await hackathonListPage.checkExistenceOfHackathonInTableWithName(
+    hackathonName,
+    false
+  );
 });

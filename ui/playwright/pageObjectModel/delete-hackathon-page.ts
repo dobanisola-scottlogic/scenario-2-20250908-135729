@@ -54,9 +54,9 @@ export class DeleteHackathonPage {
     await this.deleteHackathonButton.click();
   }
 
-  async mock400ErrorOnHackathonDeletion() {
+  async mock400ErrorOnDeletingTheHackathon(hackathonName: string) {
     await this.page.route(
-      'http://localhost:8080/application/api/hackathon/test',
+      `http://localhost:8080/application/api/hackathon/${hackathonName.toLowerCase()}`,
       async (route) => {
         await route.fulfill({ status: 400 });
       }
@@ -64,9 +64,9 @@ export class DeleteHackathonPage {
     await this.deleteHackathon();
   }
 
-  async mock500ErrorOnHackathonDeletion() {
+  async mock500ErrorOnDeletingTheHackathon(hackathonName: string) {
     await this.page.route(
-      'http://localhost:8080/application/api/hackathon/test',
+      `http://localhost:8080/application/api/hackathon/${hackathonName.toLowerCase()}`,
       async (route) => {
         await route.fulfill({ status: 500 });
       }

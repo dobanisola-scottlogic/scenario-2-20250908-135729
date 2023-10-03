@@ -33,6 +33,7 @@ const test = base.extend<{
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
+  await page.getByText('Hackathon').click();
 });
 
 test('admin can successfully log in', async ({ login, hackathonListPage }) => {
