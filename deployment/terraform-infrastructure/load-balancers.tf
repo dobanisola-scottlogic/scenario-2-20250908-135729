@@ -48,59 +48,6 @@ resource "aws_lb_listener" "public_load_balancer_listener" {
   }
 }
 
-# Private load balancer, hosted in private subnets, that only
-# accepts traffic from other containers in the Fargate cluster, and is
-# intended for private services that should not be accessed directly
-# by the public.
-# HAC-116 - Do we need both public and private load balancers?
-resource "aws_lb" "private_load_balancer" {
-  enable_deletion_protection = false
-  idle_timeout               = 30
-  internal                   = true
-  load_balancer_type         = "application"
-  name                       = "${local.workspace}-private-load-balancer"
-  security_groups            = [aws_security_group.private_load_balancer_sg.id]
-  subnets                    = aws_subnet.private_subnets[*].id
-
-  tags = {
-    Name = "${local.workspace}-private-load-balancer"
-  }
-}
-
-resource "aws_lb_target_group" "private_load_balancer_target_group" {
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.vpc.id
-
-  health_check {
-    enabled           = true
-    healthy_threshold = 2
-    interval          = 6
-    path              = "/"
-    protocol          = "HTTP"
-    timeout           = 5
-  }
-
-  tags = {
-    Name = "${local.workspace}-private-load-balancer-target-group"
-  }
-}
-
-resource "aws_lb_listener" "private_load_balancer_listener" {
-  load_balancer_arn = aws_lb.private_load_balancer.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.private_load_balancer_target_group.arn
-  }
-
-  tags = {
-    Name = "${local.workspace}-private-load-balancer-listener"
-  }
-}
-
 # A target group. This is used for keeping track of all the tasks, and
 # what IP addresses / port numbers they have. You can query it yourself,
 # to use the addresses yourself, but most often this target group is just

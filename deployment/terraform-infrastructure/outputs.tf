@@ -40,16 +40,6 @@ output "public_listener_arn" {
   value       = aws_lb_listener.public_load_balancer_listener.arn
 }
 
-output "internal_url" {
-  description = "The URL of the private load balancer"
-  value       = "http://${aws_lb.private_load_balancer.dns_name}"
-}
-
-output "private_listener_arn" {
-  description = "The ARN of the private load balancer's Listener"
-  value       = aws_lb_listener.private_load_balancer_listener.arn
-}
-
 output "ecs_role_arn" {
   description = "The ARN of the Manage Resources IAM role"
   value       = aws_iam_role.ecs_manage_resources_iam_role.arn

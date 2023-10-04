@@ -1,7 +1,4 @@
 # A security group for the containers we will run in Fargate.
-# Three rules, allowing network traffic from a public facing load
-# balancer, a private internal load balancer, and from other members
-# of the security group.
 resource "aws_security_group" "fargate_container_security_group" {
   name        = "${local.workspace}-fargate-container-security-group"
   description = "Access to the Fargate containers"
@@ -66,15 +63,6 @@ resource "aws_security_group_rule" "db_to_ecs" {
   source_security_group_id = aws_security_group.fargate_container_security_group.id
 }
 
-resource "aws_security_group" "private_load_balancer_sg" {
-  description = "Access to the private load balancer"
-  vpc_id      = aws_vpc.vpc.id
-
-  tags = {
-    Name = "${local.workspace}-private-load-balancer-security-group"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "public_load_balancer_sg_ingress_rule" {
   cidr_ipv4         = "0.0.0.0/0" # Allow access from anywhere on the internet
   ip_protocol       = "-1"        # Use -1 to specify all protocols, allows traffic on all ports
@@ -116,17 +104,6 @@ resource "aws_vpc_security_group_ingress_rule" "ecs_security_group_ingress_from_
 
   tags = {
     Name = "${local.workspace}-ecs-security-group-ingress-from-self"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "ecs_security_group_ingress_from_fargate_container_security_group" {
-  description                  = "Only accept traffic from a container in the fargate container security group"
-  ip_protocol                  = -1
-  referenced_security_group_id = aws_security_group.fargate_container_security_group.id
-  security_group_id            = aws_security_group.private_load_balancer_sg.id
-
-  tags = {
-    Name = "${local.workspace}-ecs-security-group-ingress-from-fargate-container-security-group"
   }
 }
 
@@ -181,4 +158,3 @@ resource "aws_vpc_security_group_egress_rule" "contestant_security_group_egress_
     Name = "${local.workspace}-contestant-security-group-egress-rule"
   }
 }
-
