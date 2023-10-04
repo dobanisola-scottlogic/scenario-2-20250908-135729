@@ -17,7 +17,8 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
           # Stream each contestant archive through tar to extract the files into the directory
           "runCommand" : flatten([for c in var.contestants :
             ["mkdir -p /home/ec2-user/environment/${c}-contestant",
-          "aws s3 cp s3://${aws_s3_bucket.contestant_bucket.bucket}/${c}-contestant.tgz - | tar -xz -C /home/ec2-user/environment/${c}-contestant"]])
+              "aws s3 cp s3://${aws_s3_bucket.contestant_bucket.bucket}/${c}-contestant.tgz - | tar -xz -C /home/ec2-user/environment/${c}-contestant",
+          "chown -R ec2-user.ec2-user /home/ec2-user/environment/${c}-contestant"]])
         }
       }
     ]
