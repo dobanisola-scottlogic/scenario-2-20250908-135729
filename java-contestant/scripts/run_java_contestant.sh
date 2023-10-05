@@ -1,1 +1,23 @@
+#/bin/sh
+
+if [[ -z "$PROJ_DIR" ]]; then
+    echo "Enter project directory (or set PROJ_DIR in environment):"
+    read PROJ_DIR
+fi
+
+if [[ -z "$TEAM_NAME" ]]; then
+    echo "Enter team name (or set TEAM_NAME in environment):"
+    read TEAM_NAME
+fi
+
+if [[ -z "$GAME_SERVER_HOST" ]]; then
+    echo "Enter game server host (or set GAME_SERVER_HOST in environment):"
+    read GAME_SERVER_HOST
+fi
+
+if [[ -z "$GAME_SERVER_PORT" ]]; then
+    echo "Enter game server port (or set GAME_SERVER_PORT in environment):"
+    read GAME_SERVER_PORT
+fi
+
 java -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss:SSS Z" -Dorg.slf4j.simpleLogger.defaultLogLevel=all -jar ${PROJ_DIR}/java-contestant/libs/remote-1.0-SNAPSHOT-all.jar --botclasspath ${PROJ_DIR}/java-contestant/build/classes/java/main --bot com.contestantbots.team.ExampleBot --team ${TEAM_NAME} --host ${GAME_SERVER_HOST} --port ${GAME_SERVER_PORT}
