@@ -13,6 +13,13 @@ const testHackathonBody = {
   currentMilestoneMap: 'Easy',
 };
 
+const testTeamBody = {
+  hackathonId: 'test-id',
+  id: 'team1',
+  name: 'Team 1',
+  password: 'pa$$w0rd',
+};
+
 const getMilestonesResponse = [
   {
     id: 'a7d63a7f-0a67-4abf-9eaa-74fc5c52aed4',
@@ -136,10 +143,24 @@ export const handlers = [
   rest.get(baseUrl + '/hackathon', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json([testHackathonBody]));
   }),
+  rest.get(baseUrl + '/team', (req, res, ctx) => {
+    const hackathonId = req.url.searchParams.get('hackathonId');
+
+    testTeamBody.hackathonId = hackathonId!;
+
+    return res(ctx.status(200), ctx.json([testTeamBody]));
+  }),
 ];
 
 export const getHackathonsNetworkErrorResponseHandler = rest.get(
   baseUrl + '/hackathon',
+  (_, res) => {
+    return res.networkError('Network error occurred.');
+  }
+);
+
+export const getTeamsNetworkErrorResponseHandler = rest.get(
+  baseUrl + '/team',
   (_, res) => {
     return res.networkError('Network error occurred.');
   }
