@@ -23,3 +23,13 @@ variable "workspace" {
   type        = string
   description = "The name of the workspace to use for this deployment"
 }
+
+variable "game_server_host" {
+  type        = string
+  description = "The hostname of the game server (usually the public load balancer)"
+}
+
+variable "game_server_port" {
+  type        = number
+  description = "The port of the game server (usually 80)"
+}

@@ -15,10 +15,19 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
         "inputs" : {
           # Create a directory for each contestant archive
           # Stream each contestant archive through tar to extract the files into the directory
-          "runCommand" : flatten([for c in var.contestants :
-            ["mkdir -p /home/ec2-user/environment/${c}-contestant",
-              "aws s3 cp s3://${aws_s3_bucket.contestant_bucket.bucket}/${c}-contestant.tgz - | tar -xz -C /home/ec2-user/environment/${c}-contestant",
-          "chown -R ec2-user.ec2-user /home/ec2-user/environment/${c}-contestant"]])
+          "runCommand" : flatten([
+            [for c in var.contestants :
+              [
+                "mkdir -p /home/ec2-user/environment/${c}-contestant",
+                "aws s3 cp s3://${aws_s3_bucket.contestant_bucket.bucket}/${c}-contestant.tgz - | tar -xz -C /home/ec2-user/environment/${c}-contestant",
+                "chown -R ec2-user.ec2-user /home/ec2-user/environment/${c}-contestant"
+              ]
+            ],
+            "echo -e '\\n\\n# Hackathon environment variables' >> /home/ec2-user/.bash_profile",
+            "echo export PROJ_DIR=\"/home/ec2-user/environment\" >> /home/ec2-user/.bash_profile",
+            "echo export GAME_SERVER_HOST=\"${var.game_server_host}\" >> /home/ec2-user/.bash_profile",
+            "echo export GAME_SERVER_PORT=\"${var.game_server_port}\" >> /home/ec2-user/.bash_profile"
+          ])
         }
       }
     ]
