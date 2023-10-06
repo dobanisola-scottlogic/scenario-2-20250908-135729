@@ -3,7 +3,7 @@ resource "aws_cloud9_environment_ec2" "cloud9_instance" {
   count                       = var.team_count
   automatic_stop_time_minutes = 30
   connection_type             = "CONNECT_SSM"
-  instance_type               = "t2.micro"
+  instance_type               = "t2.small"
   name                        = "${var.workspace}-cloud9-instance-${count.index + 1}"
   owner_arn                   = aws_iam_user.hackathon_contestant.arn
   subnet_id                   = var.public_subnet_id
