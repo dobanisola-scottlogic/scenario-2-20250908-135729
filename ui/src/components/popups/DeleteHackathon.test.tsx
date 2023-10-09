@@ -17,10 +17,10 @@ describe('Delete Hackathon Popup Component', () => {
       ).toBeInTheDocument();
 
       expect(
-        screen.getByRole('button', { name: 'CANCEL' })
+        screen.getByRole('button', { name: 'Cancel' })
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: 'DELETE HACKATHON' })
+        screen.getByRole('button', { name: 'Delete hackathon' })
       ).toBeInTheDocument();
     });
   });
@@ -31,7 +31,7 @@ describe('Delete Hackathon Popup Component', () => {
         <DeleteHackathon isOpen id="test-id" setIsOpen={mockFunction} />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'DELETE HACKATHON' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delete hackathon' }));
 
       await waitFor(() => {
         const reduxState = store.getState();
@@ -47,7 +47,7 @@ describe('Delete Hackathon Popup Component', () => {
         <DeleteHackathon isOpen id="400" setIsOpen={mockFunction} />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'DELETE HACKATHON' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delete hackathon' }));
 
       const alert = await screen.findByRole('alert');
       expect(alert.textContent).toContain(
@@ -60,7 +60,7 @@ describe('Delete Hackathon Popup Component', () => {
         <DeleteHackathon isOpen id="500" setIsOpen={mockFunction} />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'DELETE HACKATHON' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delete hackathon' }));
 
       const alert = await screen.findByRole('alert');
       expect(alert.textContent).toContain(

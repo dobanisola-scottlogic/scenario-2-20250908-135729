@@ -17,10 +17,10 @@ describe('Delete Team Popup Component', () => {
       ).toBeInTheDocument();
 
       expect(
-        screen.getByRole('button', { name: 'CANCEL' })
+        screen.getByRole('button', { name: 'Cancel' })
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: 'DELETE TEAM' })
+        screen.getByRole('button', { name: 'Delete team' })
       ).toBeInTheDocument();
     });
   });
@@ -31,7 +31,7 @@ describe('Delete Team Popup Component', () => {
         <DeleteTeam isOpen id="test-id" setIsOpen={mockFunction} />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'DELETE TEAM' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
 
       await waitFor(() => {
         const reduxState = store.getState();
@@ -47,7 +47,7 @@ describe('Delete Team Popup Component', () => {
         <DeleteTeam isOpen id="400" setIsOpen={mockFunction} />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'DELETE TEAM' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
 
       const alert = await screen.findByRole('alert');
       expect(alert.textContent).toContain('Error deleting team - bad request');
@@ -58,7 +58,7 @@ describe('Delete Team Popup Component', () => {
         <DeleteTeam isOpen id="500" setIsOpen={mockFunction} />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'DELETE TEAM' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
 
       const alert = await screen.findByRole('alert');
       expect(alert.textContent).toContain(

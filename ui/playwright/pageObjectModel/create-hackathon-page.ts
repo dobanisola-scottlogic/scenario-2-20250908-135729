@@ -14,9 +14,9 @@ export class CreateHackathonPage {
     this.createHackathonPopup = page.getByRole('dialog');
     this.hackathonNameField = page.getByLabel('Hackathon name');
     this.addNewHackathonButton = page.getByRole('button', {
-      name: 'ADD A NEW HACKATHON',
+      name: 'Add a new hackathon',
     });
-    this.cancelButton = page.getByRole('button', { name: 'CANCEL' });
+    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
     this.successIcon = page.getByTestId('SuccessOutlinedIcon');
     this.alertNotification = page.getByRole('alert');
   }

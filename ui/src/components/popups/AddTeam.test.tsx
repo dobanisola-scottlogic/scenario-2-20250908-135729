@@ -22,11 +22,11 @@ describe('Add Team Popup Component', () => {
       expect(screen.getByText('Add a new team')).toBeInTheDocument();
 
       expect(
-        screen.getByRole('button', { name: 'CANCEL' })
+        screen.getByRole('button', { name: 'Cancel' })
       ).toBeInTheDocument();
 
       expect(
-        screen.getByRole('button', { name: 'ADD TEAM' })
+        screen.getByRole('button', { name: 'Add team' })
       ).toBeInTheDocument();
     });
 
@@ -38,23 +38,23 @@ describe('Add Team Popup Component', () => {
       expect(screen.getByText('Add a new team')).toBeInTheDocument();
 
       expect(
-        screen.getByRole('button', { name: 'CANCEL' })
+        screen.getByRole('button', { name: 'Cancel' })
       ).toBeInTheDocument();
 
-      expect(screen.getByRole('button', { name: 'ADD TEAM' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Add team' })).toBeDisabled();
 
       const nameInput = screen.getByLabelText('Team name');
 
       fireEvent.change(nameInput, { target: { value: 'Team1' } });
 
-      expect(screen.getByRole('button', { name: 'ADD TEAM' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Add team' })).toBeDisabled();
 
       const passwordInput = screen.getByLabelText('Team password');
 
       fireEvent.change(passwordInput, { target: { value: 'Pa$$w0rd' } });
 
       expect(
-        screen.getByRole('button', { name: 'ADD TEAM' })
+        screen.getByRole('button', { name: 'Add team' })
       ).not.toHaveAttribute('disabled');
     });
   });
@@ -73,7 +73,7 @@ describe('Add Team Popup Component', () => {
         target: { value: 'Pa$$w0rd' },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: 'ADD TEAM' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Add team' }));
 
       await waitFor(() => {
         const reduxState = store.getState();
@@ -99,7 +99,7 @@ describe('Add Team Popup Component', () => {
         target: { value: 'Pa$$w0rd' },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: 'ADD TEAM' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Add team' }));
 
       const alert = await screen.findByRole('alert');
 
@@ -121,7 +121,7 @@ describe('Add Team Popup Component', () => {
         target: { value: 'Pa$$w0rd' },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: 'ADD TEAM' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Add team' }));
 
       const alert = await screen.findByRole('alert');
 

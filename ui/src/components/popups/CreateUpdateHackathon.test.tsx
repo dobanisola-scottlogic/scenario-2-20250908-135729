@@ -13,12 +13,12 @@ describe('Create Update Hackathon Popup Component', () => {
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
-        expect(screen.getByText('Add a new hackathon')).toBeInTheDocument();
+        expect(screen.getAllByText('Add a new hackathon')).toHaveLength(2);
         expect(
-          screen.getByRole('button', { name: 'CANCEL' })
+          screen.getByRole('button', { name: 'Cancel' })
         ).toBeInTheDocument();
         expect(
-          screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
+          screen.getByRole('button', { name: 'Add a new hackathon' })
         ).toBeInTheDocument();
       });
 
@@ -27,9 +27,9 @@ describe('Create Update Hackathon Popup Component', () => {
           <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
         );
 
-        expect(screen.getByText('Add a new hackathon')).toBeInTheDocument();
+        expect(screen.getAllByText('Add a new hackathon')).toHaveLength(2);
         expect(
-          screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
+          screen.getByRole('button', { name: 'Add a new hackathon' })
         ).toHaveAttribute('disabled');
 
         const textInput = screen.getByRole('textbox', {
@@ -38,7 +38,7 @@ describe('Create Update Hackathon Popup Component', () => {
         fireEvent.change(textInput, { target: { value: 'Test Hackathon' } });
 
         expect(
-          screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
+          screen.getByRole('button', { name: 'Add a new hackathon' })
         ).not.toHaveAttribute('disabled');
       });
     });
@@ -55,7 +55,7 @@ describe('Create Update Hackathon Popup Component', () => {
         fireEvent.change(textInput, { target: { value: 'Test Hackathon' } });
 
         fireEvent.click(
-          screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
+          screen.getByRole('button', { name: 'Add a new hackathon' })
         );
 
         await waitFor(() => {
@@ -78,7 +78,7 @@ describe('Create Update Hackathon Popup Component', () => {
         fireEvent.change(textInput, { target: { value: 'Error Hackathon' } });
 
         fireEvent.click(
-          screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
+          screen.getByRole('button', { name: 'Add a new hackathon' })
         );
 
         const alert = await screen.findByRole('alert');
@@ -99,7 +99,7 @@ describe('Create Update Hackathon Popup Component', () => {
           target: { value: 'Bad Request Hackathon' },
         });
         fireEvent.click(
-          screen.getByRole('button', { name: 'ADD A NEW HACKATHON' })
+          screen.getByRole('button', { name: 'Add a new hackathon' })
         );
 
         const alert = await screen.findByRole('alert');
@@ -118,10 +118,10 @@ describe('Create Update Hackathon Popup Component', () => {
 
       expect(screen.getByText('Edit hackathon')).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: 'CANCEL' })
+        screen.getByRole('button', { name: 'Cancel' })
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: 'UPDATE HACKATHON' })
+        screen.getByRole('button', { name: 'Update hackathon' })
       ).toBeInTheDocument();
     });
 
@@ -133,7 +133,7 @@ describe('Create Update Hackathon Popup Component', () => {
       // Wait for get hackathon load to complete
       await waitFor(() =>
         expect(
-          screen.getByRole('button', { name: 'UPDATE HACKATHON' })
+          screen.getByRole('button', { name: 'Update hackathon' })
         ).not.toBeDisabled()
       );
 
@@ -171,12 +171,12 @@ describe('Create Update Hackathon Popup Component', () => {
         // Wait for get hackathon load to complete
         await waitFor(() =>
           expect(
-            screen.getByRole('button', { name: 'UPDATE HACKATHON' })
+            screen.getByRole('button', { name: 'Update hackathon' })
           ).not.toBeDisabled()
         );
 
         fireEvent.click(
-          screen.getByRole('button', { name: 'UPDATE HACKATHON' })
+          screen.getByRole('button', { name: 'Update hackathon' })
         );
 
         await waitFor(() => {
@@ -199,7 +199,7 @@ describe('Create Update Hackathon Popup Component', () => {
 
         expect(screen.getByText('Edit hackathon')).toBeInTheDocument();
         expect(
-          screen.getByRole('button', { name: 'UPDATE HACKATHON' })
+          screen.getByRole('button', { name: 'Update hackathon' })
         ).toHaveAttribute('disabled');
 
         const alert = await screen.findByRole('alert');

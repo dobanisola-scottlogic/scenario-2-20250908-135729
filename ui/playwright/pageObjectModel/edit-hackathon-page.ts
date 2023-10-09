@@ -22,9 +22,9 @@ export class EditHackathonPage {
     this.editMilestoneMapDropdown = page.getByTestId('current-milestone-map');
     this.editList = page.getByRole('listbox');
     this.updateHackathonButton = page.getByRole('button', {
-      name: 'UPDATE HACKATHON',
+      name: 'Update hackathon',
     });
-    this.cancelButton = page.getByRole('button', { name: 'CANCEL' });
+    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
     this.successIcon = page.getByTestId('SuccessOutlinedIcon');
     this.alertNotification = page.getByRole('alert');
   }

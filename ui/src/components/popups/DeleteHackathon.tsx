@@ -73,8 +73,8 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
               m: 1,
             }}
           >
-            <Button onClick={handleClose}>CANCEL</Button>
-            <Button onClick={handleDelete}>DELETE HACKATHON</Button>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleDelete}>Delete hackathon</Button>
           </Box>
 
           {formError && (

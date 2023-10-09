@@ -18,10 +18,10 @@ export class DeleteHackathonPage {
     this.popupHeaderText = page.locator('[role="dialogHeading"]').nth(0);
     this.popupBodyText = page.locator('[role="dialogHeading"]').nth(1);
     this.deleteHackathonButton = page.getByRole('button', {
-      name: 'DELETE HACKATHON',
+      name: 'Delete hackathon',
     });
     this.cancelDeletionButton = page.getByRole('button', {
-      name: 'CANCEL',
+      name: 'Cancel',
     });
     this.successIcon = page.getByTestId('SuccessOutlinedIcon');
     this.alertMessage = page.getByRole('alert');

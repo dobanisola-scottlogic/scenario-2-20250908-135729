@@ -213,12 +213,12 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
               m: 1,
             }}
           >
-            <Button onClick={handleClose}>CANCEL</Button>
+            <Button onClick={handleClose}>Cancel</Button>
             <Button
               disabled={!hackathonName.trim() || isLoading}
               onClick={handleSubmit}
             >
-              {isEditing ? 'UPDATE HACKATHON' : 'ADD A NEW HACKATHON'}
+              {isEditing ? 'Update hackathon' : 'Add a new hackathon'}
             </Button>
           </Box>
 

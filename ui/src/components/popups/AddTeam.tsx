@@ -105,13 +105,13 @@ const AddTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
               m: 1,
             }}
           >
-            <Button onClick={handleClose}>CANCEL</Button>
+            <Button onClick={handleClose}>Cancel</Button>
 
             <Button
               disabled={!teamName.trim() || !teamPassword.trim()}
               onClick={handleAdd}
             >
-              ADD TEAM
+              Add team
             </Button>
           </Box>
 
