@@ -38,4 +38,9 @@ task tgzContestant(type: Tar) {
     destinationDirectory = file("build")
     compression = Compression.GZIP
     from "build/python-contestant"
+    eachFile { file ->
+        if (file.name == "run_python_contestant.sh") {
+            file.mode = 0755
+        }
+    }
 }
