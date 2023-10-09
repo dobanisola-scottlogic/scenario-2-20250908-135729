@@ -11,7 +11,6 @@ export class CommonPageObjects {
   readonly errorIcon: Locator;
   readonly alertNotification: Locator;
   readonly successCloseButton: Locator;
-  readonly deleteTeamSuccessCloseButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,11 +21,10 @@ export class CommonPageObjects {
     this.logoutButton = page.getByRole('menuitem', { name: 'Logout' });
     this.popupHeaderText = page.locator('[role="dialogHeading"]').nth(0);
     this.popupBodyText = page.locator('[role="dialogHeading"]').nth(1);
-    this.successIcon = page.getByTestId('SuccessOutlinedIcon').first();
+    this.successIcon = page.getByTestId('SuccessOutlinedIcon');
     this.errorIcon = page.getByTestId('ErrorOutlineIcon');
-    this.alertNotification = page.getByRole('alert').first();
+    this.alertNotification = page.getByRole('alert');
     this.successCloseButton = page.getByLabel('Close');
-    this.deleteTeamSuccessCloseButton = page.getByLabel('Close').nth(1);
   }
 
   async confirmPopupIsVisible() {
@@ -59,10 +57,6 @@ export class CommonPageObjects {
 
   async closeSuccessAlert() {
     await this.successCloseButton.click();
-  }
-
-  async closeTeamSuccessAlert() {
-    await this.deleteTeamSuccessCloseButton.click();
   }
 
   async confirmSuccessAlertDoesNotExist() {

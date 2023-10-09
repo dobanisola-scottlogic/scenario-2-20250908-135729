@@ -69,7 +69,7 @@ test('team can be successfully deleted and subsequent alert can be closed', asyn
 }) => {
   await deleteTeamPage.deleteTeam();
   await commonPageObjects.confirmSuccessMessageIs('Team deleted successfully!');
-  await commonPageObjects.closeTeamSuccessAlert();
+  await commonPageObjects.closeSuccessAlert();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();
 });
 

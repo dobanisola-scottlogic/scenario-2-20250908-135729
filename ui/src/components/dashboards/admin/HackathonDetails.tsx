@@ -2,7 +2,6 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { Box, Container, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 
-import SnackbarAlert from '../../common/SnackbarAlert';
 import TeamList from './TeamList';
 
 const HackathonDetails = () => {
@@ -11,8 +10,6 @@ const HackathonDetails = () => {
 
   return (
     <>
-      <SnackbarAlert />
-
       <Container maxWidth={false} style={{ padding: '40px 50px' }}>
         <Box>
           <Typography
