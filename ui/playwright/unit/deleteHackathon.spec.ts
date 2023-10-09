@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test';
 import { HackathonHelpers } from '../helpers';
 import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
+import { CommonPageObjects } from '../pageObjectModel/common-page-objects';
 import { CreateHackathonPage } from '../pageObjectModel/create-hackathon-page';
 import { DeleteHackathonPage } from '../pageObjectModel/delete-hackathon-page';
 import { LoginPage } from '../pageObjectModel/login-page';
@@ -9,6 +10,7 @@ const test = base.extend<{
   deleteHackathonPage: DeleteHackathonPage;
   hackathonListPage: HackathonListPage;
   createHackathonPage: CreateHackathonPage;
+  commonPageObjects: CommonPageObjects;
 }>({
   deleteHackathonPage: async ({ page }, use) => {
     const deleteHackathonPage = new DeleteHackathonPage(page);
@@ -22,6 +24,10 @@ const test = base.extend<{
     const createHackathonPage = new CreateHackathonPage(page);
     await use(createHackathonPage);
   },
+  commonPageObjects: async ({ page }, use) => {
+    const commonPageObjects = new CommonPageObjects(page);
+    await use(commonPageObjects);
+  },
 });
 
 const uniqueHackId = new HackathonHelpers();
@@ -32,7 +38,7 @@ test.beforeEach(
     page,
     createHackathonPage,
     hackathonListPage,
-    deleteHackathonPage,
+    commonPageObjects,
   }) => {
     const login = new LoginPage(page);
     hackathonName = 'deleteHackathon_' + uniqueHackId.generateRandomString();
@@ -45,7 +51,7 @@ test.beforeEach(
     await createHackathonPage.inputHackathonName(hackathonName);
     await createHackathonPage.addNewHackathon();
     await hackathonListPage.openDeletePopupOfHackathonWithName(hackathonName);
-    await deleteHackathonPage.confirmPopupIsVisible();
+    await commonPageObjects.confirmPopupIsVisible();
   }
 );
 
@@ -56,22 +62,26 @@ test.afterEach(async ({ hackathonListPage }) => {
 test('hackathon can be successfully deleted and subsequent alert can be closed', async ({
   deleteHackathonPage,
   hackathonListPage,
+  commonPageObjects,
 }) => {
   await deleteHackathonPage.deleteHackathon();
-  await deleteHackathonPage.confirmSuccessMessageIs(
+  await commonPageObjects.confirmSuccessMessageIs(
     'Hackathon deleted successfully!'
   );
   await deleteHackathonPage.closeSuccessAlert();
-  await deleteHackathonPage.confirmSuccessAlertDoesNotExist();
+  await commonPageObjects.confirmSuccessAlertDoesNotExist();
   await hackathonListPage.checkExistenceOfHackathonInTableWithName(
     hackathonName,
     false
   );
 });
 
-test('hackathon deletion can be cancelled', async ({ deleteHackathonPage }) => {
+test('hackathon deletion can be cancelled', async ({
+  deleteHackathonPage,
+  commonPageObjects,
+}) => {
   await deleteHackathonPage.cancelHackathonDeletion();
-  await deleteHackathonPage.confirmSuccessAlertDoesNotExist();
+  await commonPageObjects.confirmSuccessAlertDoesNotExist();
 });
 
 test('hackathon popup has the expected text', async ({
@@ -85,18 +95,20 @@ test('hackathon popup has the expected text', async ({
 
 test('bad request error message will appear', async ({
   deleteHackathonPage,
+  commonPageObjects,
 }) => {
   await deleteHackathonPage.mock400ErrorOnDeletingTheHackathon(hackathonName);
-  await deleteHackathonPage.confirmErrorMessageIs(
+  await commonPageObjects.confirmErrorMessageIs(
     'Error deleting hackathon - bad request'
   );
 });
 
 test('internal server error message will appear', async ({
   deleteHackathonPage,
+  commonPageObjects,
 }) => {
   await deleteHackathonPage.mock500ErrorOnDeletingTheHackathon(hackathonName);
-  await deleteHackathonPage.confirmErrorMessageIs(
+  await commonPageObjects.confirmErrorMessageIs(
     'Error deleting hackathon - internal server error'
   );
 });

@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
+import { CommonPageObjects } from '../pageObjectModel/common-page-objects';
 import { LoginPage } from '../pageObjectModel/login-page';
 import { TeamDashboardPage } from '../pageObjectModel/team-dashboard-page';
 
@@ -16,6 +17,7 @@ const test = base.extend<{
   login: LoginPage;
   hackathonListPage: HackathonListPage;
   teamDashboardPage: TeamDashboardPage;
+  commonPageObjects: CommonPageObjects;
 }>({
   login: async ({ page }, use) => {
     const login = new LoginPage(page);
@@ -28,6 +30,10 @@ const test = base.extend<{
   teamDashboardPage: async ({ page }, use) => {
     const teamDashboardPage = new TeamDashboardPage(page);
     await use(teamDashboardPage);
+  },
+  commonPageObjects: async ({ page }, use) => {
+    const commonPageObjects = new CommonPageObjects(page);
+    await use(commonPageObjects);
   },
 });
 
@@ -51,29 +57,34 @@ test('team can successfully log in', async ({ login, teamDashboardPage }) => {
 for (const creds of emptyFieldErrors) {
   test(`username '${creds.username}' and password '${creds.password}' returns empty fields error message`, async ({
     login,
+    commonPageObjects,
   }) => {
     await login.inputCredentials(creds.username, creds.password);
     await login.attemptLogin();
-    await login.verifyLoginErrorIs('Username and password cannot be empty.');
+    await commonPageObjects.confirmErrorMessageIs(
+      'Username and password cannot be empty.'
+    );
   });
 }
 
 test("invalid username and password returns 'unable to login' error message", async ({
   login,
+  commonPageObjects,
 }) => {
   await login.inputCredentials('admin', 'wrong');
   await login.attemptLogin();
-  await login.verifyLoginErrorIs(
+  await commonPageObjects.confirmErrorMessageIs(
     'Invalid username or password. Please check your credentials.'
   );
 });
 
 test("uncaught error returns 'please try again later' error message", async ({
   login,
+  commonPageObjects,
 }) => {
   await login.inputCredentials('error', 'unknown');
   await login.mockUncaughtErrorOnLogin();
-  await login.verifyLoginErrorIs(
+  await commonPageObjects.confirmErrorMessageIs(
     "Sorry, we couldn't log you in. Please try again later."
   );
 });

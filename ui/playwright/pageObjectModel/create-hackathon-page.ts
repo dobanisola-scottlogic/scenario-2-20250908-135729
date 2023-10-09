@@ -6,8 +6,6 @@ export class CreateHackathonPage {
   readonly hackathonNameField: Locator;
   readonly addNewHackathonButton: Locator;
   readonly cancelButton: Locator;
-  readonly successIcon: Locator;
-  readonly alertNotification: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,8 +15,6 @@ export class CreateHackathonPage {
       name: 'Add a new hackathon',
     });
     this.cancelButton = page.getByRole('button', { name: 'Cancel' });
-    this.successIcon = page.getByTestId('SuccessOutlinedIcon');
-    this.alertNotification = page.getByRole('alert');
   }
 
   async inputHackathonName(hackathonName: string) {
@@ -38,18 +34,20 @@ export class CreateHackathonPage {
   }
 
   async verifyCreateHackathonPopUp(hackathonName: string) {
-    await expect(this.createHackathonPopup).toBeVisible();
     await expect(this.createHackathonPopup).toContainText(hackathonName);
     await expect(this.addNewHackathonButton).toBeDisabled();
     await expect(this.cancelButton).toBeVisible();
   }
 
-  async verifyCreateHackathonPopUpDoesNotExist() {
-    await expect(this.createHackathonPopup).toBeHidden();
-  }
-
-  async verifyHackathonCreated(alertMessage: string) {
-    await expect(this.successIcon).toBeVisible();
-    await expect(this.alertNotification).toContainText(alertMessage);
+  async createHackathonUsingAPIWithName(hackathonName: string) {
+    const hackathonPostResponse = await this.page.request.post(
+      'http://localhost:8080/application/api/hackathon',
+      {
+        data: {
+          name: hackathonName,
+        },
+      }
+    );
+    expect(hackathonPostResponse.status()).toBe(200);
   }
 }

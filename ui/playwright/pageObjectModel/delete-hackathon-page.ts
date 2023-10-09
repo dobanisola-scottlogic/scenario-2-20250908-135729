@@ -2,19 +2,14 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export class DeleteHackathonPage {
   readonly page: Page;
-  readonly popupBox: Locator;
   readonly popupHeaderText: Locator;
   readonly popupBodyText: Locator;
   readonly deleteHackathonButton: Locator;
   readonly cancelDeletionButton: Locator;
-  readonly successIcon: Locator;
-  readonly alertMessage: Locator;
   readonly successCloseButton: Locator;
-  readonly errorIcon: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.popupBox = page.getByRole('dialog');
     this.popupHeaderText = page.locator('[role="dialogHeading"]').nth(0);
     this.popupBodyText = page.locator('[role="dialogHeading"]').nth(1);
     this.deleteHackathonButton = page.getByRole('button', {
@@ -23,14 +18,7 @@ export class DeleteHackathonPage {
     this.cancelDeletionButton = page.getByRole('button', {
       name: 'Cancel',
     });
-    this.successIcon = page.getByTestId('SuccessOutlinedIcon');
-    this.alertMessage = page.getByRole('alert');
     this.successCloseButton = page.getByLabel('Close');
-    this.errorIcon = page.getByTestId('ErrorOutlineIcon');
-  }
-
-  async confirmPopupIsVisible() {
-    await expect(this.popupBox).toBeVisible();
   }
 
   async confirmPopupTextIs(headerText: string, bodyText: string) {
@@ -64,20 +52,6 @@ export class DeleteHackathonPage {
 
   async cancelHackathonDeletion() {
     await this.cancelDeletionButton.click();
-  }
-
-  async confirmSuccessMessageIs(successMessage: string) {
-    await expect(this.successIcon).toBeVisible();
-    await expect(this.alertMessage).toContainText(successMessage);
-  }
-
-  async confirmErrorMessageIs(errorMessage: string) {
-    await expect(this.errorIcon).toBeVisible();
-    await expect(this.alertMessage).toContainText(errorMessage);
-  }
-
-  async confirmSuccessAlertDoesNotExist() {
-    await expect(this.successIcon).toBeHidden();
   }
 
   async closeSuccessAlert() {

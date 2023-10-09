@@ -1,4 +1,4 @@
-import { APIResponse, expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class HackathonListPage {
   readonly page: Page;
@@ -27,6 +27,7 @@ export class HackathonListPage {
   }) => Locator;
   readonly editHackathonButton: Locator;
   readonly deleteHackathonButton: Locator;
+  readonly hackathonLink: ({ hackName }: { hackName: string }) => Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -59,11 +60,8 @@ export class HackathonListPage {
     this.deleteHackathonButton = page.getByRole('menuitem', {
       name: 'Delete...',
     });
-  }
-
-  async logoutUsingDropdown() {
-    await this.navigationBarDropdownButton.click();
-    await this.logoutButton.click();
+    this.hackathonLink = ({ hackName }) =>
+      page.getByRole('link', { name: `${hackName}` });
   }
 
   async openCreateHackathonPopup() {
@@ -82,16 +80,12 @@ export class HackathonListPage {
     await this.editHackathonButton.click();
   }
 
-  async verifyLoginSuccess() {
-    await expect(this.addNewHackathonButton).toBeVisible();
+  async openTheHackathonPage(teamHackName: string) {
+    await this.hackathonLink({ hackName: teamHackName }).click();
   }
 
-  async expectNumberOfHackathonsToBe(hackathonNumber: number) {
-    const hackathonResponse: APIResponse = await this.page.request.get(
-      'http://localhost:8080/application/api/hackathon'
-    );
-    const hackathonResponseJSON = (await hackathonResponse.json()) as [];
-    expect(hackathonResponseJSON).toHaveLength(hackathonNumber);
+  async verifyLoginSuccess() {
+    await expect(this.addNewHackathonButton).toBeVisible();
   }
 
   async checkExistenceOfHackathonInTableWithName(

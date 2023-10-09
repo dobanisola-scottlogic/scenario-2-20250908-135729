@@ -7,8 +7,6 @@ export class LoginPage {
   readonly passwordField: Locator;
   readonly visibilityButton: Locator;
   readonly loginButton: Locator;
-  readonly errorLogo: Locator;
-  readonly errorMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,8 +15,6 @@ export class LoginPage {
     this.passwordField = page.getByTestId('password-input');
     this.visibilityButton = page.getByLabel('toggle password visibility');
     this.loginButton = page.getByRole('button', { name: 'Login' });
-    this.errorLogo = page.getByTestId('ErrorOutlineIcon');
-    this.errorMessage = page.getByRole('alert');
   }
 
   async inputPassword(password: string) {
@@ -53,11 +49,6 @@ export class LoginPage {
       }
     );
     await this.attemptLogin();
-  }
-
-  async verifyLoginErrorIs(message: string) {
-    await expect(this.errorLogo).toBeVisible();
-    await expect(this.errorMessage).toHaveText(message);
   }
 
   async clickVisibilityButton() {
