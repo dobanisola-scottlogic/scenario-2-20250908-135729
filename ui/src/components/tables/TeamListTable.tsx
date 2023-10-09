@@ -77,7 +77,12 @@ const TeamListTable = ({ hackathonId }: TeamListTableProps) => {
                   >
                     <MenuTableCell
                       text={row.name}
-                      menu={<TeamMenu selectedTeamId={row.id} />}
+                      menu={
+                        <TeamMenu
+                          hackathonId={hackathonId}
+                          selectedTeamId={row.id}
+                        />
+                      }
                     />
                   </TableRow>
                 ))

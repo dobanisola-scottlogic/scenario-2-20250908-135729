@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import AddButton from '../../common/AddButton';
 import SnackbarAlert from '../../common/SnackbarAlert';
-import AddTeam from '../../popups/AddTeam';
+import CreateUpdateTeam from '../../popups/CreateUpdateTeam';
 import TeamListTable from '../../tables/TeamListTable';
 
 interface TeamListProps {
@@ -20,9 +20,9 @@ const TeamList = ({ hackathonId }: TeamListProps) => {
 
       <Container maxWidth={false} style={{ padding: '10px 0' }}>
         <AddButton onClick={handleAddTeamOpen} text="Add a new team" />
-        <AddTeam
+        <CreateUpdateTeam
           isOpen={isAddTeamOpen}
-          id={hackathonId}
+          hackathonId={hackathonId}
           setIsOpen={setIsAddTeamOpen}
         />
         <TeamListTable hackathonId={hackathonId} />

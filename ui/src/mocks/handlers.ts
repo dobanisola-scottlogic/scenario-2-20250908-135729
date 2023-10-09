@@ -140,8 +140,14 @@ export const handlers = [
       })
     );
   }),
+  rest.put(baseUrl + '/team/team1', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(testTeamBody));
+  }),
   rest.get(baseUrl + '/hackathon', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json([testHackathonBody]));
+  }),
+  rest.get(baseUrl + '/team/team1', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(testTeamBody));
   }),
   rest.get(baseUrl + '/team', (req, res, ctx) => {
     const hackathonId = req.url.searchParams.get('hackathonId');
@@ -185,6 +191,30 @@ export const postTeamInternalServerErrorResponseHandler = rest.post(
       ctx.status(503),
       ctx.json({
         message: 'Error adding team - internal server error',
+      })
+    );
+  }
+);
+
+export const putTeamBadRequestResponseHandler = rest.put(
+  baseUrl + '/team/team1',
+  (_, res, ctx) => {
+    return res(
+      ctx.status(400),
+      ctx.json({
+        message: 'An error occurred - bad request.',
+      })
+    );
+  }
+);
+
+export const putTeamInternalServerErrorResponseHandler = rest.put(
+  baseUrl + '/team/team1',
+  (_, res, ctx) => {
+    return res(
+      ctx.status(503),
+      ctx.json({
+        message: 'Error updating team - internal server error',
       })
     );
   }

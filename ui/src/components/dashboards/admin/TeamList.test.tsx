@@ -24,9 +24,7 @@ describe('TeamList', () => {
 
   it('should open the create team popup on clicking add a new Team', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Add a new team' }));
-    expect(
-      screen.getByRole('textbox', { name: 'Team name' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Name' })).toBeInTheDocument();
   });
 
   it('should render the success snackbar correctly', () => {

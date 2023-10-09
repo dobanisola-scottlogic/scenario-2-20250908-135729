@@ -5,7 +5,9 @@ import TeamMenu from './TeamMenu';
 
 describe('TeamMenu', () => {
   beforeEach(() => {
-    renderWithRouterAndProvider(<TeamMenu selectedTeamId="test-id" />);
+    renderWithRouterAndProvider(
+      <TeamMenu hackathonId="hackathon1" selectedTeamId="team1" />
+    );
   });
 
   it('should open the Delete popup on delete', () => {

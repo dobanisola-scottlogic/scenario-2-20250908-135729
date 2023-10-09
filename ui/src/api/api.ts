@@ -117,6 +117,14 @@ export const api = createApi({
       }),
       invalidatesTags: ['Team'],
     }),
+    updateTeam: builder.mutation<Team, Team>({
+      query: (team) => ({
+        url: `/team/${team.id}`,
+        method: RequestType.PUT,
+        body: team,
+      }),
+      invalidatesTags: ['Team'],
+    }),
     getHackathons: builder.query<Hackathon[], void>({
       query: () => ({
         url: '/hackathon',
@@ -149,4 +157,5 @@ export const {
   useGetTeamQuery,
   useLoginMutation,
   useUpdateHackathonMutation,
+  useUpdateTeamMutation,
 } = api;
