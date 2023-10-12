@@ -91,3 +91,31 @@ test('admin can cancel creating a new hackathon', async ({
     false
   );
 });
+
+test('bad request error message will appear', async ({
+  createHackathonPage,
+  hackathonListPage,
+  commonPageObjects,
+}) => {
+  await hackathonListPage.openCreateHackathonPopup();
+  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
+  await createHackathonPage.inputHackathonName(hackathonName);
+  await createHackathonPage.mock400ErrorOnCreatingHackathon();
+  await commonPageObjects.confirmErrorMessageIs(
+    'Error creating hackathon - bad request'
+  );
+});
+
+test('internal server error message will appear', async ({
+  createHackathonPage,
+  hackathonListPage,
+  commonPageObjects,
+}) => {
+  await hackathonListPage.openCreateHackathonPopup();
+  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
+  await createHackathonPage.inputHackathonName(hackathonName);
+  await createHackathonPage.mock500ErrorOnCreatingHackathon();
+  await commonPageObjects.confirmErrorMessageIs(
+    'Error creating hackathon - internal server error'
+  );
+});

@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test';
 import { HackathonHelpers } from '../helpers';
 import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
+import { CommonPageObjects } from '../pageObjectModel/common-page-objects';
 import { CreateHackathonPage } from '../pageObjectModel/create-hackathon-page';
 import { EditHackathonPage } from '../pageObjectModel/edit-hackathon-page';
 import { LoginPage } from '../pageObjectModel/login-page';
@@ -9,6 +10,7 @@ const test = base.extend<{
   editHackathonPage: EditHackathonPage;
   hackathonListPage: HackathonListPage;
   createHackathonPage: CreateHackathonPage;
+  commonPageObjects: CommonPageObjects;
 }>({
   editHackathonPage: async ({ page }, use) => {
     const editHackathonPage = new EditHackathonPage(page);
@@ -21,6 +23,10 @@ const test = base.extend<{
   createHackathonPage: async ({ page }, use) => {
     const createHackathonPage = new CreateHackathonPage(page);
     await use(createHackathonPage);
+  },
+  commonPageObjects: async ({ page }, use) => {
+    const commonPageObjects = new CommonPageObjects(page);
+    await use(commonPageObjects);
   },
 });
 
@@ -87,4 +93,32 @@ test('admin can edit a hackathon', async ({
 test('admin can cancel editing a hackathon', async ({ editHackathonPage }) => {
   await editHackathonPage.cancelEditHackathon();
   await editHackathonPage.verifyEditHackathonPopUpDoesNotExist();
+});
+
+test('bad request error message will appear', async ({
+  editHackathonPage,
+  commonPageObjects,
+}) => {
+  await editHackathonPage.editMilestoneBot();
+  await editHackathonPage.clickBotName('Milestone2Bot');
+  await editHackathonPage.editMilestoneMap();
+  await editHackathonPage.clickMapName('Hard');
+  await editHackathonPage.mock400ErrorOnUpdatingHackathon();
+  await commonPageObjects.confirmErrorMessageIs(
+    'Error updating hackathon - bad request'
+  );
+});
+
+test('internal server error message will appear', async ({
+  editHackathonPage,
+  commonPageObjects,
+}) => {
+  await editHackathonPage.editMilestoneBot();
+  await editHackathonPage.clickBotName('Milestone2Bot');
+  await editHackathonPage.editMilestoneMap();
+  await editHackathonPage.clickMapName('Hard');
+  await editHackathonPage.mock500ErrorOnUpdatingHackathon();
+  await commonPageObjects.confirmErrorMessageIs(
+    'Error updating hackathon - internal server error'
+  );
 });

@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
 export class DeleteTeamPage {
   readonly page: Page;
@@ -51,20 +51,5 @@ export class DeleteTeamPage {
       }
     );
     await this.deleteTeam();
-  }
-
-  // This will be refactored into a "create team" page object model when it gets created
-  async createTeamUsingAPIWithName(teamAndHackathonName: string) {
-    const teamPostResponse = await this.page.request.post(
-      'http://localhost:8080/application/api/team',
-      {
-        data: {
-          name: teamAndHackathonName,
-          password: 'teamPassword',
-          hackathonId: teamAndHackathonName.toLowerCase(),
-        },
-      }
-    );
-    expect(teamPostResponse.status()).toBe(200);
   }
 }

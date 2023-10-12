@@ -89,4 +89,24 @@ export class EditHackathonPage {
     await expect(this.successIcon).toBeVisible();
     await expect(this.alertNotification).toContainText(alertMessage);
   }
+
+  async mock400ErrorOnUpdatingHackathon() {
+    await this.page.route(
+      `http://localhost:8080/application/api/hackathon/*`,
+      async (route) => {
+        await route.fulfill({ status: 400 });
+      }
+    );
+    await this.clickUpdateHackathon();
+  }
+
+  async mock500ErrorOnUpdatingHackathon() {
+    await this.page.route(
+      `http://localhost:8080/application/api/hackathon/*`,
+      async (route) => {
+        await route.fulfill({ status: 500 });
+      }
+    );
+    await this.clickUpdateHackathon();
+  }
 }

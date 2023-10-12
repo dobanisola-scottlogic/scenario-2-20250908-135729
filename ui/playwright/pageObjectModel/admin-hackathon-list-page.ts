@@ -18,7 +18,6 @@ export class HackathonListPage {
     hackathonName: string;
   }) => Locator;
   readonly navigationBarDropdownButton: Locator;
-  readonly logoutButton: Locator;
   readonly addNewHackathonButton: Locator;
   readonly hackathonMenuButton: ({
     hackathonName,
@@ -48,7 +47,6 @@ export class HackathonListPage {
     this.navigationBarDropdownButton = page.getByRole('button', {
       name: 'admin',
     });
-    this.logoutButton = page.getByRole('menuitem', { name: 'Logout' });
     this.addNewHackathonButton = page.getByRole('button', {
       name: 'Add a new hackathon',
     });

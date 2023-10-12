@@ -97,7 +97,7 @@ test('bad request error message will appear', async ({
   deleteHackathonPage,
   commonPageObjects,
 }) => {
-  await deleteHackathonPage.mock400ErrorOnDeletingTheHackathon(hackathonName);
+  await deleteHackathonPage.mock400ErrorOnDeletingHackathon();
   await commonPageObjects.confirmErrorMessageIs(
     'Error deleting hackathon - bad request'
   );
@@ -107,7 +107,7 @@ test('internal server error message will appear', async ({
   deleteHackathonPage,
   commonPageObjects,
 }) => {
-  await deleteHackathonPage.mock500ErrorOnDeletingTheHackathon(hackathonName);
+  await deleteHackathonPage.mock500ErrorOnDeletingHackathon();
   await commonPageObjects.confirmErrorMessageIs(
     'Error deleting hackathon - internal server error'
   );

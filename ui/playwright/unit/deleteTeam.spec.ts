@@ -3,6 +3,7 @@ import { HackathonHelpers } from '../helpers';
 import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
 import { CommonPageObjects } from '../pageObjectModel/common-page-objects';
 import { CreateHackathonPage } from '../pageObjectModel/create-hackathon-page';
+import { CreateTeamPage } from '../pageObjectModel/create-team-page';
 import { DeleteTeamPage } from '../pageObjectModel/delete-team-page';
 import { LoginPage } from '../pageObjectModel/login-page';
 
@@ -10,6 +11,7 @@ const test = base.extend<{
   createHackathonPage: CreateHackathonPage;
   hackathonListPage: HackathonListPage;
   deleteTeamPage: DeleteTeamPage;
+  createTeamPage: CreateTeamPage;
   commonPageObjects: CommonPageObjects;
 }>({
   createHackathonPage: async ({ page }, use) => {
@@ -23,6 +25,10 @@ const test = base.extend<{
   deleteTeamPage: async ({ page }, use) => {
     const deleteTeamPage = new DeleteTeamPage(page);
     await use(deleteTeamPage);
+  },
+  createTeamPage: async ({ page }, use) => {
+    const createTeamPage = new CreateTeamPage(page);
+    await use(createTeamPage);
   },
   commonPageObjects: async ({ page }, use) => {
     const commonPageObjects = new CommonPageObjects(page);
@@ -39,6 +45,7 @@ test.beforeEach(
     createHackathonPage,
     hackathonListPage,
     deleteTeamPage,
+    createTeamPage,
     commonPageObjects,
   }) => {
     const login = new LoginPage(page);
@@ -46,7 +53,7 @@ test.beforeEach(
     await createHackathonPage.createHackathonUsingAPIWithName(
       hackathonAndTeamName
     );
-    await deleteTeamPage.createTeamUsingAPIWithName(hackathonAndTeamName);
+    await createTeamPage.createTeamUsingAPIWithName(hackathonAndTeamName);
     await page.goto('/');
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();

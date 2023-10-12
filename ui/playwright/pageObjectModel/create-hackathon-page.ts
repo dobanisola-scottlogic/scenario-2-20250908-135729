@@ -50,4 +50,24 @@ export class CreateHackathonPage {
     );
     expect(hackathonPostResponse.status()).toBe(200);
   }
+
+  async mock400ErrorOnCreatingHackathon() {
+    await this.page.route(
+      `http://localhost:8080/application/api/hackathon`,
+      async (route) => {
+        await route.fulfill({ status: 400 });
+      }
+    );
+    await this.addNewHackathon();
+  }
+
+  async mock500ErrorOnCreatingHackathon() {
+    await this.page.route(
+      `http://localhost:8080/application/api/hackathon`,
+      async (route) => {
+        await route.fulfill({ status: 500 });
+      }
+    );
+    await this.addNewHackathon();
+  }
 }
