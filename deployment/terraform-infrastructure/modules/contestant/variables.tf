@@ -9,6 +9,12 @@ variable "contestants" {
   default     = ["python", "java"]
 }
 
+variable "hackathon_contestant_password" {
+  type        = string
+  description = "Password to be set on the hackathon_contestant user"
+  default     = "Password!1"
+}
+
 variable "public_subnet_id" {
   type        = string
   description = "The ID of the public subnet to use for the contestant"

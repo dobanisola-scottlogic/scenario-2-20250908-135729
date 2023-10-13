@@ -7,5 +7,5 @@ output "hackathon_contestant_arn" {
 }
 
 output "hackathon_contestant_password" {
-  value = aws_iam_user_login_profile.hackathon_contestant.password
+  value = var.hackathon_contestant_password
 }

@@ -14,6 +14,29 @@ resource "aws_iam_user_login_profile" "hackathon_contestant" {
   user = aws_iam_user.hackathon_contestant.name
 }
 
+# Wait for the aws_iam_user_login_profile resource to be fully created before
+# attempting to execute the local-exec provisioner to update user's password.
+# Though 'depends_on' controls the order in which resources are created, it
+# doesn't necessarily guarantee that the resource has been completely created by
+# the time Terraform executes the local-exec provisioner
+resource "time_sleep" "wait_for_login_profile_creation" {
+  create_duration = "60s"
+
+  depends_on = [aws_iam_user_login_profile.hackathon_contestant]
+}
+
+# Update user's password to be easier to type (Password!1)
+# Terraform offers limited support for password creation via the
+# aws_iam_user_login_profile resource so using local exec to run AWS CLI command
+resource "null_resource" "update_hackathon_contestant_password" {
+
+  provisioner "local-exec" {
+    command = "aws iam update-login-profile --user-name ${aws_iam_user.hackathon_contestant.name} --password ${var.hackathon_contestant_password}"
+  }
+
+  depends_on = [time_sleep.wait_for_login_profile_creation]
+}
+
 # Needed to allow IAM user to log in to Cloud9 IDE
 resource "aws_iam_user_policy" "cloud_9_policy" {
   name = "AWSCloud9EnvironmentMember"
