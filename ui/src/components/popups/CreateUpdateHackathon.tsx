@@ -27,6 +27,7 @@ import { setSnackbarState } from '../../slices/snackbarSlice';
 const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
   const dispatch = useAppDispatch();
 
+  const alphaNumericOrSpaceRegex = /^[A-Za-z0-9 ]+$/i;
   const isEditing = Boolean(id);
 
   const {
@@ -59,6 +60,11 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
       setMilestoneBotName(currentMilestoneClassName);
     }
   }, [hackathon]);
+
+  const hackathonNameInvalid = () =>
+    !hackathonName.trim() || !hackathonName?.match(alphaNumericOrSpaceRegex);
+  const hackathonNameShowError = () =>
+    hackathonName.length > 0 && hackathonNameInvalid();
 
   const handleClose = () => {
     if (!isEditing) {
@@ -144,6 +150,12 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
 
           <TextField
             disabled={isEditing}
+            error={hackathonNameShowError()}
+            helperText={
+              hackathonNameShowError()
+                ? 'Hackathon name must not be empty or include special characters'
+                : null
+            }
             fullWidth
             sx={{ m: 1, mx: 'auto' }}
             id="outlined-basic"
@@ -215,7 +227,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
           >
             <Button onClick={handleClose}>Cancel</Button>
             <Button
-              disabled={!hackathonName.trim() || isLoading}
+              disabled={isLoading || hackathonNameInvalid()}
               onClick={handleSubmit}
             >
               {isEditing ? 'Update hackathon' : 'Add a new hackathon'}

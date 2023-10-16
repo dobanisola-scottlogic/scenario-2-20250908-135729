@@ -41,6 +41,28 @@ describe('Create Update Hackathon Popup Component', () => {
           screen.getByRole('button', { name: 'Add a new hackathon' })
         ).not.toHaveAttribute('disabled');
       });
+
+      it('disables the add hackathon button if a symbol or special character is entered', () => {
+        renderWithRouterAndProvider(
+          <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
+        );
+
+        expect(screen.getAllByText('Add a new hackathon')).toHaveLength(2);
+
+        const textInput = screen.getByRole('textbox', {
+          name: 'Hackathon name',
+        });
+        fireEvent.change(textInput, { target: { value: 'Test! #3' } });
+
+        expect(
+          screen.getByRole('button', { name: 'Add a new hackathon' })
+        ).toHaveAttribute('disabled');
+        expect(
+          screen.getByText(
+            'Hackathon name must not be empty or include special characters'
+          )
+        ).toBeInTheDocument();
+      });
     });
 
     describe('When the create button is pressed', () => {
