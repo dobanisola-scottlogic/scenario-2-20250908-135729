@@ -8,6 +8,12 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
   content = jsonencode({
     "schemaVersion" : "2.2",
     "description" : "Sync files from S3 to Cloud9",
+    "parameters" : {
+      "TeamName" : {
+        "type" : "String",
+        "description" : "The name of the team that this Cloud9 instance belongs to"
+      }
+    },
     "mainSteps" : [
       {
         "action" : "aws:runShellScript",
@@ -25,6 +31,7 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
             ],
             "echo -e '\\n\\n# Hackathon environment variables' >> /home/ec2-user/.bash_profile",
             "echo export PROJ_DIR=\"/home/ec2-user/environment\" >> /home/ec2-user/.bash_profile",
+            "echo export TEAM_NAME=\"{{TeamName}}\" >> /home/ec2-user/.bash_profile",
             "echo export GAME_SERVER_HOST=\"${var.game_server_host}\" >> /home/ec2-user/.bash_profile",
             "echo export GAME_SERVER_PORT=\"${var.game_server_port}\" >> /home/ec2-user/.bash_profile"
           ])
@@ -38,6 +45,10 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
 resource "aws_ssm_association" "execute_s3_cloud9_sync_command" {
   for_each = data.aws_instance.cloud9_ec2_instance
   name     = aws_ssm_document.s3_cloud9_sync_command.name
+
+  parameters = {
+    TeamName = format("Team%d", 1 + each.key)
+  }
 
   targets {
     key    = "InstanceIds"
