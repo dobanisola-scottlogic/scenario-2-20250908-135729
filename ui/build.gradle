@@ -38,6 +38,15 @@ task buildReactApp(type: NodeTask, dependsOn: npmInstall) {
     group = 'Build'
     description = 'Builds the UI'
 
+    inputs.files(fileTree('node_modules'))
+    inputs.files(fileTree('public'))
+    inputs.files(fileTree('src'))
+    inputs.files('.env.development', '.env.production', '.env.test')
+    inputs.file('index.html')
+    inputs.file('package.json')
+    inputs.files('tsconfig.json', 'tsconfig.node.json')
+    inputs.file('vite.config.ts')
+
     script = file('node_modules/vite/bin/vite.js')
     args = ['build']
 
@@ -60,8 +69,15 @@ task('jar', type: Jar){
             into 'ui'
         }
 }
+jar.dependsOn buildReactApp
 assemble.dependsOn jar
 
 artifacts {
     archives jar
+}
+
+sourceSets {
+    main {
+        output.dir(buildReactApp.outputs.files, builtBy: buildReactApp)
+    }
 }

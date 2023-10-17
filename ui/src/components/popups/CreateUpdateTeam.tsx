@@ -152,28 +152,28 @@ const CreateUpdateTeam = ({
     <>
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
-          <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
+          <Typography sx={{ m: 1, mx: 'auto' }} role='dialogHeading'>
             {isEditing ? 'Edit team' : 'Add a new team'}
           </Typography>
 
           <form onSubmit={handleSubmit}>
             <TextField
-              autoComplete="username"
+              autoComplete='username'
               fullWidth
-              label="Name"
+              label='Name'
               sx={{ m: 1, mx: 'auto' }}
               value={teamName}
-              variant="outlined"
+              variant='outlined'
               onChange={(e) => setTeamName(e.target.value)}
             />
 
             <TextField
-              autoComplete="current-password"
+              autoComplete='current-password'
               fullWidth
-              label="Password"
+              label='Password'
               sx={{ m: 1, mx: 'auto' }}
               value={teamPassword}
-              variant="outlined"
+              variant='outlined'
               onChange={(e) => setTeamPassword(e.target.value)}
             />
 
@@ -191,7 +191,7 @@ const CreateUpdateTeam = ({
                 disabled={
                   !teamName?.trim() || !teamPassword?.trim() || isLoading
                 }
-                type="submit"
+                type='submit'
               >
                 {isEditing ? 'Update team' : 'Add team'}
               </Button>
@@ -200,7 +200,7 @@ const CreateUpdateTeam = ({
 
           {formError && (
             <Alert
-              severity="error"
+              severity='error'
               sx={{
                 my: 2,
                 mr: 1,
@@ -212,7 +212,7 @@ const CreateUpdateTeam = ({
 
           {isEditing && !isFetching && fetchError && !teamName && (
             <Alert
-              severity="error"
+              severity='error'
               sx={{
                 my: 2,
                 mr: 1,

@@ -28,9 +28,9 @@ function NavbarMenu() {
   return (
     <>
       <Button
-        id="menu-button"
+        id='menu-button'
         aria-controls={open ? 'dropdown-menu' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
@@ -39,7 +39,7 @@ function NavbarMenu() {
       </Button>
       <Menu
         elevation={1}
-        id="dropdown-menu"
+        id='dropdown-menu'
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -58,7 +58,7 @@ function NavbarMenu() {
       >
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <Logout fontSize='small' />
           </ListItemIcon>
           Logout
         </MenuItem>

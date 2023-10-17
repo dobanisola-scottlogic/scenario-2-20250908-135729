@@ -25,9 +25,15 @@ const Routing = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={renderComponentBasedOnRole()} />
+        <Route
+          path={import.meta.env.BASE_URL}
+          element={renderComponentBasedOnRole()}
+        />
         <Route element={<ProtectedRoute allowedRoles={UserRole.ADMIN} />}>
-          <Route path=":id" element={<HackathonDetails />} />
+          <Route
+            path={`${import.meta.env.BASE_URL}:id`}
+            element={<HackathonDetails />}
+          />
         </Route>
       </Routes>
     </>

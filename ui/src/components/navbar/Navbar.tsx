@@ -9,7 +9,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    navigate('/');
+    navigate(import.meta.env.BASE_URL);
   };
 
   return (
@@ -17,8 +17,8 @@ const Navbar = () => {
       <AppBar elevation={0}>
         <Toolbar>
           <Typography
-            variant="h6"
-            component="header"
+            variant='h6'
+            component='header'
             onClick={handleRedirect}
             sx={{ cursor: 'pointer' }}
           >

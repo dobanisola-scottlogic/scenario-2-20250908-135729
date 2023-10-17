@@ -17,8 +17,8 @@ const HackathonDetails = () => {
               display: 'inline-flex',
             }}
           >
-            <Link to={'/'}>Hackathons</Link>
-            <KeyboardArrowRight fontSize="small" />
+            <Link to={import.meta.env.BASE_URL}>Hackathons</Link>
+            <KeyboardArrowRight fontSize='small' />
             {id}
           </Typography>
         </Box>

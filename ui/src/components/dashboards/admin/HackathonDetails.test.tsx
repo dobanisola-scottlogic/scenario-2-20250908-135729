@@ -7,7 +7,7 @@ describe('HackathonDetails', () => {
   beforeEach(() => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path="/:id" element={<HackathonDetails />}></Route>
+        <Route path='/:id' element={<HackathonDetails />}></Route>
       </Routes>,
       { initialEntries: ['/test-id'] }
     );

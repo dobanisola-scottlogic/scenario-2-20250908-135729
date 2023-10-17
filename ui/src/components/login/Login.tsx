@@ -48,8 +48,8 @@ const Login = () => {
   return (
     <>
       <Container
-        component="main"
-        maxWidth="xs"
+        component='main'
+        maxWidth='xs'
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -65,21 +65,21 @@ const Login = () => {
             height: '23rem',
           }}
         >
-          <Typography component="h1" variant="h6">
+          <Typography component='h1' variant='h6'>
             Login
           </Typography>
           <Box
-            component="form"
+            component='form'
             onSubmit={handleLogin}
             noValidate
             sx={{ mt: 1 }}
           >
             <LoginTextField
-              field="username"
+              field='username'
               onChange={(e) => setUsername(e.target.value)}
             />
             <LoginTextField
-              field="password"
+              field='password'
               onChange={(e) => setPassword(e.target.value)}
             />
             <Box
@@ -91,7 +91,7 @@ const Login = () => {
             >
               {error && (
                 <Alert
-                  severity="error"
+                  severity='error'
                   sx={{
                     my: 2,
                     mr: 1,
@@ -100,7 +100,7 @@ const Login = () => {
                   {error}
                 </Alert>
               )}
-              <Button type="submit" disabled={isLoading} sx={{ my: 4 }}>
+              <Button type='submit' disabled={isLoading} sx={{ my: 4 }}>
                 Login
               </Button>
             </Box>

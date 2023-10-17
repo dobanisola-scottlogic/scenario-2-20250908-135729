@@ -7,7 +7,7 @@ interface AddButtonProps {
 }
 
 const AddButton = ({ onClick, text }: AddButtonProps) => (
-  <Button variant="outlined" onClick={onClick} startIcon={<AddIcon />}>
+  <Button variant='outlined' onClick={onClick} startIcon={<AddIcon />}>
     {text}
   </Button>
 );

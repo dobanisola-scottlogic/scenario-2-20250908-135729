@@ -9,7 +9,7 @@ describe('Delete Team Popup Component', () => {
   describe('When the delete team popup is opened', () => {
     it('renders the delete team popup', () => {
       renderWithRouterAndProvider(
-        <DeleteTeam isOpen id="test-id" setIsOpen={mockFunction} />
+        <DeleteTeam isOpen id='test-id' setIsOpen={mockFunction} />
       );
 
       expect(
@@ -28,7 +28,7 @@ describe('Delete Team Popup Component', () => {
   describe('When the delete button is pressed', () => {
     it('calls the delete team function successfully', async () => {
       const { store } = renderWithRouterAndProvider(
-        <DeleteTeam isOpen id="test-id" setIsOpen={mockFunction} />
+        <DeleteTeam isOpen id='test-id' setIsOpen={mockFunction} />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
@@ -44,7 +44,7 @@ describe('Delete Team Popup Component', () => {
 
     it('displays an error when the delete team function returns unsuccessfully with a bad request', async () => {
       renderWithRouterAndProvider(
-        <DeleteTeam isOpen id="400" setIsOpen={mockFunction} />
+        <DeleteTeam isOpen id='400' setIsOpen={mockFunction} />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
@@ -55,7 +55,7 @@ describe('Delete Team Popup Component', () => {
 
     it('displays an error when the delete team function returns unsuccessfully with an internal server error', async () => {
       renderWithRouterAndProvider(
-        <DeleteTeam isOpen id="500" setIsOpen={mockFunction} />
+        <DeleteTeam isOpen id='500' setIsOpen={mockFunction} />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));

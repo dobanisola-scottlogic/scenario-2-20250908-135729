@@ -6,7 +6,7 @@ import TeamMenu from './TeamMenu';
 describe('TeamMenu', () => {
   beforeEach(() => {
     renderWithRouterAndProvider(
-      <TeamMenu hackathonId="hackathon1" selectedTeamId="team1" />
+      <TeamMenu hackathonId='hackathon1' selectedTeamId='team1' />
     );
   });
 

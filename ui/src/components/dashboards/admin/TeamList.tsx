@@ -19,7 +19,7 @@ const TeamList = ({ hackathonId }: TeamListProps) => {
       <SnackbarAlert />
 
       <Container maxWidth={false} style={{ padding: '10px 0' }}>
-        <AddButton onClick={handleAddTeamOpen} text="Add a new team" />
+        <AddButton onClick={handleAddTeamOpen} text='Add a new team' />
         <CreateUpdateTeam
           isOpen={isAddTeamOpen}
           hackathonId={hackathonId}

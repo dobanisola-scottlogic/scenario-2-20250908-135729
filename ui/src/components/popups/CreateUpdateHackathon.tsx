@@ -144,7 +144,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
     <>
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
-          <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
+          <Typography sx={{ m: 1, mx: 'auto' }} role='dialogHeading'>
             {isEditing ? 'Edit hackathon' : 'Add a new hackathon'}
           </Typography>
 
@@ -158,9 +158,9 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
             }
             fullWidth
             sx={{ m: 1, mx: 'auto' }}
-            id="outlined-basic"
-            label="Hackathon name"
-            variant="outlined"
+            id='outlined-basic'
+            label='Hackathon name'
+            variant='outlined'
             value={hackathonName}
             onChange={(e) => setHackathonName(e.target.value)}
           />
@@ -168,15 +168,15 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
           {isEditing && (
             <>
               <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
-                <InputLabel id="current-milestone-bot-label">
+                <InputLabel id='current-milestone-bot-label'>
                   Current milestone bot
                 </InputLabel>
                 <Select
-                  data-testid="current-milestone-bot"
+                  data-testid='current-milestone-bot'
                   disabled={!isEditing}
-                  labelId="current-milestone-bot-select-label"
-                  id="current-milestone-bot"
-                  label="Current milestone bot"
+                  labelId='current-milestone-bot-select-label'
+                  id='current-milestone-bot'
+                  label='Current milestone bot'
                   value={milestoneBotName}
                   onChange={(event) => setMilestoneBotName(event.target.value)}
                 >
@@ -194,25 +194,25 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
 
               {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
               <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
-                <InputLabel id="demo-simple-select-label">
+                <InputLabel id='demo-simple-select-label'>
                   Current milestone map
                 </InputLabel>
                 <Select
-                  data-testid="current-milestone-map"
+                  data-testid='current-milestone-map'
                   disabled={!isEditing}
-                  labelId="current-milestone-map-label"
-                  id="current-milestone-map"
-                  label="Current milestone map"
+                  labelId='current-milestone-map-label'
+                  id='current-milestone-map'
+                  label='Current milestone map'
                   value={milestoneMapName}
                   onChange={(event) => setMilestoneMapName(event.target.value)}
                 >
-                  <MenuItem value="VeryEasy">Very Easy</MenuItem>
-                  <MenuItem value="Easy">Easy</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="LargeMedium">Large Medium</MenuItem>
-                  <MenuItem value="Hard">Hard</MenuItem>
-                  <MenuItem value="ThreeStar">Three Star</MenuItem>
-                  <MenuItem value="ThreeStraight">Three Straight</MenuItem>
+                  <MenuItem value='VeryEasy'>Very Easy</MenuItem>
+                  <MenuItem value='Easy'>Easy</MenuItem>
+                  <MenuItem value='Medium'>Medium</MenuItem>
+                  <MenuItem value='LargeMedium'>Large Medium</MenuItem>
+                  <MenuItem value='Hard'>Hard</MenuItem>
+                  <MenuItem value='ThreeStar'>Three Star</MenuItem>
+                  <MenuItem value='ThreeStraight'>Three Straight</MenuItem>
                 </Select>
               </FormControl>
             </>
@@ -236,7 +236,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
 
           {formError && (
             <Alert
-              severity="error"
+              severity='error'
               sx={{
                 my: 2,
                 mr: 1,
@@ -248,7 +248,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
 
           {isEditing && !isFetching && !hackathon && (
             <Alert
-              severity="error"
+              severity='error'
               sx={{
                 my: 2,
                 mr: 1,

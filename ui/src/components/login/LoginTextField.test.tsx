@@ -7,7 +7,7 @@ const mockOnChange = vi.fn();
 describe('LoginTextField', () => {
   it('should render the LoginTextField component correctly when field is username', () => {
     renderWithRouterAndProvider(
-      <LoginTextField field="username" onChange={mockOnChange} />
+      <LoginTextField field='username' onChange={mockOnChange} />
     );
 
     expect(
@@ -20,7 +20,7 @@ describe('LoginTextField', () => {
 
   it('should render the LoginTextField component correctly when field is password', () => {
     renderWithRouterAndProvider(
-      <LoginTextField field="password" onChange={mockOnChange} />
+      <LoginTextField field='password' onChange={mockOnChange} />
     );
 
     // when password visibility is off, input type is password, role is not textbox so get by label
@@ -32,7 +32,7 @@ describe('LoginTextField', () => {
 
   it('should show password when toggle password visibility button is clicked', () => {
     renderWithRouterAndProvider(
-      <LoginTextField field="password" onChange={mockOnChange} />
+      <LoginTextField field='password' onChange={mockOnChange} />
     );
 
     fireEvent.click(

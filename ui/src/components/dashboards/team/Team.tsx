@@ -7,7 +7,7 @@ const Team = () => {
 
   return (
     <>
-      <Typography component="h1" variant="h6">
+      <Typography component='h1' variant='h6'>
         Team: {name}
       </Typography>
     </>

@@ -17,7 +17,7 @@ const HackathonList = () => {
         <Box sx={{ mb: 4 }}>
           <AddButton
             onClick={handleIsCreateHackathonOpen}
-            text="Add a new hackathon"
+            text='Add a new hackathon'
           />
         </Box>
         <HackathonListTable />

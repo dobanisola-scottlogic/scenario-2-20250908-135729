@@ -21,17 +21,17 @@ const KebabMenu = ({ options }: KebabMenuProps) => {
   return (
     <>
       <IconButton
-        aria-label="more"
-        id="kebab-button"
+        aria-label='more'
+        id='kebab-button'
         aria-controls={open ? 'kebab-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         onClick={handleClick}
       >
         <MoreVertIcon />
       </IconButton>
       <Menu
-        id="kebab-menu"
+        id='kebab-menu'
         MenuListProps={{
           'aria-labelledby': 'kebab-button',
         }}

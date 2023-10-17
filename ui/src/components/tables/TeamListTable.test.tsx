@@ -7,7 +7,7 @@ import TeamListTable from './TeamListTable';
 
 describe('TeamListTable', () => {
   it('should render the table correctly after successful data fetch', async () => {
-    renderWithRouterAndProvider(<TeamListTable hackathonId="test-id" />);
+    renderWithRouterAndProvider(<TeamListTable hackathonId='test-id' />);
 
     expect(
       screen.getByRole('columnheader', { name: 'Name' })
@@ -25,7 +25,7 @@ describe('TeamListTable', () => {
   });
 
   it('should display an error message after unsuccessful data fetch', async () => {
-    renderWithRouterAndProvider(<TeamListTable hackathonId="test-id" />);
+    renderWithRouterAndProvider(<TeamListTable hackathonId='test-id' />);
 
     server.use(getTeamsNetworkErrorResponseHandler);
 

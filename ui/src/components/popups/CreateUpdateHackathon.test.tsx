@@ -135,7 +135,7 @@ describe('Create Update Hackathon Popup Component', () => {
   describe('Update Hackathon', () => {
     it('renders the update hackathon popup', () => {
       renderWithRouterAndProvider(
-        <CreateUpdateHackathon id="test-id" isOpen setIsOpen={mockFunction} />
+        <CreateUpdateHackathon id='test-id' isOpen setIsOpen={mockFunction} />
       );
 
       expect(screen.getByText('Edit hackathon')).toBeInTheDocument();
@@ -149,7 +149,7 @@ describe('Create Update Hackathon Popup Component', () => {
 
     it('renders the update hackathon popup with the correct data', async () => {
       renderWithRouterAndProvider(
-        <CreateUpdateHackathon id="test-id" isOpen setIsOpen={mockFunction} />
+        <CreateUpdateHackathon id='test-id' isOpen setIsOpen={mockFunction} />
       );
 
       // Wait for get hackathon load to complete
@@ -187,7 +187,7 @@ describe('Create Update Hackathon Popup Component', () => {
     describe('When the edit button is pressed', () => {
       it('calls the edit hackathon function successfully', async () => {
         const { store } = renderWithRouterAndProvider(
-          <CreateUpdateHackathon id="test-id" isOpen setIsOpen={mockFunction} />
+          <CreateUpdateHackathon id='test-id' isOpen setIsOpen={mockFunction} />
         );
 
         // Wait for get hackathon load to complete
@@ -213,7 +213,7 @@ describe('Create Update Hackathon Popup Component', () => {
       it('disables update when the hackathon does not load correctly or is not found', async () => {
         renderWithRouterAndProvider(
           <CreateUpdateHackathon
-            id="not-found-id"
+            id='not-found-id'
             isOpen
             setIsOpen={mockFunction}
           />

@@ -23,7 +23,7 @@ const LoginTextField = ({ field, onChange }: LoginTextFieldProps) => {
   return (
     <>
       <TextField
-        margin="normal"
+        margin='normal'
         required
         fullWidth
         id={field}
@@ -40,9 +40,9 @@ const LoginTextField = ({ field, onChange }: LoginTextFieldProps) => {
                   'data-testid': 'password-input',
                 },
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <IconButton
-                      aria-label="toggle password visibility"
+                      aria-label='toggle password visibility'
                       onClick={handleTogglePassword}
                     >
                       {showPassword ? <Visibility /> : <VisibilityOff />}

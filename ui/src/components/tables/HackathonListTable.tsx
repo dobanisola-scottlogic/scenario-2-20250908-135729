@@ -29,8 +29,8 @@ const HackathonListTable = () => {
         <TableContainer sx={{ maxHeight: '60vh' }}>
           <Table
             stickyHeader
-            size="small"
-            aria-label="hackathon table"
+            size='small'
+            aria-label='hackathon table'
             style={{ tableLayout: 'fixed' }}
           >
             <TableHead>
@@ -45,7 +45,7 @@ const HackathonListTable = () => {
                 <TableRow
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell align="center" colSpan={3}>
+                  <TableCell align='center' colSpan={3}>
                     <Box
                       sx={{
                         minHeight: '3rem',
@@ -70,8 +70,10 @@ const HackathonListTable = () => {
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      <Link to={`/${row.id}`}>{row.name}</Link>
+                    <TableCell component='th' scope='row'>
+                      <Link to={`${import.meta.env.BASE_URL}${row.id}`}>
+                        {row.name}
+                      </Link>
                     </TableCell>
                     <TableCell>{row.currentMilestoneMap}</TableCell>
                     <MenuTableCell

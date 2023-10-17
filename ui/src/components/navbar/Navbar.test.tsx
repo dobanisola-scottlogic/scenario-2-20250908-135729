@@ -26,8 +26,8 @@ describe('Navbar', () => {
   it('should navigate back to the / page when the navbar title is clicked', () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path="/" element={<div data-testid="landing-page" />} />
-        <Route path="/test-path" element={<Navbar />} />
+        <Route path='/' element={<div data-testid='landing-page' />} />
+        <Route path='/test-path' element={<Navbar />} />
       </Routes>,
       { initialEntries: ['/test-path'] }
     );

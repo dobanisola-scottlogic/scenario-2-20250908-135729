@@ -13,7 +13,7 @@ const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
   return userRole && allowedRoles.includes(userRole) ? (
     <Outlet />
   ) : (
-    <Navigate to="/" />
+    <Navigate to={import.meta.env.BASE_URL} />
   );
 };
 

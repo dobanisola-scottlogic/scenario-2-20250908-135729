@@ -10,10 +10,10 @@ describe('HackathonListTable', () => {
   it('should render the table correctly after successful data fetch', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path="/" element={<HackathonListTable />} />
+        <Route path='/' element={<HackathonListTable />} />
         <Route
-          path="/:id"
-          element={<div data-testid="hackathon-details-page" />}
+          path='/:id'
+          element={<div data-testid='hackathon-details-page' />}
         />
       </Routes>
     );
@@ -52,10 +52,10 @@ describe('HackathonListTable', () => {
 
     renderWithRouterAndProvider(
       <Routes>
-        <Route path="/" element={<HackathonListTable />} />
+        <Route path='/' element={<HackathonListTable />} />
         <Route
-          path="/:id"
-          element={<div data-testid="hackathon-details-page" />}
+          path='/:id'
+          element={<div data-testid='hackathon-details-page' />}
         />
       </Routes>
     );
@@ -69,10 +69,10 @@ describe('HackathonListTable', () => {
   it('should navigate to the hackathon details page', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path="/" element={<HackathonListTable />} />
+        <Route path='/' element={<HackathonListTable />} />
         <Route
-          path="/:id"
-          element={<div data-testid="hackathon-details-page" />}
+          path='/:id'
+          element={<div data-testid='hackathon-details-page' />}
         />
       </Routes>
     );

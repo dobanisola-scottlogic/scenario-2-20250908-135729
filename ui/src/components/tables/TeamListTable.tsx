@@ -38,8 +38,8 @@ const TeamListTable = ({ hackathonId }: TeamListTableProps) => {
         <TableContainer sx={{ maxHeight: '60vh' }}>
           <Table
             stickyHeader
-            size="small"
-            aria-label="List of hackathon teams"
+            size='small'
+            aria-label='List of hackathon teams'
             style={{ tableLayout: 'fixed' }}
           >
             <TableHead>
@@ -52,7 +52,7 @@ const TeamListTable = ({ hackathonId }: TeamListTableProps) => {
                 <TableRow
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell align="center">
+                  <TableCell align='center'>
                     <Box
                       sx={{
                         minHeight: '3rem',

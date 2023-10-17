@@ -53,12 +53,12 @@ const DeleteTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
     <>
       <Dialog onClose={handleClose} open={isOpen}>
         <DialogContent sx={{ width: 500 }}>
-          <Typography sx={{ m: 1, mx: 'auto' }} role="dialogHeading">
+          <Typography sx={{ m: 1, mx: 'auto' }} role='dialogHeading'>
             Are you sure you want to delete the team?
           </Typography>
           <Typography
             sx={{ fontWeight: 'normal', m: 1, mx: 'auto' }}
-            role="dialogHeading"
+            role='dialogHeading'
           >
             This will delete the team&apos;s games as well. You{' '}
             <strong>cannot</strong> undo this action.
@@ -78,7 +78,7 @@ const DeleteTeam = ({ isOpen, id, setIsOpen }: PopupProps) => {
 
           {formError && (
             <Alert
-              severity="error"
+              severity='error'
               sx={{
                 my: 2,
                 mr: 1,

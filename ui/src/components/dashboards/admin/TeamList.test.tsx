@@ -5,7 +5,7 @@ import TeamList from './TeamList';
 
 describe('TeamList', () => {
   beforeEach(() => {
-    renderWithRouterAndProvider(<TeamList hackathonId="test-id" />, {
+    renderWithRouterAndProvider(<TeamList hackathonId='test-id' />, {
       preloadedState: {
         snackbar: { isOpen: true, message: 'Team created successfully!' },
       },

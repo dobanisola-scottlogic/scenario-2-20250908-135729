@@ -5,7 +5,7 @@ import HackathonMenu from './HackathonMenu';
 describe('HackathonMenu', () => {
   beforeEach(() => {
     renderWithRouterAndProvider(
-      <HackathonMenu selectedHackathonId="test-id" />
+      <HackathonMenu selectedHackathonId='test-id' />
     );
   });
 
