@@ -33,7 +33,15 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
             "echo export PROJ_DIR=\"/home/ec2-user/environment\" >> /home/ec2-user/.bash_profile",
             "echo export TEAM_NAME=\"{{TeamName}}\" >> /home/ec2-user/.bash_profile",
             "echo export GAME_SERVER_HOST=\"${var.game_server_host}\" >> /home/ec2-user/.bash_profile",
-            "echo export GAME_SERVER_PORT=\"${var.game_server_port}\" >> /home/ec2-user/.bash_profile"
+            "echo export GAME_SERVER_PORT=\"${var.game_server_port}\" >> /home/ec2-user/.bash_profile",
+            join(" ",
+              [
+                "su ec2-user -c",
+                "'cd /home/ec2-user/environment/python-contestant",
+                "&& python3 -m venv venv",
+                "&& source venv/bin/activate",
+                "&& pip install -r requirements.txt'",
+            ])
           ])
         }
       }

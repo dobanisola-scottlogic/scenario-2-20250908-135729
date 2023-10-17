@@ -1,6 +1,7 @@
 API Reference
 =================
 
+.. HAC-163 Autosummary seems to cause duplicate entries
 .. autosummary::
    :toctree: _autosummary
 

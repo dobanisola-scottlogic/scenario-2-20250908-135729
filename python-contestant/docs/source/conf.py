@@ -13,12 +13,12 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../../src/'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'python-contestant'
-copyright = '2019, Scott Logic'
+copyright = '2023 Scott Logic Limited'
 author = 'Scott Logic'
 
 # -- General configuration ---------------------------------------------------
@@ -29,7 +29,6 @@ autodoc_default_options = {
     'exclude-members': '_abc_impl',
     'inherited-members': True,
     'show-inheritance': True
-
 }
 autosummary_generate = True
 napoleon_numpy_docstring = False  # Force consistency, leave only Google
@@ -63,7 +62,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 source_suffix = {
     '.rst': 'restructuredtext',

@@ -2,7 +2,40 @@ plugins {
     id 'base'
 }
 
+task createVirtualEnv(type: Exec) {
+    workingDir projectDir
+    commandLine 'python3', '-m', 'venv', 'venv'
+}
+
+task installDocumentationRequirements(type: Exec) {
+    group 'documentation'
+
+    dependsOn 'createVirtualEnv'
+
+    workingDir projectDir
+    commandLine 'venv/bin/pip', 'install', '-r', 'src/doc-requirements.txt'
+}
+
+task cleanDocumentation(type: Delete) {
+    group 'documentation'
+
+    delete 'docs/build'
+    delete 'docs/source/_autosummary'
+}
+
+task generateDocumentation(type: Exec) {
+    group 'documentation'
+
+    dependsOn 'installDocumentationRequirements'
+    dependsOn 'cleanDocumentation'
+
+    workingDir 'docs'
+    environment 'PATH', "$System.env.PATH" + System.getProperty("path.separator") + "$projectDir/venv/bin"
+    commandLine 'make', 'html'
+}
+
 task copyContestantFiles(type: Copy) {
+    dependsOn 'generateDocumentation'
     dependsOn  ':remote:build'
 
     doFirst {
@@ -12,25 +45,22 @@ task copyContestantFiles(type: Copy) {
         from '../remote/build/libs/remote-1.0-SNAPSHOT-all.jar'
     }
 
-
     into('.') {
         from 'src'
-        include 'bot/*.py'
+        include 'bots/*.py'
         include 'contestant/*.py'
         include 'game/*.py'
-        include 'bots/*.py'
-        include 'util/*.py'
         include 'test/*.py'
-        include 'docs/**'
+        include 'util/*.py'
         include 'main.py'
-        include 'setup.py'
         include 'README.md'
+        include 'requirements.txt'
     }
     from 'scripts'
+    from 'docs/build'
 
     into 'build/python-contestant'
 }
-
 
 task tgzContestant(type: Tar) {
     dependsOn 'copyContestantFiles'
