@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useEffect, useState } from 'react';
-
 import {
   useCreateTeamMutation,
   useGetTeamQuery,
@@ -21,6 +20,7 @@ import { CreateTeamRequest } from '../../interfaces/CreateTeamRequest';
 import { PopupProps } from '../../interfaces/PopupProps';
 import { Team } from '../../interfaces/Team';
 import { setSnackbarState } from '../../slices/snackbarSlice';
+import { isValidName } from './utils';
 
 interface CreateUpdateTeamProps extends PopupProps {
   hackathonId: string;
@@ -57,6 +57,8 @@ const CreateUpdateTeam = ({
       setTeamPassword(team?.password ?? '');
     }
   }, [isOpen, team]);
+
+  const teamNameShowError = () => teamName.length > 0 && !isValidName(teamName);
 
   const handleClose = () => {
     if (!isEditing) {
@@ -159,6 +161,12 @@ const CreateUpdateTeam = ({
           <form onSubmit={handleSubmit}>
             <TextField
               autoComplete='username'
+              error={teamNameShowError()}
+              helperText={
+                teamNameShowError()
+                  ? 'Team name must not be empty or include special characters'
+                  : null
+              }
               fullWidth
               label='Name'
               sx={{ m: 1, mx: 'auto' }}
@@ -189,7 +197,7 @@ const CreateUpdateTeam = ({
 
               <Button
                 disabled={
-                  !teamName?.trim() || !teamPassword?.trim() || isLoading
+                  !teamPassword?.trim() || !isValidName(teamName) || isLoading
                 }
                 type='submit'
               >

@@ -23,11 +23,11 @@ import {
 import { useAppDispatch } from '../../hooks';
 import { PopupProps } from '../../interfaces/PopupProps';
 import { setSnackbarState } from '../../slices/snackbarSlice';
+import { isValidName } from './utils';
 
 const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
   const dispatch = useAppDispatch();
 
-  const alphaNumericOrSpaceRegex = /^[A-Za-z0-9 ]+$/i;
   const isEditing = Boolean(id);
 
   const {
@@ -61,10 +61,8 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
     }
   }, [hackathon]);
 
-  const hackathonNameInvalid = () =>
-    !hackathonName.trim() || !hackathonName?.match(alphaNumericOrSpaceRegex);
   const hackathonNameShowError = () =>
-    hackathonName.length > 0 && hackathonNameInvalid();
+    hackathonName.length > 0 && !isValidName(hackathonName);
 
   const handleClose = () => {
     if (!isEditing) {
@@ -227,7 +225,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
           >
             <Button onClick={handleClose}>Cancel</Button>
             <Button
-              disabled={isLoading || hackathonNameInvalid()}
+              disabled={isLoading || !isValidName(hackathonName)}
               onClick={handleSubmit}
             >
               {isEditing ? 'Update hackathon' : 'Add a new hackathon'}

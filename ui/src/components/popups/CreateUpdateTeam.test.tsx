@@ -66,6 +66,35 @@ describe('CreateUpdateTeam Popup Component', () => {
 
       expect(submitButton).not.toHaveAttribute('disabled');
     });
+
+    it('disables the add hackathon button if a symbol or special character is entered', () => {
+      renderWithRouterAndProvider(
+        <CreateUpdateTeam
+          isOpen
+          hackathonId={hackathonId}
+          setIsOpen={mockFunction}
+        />
+      );
+
+      expect(screen.getByText('Add a new team')).toBeInTheDocument();
+
+      const nameInput = screen.getByRole('textbox', { name: 'Name' });
+      const passwordInput = screen.getByRole('textbox', { name: 'Password' });
+      const submitButton = screen.getByRole('button', { name: 'Add team' });
+
+      expect(submitButton).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+
+      fireEvent.change(nameInput, { target: { value: 'Team#3' } });
+      fireEvent.change(passwordInput, { target: { value: teamPassword } });
+
+      expect(submitButton).toBeDisabled();
+      expect(
+        screen.getByText(
+          'Team name must not be empty or include special characters'
+        )
+      ).toBeInTheDocument();
+    });
   });
 
   describe('When the Add button is pressed', () => {
