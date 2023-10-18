@@ -29,10 +29,6 @@ export class CreateHackathonPage {
     await this.addNewHackathonButton.click();
   }
 
-  async cancelNewHackathon() {
-    await this.cancelButton.click();
-  }
-
   async verifyCreateHackathonPopUp(hackathonName: string) {
     await expect(this.createHackathonPopup).toContainText(hackathonName);
     await expect(this.addNewHackathonButton).toBeDisabled();

@@ -11,6 +11,7 @@ export class CommonPageObjects {
   readonly errorIcon: Locator;
   readonly alertNotification: Locator;
   readonly successCloseButton: Locator;
+  readonly cancelButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -25,6 +26,9 @@ export class CommonPageObjects {
     this.errorIcon = page.getByTestId('ErrorOutlineIcon');
     this.alertNotification = page.getByRole('alert');
     this.successCloseButton = page.getByLabel('Close');
+    this.cancelButton = page.getByRole('button', {
+      name: 'Cancel',
+    });
   }
 
   async confirmPopupIsVisible() {
@@ -38,6 +42,10 @@ export class CommonPageObjects {
   async confirmPopupTextIs(headerText: string, bodyText: string) {
     await expect(this.popupHeaderText).toContainText(headerText);
     await expect(this.popupBodyText).toContainText(bodyText);
+  }
+
+  async cancelCurrentAction() {
+    await this.cancelButton.click();
   }
 
   async logoutUsingDropdown() {
@@ -61,5 +69,9 @@ export class CommonPageObjects {
 
   async confirmSuccessAlertDoesNotExist() {
     await expect(this.successIcon).toBeHidden();
+  }
+
+  async refreshPage() {
+    await this.page.reload();
   }
 }

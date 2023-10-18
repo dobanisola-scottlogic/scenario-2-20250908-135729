@@ -76,11 +76,8 @@ test('hackathon can be successfully deleted and subsequent alert can be closed',
   );
 });
 
-test('hackathon deletion can be cancelled', async ({
-  deleteHackathonPage,
-  commonPageObjects,
-}) => {
-  await deleteHackathonPage.cancelHackathonDeletion();
+test('hackathon deletion can be cancelled', async ({ commonPageObjects }) => {
+  await commonPageObjects.cancelCurrentAction();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();
 });
 

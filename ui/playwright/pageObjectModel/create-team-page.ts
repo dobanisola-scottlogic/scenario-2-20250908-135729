@@ -35,10 +35,6 @@ export class CreateTeamPage {
     await this.addNewTeamButton.click();
   }
 
-  async cancelNewTeam() {
-    await this.cancelButton.click();
-  }
-
   async verifyCreateTeamPopUpWithFieldLabels(
     teamName: string,
     teamPassword: string
@@ -63,14 +59,17 @@ export class CreateTeamPage {
     await this.addNewTeam();
   }
 
-  async createTeamUsingAPIWithName(teamAndHackathonName: string) {
+  async createTeamUsingAPIWithHackathonAndTeamName(
+    hackathonName: string,
+    teamName: string
+  ) {
     const teamPostResponse = await this.page.request.post(
       'http://localhost:8080/application/api/team',
       {
         data: {
-          name: teamAndHackathonName,
+          name: teamName,
           password: 'teamPassword',
-          hackathonId: teamAndHackathonName.toLowerCase(),
+          hackathonId: hackathonName.toLowerCase(),
         },
       }
     );

@@ -17,6 +17,7 @@ export class HackathonDetailsPage {
   }: {
     hackathonName: string;
   }) => Locator;
+  readonly hackathonPageLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -38,6 +39,7 @@ export class HackathonDetailsPage {
     });
     this.hackathonLink = ({ hackathonName }) =>
       page.getByRole('link', { name: `${hackathonName}` });
+    this.hackathonPageLink = page.getByRole('link', { name: 'Hackathons' });
   }
 
   async openCreateTeamPopup() {
@@ -60,7 +62,10 @@ export class HackathonDetailsPage {
     await this.hackathonLink({ hackathonName: teamHackName }).click();
   }
 
-  async verifyTeamIsCreatedWithName(teamName: string) {
+  async verifyTeamExistsWithName(teamName: string) {
     await expect(this.teamName({ teamName: teamName })).toHaveText(teamName);
+  }
+  async returnToHackathonListPage() {
+    await this.hackathonPageLink.click();
   }
 }

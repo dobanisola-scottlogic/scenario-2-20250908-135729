@@ -41,10 +41,6 @@ export class EditHackathonPage {
     await this.updateHackathonButton.click();
   }
 
-  async cancelEditHackathon() {
-    await this.cancelButton.click();
-  }
-
   async clickBotName(botName: string) {
     await this.editList.getByText(botName).click();
   }

@@ -90,9 +90,9 @@ test('admin can edit a hackathon', async ({
   );
 });
 
-test('admin can cancel editing a hackathon', async ({ editHackathonPage }) => {
-  await editHackathonPage.cancelEditHackathon();
-  await editHackathonPage.verifyEditHackathonPopUpDoesNotExist();
+test('admin can cancel editing a hackathon', async ({ commonPageObjects }) => {
+  await commonPageObjects.cancelCurrentAction();
+  await commonPageObjects.confirmSuccessAlertDoesNotExist();
 });
 
 test('bad request error message will appear', async ({

@@ -6,7 +6,6 @@ export class DeleteTeamPage {
   readonly deleteTeamButton: Locator;
   readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
   readonly deleteTeamOption: Locator;
-  readonly cancelDeletionButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,9 +14,6 @@ export class DeleteTeamPage {
     this.teamMenuButton = ({ teamName }) =>
       page.getByRole('cell', { name: `${teamName}` }).getByLabel('more');
     this.deleteTeamOption = page.getByRole('menuitem', { name: 'Delete...' });
-    this.cancelDeletionButton = page.getByRole('button', {
-      name: 'Cancel',
-    });
   }
 
   async openDeletePopupOfTeamWithName(teamName: string) {
@@ -27,10 +23,6 @@ export class DeleteTeamPage {
 
   async deleteTeam() {
     await this.deleteTeamButton.click();
-  }
-
-  async cancelTeamDeletion() {
-    await this.cancelDeletionButton.click();
   }
 
   async mock400ErrorOnTeamDeletion() {

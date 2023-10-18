@@ -84,7 +84,7 @@ test('admin can cancel creating a new hackathon', async ({
   await hackathonListPage.openCreateHackathonPopup();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName(hackathonName);
-  await createHackathonPage.cancelNewHackathon();
+  await commonPageObjects.cancelCurrentAction();
   await commonPageObjects.confirmPopupIsHidden();
   await hackathonListPage.checkExistenceOfHackathonInTableWithName(
     hackathonName,

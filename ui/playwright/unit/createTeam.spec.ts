@@ -37,7 +37,8 @@ const test = base.extend<{
 });
 
 const uniqueHackathonId = new HackathonHelpers();
-let hackathonAndTeamName = '';
+let hackathonName = '';
+let teamName = '';
 
 test.beforeEach(
   async ({
@@ -48,25 +49,21 @@ test.beforeEach(
     commonPageObjects,
   }) => {
     const login = new LoginPage(page);
-    hackathonAndTeamName =
+    hackathonName = teamName =
       'deleteTeam_' + uniqueHackathonId.generateRandomString();
-    await createHackathonPage.createHackathonUsingAPIWithName(
-      hackathonAndTeamName
-    );
+    await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto('/');
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openTheHackathonPage(hackathonAndTeamName);
+    await hackathonListPage.openTheHackathonPage(hackathonName);
     await hackathonDetailsPage.openCreateTeamPopup();
     await commonPageObjects.confirmPopupIsVisible();
   }
 );
 
 test.afterEach(async ({ hackathonListPage }) => {
-  await hackathonListPage.clearAnyExistingHackathonWithName(
-    hackathonAndTeamName
-  );
+  await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
 test('multiple teams can be created', async ({
@@ -74,7 +71,7 @@ test('multiple teams can be created', async ({
   commonPageObjects,
   hackathonDetailsPage,
 }) => {
-  await createTeamPage.inputTeamName(hackathonAndTeamName);
+  await createTeamPage.inputTeamName(teamName);
   await createTeamPage.inputTeamPassword('teamPassword');
   await createTeamPage.addNewTeam();
   await commonPageObjects.confirmSuccessMessageIs('Team added successfully!');
@@ -86,15 +83,14 @@ test('multiple teams can be created', async ({
   await createTeamPage.addNewTeam();
   await commonPageObjects.confirmSuccessMessageIs('Team added successfully!');
   await commonPageObjects.closeSuccessAlert();
-  await hackathonDetailsPage.verifyTeamIsCreatedWithName(hackathonAndTeamName);
-  await hackathonDetailsPage.verifyTeamIsCreatedWithName('secondTeam');
+  await hackathonDetailsPage.verifyTeamExistsWithName(teamName);
+  await hackathonDetailsPage.verifyTeamExistsWithName('secondTeam');
 });
 
 test('admin can cancel creation of a new team', async ({
-  createTeamPage,
   commonPageObjects,
 }) => {
-  await createTeamPage.cancelNewTeam();
+  await commonPageObjects.cancelCurrentAction();
   await commonPageObjects.confirmPopupIsHidden();
 });
 
@@ -107,7 +103,7 @@ test('team popup contains the expected fields in the expected initial states', a
 test('team cannot be created if fields are missing', async ({
   createTeamPage,
 }) => {
-  await createTeamPage.inputTeamName(hackathonAndTeamName);
+  await createTeamPage.inputTeamName(teamName);
   await createTeamPage.verifyTeamCannotBeCreated();
   await createTeamPage.clearTeamName();
   await createTeamPage.inputTeamPassword('teamPassword');
@@ -119,13 +115,13 @@ test('team cannot be created if team with the same name already exists', async (
   commonPageObjects,
   hackathonDetailsPage,
 }) => {
-  await createTeamPage.inputTeamName(hackathonAndTeamName);
+  await createTeamPage.inputTeamName(teamName);
   await createTeamPage.inputTeamPassword('teamPassword');
   await createTeamPage.addNewTeam();
   await commonPageObjects.confirmSuccessMessageIs('Team added successfully!');
   await hackathonDetailsPage.openCreateTeamPopup();
   await commonPageObjects.confirmPopupIsVisible();
-  await createTeamPage.inputTeamName(hackathonAndTeamName);
+  await createTeamPage.inputTeamName(teamName);
   await createTeamPage.inputTeamPassword('teamPassword');
   await createTeamPage.addNewTeam();
   await commonPageObjects.confirmErrorMessageIs(
@@ -137,7 +133,7 @@ test('bad request error will appear', async ({
   createTeamPage,
   commonPageObjects,
 }) => {
-  await createTeamPage.inputTeamName(hackathonAndTeamName);
+  await createTeamPage.inputTeamName(teamName);
   await createTeamPage.inputTeamPassword('teamPassword');
   await createTeamPage.mock400ErrorOnCreatingTeam();
   await commonPageObjects.confirmErrorMessageIs(

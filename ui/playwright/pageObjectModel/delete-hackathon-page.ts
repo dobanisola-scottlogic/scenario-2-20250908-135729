@@ -5,7 +5,6 @@ export class DeleteHackathonPage {
   readonly popupHeaderText: Locator;
   readonly popupBodyText: Locator;
   readonly deleteHackathonButton: Locator;
-  readonly cancelDeletionButton: Locator;
   readonly successCloseButton: Locator;
 
   constructor(page: Page) {
@@ -14,9 +13,6 @@ export class DeleteHackathonPage {
     this.popupBodyText = page.locator('[role="dialogHeading"]').nth(1);
     this.deleteHackathonButton = page.getByRole('button', {
       name: 'Delete hackathon',
-    });
-    this.cancelDeletionButton = page.getByRole('button', {
-      name: 'Cancel',
     });
     this.successCloseButton = page.getByLabel('Close');
   }
@@ -48,10 +44,6 @@ export class DeleteHackathonPage {
       }
     );
     await this.deleteHackathon();
-  }
-
-  async cancelHackathonDeletion() {
-    await this.cancelDeletionButton.click();
   }
 
   async closeSuccessAlert() {
