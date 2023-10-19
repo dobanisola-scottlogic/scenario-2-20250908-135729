@@ -84,6 +84,18 @@ public class HackathonResource {
     return hackathon;
   }
 
+  @GET
+  @UnitOfWork
+  @Timed
+  @Path("/team")
+  @JsonView(Views.Details.class)
+  @RolesAllowed(Authorizer.ROLE_TEAM)
+  public Hackathon getHackathonForTeam(@Auth final User user) {
+    Team team = teamService.getTeam(user.getName());
+    Hackathon hackathon = hackathonService.getHackathon(team.getHackathonId());
+    return hackathon;
+  }
+
   @DELETE
   @UnitOfWork
   @Timed
