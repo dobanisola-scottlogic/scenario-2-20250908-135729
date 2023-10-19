@@ -128,7 +128,9 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
       });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     setFormError(undefined);
 
     if (isEditing) {
@@ -146,91 +148,99 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
             {isEditing ? 'Edit hackathon' : 'Add a new hackathon'}
           </Typography>
 
-          <TextField
-            disabled={isEditing}
-            error={hackathonNameShowError()}
-            helperText={
-              hackathonNameShowError()
-                ? 'Hackathon name must not be empty or include special characters'
-                : null
-            }
-            fullWidth
-            sx={{ m: 1, mx: 'auto' }}
-            id='outlined-basic'
-            label='Hackathon name'
-            variant='outlined'
-            value={hackathonName}
-            onChange={(e) => setHackathonName(e.target.value)}
-          />
-          {/* TODO on HAC-98: bot and map dropdowns should be reimplemented on the create hackathon popup when server functionality has been added on HAC-97 */}
-          {isEditing && (
-            <>
-              <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
-                <InputLabel id='current-milestone-bot-label'>
-                  Current milestone bot
-                </InputLabel>
-                <Select
-                  data-testid='current-milestone-bot'
-                  disabled={!isEditing}
-                  labelId='current-milestone-bot-select-label'
-                  id='current-milestone-bot'
-                  label='Current milestone bot'
-                  value={milestoneBotName}
-                  onChange={(event) => setMilestoneBotName(event.target.value)}
-                >
-                  {milestoneBots?.map((milestoneBot, index) => (
-                    <MenuItem
-                      data-testid={`current-milestone-bot-option-${index}`}
-                      key={milestoneBot.id}
-                      value={milestoneBot.milestoneClassName}
-                    >
-                      {milestoneBot.readableMilestoneClassName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              disabled={isEditing}
+              error={hackathonNameShowError()}
+              helperText={
+                hackathonNameShowError()
+                  ? 'Hackathon name must not be empty or include special characters'
+                  : null
+              }
+              fullWidth
+              sx={{ m: 1, mx: 'auto' }}
+              id='outlined-basic'
+              label='Hackathon name'
+              variant='outlined'
+              value={hackathonName}
+              onChange={(e) => setHackathonName(e.target.value)}
+            />
 
-              {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
-              <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
-                <InputLabel id='demo-simple-select-label'>
-                  Current milestone map
-                </InputLabel>
-                <Select
-                  data-testid='current-milestone-map'
-                  disabled={!isEditing}
-                  labelId='current-milestone-map-label'
-                  id='current-milestone-map'
-                  label='Current milestone map'
-                  value={milestoneMapName}
-                  onChange={(event) => setMilestoneMapName(event.target.value)}
-                >
-                  <MenuItem value='VeryEasy'>Very Easy</MenuItem>
-                  <MenuItem value='Easy'>Easy</MenuItem>
-                  <MenuItem value='Medium'>Medium</MenuItem>
-                  <MenuItem value='LargeMedium'>Large Medium</MenuItem>
-                  <MenuItem value='Hard'>Hard</MenuItem>
-                  <MenuItem value='ThreeStar'>Three Star</MenuItem>
-                  <MenuItem value='ThreeStraight'>Three Straight</MenuItem>
-                </Select>
-              </FormControl>
-            </>
-          )}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              flexDirection: 'row',
-              m: 1,
-            }}
-          >
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button
-              disabled={isLoading || !isValidName(hackathonName)}
-              onClick={handleSubmit}
+            {/* TODO on HAC-98: bot and map dropdowns should be reimplemented on the create hackathon popup when server functionality has been added on HAC-97 */}
+            {isEditing && (
+              <>
+                <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
+                  <InputLabel id='current-milestone-bot-label'>
+                    Current milestone bot
+                  </InputLabel>
+                  <Select
+                    data-testid='current-milestone-bot'
+                    disabled={!isEditing}
+                    labelId='current-milestone-bot-select-label'
+                    id='current-milestone-bot'
+                    label='Current milestone bot'
+                    value={milestoneBotName}
+                    onChange={(event) =>
+                      setMilestoneBotName(event.target.value)
+                    }
+                  >
+                    {milestoneBots?.map((milestoneBot, index) => (
+                      <MenuItem
+                        data-testid={`current-milestone-bot-option-${index}`}
+                        key={milestoneBot.id}
+                        value={milestoneBot.milestoneClassName}
+                      >
+                        {milestoneBot.readableMilestoneClassName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
+                <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
+                  <InputLabel id='demo-simple-select-label'>
+                    Current milestone map
+                  </InputLabel>
+                  <Select
+                    data-testid='current-milestone-map'
+                    disabled={!isEditing}
+                    labelId='current-milestone-map-label'
+                    id='current-milestone-map'
+                    label='Current milestone map'
+                    value={milestoneMapName}
+                    onChange={(event) =>
+                      setMilestoneMapName(event.target.value)
+                    }
+                  >
+                    <MenuItem value='VeryEasy'>Very Easy</MenuItem>
+                    <MenuItem value='Easy'>Easy</MenuItem>
+                    <MenuItem value='Medium'>Medium</MenuItem>
+                    <MenuItem value='LargeMedium'>Large Medium</MenuItem>
+                    <MenuItem value='Hard'>Hard</MenuItem>
+                    <MenuItem value='ThreeStar'>Three Star</MenuItem>
+                    <MenuItem value='ThreeStraight'>Three Straight</MenuItem>
+                  </Select>
+                </FormControl>
+              </>
+            )}
+
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                flexDirection: 'row',
+                m: 1,
+              }}
             >
-              {isEditing ? 'Update hackathon' : 'Add a new hackathon'}
-            </Button>
-          </Box>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button
+                disabled={isLoading || !isValidName(hackathonName)}
+                type='submit'
+              >
+                {isEditing ? 'Update hackathon' : 'Add a new hackathon'}
+              </Button>
+            </Box>
+          </form>
 
           {formError && (
             <Alert

@@ -12,6 +12,7 @@ import { useDeleteHackathonMutation } from '../../api/api';
 import { useAppDispatch } from '../../hooks';
 import { PopupProps } from '../../interfaces/PopupProps';
 import { setSnackbarState } from '../../slices/snackbarSlice';
+import { handleEnterKeyPress } from './utils';
 
 const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,14 @@ const DeleteHackathon = ({ isOpen, id, setIsOpen }: PopupProps) => {
 
   return (
     <>
-      <Dialog onClose={handleClose} open={isOpen}>
+      <Dialog
+        onClose={handleClose}
+        // This is a workaround to allow the user to press enter to trigger the delete since there are no form elements to apply focus
+        onKeyUp={(e: { keyCode: number }) =>
+          handleEnterKeyPress(e.keyCode, handleDelete)
+        }
+        open={isOpen}
+      >
         <DialogContent sx={{ width: 500 }}>
           <Typography sx={{ m: 1, mx: 'auto' }} role='dialogHeading'>
             Are you sure you want to delete the hackathon?
