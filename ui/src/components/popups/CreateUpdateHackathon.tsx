@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useEffect, useState } from 'react';
+
 import {
   useCreateHackathonMutation,
   useGetHackathonQuery,
@@ -23,6 +24,7 @@ import {
 import { useAppDispatch } from '../../hooks';
 import { PopupProps } from '../../interfaces/PopupProps';
 import { setSnackbarState } from '../../slices/snackbarSlice';
+import MapSelect from '../common/MapSelect';
 import { isValidName } from './utils';
 
 const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
@@ -196,34 +198,13 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
                   </Select>
                 </FormControl>
 
-                {/* Hardcoded options should be removed in future when HAC-100 and HAC-101 are implemented */}
-                <FormControl sx={{ m: 1, mx: 'auto' }} fullWidth>
-                  <InputLabel id='demo-simple-select-label'>
-                    Current milestone map
-                  </InputLabel>
-                  <Select
-                    data-testid='current-milestone-map'
-                    disabled={!isEditing}
-                    labelId='current-milestone-map-label'
-                    id='current-milestone-map'
-                    label='Current milestone map'
-                    value={milestoneMapName}
-                    onChange={(event) =>
-                      setMilestoneMapName(event.target.value)
-                    }
-                  >
-                    <MenuItem value='VeryEasy'>Very Easy</MenuItem>
-                    <MenuItem value='Easy'>Easy</MenuItem>
-                    <MenuItem value='Medium'>Medium</MenuItem>
-                    <MenuItem value='LargeMedium'>Large Medium</MenuItem>
-                    <MenuItem value='Hard'>Hard</MenuItem>
-                    <MenuItem value='ThreeStar'>Three Star</MenuItem>
-                    <MenuItem value='ThreeStraight'>Three Straight</MenuItem>
-                  </Select>
-                </FormControl>
+                <MapSelect
+                  labelText={'Current milestone map'}
+                  mapName={milestoneMapName}
+                  setMapName={setMilestoneMapName}
+                />
               </>
             )}
-
             <Box
               sx={{
                 display: 'flex',

@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
+
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateUpdateHackathon from './CreateUpdateHackathon';
 
@@ -166,9 +168,7 @@ describe('Create Update Hackathon Popup Component', () => {
       expect(screen.getByTestId('current-milestone-bot')).toHaveTextContent(
         'Milestone1Bot'
       );
-      expect(screen.getByTestId('current-milestone-map')).toHaveTextContent(
-        'Easy'
-      );
+      expect(screen.getByTestId('game-map')).toHaveTextContent('Easy');
 
       const milestoneBotInput = screen.getByRole('button', {
         name: 'Milestone1Bot',

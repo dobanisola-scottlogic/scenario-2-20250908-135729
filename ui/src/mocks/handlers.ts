@@ -4,6 +4,7 @@ import { UserRole } from '../enums/UserRole';
 import { Arena } from '../interfaces/Arena';
 import { CutoffCondition } from '../interfaces/CutoffCondition';
 import { GameResult } from '../interfaces/GameResult';
+import { Milestone } from '../interfaces/Milestone';
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -57,14 +58,18 @@ const testGameResultBody: GameResult = {
   id: '59A17EC8-D5AB-48DC-9800-FDCF6DC86F7D',
 };
 
-const getMilestonesResponse = [
+const getMilestonesResponse: Milestone[] = [
   {
     id: 'a7d63a7f-0a67-4abf-9eaa-74fc5c52aed4',
     milestoneClassName: 'com.scottlogic.hackathon.bots.Milestone1Bot',
+    readableMilestoneClassName: 'Milestone1Bot',
+    timeStamp: 1697106871827,
   },
   {
     id: '559cd7d4-d601-4a45-949e-e8babd10aafa',
     milestoneClassName: 'com.scottlogic.hackathon.bots.Milestone2Bot',
+    readableMilestoneClassName: 'Milestone2Bot',
+    timeStamp: 1697106871827,
   },
 ];
 
@@ -200,6 +205,9 @@ export const handlers = [
 
     return res(ctx.status(200), ctx.json([testGameResultBody]));
   }),
+  rest.post(baseUrl + '/game', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(testGameResultBody));
+  }),
 ];
 
 export const getGameResultsNetworkErrorResponseHandler = rest.get(
@@ -266,6 +274,30 @@ export const putTeamInternalServerErrorResponseHandler = rest.put(
       ctx.status(503),
       ctx.json({
         message: 'Error updating team - internal server error',
+      })
+    );
+  }
+);
+
+export const postGameBadRequestResponseHandler = rest.post(
+  baseUrl + '/game',
+  (_, res, ctx) => {
+    return res(
+      ctx.status(400),
+      ctx.json({
+        message: 'Error creating game - bad request',
+      })
+    );
+  }
+);
+
+export const postGameInternalServerErrorResponseHandler = rest.post(
+  baseUrl + '/game',
+  (_, res, ctx) => {
+    return res(
+      ctx.status(503),
+      ctx.json({
+        message: 'Error creating game - internal server error',
       })
     );
   }

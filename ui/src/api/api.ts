@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import { CreateGameRequest } from '../interfaces/CreateGameRequest';
 import { CreateTeamRequest } from '../interfaces/CreateTeamRequest';
 import { GameResult } from '../interfaces/GameResult';
 import { Hackathon } from '../interfaces/Hackathon';
@@ -141,6 +142,14 @@ export const api = createApi({
       },
       providesTags: ['Hackathon'],
     }),
+    createGame: builder.mutation<GameResult, CreateGameRequest>({
+      query: (createTeamRequest) => ({
+        url: '/game',
+        method: RequestType.POST,
+        body: createTeamRequest,
+      }),
+      invalidatesTags: ['Game'],
+    }),
     getHackathonGames: builder.query<GameResult[], string>({
       query: (hackathonId) => ({
         url: '/game',
@@ -169,6 +178,7 @@ export const api = createApi({
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
 export const {
+  useCreateGameMutation,
   useCreateHackathonMutation,
   useCreateTeamMutation,
   useDeleteHackathonMutation,
