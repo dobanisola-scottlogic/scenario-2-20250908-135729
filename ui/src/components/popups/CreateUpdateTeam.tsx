@@ -20,6 +20,7 @@ import { CreateTeamRequest } from '../../interfaces/CreateTeamRequest';
 import { PopupProps } from '../../interfaces/PopupProps';
 import { Team } from '../../interfaces/Team';
 import { setSnackbarState } from '../../slices/snackbarSlice';
+import PasswordTextField from '../common/PasswordTextField';
 import { isValidName } from './utils';
 
 interface CreateUpdateTeamProps extends PopupProps {
@@ -175,13 +176,8 @@ const CreateUpdateTeam = ({
               onChange={(e) => setTeamName(e.target.value)}
             />
 
-            <TextField
-              autoComplete='current-password'
-              fullWidth
-              label='Password'
-              sx={{ m: 1, mx: 'auto' }}
+            <PasswordTextField
               value={teamPassword}
-              variant='outlined'
               onChange={(e) => setTeamPassword(e.target.value)}
             />
 

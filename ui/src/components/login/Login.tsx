@@ -4,13 +4,14 @@ import {
   Button,
   Container,
   LinearProgress,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { useLoginMutation } from '../../api/api';
 import { useAppDispatch } from '../../hooks';
 import { setCredentials } from '../../slices/authSlice';
-import LoginTextField from './LoginTextField';
+import PasswordTextField from '../common/PasswordTextField';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -74,14 +75,26 @@ const Login = () => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <LoginTextField
-              field='username'
+            <TextField
+              aria-label='username'
+              autoComplete='username'
+              fullWidth
+              id='username'
+              label='Username'
+              margin='normal'
+              name='username'
+              required
+              type='text'
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <LoginTextField
-              field='password'
+
+            <PasswordTextField
+              required
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+
             <Box
               sx={{
                 width: '100%',
