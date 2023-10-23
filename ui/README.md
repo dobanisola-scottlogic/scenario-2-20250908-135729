@@ -11,7 +11,7 @@ This application uses the official plugin [@vitejs/plugin-react](https://github.
 
 Required:
 
-- [Node.js](https://nodejs.org/en/) (v18+)
+- [Node.js](https://nodejs.org/en/) (v18.18.2)
 
 To install dependencies:
 

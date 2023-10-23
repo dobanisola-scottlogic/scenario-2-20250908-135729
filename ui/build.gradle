@@ -8,6 +8,7 @@ version "1.0-SNAPSHOT"
 
 node {
     download = true
+    version = "18.18.2"
 }
 
 task formatReactApp(type: NpmTask, dependsOn: npmInstall) {

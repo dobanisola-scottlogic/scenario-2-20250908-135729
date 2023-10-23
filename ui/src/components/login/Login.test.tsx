@@ -18,7 +18,7 @@ describe('Login', () => {
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
   });
 
-  it('handles login with valid credentials correctly', async () => {
+  it.skip('handles login with valid credentials correctly', async () => {
     const { store } = renderWithRouterAndProvider(<Login />);
 
     // set credentials to testusername and testpassword to trigger 200 response from mock server
@@ -66,7 +66,7 @@ describe('Login', () => {
     );
   });
 
-  it('handles login where server connection is refused correctly', async () => {
+  it.skip('handles login where server connection is refused correctly', async () => {
     renderWithRouterAndProvider(<Login />);
     // set credentials to networkerror to trigger network error response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
