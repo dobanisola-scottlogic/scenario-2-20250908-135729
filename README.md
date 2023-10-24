@@ -41,37 +41,49 @@ The following interactions affect the number of players:
 
 ## Quick Start
 
-The Game Server is hosted on AWS
-Contestants write their code using VSCode through a web browser at a contestant specific url.
+The Game Server is hosted on AWS. Contestants write their code using the AWS
+Cloud9 IDE through a web browser at a contestant-specific URL.
 
+> 📝 Parts 1 & 2 below are out of date and due to be rewritten. The
+> infrastructure is now deployed using Terraform.
+
+> 💡 For troubleshooting during an active Hackathon event, see the [Hackathon
+> Troubleshooting](https://docs.google.com/document/d/1CzyiH_8Bfh17RUTPnEtmIUXO5On2Q-dxhx4L2sv2jVo/edit?usp=sharing)
+> document.
 
 ### 1 - Configure Game Server Infrastructure
 
-In the deployment submodule there is a directory `hackathon-ai-game/deployment/cli-src`. Navigate here and run an `npm install`.
+<!--- TODO: HAC-146 Rewrite documentation for deployment --->
 
-Run the following in a shell that will ask a series of questions that your answers will be used to setup the infrastructure:
+~~In the deployment submodule there is a directory
+`hackathon-ai-game/deployment/cli-src`. Navigate here and run an `npm
+install`.~~
+
+~~Run the following in a shell that will ask a series of questions that your
+answers will be used to setup the infrastructure:~~
 ```bash
 ./cli configure
 ```
-Note that some of the questions have default values in brackets if you leave these fields blank then the defaults will be applied.
-This creates a `.cli-config` file to save config between runs.  (Note you will need relevant aws credentials)
+~~Note that some of the questions have default values in brackets if you leave
+these fields blank then the defaults will be applied. This creates a
+`.cli-config` file to save config between runs.  (Note you will need relevant
+aws credentials)~~
 
 ### 2 - Deploy Game Server Infrastructure to AWS
 
-Run:
+~~Run:~~
 ```bash
 ./cli deploy
 ```
-This will deploy the relevant cloud formation templates to aws
-After some time when it is complete you will see a message showing the public url of the Hackathon Game Server
+~~This will deploy the relevant cloud formation templates to aws After some time
+when it is complete you will see a message showing the public url of the
+Hackathon Game Server~~
 
 ### 3 - Define new Hackathon in Game Server Admin
-
 
 Point your browser at <http://some_aws_domain/application> and login with username 'admin' and password 'secret'.
 
 ![define a new hackathon](images/definehackathon.png)
-
 
 ### 4 - Deploy Contestant Code Server (VS Code) to AWS
 
