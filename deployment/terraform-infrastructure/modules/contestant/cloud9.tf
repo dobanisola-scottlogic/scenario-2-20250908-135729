@@ -1,7 +1,7 @@
 # Create the Cloud9 instances
 resource "aws_cloud9_environment_ec2" "cloud9_instance" {
   count                       = var.team_count
-  name                        = "${var.workspace}-cloud9-instance-${count.index + 1}"
+  name                        = format("%s-%02d", var.workspace, count.index + 1)
   instance_type               = "t2.small"
   automatic_stop_time_minutes = 30
   connection_type             = "CONNECT_SSM"
