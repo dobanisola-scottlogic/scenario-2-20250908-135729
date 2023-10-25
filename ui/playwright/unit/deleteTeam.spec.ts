@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 import { HackathonHelpers } from '../helpers';
+import { HackathonDetailsPage } from '../pageObjectModel/admin-hackathon-details-page';
 import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
 import { CommonPageObjects } from '../pageObjectModel/common-page-objects';
 import { CreateHackathonPage } from '../pageObjectModel/create-hackathon-page';
@@ -10,6 +11,7 @@ import { LoginPage } from '../pageObjectModel/login-page';
 const test = base.extend<{
   createHackathonPage: CreateHackathonPage;
   hackathonListPage: HackathonListPage;
+  hackathonDetailsPage: HackathonDetailsPage;
   deleteTeamPage: DeleteTeamPage;
   createTeamPage: CreateTeamPage;
   commonPageObjects: CommonPageObjects;
@@ -21,6 +23,10 @@ const test = base.extend<{
   hackathonListPage: async ({ page }, use) => {
     const hackathonListPage = new HackathonListPage(page);
     await use(hackathonListPage);
+  },
+  hackathonDetailsPage: async ({ page }, use) => {
+    const hackathonDetailsPage = new HackathonDetailsPage(page);
+    await use(hackathonDetailsPage);
   },
   deleteTeamPage: async ({ page }, use) => {
     const deleteTeamPage = new DeleteTeamPage(page);
@@ -73,11 +79,31 @@ test.afterEach(async ({ hackathonListPage }) => {
 test('team can be successfully deleted and subsequent alert can be closed', async ({
   deleteTeamPage,
   commonPageObjects,
+  hackathonDetailsPage,
 }) => {
   await deleteTeamPage.deleteTeam();
   await commonPageObjects.confirmSuccessMessageIs('Team deleted successfully!');
   await commonPageObjects.closeSuccessAlert();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();
+  await hackathonDetailsPage.checkExistenceOfTeamInTableWithName(
+    teamName,
+    false
+  );
+});
+
+test('team can be successfully deleted with enter key', async ({
+  commonPageObjects,
+  hackathonDetailsPage,
+  page,
+}) => {
+  await page.keyboard.press('Enter');
+  await commonPageObjects.confirmSuccessMessageIs('Team deleted successfully!');
+  await commonPageObjects.closeSuccessAlert();
+  await commonPageObjects.confirmSuccessAlertDoesNotExist();
+  await hackathonDetailsPage.checkExistenceOfTeamInTableWithName(
+    teamName,
+    false
+  );
 });
 
 test('team deletion can be cancelled', async ({ commonPageObjects }) => {

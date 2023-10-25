@@ -2,7 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export class HackathonDetailsPage {
   readonly page: Page;
-  readonly teamName: ({ teamName }: { teamName: string }) => Locator;
+  readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
   readonly navigationBarDropdownButton: Locator;
   readonly addNewTeamButton: Locator;
   readonly hackathonMenuButton: ({
@@ -21,8 +21,8 @@ export class HackathonDetailsPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.teamName = ({ teamName }) =>
-      page.getByRole('row', { name: `${teamName}` }).getByRole('cell');
+    this.teamMenuButton = ({ teamName }) =>
+      page.getByRole('row', { name: `${teamName}` }).getByLabel('more');
     this.navigationBarDropdownButton = page.getByRole('button', {
       name: 'admin',
     });
@@ -62,10 +62,20 @@ export class HackathonDetailsPage {
     await this.hackathonLink({ hackathonName: teamHackName }).click();
   }
 
-  async verifyTeamExistsWithName(teamName: string) {
-    await expect(this.teamName({ teamName: teamName })).toHaveText(teamName);
-  }
   async returnToHackathonListPage() {
     await this.hackathonPageLink.click();
+  }
+
+  async checkExistenceOfTeamInTableWithName(
+    teamName: string,
+    shouldExist: boolean
+  ) {
+    let expectedAmount = 0;
+    if (shouldExist) {
+      expectedAmount = 1;
+    }
+    expect(await this.teamMenuButton({ teamName: teamName }).count()).toBe(
+      expectedAmount
+    );
   }
 }

@@ -48,6 +48,16 @@ test('admin can successfully log in', async ({ login, hackathonListPage }) => {
   await hackathonListPage.verifyLoginSuccess();
 });
 
+test('admin can successfully log in with enter key', async ({
+  login,
+  hackathonListPage,
+  page,
+}) => {
+  await login.inputCredentials('admin', 'secret');
+  await page.keyboard.press('Enter');
+  await hackathonListPage.verifyLoginSuccess();
+});
+
 test('team can successfully log in', async ({ login, teamDashboardPage }) => {
   await login.inputCredentials('team', 'secret');
   await login.mockTeamLogin();

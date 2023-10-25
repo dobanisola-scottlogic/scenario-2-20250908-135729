@@ -66,6 +66,28 @@ test('admin can create a new hackathon', async ({
   );
 });
 
+test('admin can create a new hackathon using enter key', async ({
+  createHackathonPage,
+  hackathonListPage,
+  commonPageObjects,
+  page,
+}) => {
+  await createHackathonPage.inputHackathonName(hackathonName);
+  await page.keyboard.press('Enter');
+  await commonPageObjects.confirmSuccessMessageIs(
+    'Hackathon created successfully!'
+  );
+  await hackathonListPage.checkExistenceOfHackathonInTableWithName(
+    hackathonName,
+    true
+  );
+  await hackathonListPage.verifyHackathonDetails(
+    hackathonName,
+    'Easy',
+    'Milestone1Bot'
+  );
+});
+
 test('admin cannot create a new hackathon without a name', async ({
   createHackathonPage,
 }) => {

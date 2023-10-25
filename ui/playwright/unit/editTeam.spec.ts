@@ -91,7 +91,10 @@ test('team and password can be successfully edited', async ({
   await commonPageObjects.confirmSuccessMessageIs('Team updated successfully');
   await commonPageObjects.closeSuccessAlert();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();
-  await hackathonDetailsPage.verifyTeamExistsWithName(teamName + ' updated');
+  await hackathonDetailsPage.checkExistenceOfTeamInTableWithName(
+    teamName + ' updated',
+    true
+  );
 });
 
 test('team updating can be cancelled', async ({ commonPageObjects }) => {

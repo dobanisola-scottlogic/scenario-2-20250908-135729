@@ -76,6 +76,24 @@ test('hackathon can be successfully deleted and subsequent alert can be closed',
   );
 });
 
+test('hackathon can be successfully deleted with enter key', async ({
+  deleteHackathonPage,
+  hackathonListPage,
+  commonPageObjects,
+  page,
+}) => {
+  await page.keyboard.press('Enter');
+  await commonPageObjects.confirmSuccessMessageIs(
+    'Hackathon deleted successfully!'
+  );
+  await deleteHackathonPage.closeSuccessAlert();
+  await commonPageObjects.confirmSuccessAlertDoesNotExist();
+  await hackathonListPage.checkExistenceOfHackathonInTableWithName(
+    hackathonName,
+    false
+  );
+});
+
 test('hackathon deletion can be cancelled', async ({ commonPageObjects }) => {
   await commonPageObjects.cancelCurrentAction();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();

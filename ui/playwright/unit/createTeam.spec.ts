@@ -83,8 +83,31 @@ test('multiple teams can be created', async ({
   await createTeamPage.addNewTeam();
   await commonPageObjects.confirmSuccessMessageIs('Team added successfully!');
   await commonPageObjects.closeSuccessAlert();
-  await hackathonDetailsPage.verifyTeamExistsWithName(teamName);
-  await hackathonDetailsPage.verifyTeamExistsWithName('secondTeam');
+  await hackathonDetailsPage.checkExistenceOfTeamInTableWithName(
+    teamName,
+    true
+  );
+  await hackathonDetailsPage.checkExistenceOfTeamInTableWithName(
+    'secondTeam',
+    true
+  );
+});
+
+test('team can be created using enter key', async ({
+  createTeamPage,
+  commonPageObjects,
+  hackathonDetailsPage,
+  page,
+}) => {
+  await createTeamPage.inputTeamName(teamName);
+  await createTeamPage.inputTeamPassword('teamPassword');
+  await page.keyboard.press('Enter');
+  await commonPageObjects.confirmSuccessMessageIs('Team added successfully!');
+  await commonPageObjects.closeSuccessAlert();
+  await hackathonDetailsPage.checkExistenceOfTeamInTableWithName(
+    teamName,
+    true
+  );
 });
 
 for (const invalidCharacterError of invalidCharacterErrors) {
