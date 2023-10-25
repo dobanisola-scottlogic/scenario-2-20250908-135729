@@ -2,6 +2,16 @@ plugins {
     id 'base'
 }
 
+import org.gradle.internal.os.OperatingSystem
+
+String venvExecutablePath = 'venv/bin'
+List<String> makeCommand = ['make', 'html']
+
+if (OperatingSystem.current().isWindows()) {
+    venvExecutablePath = 'venv/Scripts'
+    makeCommand = ['cmd', '/c', 'make.bat', 'html']
+}
+
 task createVirtualEnv(type: Exec) {
     workingDir projectDir
     commandLine 'python3', '-m', 'venv', 'venv'
@@ -13,7 +23,7 @@ task installDocumentationRequirements(type: Exec) {
     dependsOn 'createVirtualEnv'
 
     workingDir projectDir
-    commandLine 'venv/bin/pip', 'install', '-r', 'src/doc-requirements.txt'
+    commandLine venvExecutablePath + '/pip', 'install', '-r', 'src/doc-requirements.txt'
 }
 
 task cleanDocumentation(type: Delete) {
@@ -22,6 +32,7 @@ task cleanDocumentation(type: Delete) {
     delete 'docs/build'
     delete 'docs/source/_autosummary'
 }
+clean.dependsOn 'cleanDocumentation'
 
 task generateDocumentation(type: Exec) {
     group 'documentation'
@@ -30,8 +41,8 @@ task generateDocumentation(type: Exec) {
     dependsOn 'cleanDocumentation'
 
     workingDir 'docs'
-    environment 'PATH', "$System.env.PATH" + System.getProperty("path.separator") + "$projectDir/venv/bin"
-    commandLine 'make', 'html'
+    environment 'PATH', "$System.env.PATH" + System.getProperty("path.separator") + "$projectDir/" + venvExecutablePath
+    commandLine makeCommand
 }
 
 task copyContestantFiles(type: Copy) {
