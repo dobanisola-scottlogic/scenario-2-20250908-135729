@@ -1,5 +1,13 @@
 #/bin/sh
 
+if pgrep -a -f remote-1.0-SNAPSHOT
+then
+    echo -e "\n"
+    echo "This looks like there might already be a contestant running, maybe in a different terminal."
+    echo "Please terminate that process and try again."
+    exit
+fi
+
 if [[ -z "$TEAM_NAME" ]]; then
     echo "Enter team name (or set TEAM_NAME in environment):"
     read TEAM_NAME
