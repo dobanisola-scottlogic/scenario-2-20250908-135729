@@ -36,7 +36,8 @@ const test = base.extend<{
   },
 });
 
-const uniqueHackathonId = new HackathonHelpers();
+const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 let teamName = '';
 
@@ -49,8 +50,7 @@ test.beforeEach(
     commonPageObjects,
   }) => {
     const login = new LoginPage(page);
-    hackathonName = teamName =
-      'deleteTeam_' + uniqueHackathonId.generateRandomString();
+    hackathonName = teamName = 'createTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto('/');
     await login.inputCredentials('admin', 'secret');
@@ -86,6 +86,16 @@ test('multiple teams can be created', async ({
   await hackathonDetailsPage.verifyTeamExistsWithName(teamName);
   await hackathonDetailsPage.verifyTeamExistsWithName('secondTeam');
 });
+
+for (const invalidCharacterError of invalidCharacterErrors) {
+  test(`team cannot be created if the team name has ${invalidCharacterError.errorReason}`, async ({
+    createTeamPage,
+    commonPageObjects,
+  }) => {
+    await createTeamPage.inputTeamName(invalidCharacterError.invalidName);
+    await commonPageObjects.confirmValidationMessageExistsForTheField('Team');
+  });
+}
 
 test('admin can cancel creation of a new team', async ({
   commonPageObjects,

@@ -36,7 +36,7 @@ const test = base.extend<{
   },
 });
 
-const uniqueHackId = new HackathonHelpers();
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 let teamName = '';
 
@@ -50,8 +50,7 @@ test.beforeEach(
     commonPageObjects,
   }) => {
     const login = new LoginPage(page);
-    hackathonName = teamName =
-      'deleteTeam_' + uniqueHackId.generateRandomString();
+    hackathonName = teamName = 'deleteTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
       hackathonName,

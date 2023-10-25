@@ -30,7 +30,7 @@ const test = base.extend<{
   },
 });
 
-const uniqueHackId = new HackathonHelpers();
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 
 test.beforeEach(
@@ -41,7 +41,7 @@ test.beforeEach(
     commonPageObjects,
   }) => {
     const login = new LoginPage(page);
-    hackathonName = 'deleteHackathon_' + uniqueHackId.generateRandomString();
+    hackathonName = 'deleteHackathon' + uniqueHackathonId;
     await page.goto('/');
     await page.getByText('Hackathon').click();
     await login.inputCredentials('admin', 'secret');

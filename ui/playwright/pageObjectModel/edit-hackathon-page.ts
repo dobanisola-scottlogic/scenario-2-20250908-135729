@@ -19,7 +19,7 @@ export class EditHackathonPage {
     this.editHackathonPopUpTitle = page.locator('[role="dialogHeading"]');
     this.hackathonNameField = page.getByLabel('Hackathon name');
     this.editMilestoneBotDropdown = page.getByTestId('current-milestone-bot');
-    this.editMilestoneMapDropdown = page.getByTestId('current-milestone-map');
+    this.editMilestoneMapDropdown = page.getByTestId('game-map');
     this.editList = page.getByRole('listbox');
     this.updateHackathonButton = page.getByRole('button', {
       name: 'Update hackathon',

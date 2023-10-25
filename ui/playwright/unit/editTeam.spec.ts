@@ -42,9 +42,11 @@ const test = base.extend<{
   },
 });
 
-const uniqueHackId = new HackathonHelpers();
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 let teamName = '';
+
+const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
 
 test.beforeEach(
   async ({
@@ -56,8 +58,7 @@ test.beforeEach(
     commonPageObjects,
   }) => {
     const login = new LoginPage(page);
-    hackathonName = teamName =
-      'updateTeam_' + uniqueHackId.generateRandomString();
+    hackathonName = teamName = 'updateTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
       hackathonName,
@@ -108,6 +109,16 @@ test('team cannot be updated if fields are missing', async ({
   await editTeamPage.clearTeamPasswordField();
   await editTeamPage.verifyTeamCannotBeUpdated();
 });
+
+for (const invalidCharacterError of invalidCharacterErrors) {
+  test(`team cannot be created if the team name has ${invalidCharacterError.errorReason}`, async ({
+    createTeamPage,
+    commonPageObjects,
+  }) => {
+    await createTeamPage.inputTeamName(invalidCharacterError.invalidName);
+    await commonPageObjects.confirmValidationMessageExistsForTheField('Team');
+  });
+}
 
 test('internal server error returns on updating team name to one that already exists', async ({
   createTeamPage,

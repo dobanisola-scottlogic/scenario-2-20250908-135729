@@ -12,7 +12,7 @@ export class CreateTeamPage {
     this.page = page;
     this.createTeamPopup = page.getByRole('dialog');
     this.teamNameField = page.getByLabel('Name');
-    this.teamPasswordField = page.getByLabel('Password');
+    this.teamPasswordField = page.getByLabel('Password').nth(1);
     this.addNewTeamButton = page.getByRole('button', {
       name: 'Add team',
     });

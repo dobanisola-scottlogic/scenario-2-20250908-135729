@@ -24,17 +24,20 @@ const test = base.extend<{
   },
 });
 
-const uniqueHackId = new HackathonHelpers();
+const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 
-test.beforeEach(async ({ page, hackathonListPage }) => {
-  hackathonName = 'createHackathon_' + uniqueHackId.generateRandomString();
+test.beforeEach(async ({ page, hackathonListPage, createHackathonPage }) => {
+  hackathonName = 'createHackathon' + uniqueHackathonId;
   const login = new LoginPage(page);
   await page.goto('/');
   await page.getByText('Hackathon').click();
   await login.inputCredentials('admin', 'secret');
   await login.attemptLogin();
   await hackathonListPage.verifyLoginSuccess();
+  await hackathonListPage.openCreateHackathonPopup();
+  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
 });
 
 test.afterEach(async ({ hackathonListPage }) => {
@@ -46,8 +49,6 @@ test('admin can create a new hackathon', async ({
   hackathonListPage,
   commonPageObjects,
 }) => {
-  await hackathonListPage.openCreateHackathonPopup();
-  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.addNewHackathon();
   await commonPageObjects.confirmSuccessMessageIs(
@@ -67,22 +68,31 @@ test('admin can create a new hackathon', async ({
 
 test('admin cannot create a new hackathon without a name', async ({
   createHackathonPage,
-  hackathonListPage,
 }) => {
-  await hackathonListPage.openCreateHackathonPopup();
-  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.clearHackathonName();
   await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
 });
+
+for (const invalidCharacterError of invalidCharacterErrors) {
+  test(`hackathon cannot be created if the hackathon name has ${invalidCharacterError.errorReason}`, async ({
+    createHackathonPage,
+    commonPageObjects,
+  }) => {
+    await createHackathonPage.inputHackathonName(
+      invalidCharacterError.invalidName
+    );
+    await commonPageObjects.confirmValidationMessageExistsForTheField(
+      'Hackathon'
+    );
+  });
+}
 
 test('admin can cancel creating a new hackathon', async ({
   createHackathonPage,
   hackathonListPage,
   commonPageObjects,
 }) => {
-  await hackathonListPage.openCreateHackathonPopup();
-  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName(hackathonName);
   await commonPageObjects.cancelCurrentAction();
   await commonPageObjects.confirmPopupIsHidden();
@@ -94,11 +104,8 @@ test('admin can cancel creating a new hackathon', async ({
 
 test('bad request error message will appear', async ({
   createHackathonPage,
-  hackathonListPage,
   commonPageObjects,
 }) => {
-  await hackathonListPage.openCreateHackathonPopup();
-  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.mock400ErrorOnCreatingHackathon();
   await commonPageObjects.confirmErrorMessageIs(
@@ -108,11 +115,8 @@ test('bad request error message will appear', async ({
 
 test('internal server error message will appear', async ({
   createHackathonPage,
-  hackathonListPage,
   commonPageObjects,
 }) => {
-  await hackathonListPage.openCreateHackathonPopup();
-  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
   await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.mock500ErrorOnCreatingHackathon();
   await commonPageObjects.confirmErrorMessageIs(

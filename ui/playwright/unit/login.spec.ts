@@ -54,12 +54,15 @@ test('team can successfully log in', async ({ login, teamDashboardPage }) => {
   await teamDashboardPage.verifyLoginSuccess();
 });
 
-for (const creds of emptyFieldErrors) {
-  test(`username '${creds.username}' and password '${creds.password}' returns empty fields error message`, async ({
+for (const emptyFieldError of emptyFieldErrors) {
+  test(`username '${emptyFieldError.username}' and password '${emptyFieldError.password}' returns empty fields error message`, async ({
     login,
     commonPageObjects,
   }) => {
-    await login.inputCredentials(creds.username, creds.password);
+    await login.inputCredentials(
+      emptyFieldError.username,
+      emptyFieldError.password
+    );
     await login.attemptLogin();
     await commonPageObjects.confirmErrorMessageIs(
       'Username and password cannot be empty.'
