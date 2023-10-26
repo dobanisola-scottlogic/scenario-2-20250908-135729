@@ -3,8 +3,10 @@ import { expect, type Locator, type Page } from '@playwright/test';
 export class HackathonDetailsPage {
   readonly page: Page;
   readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
+  readonly gameTitle: Locator;
   readonly navigationBarDropdownButton: Locator;
   readonly addNewTeamButton: Locator;
+  readonly addNewGameButton: Locator;
   readonly hackathonMenuButton: ({
     hackathonName,
   }: {
@@ -23,11 +25,15 @@ export class HackathonDetailsPage {
     this.page = page;
     this.teamMenuButton = ({ teamName }) =>
       page.getByRole('row', { name: `${teamName}` }).getByLabel('more');
+    this.gameTitle = page.getByRole('cell').getByRole('link');
     this.navigationBarDropdownButton = page.getByRole('button', {
       name: 'admin',
     });
     this.addNewTeamButton = page.getByRole('button', {
       name: 'Add a new team',
+    });
+    this.addNewGameButton = page.getByRole('button', {
+      name: 'Add a new game',
     });
     this.hackathonMenuButton = ({ hackathonName }) =>
       page.getByRole('row', { name: `${hackathonName}` }).getByLabel('more');
@@ -44,6 +50,10 @@ export class HackathonDetailsPage {
 
   async openCreateTeamPopup() {
     await this.addNewTeamButton.click();
+  }
+
+  async openCreateGamePopup() {
+    await this.addNewGameButton.click();
   }
 
   async openDeletePopupOfHackathonWithName(hackathonName: string) {
@@ -77,5 +87,13 @@ export class HackathonDetailsPage {
     expect(await this.teamMenuButton({ teamName: teamName }).count()).toBe(
       expectedAmount
     );
+  }
+
+  async verifyGameExists(gameTitle: string) {
+    await expect(this.gameTitle.nth(0)).toContainText(gameTitle);
+  }
+
+  async verifySecondGameExists(gameTitle: string) {
+    await expect(this.gameTitle.nth(1)).toContainText(gameTitle);
   }
 }
