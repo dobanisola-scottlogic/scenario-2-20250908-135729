@@ -13,3 +13,7 @@ output "hackathon_contestants" {
     }
   ]
 }
+
+output "sorted_cloud9_ec2_instance_ids" {
+  value = { for index, instance in data.aws_instance.cloud9_ec2_instance : format("%02d", index + 1) => instance.id }
+}
