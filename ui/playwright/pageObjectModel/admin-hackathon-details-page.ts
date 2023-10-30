@@ -89,10 +89,12 @@ export class HackathonDetailsPage {
     );
   }
 
+  // remove .nth(0) when bug HAC-202 has been completed
   async verifyGameExists(gameTitle: string) {
     await expect(this.gameTitle.nth(0)).toContainText(gameTitle);
   }
 
+  // below can be deleted when bug HAC-202 has been completed
   async verifySecondGameExists(gameTitle: string) {
     await expect(this.gameTitle.nth(1)).toContainText(gameTitle);
   }
