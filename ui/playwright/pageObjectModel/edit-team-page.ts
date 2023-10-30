@@ -7,17 +7,21 @@ export class EditTeamPage {
   readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
   readonly updateTeamOption: Locator;
   readonly updateTeamButton: Locator;
+  readonly togglePasswordVisibility: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.teamNameField = page.getByLabel('Name');
-    this.teamPasswordField = page.getByLabel('Password').nth(1);
+    this.teamPasswordField = page.getByTestId('password-input');
     this.teamMenuButton = ({ teamName }) =>
       page.getByRole('cell', { name: `${teamName}` }).getByLabel('more');
     this.updateTeamOption = page.getByRole('menuitem', { name: 'Edit...' });
     this.updateTeamButton = page.getByRole('button', {
       name: 'Update team',
     });
+    this.togglePasswordVisibility = page.getByLabel(
+      'toggle password visibility'
+    );
   }
 
   async openEditPopupOfTeamWithName(teamName: string) {
@@ -51,6 +55,12 @@ export class EditTeamPage {
 
   async verifyTeamCannotBeUpdated() {
     await expect(this.updateTeamButton).toBeDisabled();
+  }
+
+  async verifyPasswordToggle() {
+    await expect(this.teamPasswordField).toHaveAttribute('type', 'password');
+    await this.togglePasswordVisibility.click();
+    await expect(this.teamPasswordField).toHaveAttribute('type', 'text');
   }
 
   async mock400ErrorOnUpdatingTeam() {

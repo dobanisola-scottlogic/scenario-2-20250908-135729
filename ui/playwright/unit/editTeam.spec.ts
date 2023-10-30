@@ -78,6 +78,15 @@ test.afterEach(async ({ hackathonListPage }) => {
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
+test('edit team popup is in correct initial state', async ({
+  editTeamPage,
+  commonPageObjects,
+}) => {
+  await editTeamPage.verifyTeamCanBeUpdated();
+  await editTeamPage.verifyPasswordToggle();
+  await commonPageObjects.cancelCurrentAction();
+});
+
 test('team and password can be successfully edited', async ({
   editTeamPage,
   commonPageObjects,

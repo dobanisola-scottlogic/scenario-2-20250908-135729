@@ -7,16 +7,20 @@ export class CreateTeamPage {
   readonly teamPasswordField: Locator;
   readonly addNewTeamButton: Locator;
   readonly cancelButton: Locator;
+  readonly togglePasswordVisibility: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.createTeamPopup = page.getByRole('dialog');
     this.teamNameField = page.getByLabel('Name');
-    this.teamPasswordField = page.getByLabel('Password').nth(1);
+    this.teamPasswordField = page.getByTestId('password-input');
     this.addNewTeamButton = page.getByRole('button', {
       name: 'Add team',
     });
     this.cancelButton = page.getByRole('button', { name: 'Cancel' });
+    this.togglePasswordVisibility = page.getByLabel(
+      'toggle password visibility'
+    );
   }
 
   async inputTeamName(teamName: string) {
@@ -41,6 +45,9 @@ export class CreateTeamPage {
   ) {
     await expect(this.createTeamPopup).toContainText(teamName);
     await expect(this.createTeamPopup).toContainText(teamPassword);
+    await expect(this.teamPasswordField).toHaveAttribute('type', 'password');
+    await this.togglePasswordVisibility.click();
+    await expect(this.teamPasswordField).toHaveAttribute('type', 'text');
     await expect(this.addNewTeamButton).toBeDisabled();
     await expect(this.cancelButton).toBeVisible();
   }
