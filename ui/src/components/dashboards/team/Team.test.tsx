@@ -33,7 +33,7 @@ describe('Team', () => {
     expect(screen.getByText('Placeholder for games table')).toBeInTheDocument();
   });
 
-  it.skip('should display the correct current milestone for the logged-in team', async () => {
+  it('should display the correct current milestone for the logged-in team', async () => {
     renderWithRouterAndProvider(<Team />, {
       preloadedState: {
         auth: {
@@ -45,7 +45,7 @@ describe('Team', () => {
     });
 
     const currentMilestone = await screen.findByText(
-      'Map: Hard - Bot: Milestone2Bot'
+      'Map: Easy - Bot: Milestone1Bot'
     );
     expect(currentMilestone).toBeInTheDocument();
   });

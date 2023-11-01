@@ -1,9 +1,10 @@
-import { rest } from 'msw';
+import { HttpResponse, PathParams, http } from 'msw';
 
 import { UserRole } from '../enums/UserRole';
 import { Arena } from '../interfaces/Arena';
 import { CutoffCondition } from '../interfaces/CutoffCondition';
 import { GameResult } from '../interfaces/GameResult';
+import { Hackathon } from '../interfaces/Hackathon';
 import { Milestone } from '../interfaces/Milestone';
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -15,15 +16,6 @@ const testHackathonBody = {
   teams: [],
   currentMilestoneClassName: 'com.scottlogic.hackathon.bots.Milestone1Bot',
   currentMilestoneMap: 'Easy',
-};
-
-const testHackathonForTeamBody = {
-  id: 'test-id',
-  name: 'Test Hackathon',
-  games: [],
-  teams: [],
-  currentMilestoneClassName: 'com.scottlogic.hackathon.bots.Milestone2Bot',
-  currentMilestoneMap: 'Hard',
 };
 
 const testTeamBody = {
@@ -82,241 +74,191 @@ const getMilestonesResponse: Milestone[] = [
   },
 ];
 
+const loginResponse = {
+  role: UserRole.ADMIN,
+  name: 'admin',
+  admin: true,
+  team: false,
+};
+
 export const handlers = [
-  rest.post(baseUrl + '/login', (req, res, ctx) => {
-    const authorizationHeader = req.headers.get('Authorization');
+  http.post(baseUrl + '/login', ({ request }) => {
+    const authorizationHeader = request.headers.get('Authorization');
 
     if (authorizationHeader === 'Basic ' + btoa('testusername:testpassword')) {
-      return res(
-        ctx.status(200),
-        ctx.json({
-          role: UserRole.ADMIN,
-          name: 'admin',
-          admin: true,
-          team: false,
-        })
-      );
+      return HttpResponse.json(loginResponse);
     } else if (
       authorizationHeader ===
       'Basic ' + btoa('networkerror:networkerror')
     ) {
-      return res.networkError('Network error occurred.');
+      return HttpResponse.error();
     } else {
-      return res(
-        ctx.status(401),
-        ctx.text('Credentials are required to access this resource.')
+      return new HttpResponse(
+        'Credentials are required to access this resource.',
+        {
+          status: 401,
+        }
       );
     }
   }),
-  rest.post(baseUrl + '/hackathon', async (req, res, ctx) => {
-    const requestData: Record<string, string> = await req.json();
-    const hackathonName = requestData.name;
+  http.post<PathParams<string>, Hackathon>(
+    baseUrl + '/hackathon',
+    async ({ request }) => {
+      const requestData = await request.json();
+      const hackathonName = requestData.name;
 
-    if (hackathonName === 'Test Hackathon') {
-      return res(ctx.status(200), ctx.json(testHackathonBody));
-    } else if (hackathonName === 'Bad Request Hackathon') {
-      return res(
-        ctx.status(400),
-        ctx.json({
-          message: 'An error occurred - bad request.',
-        })
-      );
-    } else if (hackathonName === 'Error Hackathon') {
-      return res(
-        ctx.status(500),
-        ctx.json({
-          message: 'An error occurred.',
-        })
-      );
+      if (hackathonName === 'Test Hackathon') {
+        return HttpResponse.json(testHackathonBody);
+      } else if (hackathonName === 'Bad Request Hackathon') {
+        return new HttpResponse(null, {
+          status: 400,
+        });
+      } else if (hackathonName === 'Error Hackathon') {
+        return HttpResponse.error();
+      }
     }
+  ),
+  http.delete(baseUrl + '/hackathon/test-id', () => {
+    return new HttpResponse(null, { status: 204 });
   }),
-  rest.delete(baseUrl + '/hackathon/test-id', (_, res, ctx) => {
-    return res(ctx.status(204));
+  http.delete(baseUrl + '/hackathon/400', () => {
+    return new HttpResponse(null, {
+      status: 400,
+    });
   }),
-  rest.delete(baseUrl + '/hackathon/400', (_, res, ctx) => {
-    return res(
-      ctx.status(400),
-      ctx.json({
-        message: 'An error occurred - bad request.',
-      })
-    );
+  http.delete(baseUrl + '/hackathon/500', () => {
+    return HttpResponse.error();
   }),
-  rest.delete(baseUrl + '/hackathon/500', (_, res, ctx) => {
-    return res(
-      ctx.status(500),
-      ctx.json({
-        message: 'An error occurred.',
-      })
-    );
+  http.get(baseUrl + '/hackathon/test-id', () => {
+    return HttpResponse.json(testHackathonBody);
   }),
-  rest.get(baseUrl + '/hackathon/test-id', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(testHackathonBody));
+  http.get(baseUrl + '/hackathon/not-found-id', () => {
+    return new HttpResponse();
   }),
-  rest.get(baseUrl + '/hackathon/not-found-id', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(null));
+  http.put(baseUrl + '/hackathon/test-id', () => {
+    return HttpResponse.json(testHackathonBody);
   }),
-  rest.put(baseUrl + '/hackathon/test-id', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(testHackathonBody));
+  http.get(baseUrl + '/milestone', () => {
+    return HttpResponse.json(getMilestonesResponse);
   }),
-  rest.get(baseUrl + '/milestone', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(getMilestonesResponse));
+  http.post(baseUrl + '/team', () => {
+    return HttpResponse.json(testTeamBody);
   }),
-  rest.post(baseUrl + '/team', (_, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        hackathonId: 'hackathon1',
-        id: 'cb63cf4b-6683-4d4f-901c-7476bedd658e',
-        name: 'team1',
-        password: 'pa$$w0rd',
-      })
-    );
+  http.delete(baseUrl + '/team/test-id', () => {
+    return new HttpResponse(null, { status: 204 });
   }),
-  rest.delete(baseUrl + '/team/test-id', (_, res, ctx) => {
-    return res(ctx.status(204));
+  http.delete(baseUrl + '/team/400', () => {
+    return new HttpResponse(null, {
+      status: 400,
+    });
   }),
-  rest.delete(baseUrl + '/team/400', (_, res, ctx) => {
-    return res(
-      ctx.status(400),
-      ctx.json({
-        message: 'An error occurred - bad request.',
-      })
-    );
+  http.delete(baseUrl + '/team/500', () => {
+    return HttpResponse.error();
   }),
-  rest.delete(baseUrl + '/team/500', (_, res, ctx) => {
-    return res(
-      ctx.status(500),
-      ctx.json({
-        message: 'An error occurred.',
-      })
-    );
+  http.put(baseUrl + '/team/team1', () => {
+    return HttpResponse.json(testTeamBody);
   }),
-  rest.put(baseUrl + '/team/team1', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(testTeamBody));
+  http.get(baseUrl + '/hackathon', () => {
+    return HttpResponse.json([testHackathonBody]);
   }),
-  rest.get(baseUrl + '/hackathon', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json([testHackathonBody]));
+  http.get(baseUrl + '/team/team1', () => {
+    return HttpResponse.json(testTeamBody);
   }),
-  rest.get(baseUrl + '/team/team1', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(testTeamBody));
-  }),
-  rest.get(baseUrl + '/team', (req, res, ctx) => {
-    const hackathonId = req.url.searchParams.get('hackathonId');
+  http.get(baseUrl + '/team', ({ request }) => {
+    const url = new URL(request.url);
+    const hackathonId = url.searchParams.get('hackathonId');
 
     testTeamBody.hackathonId = hackathonId!;
 
-    return res(ctx.status(200), ctx.json([testTeamBody]));
+    return HttpResponse.json([testTeamBody]);
   }),
-  rest.get(baseUrl + '/game', (req, res, ctx) => {
-    const hackathonId = req.url.searchParams.get('hackathonId');
+  http.get(baseUrl + '/game', ({ request }) => {
+    const url = new URL(request.url);
+    const hackathonId = url.searchParams.get('hackathonId');
 
     testGameResultBody.game.hackathonId = hackathonId!;
 
-    return res(ctx.status(200), ctx.json([testGameResultBody]));
+    return HttpResponse.json([testGameResultBody]);
   }),
-  rest.post(baseUrl + '/game', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(testGameResultBody));
+  http.post(baseUrl + '/game', () => {
+    return HttpResponse.json(testGameResultBody);
   }),
-  rest.get(baseUrl + '/hackathon/team', (req, res, ctx) => {
-    const authorizationHeader = req.headers.get('Authorization');
+  http.get(baseUrl + '/hackathon/team', ({ request }) => {
+    const authorizationHeader = request.headers.get('Authorization');
 
     if (authorizationHeader === 'Basic team') {
-      return res(ctx.status(200), ctx.json(testHackathonForTeamBody));
+      return HttpResponse.json(testHackathonBody);
     } else {
-      return res.networkError('Network error occurred.');
+      return HttpResponse.error();
     }
   }),
 ];
 
-export const getGameResultsNetworkErrorResponseHandler = rest.get(
+export const getGameResultsNetworkErrorResponseHandler = http.get(
   baseUrl + '/game',
-  (_, res) => {
-    return res.networkError('Network error occurred.');
+  () => {
+    return HttpResponse.error();
   }
 );
 
-export const getHackathonsNetworkErrorResponseHandler = rest.get(
+export const getHackathonsNetworkErrorResponseHandler = http.get(
   baseUrl + '/hackathon',
-  (_, res) => {
-    return res.networkError('Network error occurred.');
+  () => {
+    return HttpResponse.error();
   }
 );
 
-export const getTeamsNetworkErrorResponseHandler = rest.get(
+export const getTeamsNetworkErrorResponseHandler = http.get(
   baseUrl + '/team',
-  (_, res) => {
-    return res.networkError('Network error occurred.');
+  () => {
+    return HttpResponse.error();
   }
 );
 
-export const postTeamBadRequestResponseHandler = rest.post(
+export const postTeamBadRequestResponseHandler = http.post(
   baseUrl + '/team',
-  (_, res, ctx) => {
-    return res(
-      ctx.status(400),
-      ctx.json({
-        message: 'An error occurred - bad request.',
-      })
-    );
+  () => {
+    return new HttpResponse(null, {
+      status: 400,
+    });
   }
 );
 
-export const postTeamInternalServerErrorResponseHandler = rest.post(
+export const postTeamInternalServerErrorResponseHandler = http.post(
   baseUrl + '/team',
-  (_, res, ctx) => {
-    return res(
-      ctx.status(503),
-      ctx.json({
-        message: 'Error adding team - internal server error',
-      })
-    );
+  () => {
+    return HttpResponse.error();
   }
 );
 
-export const putTeamBadRequestResponseHandler = rest.put(
+export const putTeamBadRequestResponseHandler = http.put(
   baseUrl + '/team/team1',
-  (_, res, ctx) => {
-    return res(
-      ctx.status(400),
-      ctx.json({
-        message: 'An error occurred - bad request.',
-      })
-    );
+  () => {
+    return new HttpResponse(null, {
+      status: 400,
+    });
   }
 );
 
-export const putTeamInternalServerErrorResponseHandler = rest.put(
+export const putTeamInternalServerErrorResponseHandler = http.put(
   baseUrl + '/team/team1',
-  (_, res, ctx) => {
-    return res(
-      ctx.status(503),
-      ctx.json({
-        message: 'Error updating team - internal server error',
-      })
-    );
+  () => {
+    return HttpResponse.error();
   }
 );
 
-export const postGameBadRequestResponseHandler = rest.post(
+export const postGameBadRequestResponseHandler = http.post(
   baseUrl + '/game',
-  (_, res, ctx) => {
-    return res(
-      ctx.status(400),
-      ctx.json({
-        message: 'Error creating game - bad request',
-      })
-    );
+  () => {
+    return new HttpResponse(null, {
+      status: 400,
+    });
   }
 );
 
-export const postGameInternalServerErrorResponseHandler = rest.post(
+export const postGameInternalServerErrorResponseHandler = http.post(
   baseUrl + '/game',
-  (_, res, ctx) => {
-    return res(
-      ctx.status(503),
-      ctx.json({
-        message: 'Error creating game - internal server error',
-      })
-    );
+  () => {
+    return HttpResponse.error();
   }
 );

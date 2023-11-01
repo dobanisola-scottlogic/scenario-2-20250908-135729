@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => ({
     environment: 'happy-dom',
     setupFiles: './setupTests.ts',
     exclude: [...configDefaults.exclude, '**/playwright/**'],
+    onConsoleLog(log) {
+      if (log.includes('Download the React DevTools')) {return false;}
+    },
   },
   ...(mode === 'production' && { base: '/application/ui/' }),
 }));

@@ -14,10 +14,10 @@ import CreateUpdateTeam from './CreateUpdateTeam';
 
 describe('CreateUpdateTeam Popup Component', () => {
   const mockFunction = () => null;
-  const hackathonId = 'hackathon1';
+  const hackathonId = 'test-id';
   const teamId = 'team1';
-  const teamName = 'Team1';
-  const teamPassword = 'Pa$$w0rD';
+  const teamName = 'Team 1';
+  const teamPassword = 'pa$$w0rD';
 
   describe('When the Add Team popup is opened', () => {
     it('renders the Add Team popup', () => {
