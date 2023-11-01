@@ -140,15 +140,16 @@ resource "aws_cloudwatch_dashboard" "main" {
           x      = 0
           y      = 6
           width  = 24
-          height = 6
+          height = 8
           properties = {
             query   = <<-EOT
                             SOURCE '${var.cloudwatch_log_group_name}' | fields @timestamp, @message, @logStream, @log
                             | sort @timestamp desc
+                            | filter @message like /ERROR/ 
                         EOT
             region  = var.aws_region
             stacked = false
-            title   = "CloudWatch Logs"
+            title   = "CloudWatch Logs - ERROR only"
             view    = "table"
           }
         },

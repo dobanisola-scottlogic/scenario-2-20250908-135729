@@ -70,6 +70,8 @@ resource "aws_ecs_task_definition" "task_definition" {
           awslogs-group         = aws_cloudwatch_log_group.cloudwatch_logs_group.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = local.server_service_name
+          # Define a multiline pattern to capture stack traces - logs start with an IPv4 address (request logs) or log level (application logs)
+          awslogs-multiline-pattern = "^((\\d{1,3}\\.){3}\\d{1,3}|DEBUG|INFO|WARN|ERROR)"
         }
       }
     }
