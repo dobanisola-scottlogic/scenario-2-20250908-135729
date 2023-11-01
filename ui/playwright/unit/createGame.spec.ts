@@ -1,46 +1,5 @@
-import { test as base } from '@playwright/test';
+import test from '../fixtures';
 import { HackathonHelpers } from '../helpers';
-import { HackathonDetailsPage } from '../pageObjectModel/admin-hackathon-details-page';
-import { HackathonListPage } from '../pageObjectModel/admin-hackathon-list-page';
-import { CommonPageObjects } from '../pageObjectModel/common-page-objects';
-import { CreateGamePage } from '../pageObjectModel/create-game-page';
-import { CreateHackathonPage } from '../pageObjectModel/create-hackathon-page';
-import { CreateTeamPage } from '../pageObjectModel/create-team-page';
-import { LoginPage } from '../pageObjectModel/login-page';
-
-const test = base.extend<{
-  createHackathonPage: CreateHackathonPage;
-  createGamePage: CreateGamePage;
-  createTeamPage: CreateTeamPage;
-  hackathonListPage: HackathonListPage;
-  hackathonDetailsPage: HackathonDetailsPage;
-  commonPageObjects: CommonPageObjects;
-}>({
-  createHackathonPage: async ({ page }, use) => {
-    const createHackathonPage = new CreateHackathonPage(page);
-    await use(createHackathonPage);
-  },
-  createGamePage: async ({ page }, use) => {
-    const createGamePage = new CreateGamePage(page);
-    await use(createGamePage);
-  },
-  createTeamPage: async ({ page }, use) => {
-    const createTeamPage = new CreateTeamPage(page);
-    await use(createTeamPage);
-  },
-  hackathonListPage: async ({ page }, use) => {
-    const hackathonListPage = new HackathonListPage(page);
-    await use(hackathonListPage);
-  },
-  hackathonDetailsPage: async ({ page }, use) => {
-    const hackathonDetailsPage = new HackathonDetailsPage(page);
-    await use(hackathonDetailsPage);
-  },
-  commonPageObjects: async ({ page }, use) => {
-    const commonPageObjects = new CommonPageObjects(page);
-    await use(commonPageObjects);
-  },
-});
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
@@ -50,16 +9,17 @@ const player3 = 'Milestone3Bot';
 const player4 = 'Milestone4Bot';
 const map = 'Hard';
 
-test.beforeEach(async ({ page, createHackathonPage, hackathonListPage }) => {
-  const login = new LoginPage(page);
-  hackathonName = 'createGame' + uniqueHackathonId;
-  await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
-  await page.goto('/');
-  await login.inputCredentials('admin', 'secret');
-  await login.attemptLogin();
-  await hackathonListPage.verifyLoginSuccess();
-  await hackathonListPage.openTheHackathonPage(hackathonName);
-});
+test.beforeEach(
+  async ({ page, createHackathonPage, hackathonListPage, login }) => {
+    hackathonName = 'createGame' + uniqueHackathonId;
+    await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
+    await page.goto('/');
+    await login.inputCredentials('admin', 'secret');
+    await login.attemptLogin();
+    await hackathonListPage.verifyLoginSuccess();
+    await hackathonListPage.openTheHackathonPage(hackathonName);
+  }
+);
 
 test.afterEach(async ({ hackathonListPage }) => {
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);

@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './playwright',
   outputDir: './playwright/report/trace',
+  timeout: 50000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 2,
@@ -15,6 +16,7 @@ export default defineConfig({
       password: 'secret',
     },
     trace: 'retain-on-failure',
+    permissions: ['clipboard-read', 'clipboard-write'],
   },
   projects: [
     {

@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test';
 import { HackathonDetailsPage } from './pageObjectModel/admin-hackathon-details-page';
 import { HackathonListPage } from './pageObjectModel/admin-hackathon-list-page';
 import { CommonPageObjects } from './pageObjectModel/common-page-objects';
+import { CreateGamePage } from './pageObjectModel/create-game-page';
 import { CreateHackathonPage } from './pageObjectModel/create-hackathon-page';
 import { CreateTeamPage } from './pageObjectModel/create-team-page';
 import { DeleteHackathonPage } from './pageObjectModel/delete-hackathon-page';
@@ -10,9 +11,11 @@ import { EditHackathonPage } from './pageObjectModel/edit-hackathon-page';
 import { EditTeamPage } from './pageObjectModel/edit-team-page';
 import { LoginPage } from './pageObjectModel/login-page';
 import { TeamDashboardPage } from './pageObjectModel/team-dashboard-page';
+import { ViewInformationPage } from './pageObjectModel/view-information-page';
 
 const test = base.extend<{
   commonPageObjects: CommonPageObjects;
+  createGamePage: CreateGamePage;
   createHackathonPage: CreateHackathonPage;
   createTeamPage: CreateTeamPage;
   deleteHackathonPage: DeleteHackathonPage;
@@ -23,10 +26,15 @@ const test = base.extend<{
   hackathonListPage: HackathonListPage;
   login: LoginPage;
   teamDashboardPage: TeamDashboardPage;
+  viewInformationPage: ViewInformationPage;
 }>({
   commonPageObjects: async ({ page }, use) => {
     const commonPageObjects = new CommonPageObjects(page);
     await use(commonPageObjects);
+  },
+  createGamePage: async ({ page }, use) => {
+    const createGamePage = new CreateGamePage(page);
+    await use(createGamePage);
   },
   createHackathonPage: async ({ page }, use) => {
     const createHackathonPage = new CreateHackathonPage(page);
@@ -67,6 +75,10 @@ const test = base.extend<{
   teamDashboardPage: async ({ page }, use) => {
     const teamDashboardPage = new TeamDashboardPage(page);
     await use(teamDashboardPage);
+  },
+  viewInformationPage: async ({ page }, use) => {
+    const viewInformationPage = new ViewInformationPage(page);
+    await use(viewInformationPage);
   },
 });
 export default test;
