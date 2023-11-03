@@ -39,3 +39,13 @@ variable "game_server_port" {
   type        = number
   description = "The port of the game server (usually 80)"
 }
+
+variable "start_schedule" {
+  type        = string
+  description = "The schedule expression (UTC) for when Cloud9 instances should be started"
+}
+
+variable "stop_schedule" {
+  type        = string
+  description = "The schedule expression (UTC) for when Cloud9 instances should be stopped"
+}

@@ -124,3 +124,46 @@ resource "aws_iam_role_policy_attachment" "s3_contestant_bucket_read_policy_atta
   policy_arn = aws_iam_policy.s3_contestant_bucket_read_policy.arn
   role       = "AWSCloud9SSMAccessRole"
 }
+
+resource "aws_iam_policy" "ec2_start_stop_policy" {
+  name = "${var.workspace}-ec2-start-stop-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:StartInstances",
+          "ec2:StopInstances"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role" "ec2_start_stop_role" {
+  name = "${var.workspace}-ec2-start-stop-role"
+  path = "/"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "scheduler.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "attach" {
+  name       = "${var.workspace}-ec2-start-stop-role-policy-attachment"
+  roles      = [aws_iam_role.ec2_start_stop_role.name]
+  policy_arn = aws_iam_policy.ec2_start_stop_policy.arn
+}

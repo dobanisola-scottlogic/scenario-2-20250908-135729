@@ -7,6 +7,8 @@ module "contestant" {
   workspace        = local.workspace
   game_server_host = aws_lb.public_load_balancer.dns_name
   game_server_port = aws_lb_listener.public_load_balancer_listener.port
+  start_schedule   = local.start_schedule
+  stop_schedule    = local.stop_schedule
 }
 
 module "monitoring" {
@@ -19,4 +21,17 @@ module "monitoring" {
   ecs_service_name               = aws_ecs_service.service.name
   sorted_cloud9_ec2_instance_ids = module.contestant.sorted_cloud9_ec2_instance_ids
   workspace                      = local.workspace
+}
+
+module "rds_schedule" {
+  source     = "github.com/barryw/terraform-aws-rds-scheduler"
+  identifier = local.workspace
+
+  up_schedule   = local.rds_up_schedule
+  down_schedule = local.rds_down_schedule
+
+  rds_identifier = aws_db_instance.database.identifier
+  is_cluster     = false
+
+  depends_on = [ aws_db_instance.database ]
 }

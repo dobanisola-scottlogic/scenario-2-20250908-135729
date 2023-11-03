@@ -103,3 +103,15 @@ variable "allow_default_workspace" {
   type        = bool
   default     = false
 }
+
+variable "start_hour" {
+  description = "The UTC hour of the day by which resources should be available"
+  type        = number
+  default     = 8
+}
+
+variable "stop_hour" {
+  description = "The UTC hour of the day after which resources will not be available"
+  type        = number
+  default     = 18
+}
