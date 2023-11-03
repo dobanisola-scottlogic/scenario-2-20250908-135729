@@ -50,7 +50,7 @@ gameStateLoggerBuilder.withPlayers().withOutOfBounds().process(gameState);
 ### Testing
 
 Now you're ready to send your initial Bot into battle, so rebuild and reconnect your bot (as explained in the
-[readme](readme.md)) to test it.
+[README](../README.md)) to test it.
 
 The game should now have lasted 22 phases, but still end with the `Game Over. One team remaining.` end condition as
 all your players march in a neat line directly northwards and straight into the nearby water!

@@ -3,48 +3,22 @@ The default behaviour of the example Bot could not be any worse, it was only inc
 validated, so let's take a look at how it could be improved.
 
 ## The Plan
-This step-by-step tutorial will walk you through the process of adding some useful behaviour to your Bot and hopefully
-you should start to win some of those games against the default Bot and be able to take on some of the more sophisticated
-Bots included in the starter kit.
+This step-by-step tutorial will walk you through the process of adding some useful behaviour to your Bot and hopefully you should start to win some of those games against the default Bot and be able to take on some of the more sophisticated Bots.
 
-Along with the example Bot the starter kit includes some helper functions that you will make use of when adding the new
-features, see `com.scottlogic.hackathon.game.GameGeometry` for more details.
+This tutorial does not cover all of the available methods provided by the game engine. [Step five](5-further-improvements.md) discusses some of the methods that could be useful in adding more complexity to your bots.
 
-### Step One
+### Step One - Adding Movement
 Moving each player away from the spawn point will allow the next player to appear without eliminating both itself and
-the previous player, see [adding player movement](/tutorial/1-adding-movement.md).
+the previous player, see [adding player movement](1-adding-movement.md).
 
-### Step Two
-Now that your players are moving around the map your games will be lasting slightly longer.  Unfortunately, due to the
-naive approach adopted, your players are now marching north and into the water to drown, let's fix that and also ensure
-that they don't [collide with each other](/tutorial/2-avoiding-out-of-bounds.md).
+### Step Two - Maintaining History
+Now that your players are moving around the map your games will be lasting slightly longer. Unfortunately, due to the naive approach adopted, your players are now marching north and into the water to drown. Let's look at [maintaining a history](2-maintaining-history.md) of the directions that your players are travelling in.
 
-### Step Three
-So your players can now move around the map and don't drown or eliminate each other by accident, but what about all
-that food that keeps appearing, how do you [gather enough items](/tutorial/3-gathering-collectables.md) to ensure that your army
-continues to grow?
+### Step Three - Avoiding Collisions
+Your players can now move around the map but how can you [avoid collisions](3-avoiding-collisions.md) to prevent your players from dying by walking into the sea or eliminating each other by accident?
 
-### Step Four
-If your players cannot see anything to collect they just stand still and wait for something to appear which is not the
-best approach, they should be [exploring the map](/tutorial/4-exploring-the-map.md) to increase the chances of spotting
-collectables. 
+### Step Four - Collecting Food
+Now that your players are surviving long enough without killing themselves, we need to tell them to [collect food](4-collecting-food.md) to spawn more players.
 
-### Step Five
-The best defence is a strong offence, the best way to prevent players from other Bots from attacking you is to prevent
-them from spawning more players.  You can do this by moving a player onto their spawn point to
-[destroy it](/tutorial/5-destroying-spawn-points.md).
-
-## Next steps
-This tutorial should have improved the capabilities of your Bot to give it a fighting chance, but there is definitely
-more that could be done, here are a few ideas:
-
-- the routing algorithm is very basic and assumes your players can travel over water, perhaps some form of path finding
-would work better in more complex maps. The `com.scottlogic.hackathon.game.GameGeometry.findRoute()` method may help you here
-- the battle rules are such that your players can eliminate enemy players without taking losses, you could add some
-logic to ensure you outnumber your enemies
-- be careful that you don't leave your own spawn point undefended, if it gets destroyed then you cannot spawn more
-players which will probably mean that you'll lose the game in the long run
-- the exploration code could mean that your players tend to ignore areas of the map that have been visited previously
-which might mean that collectable items will get overlooked, perhaps some form of revisting logic is needed
-- the player behaviour is currently hard-coded to collect items first before attacking spawn points, perhaps it might
-make more sense to attack first if you have plenty of players available
+### Step Five - Further Improvements
+There are a few improvements that could be made to this basic bot. You can find a list of ideas to get you started [here](5-further-improvements.md).
