@@ -3,6 +3,8 @@ package com.scottlogic.hackathon.server.services;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -36,6 +38,7 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
   private final Map<String, RemoteBotConnector> teamBotMap;
   private final BotStore botStore;
   private TeamService teamService;
+  private final Lock lock = new ReentrantLock();
 
   @Inject
   RemoteBotStore(final BotStore botStore, final TeamService teamService) {
@@ -95,11 +98,26 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
   }
 
   private TeamBot storeTeamBot(Team team, RemoteBot bot) {
-    logger.debug("storeTeamBot " + team.getName());
-    if (botStore.deleteExisting(team.getId())) {
-      logger.debug("removing old TeamBot before saving new one");
+    try {
+      lock.lock();
+
+      // HAC-218 There might be multiple change event listeners added
+      // for a single listening socket, which potentially results in
+      // this method being called with with the RemoteBot multiple times
+      TeamBot existingTeamBot = botStore.getByTeamId(team.getId());
+      if (existingTeamBot != null && existingTeamBot.getId().equals(bot.getId())) {
+        logger.debug("storeTeamBot {1} {2} -> no change", team.getName(), team.getId());
+        return existingTeamBot;
+      }
+      
+      logger.debug("storeTeamBot {1} {2}", team.getName(), team.getId());
+      if (botStore.deleteExisting(team.getId())) {
+        logger.debug("removing old TeamBot before saving new one");
+      }
+      return botStore.saveOrUpdate(new TeamBot(team, bot.getId()));
+    } finally {
+      lock.unlock();
     }
-    return botStore.saveOrUpdate(new TeamBot(team, bot.getId()));
   }
 
   @Override
