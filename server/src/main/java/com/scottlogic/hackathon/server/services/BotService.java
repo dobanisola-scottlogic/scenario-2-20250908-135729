@@ -153,9 +153,23 @@ public class BotService {
 
   private Bot getTeamOrMileStoneBot(
       Team team, Map<UUID, TeamBot> teamBots, Map<String, MilestoneBot> milestoneBots) {
-    return ofNullable(team.getId())
-        .flatMap(id -> remoteBotStore.get(teamBots.get(id).getId()).map(b -> (Bot) b))
-        .orElseGet(() -> milestoneBots.get(team.getName()).getBot());
+    try {
+      return ofNullable(team.getId())
+          .flatMap(id -> remoteBotStore.get(teamBots.get(id).getId()).map(b -> (Bot) b))
+          .orElseGet(() -> milestoneBots.get(team.getName()).getBot());
+    } catch (NullPointerException npe) {
+      logger.error(
+          "Error in getTeamOrMileStoneBot\n" +
+              "Team ID: {}\n" +
+              "Team name: {}\n" +
+              "Team bots: {}\n" +
+              "Milestone bots: {}",
+          team.getId(),
+          team.getName(),
+          teamBots.keySet(),
+          milestoneBots.values().stream().map(MilestoneBot::getId).collect(toSet()));
+      throw npe;
+    }
   }
 
   private void removeOldMilestoneGames(Team team) {
