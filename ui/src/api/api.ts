@@ -7,6 +7,7 @@ import { Hackathon } from '../interfaces/Hackathon';
 import { LoginResponse } from '../interfaces/LoginResponse';
 import { Milestone } from '../interfaces/Milestone';
 import { RootState } from '../store';
+import { removeMilestoneBotPrefix } from '../utils/milestone-utils';
 import { Team } from './../interfaces/Team';
 
 export const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -17,10 +18,6 @@ enum RequestType {
   POST = 'POST',
   PUT = 'PUT',
 }
-
-const removeMilestoneBotPrefix = (milestoneBotClassName: string) => {
-  return milestoneBotClassName.replace('com.scottlogic.hackathon.bots.', '');
-};
 
 // Define a service using a base URL and expected endpoints
 export const api = createApi({

@@ -3,10 +3,18 @@ import { Route, Routes } from 'react-router-dom';
 
 import { getHackathonsNetworkErrorResponseHandler } from '../../mocks/handlers/hackathon';
 import { server } from '../../mocks/server';
+import { testHackathonBody } from '../../mocks/test-data/hackathon';
+import { removeMilestoneBotPrefix } from '../../utils/milestone-utils';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import HackathonListTable from './HackathonListTable';
 
 describe('HackathonListTable', () => {
+  const hackathonName = testHackathonBody.name;
+  const hackathonMilestoneBot = removeMilestoneBotPrefix(
+    testHackathonBody.currentMilestoneClassName
+  );
+  const hackathonMap = testHackathonBody.currentMilestoneMap;
+
   it('should render the table correctly after successful data fetch', async () => {
     renderWithRouterAndProvider(
       <Routes>
@@ -29,13 +37,13 @@ describe('HackathonListTable', () => {
     ).toBeInTheDocument();
 
     const rowHeader = await screen.findByRole('rowheader', {
-      name: 'Test Hackathon',
+      name: hackathonName,
     });
     const mapCell = await screen.findByRole('cell', {
-      name: 'Easy',
+      name: hackathonMap,
     });
     const botCell = await screen.findByRole('cell', {
-      name: 'Milestone1Bot',
+      name: hackathonMilestoneBot,
     });
     const moreMenu = await screen.findByRole('button', {
       name: 'more',
@@ -77,7 +85,7 @@ describe('HackathonListTable', () => {
       </Routes>
     );
 
-    const link = await screen.findByRole('link', { name: 'Test Hackathon' });
+    const link = await screen.findByRole('link', { name: hackathonName });
     fireEvent.click(link);
 
     expect(screen.getByTestId('hackathon-details-page')).toBeInTheDocument();

@@ -1,79 +1,64 @@
-import { HttpResponse, http } from 'msw';
+import { http } from 'msw';
 import { baseUrl } from '../../api/api';
+import { testTeamBody, testTeamId } from '../test-data/team';
+import {
+  badRequestResponse,
+  errorResponse,
+  jsonOkResponse,
+  noContentResponse,
+} from './utils';
 
-const testTeamBody = {
-  hackathonId: 'test-id',
-  id: 'team1',
-  name: 'Team 1',
-  password: 'pa$$w0rd',
-};
+const teamEndpoint = baseUrl + '/team';
 
 export const handlers = [
-  http.post(baseUrl + '/team', () => {
-    return HttpResponse.json(testTeamBody);
+  http.post(teamEndpoint, () => {
+    return jsonOkResponse(testTeamBody);
   }),
-  http.delete(baseUrl + '/team/test-id', () => {
-    return new HttpResponse(null, { status: 204 });
+  http.delete(`${teamEndpoint}/${testTeamId.valid}`, () => {
+    return noContentResponse();
   }),
-  http.delete(baseUrl + '/team/400', () => {
-    return new HttpResponse(null, {
-      status: 400,
-    });
+  http.delete(`${teamEndpoint}/${testTeamId.badRequest}`, () => {
+    return badRequestResponse();
   }),
-  http.delete(baseUrl + '/team/500', () => {
-    return HttpResponse.error();
+  http.delete(`${teamEndpoint}/${testTeamId.networkError}`, () => {
+    return errorResponse();
   }),
-  http.put(baseUrl + '/team/team1', () => {
-    return HttpResponse.json(testTeamBody);
+  http.put(`${teamEndpoint}/${testTeamId.valid}`, () => {
+    return jsonOkResponse(testTeamBody);
   }),
-  http.get(baseUrl + '/team/team1', () => {
-    return HttpResponse.json(testTeamBody);
+  http.put(`${teamEndpoint}/${testTeamId.badRequest}`, () => {
+    return badRequestResponse();
   }),
-  http.get(baseUrl + '/team', ({ request }) => {
+  http.put(`${teamEndpoint}/${testTeamId.networkError}`, () => {
+    return errorResponse();
+  }),
+  http.get(`${teamEndpoint}/${testTeamId.valid}`, () => {
+    return jsonOkResponse(testTeamBody);
+  }),
+  http.get(teamEndpoint, ({ request }) => {
     const url = new URL(request.url);
     const hackathonId = url.searchParams.get('hackathonId');
 
     testTeamBody.hackathonId = hackathonId!;
 
-    return HttpResponse.json([testTeamBody]);
+    return jsonOkResponse([testTeamBody]);
   }),
 ];
 
 export const getTeamsNetworkErrorResponseHandler = http.get(
-  baseUrl + '/team',
+  teamEndpoint,
   () => {
-    return HttpResponse.error();
+    return errorResponse();
   }
 );
 
-export const postTeamBadRequestResponseHandler = http.post(
-  baseUrl + '/team',
-  () => {
-    return new HttpResponse(null, {
-      status: 400,
-    });
-  }
-);
+export const postTeamBadRequestResponseHandler = http.post(teamEndpoint, () => {
+  return badRequestResponse();
+});
 
 export const postTeamInternalServerErrorResponseHandler = http.post(
-  baseUrl + '/team',
+  teamEndpoint,
   () => {
-    return HttpResponse.error();
-  }
-);
-
-export const putTeamBadRequestResponseHandler = http.put(
-  baseUrl + '/team/team1',
-  () => {
-    return new HttpResponse(null, {
-      status: 400,
-    });
-  }
-);
-
-export const putTeamInternalServerErrorResponseHandler = http.put(
-  baseUrl + '/team/team1',
-  () => {
-    return HttpResponse.error();
+    return errorResponse();
   }
 );

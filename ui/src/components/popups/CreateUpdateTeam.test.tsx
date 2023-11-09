@@ -5,19 +5,18 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   postTeamBadRequestResponseHandler,
   postTeamInternalServerErrorResponseHandler,
-  putTeamBadRequestResponseHandler,
-  putTeamInternalServerErrorResponseHandler,
 } from '../../mocks/handlers/team';
 import { server } from '../../mocks/server';
+import { testHackathonId } from '../../mocks/test-data/hackathon';
+import { testTeamBody, testTeamId } from '../../mocks/test-data/team';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateUpdateTeam from './CreateUpdateTeam';
 
 describe('CreateUpdateTeam Popup Component', () => {
   const mockFunction = () => null;
-  const hackathonId = 'test-id';
-  const teamId = 'team1';
-  const teamName = 'Team 1';
-  const teamPassword = 'pa$$w0rD';
+  const hackathonId = testHackathonId.valid;
+  const teamName = testTeamBody.name;
+  const teamPassword = testTeamBody.password;
 
   describe('When the Add Team popup is opened', () => {
     it('renders the Add Team popup', () => {
@@ -189,7 +188,7 @@ describe('CreateUpdateTeam Popup Component', () => {
         <CreateUpdateTeam
           isOpen
           hackathonId={hackathonId}
-          id={teamId}
+          id={testTeamId.valid}
           setIsOpen={mockFunction}
         />
       );
@@ -212,7 +211,7 @@ describe('CreateUpdateTeam Popup Component', () => {
         <CreateUpdateTeam
           isOpen
           hackathonId={hackathonId}
-          id={teamId}
+          id={testTeamId.valid}
           setIsOpen={mockFunction}
         />
       );
@@ -250,7 +249,7 @@ describe('CreateUpdateTeam Popup Component', () => {
         <CreateUpdateTeam
           isOpen
           hackathonId={hackathonId}
-          id={teamId}
+          id={testTeamId.valid}
           setIsOpen={mockFunction}
         />
       );
@@ -279,13 +278,11 @@ describe('CreateUpdateTeam Popup Component', () => {
     });
 
     it('displays an error when the Edit Team function returns unsuccessfully with a bad request', async () => {
-      server.use(putTeamBadRequestResponseHandler);
-
       renderWithRouterAndProvider(
         <CreateUpdateTeam
           isOpen
           hackathonId={hackathonId}
-          id={teamId}
+          id={testTeamId.badRequest}
           setIsOpen={mockFunction}
         />
       );
@@ -313,13 +310,11 @@ describe('CreateUpdateTeam Popup Component', () => {
     });
 
     it('displays an error when the Edit Team function returns unsuccessfully with an internal server error', async () => {
-      server.use(putTeamInternalServerErrorResponseHandler);
-
       renderWithRouterAndProvider(
         <CreateUpdateTeam
           isOpen
           hackathonId={hackathonId}
-          id={teamId}
+          id={testTeamId.networkError}
           setIsOpen={mockFunction}
         />
       );

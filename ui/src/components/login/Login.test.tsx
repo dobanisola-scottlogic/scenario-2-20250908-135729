@@ -1,5 +1,9 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { UserRole } from '../../enums/UserRole';
+import {
+  networkErrorLoginCredentials,
+  successfulLoginCredentials,
+} from '../../mocks/test-data/login';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import Login from './Login';
 
@@ -21,12 +25,12 @@ describe('Login', () => {
   it('handles login with valid credentials correctly', async () => {
     const { store } = renderWithRouterAndProvider(<Login />);
 
-    // set credentials to testusername and testpassword to trigger 200 response from mock server
+    // set credentials to trigger 200 response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
-      target: { value: 'testusername' },
+      target: { value: successfulLoginCredentials.username },
     });
     fireEvent.change(screen.getByTestId('password-input'), {
-      target: { value: 'testpassword' },
+      target: { value: successfulLoginCredentials.password },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
@@ -51,7 +55,7 @@ describe('Login', () => {
 
   it('handles login with invalid credentials correctly', async () => {
     renderWithRouterAndProvider(<Login />);
-    // set credentials to invalidusername and invalidpassword to trigger 401 response from mock server
+    // set credentials to trigger 401 response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
       target: { value: 'invalidusername' },
     });
@@ -68,12 +72,12 @@ describe('Login', () => {
 
   it('handles login where server connection is refused correctly', async () => {
     renderWithRouterAndProvider(<Login />);
-    // set credentials to networkerror to trigger network error response from mock server
+    // set credentials to trigger network error response from mock server
     fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
-      target: { value: 'networkerror' },
+      target: { value: networkErrorLoginCredentials.username },
     });
     fireEvent.change(screen.getByTestId('password-input'), {
-      target: { value: 'networkerror' },
+      target: { value: networkErrorLoginCredentials.password },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 

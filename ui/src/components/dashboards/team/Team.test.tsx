@@ -1,10 +1,20 @@
 import { screen } from '@testing-library/react';
 
 import { UserRole } from '../../../enums/UserRole';
+import {
+  testHackathonBody,
+  validTeamCredentials,
+} from '../../../mocks/test-data/hackathon';
+import { removeMilestoneBotPrefix } from '../../../utils/milestone-utils';
 import { renderWithRouterAndProvider } from '../../../utils/test-utils';
 import Team from './Team';
 
 describe('Team', () => {
+  const hackathonMilestoneBot = removeMilestoneBotPrefix(
+    testHackathonBody.currentMilestoneClassName
+  );
+  const hackathonMap = testHackathonBody.currentMilestoneMap;
+
   it('should render the Team dashboard component correctly', () => {
     renderWithRouterAndProvider(<Team />);
 
@@ -39,13 +49,13 @@ describe('Team', () => {
         auth: {
           name: 'team',
           role: UserRole.TEAM,
-          credentials: 'team',
+          credentials: validTeamCredentials.credentials,
         },
       },
     });
 
     const currentMilestone = await screen.findByText(
-      'Map: Easy - Bot: Milestone1Bot'
+      `Map: ${hackathonMap} - Bot: ${hackathonMilestoneBot}`
     );
     expect(currentMilestone).toBeInTheDocument();
   });

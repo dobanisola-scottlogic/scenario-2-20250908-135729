@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { testTeamId } from '../../mocks/test-data/team';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import DeleteTeam from './DeleteTeam';
 
@@ -9,7 +10,7 @@ describe('Delete Team Popup Component', () => {
   describe('When the delete team popup is opened', () => {
     it('renders the delete team popup', () => {
       renderWithRouterAndProvider(
-        <DeleteTeam isOpen id='test-id' setIsOpen={mockFunction} />
+        <DeleteTeam isOpen id={testTeamId.valid} setIsOpen={mockFunction} />
       );
 
       expect(
@@ -28,7 +29,7 @@ describe('Delete Team Popup Component', () => {
   describe('When the delete button is pressed', () => {
     it('calls the delete team function successfully', async () => {
       const { store } = renderWithRouterAndProvider(
-        <DeleteTeam isOpen id='test-id' setIsOpen={mockFunction} />
+        <DeleteTeam isOpen id={testTeamId.valid} setIsOpen={mockFunction} />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
@@ -44,7 +45,11 @@ describe('Delete Team Popup Component', () => {
 
     it('displays an error when the delete team function returns unsuccessfully with a bad request', async () => {
       renderWithRouterAndProvider(
-        <DeleteTeam isOpen id='400' setIsOpen={mockFunction} />
+        <DeleteTeam
+          isOpen
+          id={testTeamId.badRequest}
+          setIsOpen={mockFunction}
+        />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));
@@ -55,7 +60,11 @@ describe('Delete Team Popup Component', () => {
 
     it('displays an error when the delete team function returns unsuccessfully with an internal server error', async () => {
       renderWithRouterAndProvider(
-        <DeleteTeam isOpen id='500' setIsOpen={mockFunction} />
+        <DeleteTeam
+          isOpen
+          id={testTeamId.networkError}
+          setIsOpen={mockFunction}
+        />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete team' }));

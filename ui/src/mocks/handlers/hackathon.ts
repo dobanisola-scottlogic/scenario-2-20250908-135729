@@ -1,71 +1,72 @@
-import { HttpResponse, PathParams, http } from 'msw';
+import { PathParams, http } from 'msw';
 import { baseUrl } from '../../api/api';
 import { Hackathon } from '../../interfaces/Hackathon';
+import {
+  testHackathonBody,
+  testHackathonId,
+  testHackathonName,
+  validTeamCredentials,
+} from '../test-data/hackathon';
+import {
+  badRequestResponse,
+  errorResponse,
+  jsonOkResponse,
+  noContentResponse,
+} from './utils';
 
-const testHackathonBody = {
-  id: 'test-id',
-  name: 'Test Hackathon',
-  games: [],
-  teams: [],
-  currentMilestoneClassName: 'com.scottlogic.hackathon.bots.Milestone1Bot',
-  currentMilestoneMap: 'Easy',
-};
+const hackathonEndpoint = baseUrl + '/hackathon';
 
 export const handlers = [
   http.post<PathParams<string>, Hackathon>(
-    baseUrl + '/hackathon',
+    hackathonEndpoint,
     async ({ request }) => {
       const requestData = await request.json();
       const hackathonName = requestData.name;
 
-      if (hackathonName === 'Test Hackathon') {
-        return HttpResponse.json(testHackathonBody);
-      } else if (hackathonName === 'Bad Request Hackathon') {
-        return new HttpResponse(null, {
-          status: 400,
-        });
-      } else if (hackathonName === 'Error Hackathon') {
-        return HttpResponse.error();
+      if (hackathonName === testHackathonName.valid) {
+        return jsonOkResponse(testHackathonBody);
+      } else if (hackathonName === testHackathonName.badRequest) {
+        return badRequestResponse();
+      } else if (hackathonName === testHackathonName.networkError) {
+        return errorResponse();
       }
     }
   ),
-  http.delete(baseUrl + '/hackathon/test-id', () => {
-    return new HttpResponse(null, { status: 204 });
+  http.delete(`${hackathonEndpoint}/${testHackathonId.valid}`, () => {
+    return noContentResponse();
   }),
-  http.delete(baseUrl + '/hackathon/400', () => {
-    return new HttpResponse(null, {
-      status: 400,
-    });
+  http.delete(`${hackathonEndpoint}/${testHackathonId.badRequest}`, () => {
+    return badRequestResponse();
   }),
-  http.delete(baseUrl + '/hackathon/500', () => {
-    return HttpResponse.error();
+  http.delete(`${hackathonEndpoint}/${testHackathonId.networkError}`, () => {
+    return errorResponse();
   }),
-  http.get(baseUrl + '/hackathon/test-id', () => {
-    return HttpResponse.json(testHackathonBody);
+  http.get(`${hackathonEndpoint}/${testHackathonId.valid}`, () => {
+    return jsonOkResponse(testHackathonBody);
   }),
-  http.get(baseUrl + '/hackathon/not-found-id', () => {
-    return new HttpResponse();
+  http.get(`${hackathonEndpoint}/${testHackathonId.notFound}`, () => {
+    return noContentResponse();
   }),
-  http.put(baseUrl + '/hackathon/test-id', () => {
-    return HttpResponse.json(testHackathonBody);
+  http.put(`${hackathonEndpoint}/${testHackathonId.valid}`, () => {
+    return jsonOkResponse(testHackathonBody);
   }),
-  http.get(baseUrl + '/hackathon', () => {
-    return HttpResponse.json([testHackathonBody]);
+  http.get(hackathonEndpoint, () => {
+    return jsonOkResponse([testHackathonBody]);
   }),
-  http.get(baseUrl + '/hackathon/team', ({ request }) => {
+  http.get(`${hackathonEndpoint}/team`, ({ request }) => {
     const authorizationHeader = request.headers.get('Authorization');
 
-    if (authorizationHeader === 'Basic team') {
-      return HttpResponse.json(testHackathonBody);
+    if (authorizationHeader === validTeamCredentials.authorizationHeader) {
+      return jsonOkResponse(testHackathonBody);
     } else {
-      return HttpResponse.error();
+      return errorResponse();
     }
   }),
 ];
 
 export const getHackathonsNetworkErrorResponseHandler = http.get(
-  baseUrl + '/hackathon',
+  hackathonEndpoint,
   () => {
-    return HttpResponse.error();
+    return errorResponse();
   }
 );

@@ -1,32 +1,28 @@
-import { HttpResponse, http } from 'msw';
+import { http } from 'msw';
 import { baseUrl } from '../../api/api';
-import { UserRole } from '../../enums/UserRole';
+import {
+  loginResponse,
+  networkErrorLoginCredentials,
+  successfulLoginCredentials,
+} from '../test-data/login';
+import { errorResponse, jsonOkResponse, unauthorizedResponse } from './utils';
 
-const loginResponse = {
-  role: UserRole.ADMIN,
-  name: 'admin',
-  admin: true,
-  team: false,
-};
+const loginEndpoint = baseUrl + '/login';
 
 export const handlers = [
-  http.post(baseUrl + '/login', ({ request }) => {
+  http.post(loginEndpoint, ({ request }) => {
     const authorizationHeader = request.headers.get('Authorization');
 
-    if (authorizationHeader === 'Basic ' + btoa('testusername:testpassword')) {
-      return HttpResponse.json(loginResponse);
-    } else if (
-      authorizationHeader ===
-      'Basic ' + btoa('networkerror:networkerror')
+    if (
+      authorizationHeader === successfulLoginCredentials.authorizationHeader
     ) {
-      return HttpResponse.error();
+      return jsonOkResponse(loginResponse);
+    } else if (
+      authorizationHeader === networkErrorLoginCredentials.authorizationHeader
+    ) {
+      return errorResponse();
     } else {
-      return new HttpResponse(
-        'Credentials are required to access this resource.',
-        {
-          status: 401,
-        }
-      );
+      return unauthorizedResponse();
     }
   }),
 ];

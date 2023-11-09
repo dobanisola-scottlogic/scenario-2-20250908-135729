@@ -2,11 +2,22 @@ import '@testing-library/jest-dom';
 
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
+import {
+  testHackathonBody,
+  testHackathonId,
+  testHackathonName,
+} from '../../mocks/test-data/hackathon';
+import { removeMilestoneBotPrefix } from '../../utils/milestone-utils';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateUpdateHackathon from './CreateUpdateHackathon';
 
 describe('Create Update Hackathon Popup Component', () => {
   const mockFunction = () => null;
+  const hackathonName = testHackathonBody.name;
+  const hackathonMilestoneBot = removeMilestoneBotPrefix(
+    testHackathonBody.currentMilestoneClassName
+  );
+  const hackathonMap = testHackathonBody.currentMilestoneMap;
 
   describe('Create Hackathon', () => {
     describe('When the create Hackathon popup is opened', () => {
@@ -37,7 +48,9 @@ describe('Create Update Hackathon Popup Component', () => {
         const textInput = screen.getByRole('textbox', {
           name: 'Hackathon name',
         });
-        fireEvent.change(textInput, { target: { value: 'Test Hackathon' } });
+        fireEvent.change(textInput, {
+          target: { value: testHackathonName.valid },
+        });
 
         expect(
           screen.getByRole('button', { name: 'Add a new hackathon' })
@@ -76,7 +89,9 @@ describe('Create Update Hackathon Popup Component', () => {
         const textInput = screen.getByRole('textbox', {
           name: 'Hackathon name',
         });
-        fireEvent.change(textInput, { target: { value: 'Test Hackathon' } });
+        fireEvent.change(textInput, {
+          target: { value: testHackathonName.valid },
+        });
 
         fireEvent.click(
           screen.getByRole('button', { name: 'Add a new hackathon' })
@@ -99,7 +114,9 @@ describe('Create Update Hackathon Popup Component', () => {
         const textInput = screen.getByRole('textbox', {
           name: 'Hackathon name',
         });
-        fireEvent.change(textInput, { target: { value: 'Error Hackathon' } });
+        fireEvent.change(textInput, {
+          target: { value: testHackathonName.networkError },
+        });
 
         fireEvent.click(
           screen.getByRole('button', { name: 'Add a new hackathon' })
@@ -120,7 +137,7 @@ describe('Create Update Hackathon Popup Component', () => {
           name: 'Hackathon name',
         });
         fireEvent.change(textInput, {
-          target: { value: 'Bad Request Hackathon' },
+          target: { value: testHackathonName.badRequest },
         });
         fireEvent.click(
           screen.getByRole('button', { name: 'Add a new hackathon' })
@@ -137,7 +154,11 @@ describe('Create Update Hackathon Popup Component', () => {
   describe('Update Hackathon', () => {
     it('renders the update hackathon popup', () => {
       renderWithRouterAndProvider(
-        <CreateUpdateHackathon id='test-id' isOpen setIsOpen={mockFunction} />
+        <CreateUpdateHackathon
+          id={testHackathonId.valid}
+          isOpen
+          setIsOpen={mockFunction}
+        />
       );
 
       expect(screen.getByText('Edit hackathon')).toBeInTheDocument();
@@ -151,7 +172,11 @@ describe('Create Update Hackathon Popup Component', () => {
 
     it('renders the update hackathon popup with the correct data', async () => {
       renderWithRouterAndProvider(
-        <CreateUpdateHackathon id='test-id' isOpen setIsOpen={mockFunction} />
+        <CreateUpdateHackathon
+          id={testHackathonId.valid}
+          isOpen
+          setIsOpen={mockFunction}
+        />
       );
 
       // Wait for get hackathon load to complete
@@ -163,15 +188,15 @@ describe('Create Update Hackathon Popup Component', () => {
 
       // Loads the correct data
       expect(screen.getByLabelText('Hackathon name')).toHaveValue(
-        'Test Hackathon'
+        hackathonName
       );
       expect(screen.getByTestId('current-milestone-bot')).toHaveTextContent(
-        'Milestone1Bot'
+        hackathonMilestoneBot
       );
-      expect(screen.getByTestId('game-map')).toHaveTextContent('Easy');
+      expect(screen.getByTestId('game-map')).toHaveTextContent(hackathonMap);
 
       const milestoneBotInput = screen.getByRole('button', {
-        name: 'Milestone1Bot',
+        name: hackathonMilestoneBot,
       });
       fireEvent.mouseDown(milestoneBotInput);
 
@@ -187,7 +212,11 @@ describe('Create Update Hackathon Popup Component', () => {
     describe('When the edit button is pressed', () => {
       it('calls the edit hackathon function successfully', async () => {
         const { store } = renderWithRouterAndProvider(
-          <CreateUpdateHackathon id='test-id' isOpen setIsOpen={mockFunction} />
+          <CreateUpdateHackathon
+            id={testHackathonId.valid}
+            isOpen
+            setIsOpen={mockFunction}
+          />
         );
 
         // Wait for get hackathon load to complete
@@ -213,7 +242,7 @@ describe('Create Update Hackathon Popup Component', () => {
       it('disables update when the hackathon does not load correctly or is not found', async () => {
         renderWithRouterAndProvider(
           <CreateUpdateHackathon
-            id='not-found-id'
+            id={testHackathonId.notFound}
             isOpen
             setIsOpen={mockFunction}
           />

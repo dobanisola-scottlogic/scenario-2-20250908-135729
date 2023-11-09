@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { testHackathonId } from '../../mocks/test-data/hackathon';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import DeleteHackathon from './DeleteHackathon';
 
@@ -9,7 +10,11 @@ describe('Delete Hackathon Popup Component', () => {
   describe('When the delete Hackathon popup is opened', () => {
     it('renders the delete hackathon popup', () => {
       renderWithRouterAndProvider(
-        <DeleteHackathon isOpen id='test-id' setIsOpen={mockFunction} />
+        <DeleteHackathon
+          isOpen
+          id={testHackathonId.valid}
+          setIsOpen={mockFunction}
+        />
       );
 
       expect(
@@ -28,7 +33,11 @@ describe('Delete Hackathon Popup Component', () => {
   describe('When the delete button is pressed', () => {
     it('calls the delete hackathon function successfully', async () => {
       const { store } = renderWithRouterAndProvider(
-        <DeleteHackathon isOpen id='test-id' setIsOpen={mockFunction} />
+        <DeleteHackathon
+          isOpen
+          id={testHackathonId.valid}
+          setIsOpen={mockFunction}
+        />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete hackathon' }));
@@ -44,7 +53,11 @@ describe('Delete Hackathon Popup Component', () => {
 
     it('displays an error when the delete hackathon function returns unsuccessfully with a bad request', async () => {
       renderWithRouterAndProvider(
-        <DeleteHackathon isOpen id='400' setIsOpen={mockFunction} />
+        <DeleteHackathon
+          isOpen
+          id={testHackathonId.badRequest}
+          setIsOpen={mockFunction}
+        />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete hackathon' }));
@@ -57,7 +70,11 @@ describe('Delete Hackathon Popup Component', () => {
 
     it('displays an error when the delete hackathon function returns unsuccessfully with an internal server error', async () => {
       renderWithRouterAndProvider(
-        <DeleteHackathon isOpen id='500' setIsOpen={mockFunction} />
+        <DeleteHackathon
+          isOpen
+          id={testHackathonId.networkError}
+          setIsOpen={mockFunction}
+        />
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Delete hackathon' }));

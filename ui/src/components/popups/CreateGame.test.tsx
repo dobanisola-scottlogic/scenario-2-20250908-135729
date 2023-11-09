@@ -14,10 +14,11 @@ import {
   postGameInternalServerErrorResponseHandler,
 } from '../../mocks/handlers/game';
 import { server } from '../../mocks/server';
+import { testHackathonId } from '../../mocks/test-data/hackathon';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateGame from './CreateGame';
 
-const hackathonId = 'Hackathon1';
+const hackathonId = testHackathonId.valid;
 
 const selectAndVerifyDropDownValue = async (
   selectLabelRegExp: RegExp,

@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 
 import { useGetHackathonGamesQuery } from '../../api/api';
 import { colours } from '../../theme';
+import { getGameTimeString } from '../../utils/game-utils';
 
 const gameViewerBaseUrl = import.meta.env.VITE_GAME_VIEWER_BASE_URL;
 
@@ -25,20 +26,6 @@ const GameResultListTable = ({ hackathonId }: GameResultListTableProps) => {
     isLoading,
     isError,
   } = useGetHackathonGamesQuery(hackathonId);
-
-  const getGameTimeString = (gameTimeMilliseconds: number | null): string => {
-    if (!gameTimeMilliseconds) {
-      return '';
-    }
-
-    const locale = 'en-GB';
-    const date = new Date(gameTimeMilliseconds);
-
-    const weekday = date.toLocaleString(locale, { weekday: 'short' });
-    const time = date.toLocaleTimeString(locale);
-
-    return `${weekday}, ${time}`;
-  };
 
   return (
     <>
