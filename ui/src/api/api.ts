@@ -9,6 +9,8 @@ import { Milestone } from '../interfaces/Milestone';
 import { RootState } from '../store';
 import { Team } from './../interfaces/Team';
 
+export const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 enum RequestType {
   DELETE = 'DELETE',
   GET = 'GET',
@@ -24,7 +26,7 @@ const removeMilestoneBotPrefix = (milestoneBotClassName: string) => {
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL,
+    baseUrl: baseUrl,
     prepareHeaders: (headers, { getState }) => {
       const credentials: string | null = (getState() as RootState).auth
         .credentials;

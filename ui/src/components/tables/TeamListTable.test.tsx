@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 
-import { getTeamsNetworkErrorResponseHandler } from '../../mocks/handlers';
+import { getTeamsNetworkErrorResponseHandler } from '../../mocks/handlers/team';
 import { server } from '../../mocks/server';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import TeamListTable from './TeamListTable';

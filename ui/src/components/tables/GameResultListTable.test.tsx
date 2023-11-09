@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 
-import { getGameResultsNetworkErrorResponseHandler } from '../../mocks/handlers';
+import { getGameResultsNetworkErrorResponseHandler } from '../../mocks/handlers/game';
 import { server } from '../../mocks/server';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import GameResultListTable from './GameResultListTable';

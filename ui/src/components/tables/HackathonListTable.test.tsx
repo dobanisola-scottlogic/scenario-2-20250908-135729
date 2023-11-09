@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 
-import { getHackathonsNetworkErrorResponseHandler } from '../../mocks/handlers';
+import { getHackathonsNetworkErrorResponseHandler } from '../../mocks/handlers/hackathon';
 import { server } from '../../mocks/server';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import HackathonListTable from './HackathonListTable';

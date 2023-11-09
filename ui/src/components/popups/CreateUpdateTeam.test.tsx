@@ -7,7 +7,7 @@ import {
   postTeamInternalServerErrorResponseHandler,
   putTeamBadRequestResponseHandler,
   putTeamInternalServerErrorResponseHandler,
-} from '../../mocks/handlers';
+} from '../../mocks/handlers/team';
 import { server } from '../../mocks/server';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateUpdateTeam from './CreateUpdateTeam';

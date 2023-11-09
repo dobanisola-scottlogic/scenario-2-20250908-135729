@@ -12,7 +12,7 @@ import userEvent from '@testing-library/user-event';
 import {
   postGameBadRequestResponseHandler,
   postGameInternalServerErrorResponseHandler,
-} from '../../mocks/handlers';
+} from '../../mocks/handlers/game';
 import { server } from '../../mocks/server';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
 import CreateGame from './CreateGame';
