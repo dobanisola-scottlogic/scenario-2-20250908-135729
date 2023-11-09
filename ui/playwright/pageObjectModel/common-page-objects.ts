@@ -70,7 +70,17 @@ export class CommonPageObjects {
   }
 
   async confirmValidationMessageExistsForTheField(field: string) {
-    const fieldValidationMessage = `${field} name must not be empty or include special characters`;
+    let fieldValidationMessage = '';
+    switch (field) {
+      case 'Team': {
+        fieldValidationMessage = `Team name must not be empty, include special characters or be a prohibited name`;
+        break;
+      }
+      case 'Hackathon': {
+        fieldValidationMessage = `Hackathon name must not be empty or include special characters`;
+        break;
+      }
+    }
     await expect(
       this.fieldValidationText({ fieldValidationMessage })
     ).toBeVisible();

@@ -12,7 +12,7 @@ import { server } from '../../mocks/server';
 import { testHackathonId } from '../../mocks/test-data/hackathon';
 import { testTeamBody, testTeamId } from '../../mocks/test-data/team';
 import { renderWithRouterAndProvider } from '../../utils/test-utils';
-import CreateUpdateTeam from './CreateUpdateTeam';
+import CreateUpdateTeam, { teamNameErrorMsg } from './CreateUpdateTeam';
 
 describe('CreateUpdateTeam Popup Component', () => {
   const mockFunction = () => null;
@@ -95,11 +95,32 @@ describe('CreateUpdateTeam Popup Component', () => {
       fireEvent.change(passwordInput, { target: { value: teamPassword } });
 
       expect(submitButton).toBeDisabled();
-      expect(
-        screen.getByText(
-          'Team name must not be empty or include special characters'
-        )
-      ).toBeInTheDocument();
+      expect(screen.getByText(teamNameErrorMsg)).toBeInTheDocument();
+    });
+
+    it('disables the add hackathon button if the name "admin" is entered', () => {
+      renderWithRouterAndProvider(
+        <CreateUpdateTeam
+          isOpen
+          hackathonId={hackathonId}
+          setIsOpen={mockFunction}
+        />
+      );
+
+      expect(screen.getByText('Add a new team')).toBeInTheDocument();
+
+      const nameInput = screen.getByRole('textbox', { name: 'Name' });
+      const passwordInput = screen.getByTestId('password-input');
+      const submitButton = screen.getByRole('button', { name: 'Add team' });
+
+      expect(submitButton).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+
+      fireEvent.change(nameInput, { target: { value: 'admin' } });
+      fireEvent.change(passwordInput, { target: { value: teamPassword } });
+
+      expect(submitButton).toBeDisabled();
+      expect(screen.getByText(teamNameErrorMsg)).toBeInTheDocument();
     });
   });
 

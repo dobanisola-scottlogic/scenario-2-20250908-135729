@@ -27,6 +27,9 @@ interface CreateUpdateTeamProps extends PopupProps {
   hackathonId: string;
 }
 
+export const teamNameErrorMsg =
+  'Team name must not be empty, include special characters or be a prohibited name';
+
 const CreateUpdateTeam = ({
   isOpen,
   id,
@@ -59,7 +62,10 @@ const CreateUpdateTeam = ({
     }
   }, [isOpen, team]);
 
-  const teamNameShowError = () => teamName.length > 0 && !isValidName(teamName);
+  const prohibitedTeamNames = ['admin'];
+
+  const teamNameShowError = () =>
+    teamName.length > 0 && !isValidName(teamName, prohibitedTeamNames);
 
   const handleClose = () => {
     if (!isEditing) {
@@ -163,11 +169,7 @@ const CreateUpdateTeam = ({
             <TextField
               autoComplete='username'
               error={teamNameShowError()}
-              helperText={
-                teamNameShowError()
-                  ? 'Team name must not be empty or include special characters'
-                  : null
-              }
+              helperText={teamNameShowError() ? teamNameErrorMsg : null}
               fullWidth
               label='Name'
               sx={{ m: 1, mx: 'auto' }}
@@ -193,7 +195,9 @@ const CreateUpdateTeam = ({
 
               <Button
                 disabled={
-                  !teamPassword?.trim() || !isValidName(teamName) || isLoading
+                  !teamPassword?.trim() ||
+                  !isValidName(teamName, prohibitedTeamNames) ||
+                  isLoading
                 }
                 type='submit'
               >

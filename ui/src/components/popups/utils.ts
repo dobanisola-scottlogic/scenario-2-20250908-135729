@@ -10,5 +10,17 @@ export const handleEnterKeyPress = (
 
 const alphaNumericOrSpaceRegex = /^[A-Za-z0-9 ]+$/i;
 
-export const isValidName = (name: string) =>
-  Boolean(name.trim() && name?.match(alphaNumericOrSpaceRegex));
+export const isValidName = (name: string, prohibitedNames?: string[]) => {
+  const isAllowedCharactersOnly = Boolean(
+    name.trim() && name?.match(alphaNumericOrSpaceRegex)
+  );
+
+  if (prohibitedNames) {
+    const prohibitedNameMatches =
+      prohibitedNames.filter(
+        (prohibitedName) => prohibitedName.toLowerCase() === name.toLowerCase()
+      ).length > 0;
+    return isAllowedCharactersOnly && !prohibitedNameMatches;
+  }
+  return isAllowedCharactersOnly;
+};

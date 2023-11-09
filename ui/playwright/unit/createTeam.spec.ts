@@ -2,6 +2,10 @@ import test from '../fixtures';
 import { HackathonHelpers } from '../helpers';
 
 const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
+invalidCharacterErrors.push({
+  errorReason: 'a prohibited name',
+  invalidName: 'aDmIn',
+});
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 let teamName = '';
