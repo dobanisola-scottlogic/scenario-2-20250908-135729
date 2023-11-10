@@ -34,7 +34,7 @@ npm run build
 
 ## Running with the backend
 
-Run the backend via the Gradle run task (`./gradlew run`). Running this in the root directory will bundle the UI and server together on [localhost:8080/application](http://localhost:8080/application). Currently, this loads the old viewer. The new UI can be accessed at [localhost:8080/application/ui](http://localhost:8080/application/ui), and the API at [localhost:8080/application/api](http://localhost:8080/application/api). Running the task in the server directory will run the API only.
+Run the backend via the Gradle application run task. Running the task in the root directory will bundle the UI and server together on [localhost:8080/application](http://localhost:8080/application). Currently, this loads the old viewer. The new UI can be accessed at [localhost:8080/application/ui](http://localhost:8080/application/ui), and the API at [localhost:8080/application/api](http://localhost:8080/application/api). Running the task in the server directory will run the API only.
 
 ### CORS errors
 
