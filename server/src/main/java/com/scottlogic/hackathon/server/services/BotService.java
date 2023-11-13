@@ -48,10 +48,17 @@ public class BotService {
   }
 
   public void addRemoteTeamBot(final Team team) {
-    logger.debug("Adding remote team bot:{}", team.getName());
+    String teamName = team.getName();
+    logger.debug("Adding remote team bot: {}", teamName);
+
+    if (remoteBotStore.getConnector(teamName).isPresent()) {
+      logger.debug("Team: {} already connected.", teamName);
+      return;
+    }
+
     RemoteBotConnector remoteBotConnector = new RemoteBotConnector();
-    remoteBotConnector.waitForConnect(team.getName());
     remoteBotStore.save(team, remoteBotConnector);
+    remoteBotConnector.waitForConnect(teamName);
     logger.debug(
         "Team: {} -> connection status {}",
         remoteBotConnector.getTeam(),

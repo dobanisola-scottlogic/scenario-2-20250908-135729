@@ -33,7 +33,6 @@ public class AbstractStore<T> {
   public T saveOrUpdate(final T entity) {
     try {
       currentSession().saveOrUpdate(checkNotNull(entity));
-      currentSession().flush();
       return entity;
     } catch (final HibernateException ex) {
       logger.error(String.format("Error adding %s to database", entityClass.getName()), ex);
@@ -45,7 +44,6 @@ public class AbstractStore<T> {
     final T entity = get(id);
     if (entity != null) {
       currentSession().delete(entity);
-      currentSession().flush();
       return true;
     } else {
       return false;

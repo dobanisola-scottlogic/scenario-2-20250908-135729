@@ -50,8 +50,12 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
 
   void save(Team team, RemoteBotConnector remote) {
     remote.addRemoteBotListener(this);
-    teamBotMap.put(remote.getTeam(), remote);
+    teamBotMap.put(team.getName(), remote);
     remote.getRemoteBot().ifPresent(bot -> storeTeamBot(team, bot));
+  }
+
+  public Optional<RemoteBotConnector> getConnector(String teamName) {
+    return ofNullable(teamBotMap.get(teamName));
   }
 
   public Optional<? extends Bot> get(Id id) {
@@ -101,9 +105,6 @@ public class RemoteBotStore implements ChangeEventListener<RemoteBotChangeEvent>
     try {
       lock.lock();
 
-      // HAC-218 There might be multiple change event listeners added
-      // for a single listening socket, which potentially results in
-      // this method being called with with the RemoteBot multiple times
       TeamBot existingTeamBot = botStore.getByTeamId(team.getId());
       if (existingTeamBot != null && existingTeamBot.getId().equals(bot.getId())) {
         logger.debug("storeTeamBot {1} {2} -> no change", team.getName(), team.getId());
