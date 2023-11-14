@@ -14,7 +14,6 @@ test.beforeEach(
   }) => {
     hackathonName = 'deleteHackathon' + uniqueHackathonId;
     await page.goto('/');
-    await page.getByText('Hackathon').click();
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();

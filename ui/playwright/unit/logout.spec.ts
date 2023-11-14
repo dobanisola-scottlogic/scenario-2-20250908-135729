@@ -27,6 +27,7 @@ test('team can successfully log out', async ({
   createTeamPage,
   teamDashboardPage,
   commonPageObjects,
+  hackathonListPage,
 }) => {
   hackathonName = teamName =
     'teamLogout' + uniqueHackathonId.generateRandomString;
@@ -40,4 +41,5 @@ test('team can successfully log out', async ({
   await teamDashboardPage.verifyLoginSuccess();
   await commonPageObjects.logoutOfAccountWithName(teamName);
   await login.verifyLogoutSuccess();
+  await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });

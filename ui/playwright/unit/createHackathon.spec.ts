@@ -9,7 +9,6 @@ test.beforeEach(
   async ({ login, page, hackathonListPage, createHackathonPage }) => {
     hackathonName = 'createHackathon' + uniqueHackathonId;
     await page.goto('/');
-    await page.getByText('Hackathon').click();
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();
@@ -22,10 +21,11 @@ test.afterEach(async ({ hackathonListPage }) => {
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
-test('admin can create a new hackathon', async ({
+test('admin can create a new hackathon and verify default map and bot', async ({
   createHackathonPage,
   hackathonListPage,
   commonPageObjects,
+  hackathonDetailsPage,
 }) => {
   await createHackathonPage.inputHackathonName(hackathonName);
   await createHackathonPage.addNewHackathon();
@@ -39,6 +39,11 @@ test('admin can create a new hackathon', async ({
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
   await hackathonListPage.verifyHackathonDetails(
     hackathonName,
+    'Easy',
+    'Milestone1Bot'
+  );
+  await hackathonListPage.openTheHackathonPage(hackathonName);
+  await hackathonDetailsPage.verifyMilestoneInformationHasDetails(
     'Easy',
     'Milestone1Bot'
   );

@@ -42,9 +42,10 @@ test('verify dropdown lists in pop up', async ({ editHackathonPage }) => {
   await editHackathonPage.verifyMilestoneMapList();
 });
 
-test('admin can edit a hackathon', async ({
+test('admin can edit a hackathon and see it be updated in the hackathon details page', async ({
   editHackathonPage,
   hackathonListPage,
+  hackathonDetailsPage,
 }) => {
   await editHackathonPage.editMilestoneBot();
   await editHackathonPage.clickBotName('Milestone2Bot');
@@ -56,6 +57,11 @@ test('admin can edit a hackathon', async ({
   );
   await hackathonListPage.verifyHackathonDetails(
     hackathonName,
+    'Hard',
+    'Milestone2Bot'
+  );
+  await hackathonListPage.openTheHackathonPage(hackathonName);
+  await hackathonDetailsPage.verifyMilestoneInformationHasDetails(
     'Hard',
     'Milestone2Bot'
   );

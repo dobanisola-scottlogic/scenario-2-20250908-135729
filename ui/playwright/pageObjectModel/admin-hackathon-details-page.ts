@@ -20,6 +20,13 @@ export class HackathonDetailsPage {
     hackathonName: string;
   }) => Locator;
   readonly hackathonPageLink: Locator;
+  readonly milestoneInformationText: ({
+    map,
+    milestone,
+  }: {
+    map: string;
+    milestone: string;
+  }) => Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -46,6 +53,8 @@ export class HackathonDetailsPage {
     this.hackathonLink = ({ hackathonName }) =>
       page.getByRole('link', { name: `${hackathonName}` });
     this.hackathonPageLink = page.getByRole('link', { name: 'Hackathons' });
+    this.milestoneInformationText = ({ map, milestone }) =>
+      page.getByText(`Current Milestone: Map: ${map} - Bot: ${milestone}`);
   }
 
   async openCreateTeamPopup() {
@@ -97,5 +106,11 @@ export class HackathonDetailsPage {
   // below can be deleted when bug HAC-202 has been completed
   async verifySecondGameExists(gameTitle: string) {
     await expect(this.gameTitle.nth(1)).toContainText(gameTitle);
+  }
+
+  async verifyMilestoneInformationHasDetails(map: string, milestone: string) {
+    await expect(
+      this.milestoneInformationText({ map: map, milestone: milestone })
+    ).toBeVisible();
   }
 }
