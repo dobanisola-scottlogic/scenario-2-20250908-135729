@@ -13,7 +13,7 @@ resource "aws_scheduler_schedule" "cloud9_start_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(${var.start_schedule})"
+  schedule_expression = "cron(${var.start_schedule})"
 
   target {
     arn      = "arn:aws:scheduler:::aws-sdk:ec2:startInstances"
@@ -33,7 +33,7 @@ resource "aws_scheduler_schedule" "cloud9_stop_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(${var.stop_schedule})"
+  schedule_expression = "cron(${var.stop_schedule})"
 
   target {
     arn      = "arn:aws:scheduler:::aws-sdk:ec2:stopInstances"

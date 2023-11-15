@@ -33,5 +33,5 @@ module "rds_schedule" {
   rds_identifier = aws_db_instance.database.identifier
   is_cluster     = false
 
-  depends_on = [ aws_db_instance.database ]
+  depends_on = [aws_db_instance.database]
 }

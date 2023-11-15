@@ -1,23 +1,28 @@
 plugins {
-    id 'groovy'
+    id 'base'
+    id('org.jetbrains.gradle.terraform') version '1.5.2'
 }
 
-import org.apache.tools.ant.DirectoryScanner
+terraform {
+    version = '1.5.2'
 
-
-task up(type: Exec) {
-    dependsOn  ':server:dockerBuild'
-    workingDir = projectDir
-    commandLine 'docker-compose', 'up', '-d', '--build'
+    sourceSets {
+        main {
+            executeApplyOnlyIf { System.getenv('ENABLE_TF_APPLY') == 'true' }
+            executeDestroyOnlyIf { System.getenv('ENABLE_TF_DESTROY') == 'true' }
+        }
+    }
 }
 
-task down(type: Exec) {
-    workingDir = projectDir
-    commandLine 'docker-compose', 'down'
+task terraformFmt(type: Exec) {
+    commandLine('terraform', '-chdir=src/main/terraform', 'fmt', '-recursive')
 }
-up.mustRunAfter down
 
-task logs(type: Exec) {
-    workingDir = projectDir
-    commandLine 'docker-compose', 'logs'
+task terraformFmtCheck(type: Exec) {
+    commandLine('terraform', '-chdir=src/main/terraform', 'fmt', '-recursive', '-check')
+}
+check.dependsOn terraformFmtCheck
+
+task terraformValidate(type: Exec) {
+    commandLine 'terraform', '-chdir=src/main/terraform', 'validate'
 }
