@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.*;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
@@ -49,8 +49,14 @@ public class HackathonResource {
   @Timed
   @RolesAllowed(Authorizer.ROLE_ADMIN)
   @JsonView(Views.Details.class)
-  public Hackathon createHackathon(@Auth final User user, final Hackathon hackathon) {
-    return hackathonService.createHackathon(user, hackathon);
+  public Response createHackathon(@Auth final User user, final Hackathon hackathon, @Context UriInfo uriInfo) {
+    Hackathon record =  hackathonService.createHackathon(user, hackathon);
+
+    UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+
+    uriBuilder.path(record.getId());
+
+    return Response.created(uriBuilder.build()).entity(record).build();
   }
 
   @PUT
@@ -60,18 +66,24 @@ public class HackathonResource {
   @RolesAllowed(Authorizer.ROLE_ADMIN)
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Hackathon updateHackathon(
-      @PathParam("id") final String id, final HackathonUpdate hackathonUpdate) {
-    return hackathonService.updateHackathon(id, hackathonUpdate);
+  public Response updateHackathon(@PathParam("id") final String id, final HackathonUpdate hackathonUpdate) throws IllegalArgumentException {
+    Hackathon hackathon = hackathonService.updateHackathon(id, hackathonUpdate);
+
+    return Response.ok(hackathon).build();
   }
 
   @GET
   @UnitOfWork
   @Timed
   @JsonView(Views.List.class)
-  public List<Hackathon> getHackathons() {
+  public Response getHackathons() {
     List<Hackathon> hackathons = hackathonService.getHackathons();
-    return hackathons;
+
+    if (hackathons == null || hackathons.isEmpty()) {
+      return Response.noContent().build();
+    }
+
+    return Response.ok(hackathons).build();
   }
 
   @GET
@@ -79,9 +91,14 @@ public class HackathonResource {
   @Timed
   @Path("/{id}")
   @JsonView(Views.Details.class)
-  public Hackathon getHackathon(@NotNull @PathParam("id") final String id) {
+  public Response getHackathon(@NotNull @PathParam("id") final String id) {
     Hackathon hackathon = hackathonService.getHackathon(id);
-    return hackathon;
+
+    if (hackathon == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(hackathon).build();
   }
 
   @GET
@@ -90,10 +107,16 @@ public class HackathonResource {
   @Path("/team")
   @JsonView(Views.Details.class)
   @RolesAllowed(Authorizer.ROLE_TEAM)
-  public Hackathon getHackathonForTeam(@Auth final User user) {
+  public Response getHackathonForTeam(@Auth final User user) {
     Team team = teamService.getTeam(user.getName());
+
     Hackathon hackathon = hackathonService.getHackathon(team.getHackathonId());
-    return hackathon;
+
+    if (hackathon == null) {
+      return Response.noContent().build();
+    }
+
+    return Response.ok(hackathon).build();
   }
 
   @DELETE
@@ -101,15 +124,23 @@ public class HackathonResource {
   @Timed
   @Path("/{id}")
   @RolesAllowed(Authorizer.ROLE_ADMIN)
-  public void deleteHackathon(@PathParam("id") final String id) {
+  public Response deleteHackathon(@PathParam("id") final String id) {
+    // These actions should be handled in the service and wrapped in a transaction:
     List<Team> teamsToDelete = teamService.getTeamsByHackathon(id);
+
     for (Team team : teamsToDelete) {
       teamService.deleteTeam(team.getId());
     }
+
     List<GameResult> gameResultsToDelete = gameService.getGameResultsByHackathon(id);
+
     for (GameResult gameResult : gameResultsToDelete) {
       gameService.deleteGameResult(gameResult.getId());
     }
+
     hackathonService.deleteHackathon(id);
+
+    // This action should return 204 No Content:
+    return Response.noContent().build();
   }
 }

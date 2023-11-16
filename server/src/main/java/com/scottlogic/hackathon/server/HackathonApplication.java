@@ -105,6 +105,9 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
                     .setAuthorizer(new Authorizer())
                     .setRealm("Restricted Access")
                     .buildAuthFilter()));
+
+    environment.jersey().register(CustomExceptionMapper.class);
+
     environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
     environment.jersey().register(RolesAllowedDynamicFeature.class);
 

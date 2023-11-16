@@ -156,6 +156,10 @@ export const api = createApi({
         method: RequestType.GET,
       }),
       transformResponse: (response: Hackathon[]) => {
+        if (!response?.length) {
+          return [];
+        }
+
         return response.map((hackathon) => ({
           ...hackathon,
           readableCurrentMilestoneClassName: removeMilestoneBotPrefix(
