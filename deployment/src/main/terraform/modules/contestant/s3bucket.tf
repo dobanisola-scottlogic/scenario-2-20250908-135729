@@ -24,9 +24,14 @@ resource "aws_s3_bucket_acl" "contestant_bucket_acl" {
 
 # Populate the S3 bucket with the each of the contestant archives
 resource "aws_s3_object" "contestant_bucket_objects" {
-  for_each    = toset(var.contestants)
+  for_each = {
+    for c in var.contestants : c => {
+      name = "${c}-contestant.tgz"
+      path = "${path.root}/../../../../${c}-contestant/build/${c}-contestant.tgz"
+    }
+  }
   bucket      = aws_s3_bucket.contestant_bucket.id
-  key         = "${each.key}-contestant.tgz"
-  source      = "${path.root}/../../${each.key}-contestant/build/${each.key}-contestant.tgz"
-  source_hash = filemd5("${path.root}/../../${each.key}-contestant/build/${each.key}-contestant.tgz")
+  key         = each.value.name
+  source      = each.value.path
+  source_hash = filemd5(each.value.path)
 }
