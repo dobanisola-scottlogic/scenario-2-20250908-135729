@@ -33,19 +33,19 @@ const PlayerSelect = ({
   );
 
   return (
-    <FormControl sx={commonStyles.spacingStyle} fullWidth>
+    <FormControl
+      fullWidth
+      required={!isOptional}
+      sx={commonStyles.spacingStyle}
+    >
       <InputLabel id={`player-${playerNumber}-select-label`}>
-        {`Select player ${playerNumber} ${
-          isOptional ? '(Optional)' : ''
-        }`.trim()}
+        {`Select player ${playerNumber}`}
       </InputLabel>
 
       <Select
         data-testid={`player-${playerNumber}`}
         id={`player-${playerNumber}`}
-        label={`Select player ${playerNumber} ${
-          isOptional ? '(Optional)' : ''
-        }`.trim()}
+        label={`Select player ${playerNumber}`}
         labelId={`player-${playerNumber}-select-label`}
         value={playerName}
         onChange={(event) => setPlayerName(event.target.value)}

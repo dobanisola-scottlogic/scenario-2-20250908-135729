@@ -140,6 +140,7 @@ const CreateGame = ({ isOpen, hackathonId, setIsOpen }: CreateGameProps) => {
               labelText='Select map'
               mapName={mapName}
               setMapName={setMapName}
+              required
             />
 
             <Box sx={popupStyles.popupBoxStyle}>

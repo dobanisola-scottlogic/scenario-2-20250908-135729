@@ -36,12 +36,16 @@ describe('PlayerSelect', () => {
     expect(screen.getByTestId('player-2')).toBeInTheDocument();
   });
 
+  it('should render the PlayerSelect component label correctly when isOptional is false', () => {
+    renderComponent(false, false, 1);
+
+    expect(screen.getByLabelText('Select player 1 *')).toBeInTheDocument();
+  });
+
   it('should render the PlayerSelect component label correctly when isOptional is true', () => {
     renderComponent(false, true, 1);
 
-    expect(
-      screen.getByLabelText('Select player 1 (Optional)')
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Select player 1')).toBeInTheDocument();
   });
 
   it('should render the PlayerSelect component including with just the milestone bots when include teams is false', async () => {

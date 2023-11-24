@@ -27,11 +27,6 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
-    if (!username?.trim() || !password?.trim()) {
-      setError('Username and password cannot be empty.');
-      return;
-    }
-
     const credentials: string = btoa(username + ':' + password);
     dispatch(setCredentials(credentials));
 
@@ -100,7 +95,11 @@ const Login = () => {
                   {error}
                 </Alert>
               )}
-              <Button type='submit' disabled={isLoading} sx={{ my: 4 }}>
+              <Button
+                type='submit'
+                disabled={isLoading || !password?.trim() || !username?.trim()}
+                sx={{ my: 4 }}
+              >
                 Login
               </Button>
             </Box>

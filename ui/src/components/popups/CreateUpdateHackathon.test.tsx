@@ -187,7 +187,7 @@ describe('Create Update Hackathon Popup Component', () => {
       );
 
       // Loads the correct data
-      expect(screen.getByLabelText('Hackathon name')).toHaveValue(
+      expect(screen.getByLabelText('Hackathon name *')).toHaveValue(
         hackathonName
       );
       expect(screen.getByTestId('current-milestone-bot')).toHaveTextContent(

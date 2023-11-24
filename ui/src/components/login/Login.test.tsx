@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+
 import { UserRole } from '~/enums/UserRole';
 import {
   networkErrorLoginCredentials,
@@ -38,19 +39,6 @@ describe('Login', () => {
       const reduxState = store.getState();
       expect(reduxState.auth.role).toEqual(UserRole.ADMIN);
     });
-  });
-
-  it('handles login with empty credentials correctly', () => {
-    renderWithRouterAndProvider(<Login />);
-    // check whitespace is trimmed from username and password
-    fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
-      target: { value: '   ' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-
-    expect(screen.getByRole('alert').textContent).toContain(
-      'Username and password cannot be empty.'
-    );
   });
 
   it('handles login with invalid credentials correctly', async () => {

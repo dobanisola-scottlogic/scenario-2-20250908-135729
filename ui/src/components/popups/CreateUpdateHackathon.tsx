@@ -164,6 +164,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
               sx={commonStyles.spacingStyle}
               id='outlined-basic'
               label='Hackathon name'
+              required
               variant='outlined'
               value={hackathonName}
               onChange={(e) => setHackathonName(e.target.value)}
@@ -172,7 +173,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
             {/* TODO on HAC-98: bot and map dropdowns should be reimplemented on the create hackathon popup when server functionality has been added on HAC-97 */}
             {isEditing && (
               <>
-                <FormControl sx={commonStyles.spacingStyle} fullWidth>
+                <FormControl fullWidth required sx={commonStyles.spacingStyle}>
                   <InputLabel id='current-milestone-bot-label'>
                     Current milestone bot
                   </InputLabel>
@@ -202,6 +203,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
                 <MapSelect
                   labelText={'Current milestone map'}
                   mapName={milestoneMapName}
+                  required
                   setMapName={setMilestoneMapName}
                 />
               </>

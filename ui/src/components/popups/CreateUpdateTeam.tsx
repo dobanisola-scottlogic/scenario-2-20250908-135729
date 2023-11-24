@@ -174,6 +174,7 @@ const CreateUpdateTeam = ({
               helperText={teamNameShowError() ? teamNameErrorMsg : null}
               fullWidth
               label='Name'
+              required
               sx={commonStyles.spacingStyle}
               value={teamName}
               variant='outlined'
@@ -181,6 +182,7 @@ const CreateUpdateTeam = ({
             />
 
             <PasswordTextField
+              required
               value={teamPassword}
               onChange={(e) => setTeamPassword(e.target.value)}
             />
