@@ -25,3 +25,7 @@ export const unauthorizedResponse = () => {
     status: 401,
   });
 };
+
+export const plainTextOkResponse = (body: string | null) => {
+  return HttpResponse.text(body, { status: 200 });
+};

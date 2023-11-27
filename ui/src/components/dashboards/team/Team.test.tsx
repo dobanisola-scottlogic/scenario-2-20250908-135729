@@ -1,12 +1,17 @@
-import { screen } from '@testing-library/react';
-
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { UserRole } from '~/enums/UserRole';
+import {
+  getConnectedStateConnectedResponseHandler,
+  getConnectedStateWaitingResponseHandler,
+} from '~/mocks/handlers/remoteBot';
+import { server } from '~/mocks/server';
 import {
   testHackathonBody,
   validTeamCredentials,
 } from '~/mocks/test-data/hackathon';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
+
 import Team from './Team';
 
 describe('Team', () => {
@@ -37,7 +42,7 @@ describe('Team', () => {
       )
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
-    expect(screen.getByText('Status: Disconnected')).toBeInTheDocument();
+    expect(screen.getByText('Disconnected')).toBeInTheDocument();
     expect(addANewGameButton).toBeInTheDocument();
     expect(addANewGameButton).toHaveAttribute('disabled');
     expect(screen.getByText('Placeholder for games table')).toBeInTheDocument();
@@ -67,5 +72,129 @@ describe('Team', () => {
       'Failed to fetch current milestone.'
     );
     expect(currentMilestone).toBeInTheDocument();
+  });
+
+  it('should disable the Add Game button when bot is not connected', () => {
+    renderWithRouterAndProvider(<Team />);
+
+    const addANewGameButton = screen.getByRole('button', {
+      name: 'Add a new game',
+    });
+
+    const refreshButton = screen.getByRole('button', {
+      name: 'Refresh',
+    });
+
+    const connectButton = screen.getByRole('button', {
+      name: 'Connect',
+    });
+
+    expect(refreshButton).toBeInTheDocument();
+    expect(connectButton).toBeInTheDocument();
+    expect(addANewGameButton).toBeInTheDocument();
+    expect(addANewGameButton).toHaveAttribute('disabled');
+  });
+
+  it('should display waiting message when refresh button clicked before connection', async () => {
+    server.use(getConnectedStateWaitingResponseHandler);
+
+    renderWithRouterAndProvider(<Team />, {
+      preloadedState: {
+        auth: {
+          name: 'Team1',
+          role: UserRole.TEAM,
+          credentials: validTeamCredentials.credentials,
+        },
+      },
+    });
+
+    const addANewGameButton = screen.getByRole('button', {
+      name: 'Add a new game',
+    });
+
+    const refreshButton = screen.getByRole('button', {
+      name: 'Refresh',
+    });
+
+    expect(addANewGameButton).toBeInTheDocument();
+    expect(refreshButton).toBeInTheDocument();
+
+    act(() => {
+      fireEvent.click(refreshButton);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Waiting for you to start your bot')
+      ).toBeInTheDocument();
+      expect(addANewGameButton).toHaveAttribute('disabled');
+    });
+  });
+
+  it('should display connected message when refresh button clicked and bot is connected', async () => {
+    server.use(getConnectedStateConnectedResponseHandler);
+
+    renderWithRouterAndProvider(<Team />, {
+      preloadedState: {
+        auth: {
+          name: 'Team1',
+          role: UserRole.TEAM,
+          credentials: validTeamCredentials.credentials,
+        },
+      },
+    });
+
+    const addANewGameButton = screen.getByRole('button', {
+      name: 'Add a new game',
+    });
+
+    const refreshButton = screen.getByRole('button', {
+      name: 'Refresh',
+    });
+
+    expect(addANewGameButton).toBeInTheDocument();
+    expect(refreshButton).toBeInTheDocument();
+
+    act(() => {
+      fireEvent.click(refreshButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Connected')).toBeInTheDocument();
+      expect(addANewGameButton).not.toHaveAttribute('disabled');
+    });
+  });
+
+  it('should display connected message when Connect button clicked and bot is connected', async () => {
+    server.use(getConnectedStateConnectedResponseHandler);
+
+    renderWithRouterAndProvider(<Team />, {
+      preloadedState: {
+        auth: {
+          name: 'Team1',
+          role: UserRole.TEAM,
+          credentials: validTeamCredentials.credentials,
+        },
+      },
+    });
+
+    const addANewGameButton = screen.getByRole('button', {
+      name: 'Add a new game',
+    });
+
+    const connectButton = screen.getByTestId('connectButton');
+
+    expect(addANewGameButton).toBeInTheDocument();
+    expect(connectButton).toBeInTheDocument();
+
+    act(() => {
+      fireEvent.click(connectButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Connected')).toBeInTheDocument();
+      expect(addANewGameButton).not.toHaveAttribute('disabled');
+      expect(connectButton).toHaveTextContent('Disconnect');
+    });
   });
 });

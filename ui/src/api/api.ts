@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
 import { CreateGameRequest } from '~/interfaces/CreateGameRequest';
 import { CreateTeamRequest } from '~/interfaces/CreateTeamRequest';
 import { GameResult } from '~/interfaces/GameResult';
@@ -199,19 +198,61 @@ export const api = createApi({
       },
       providesTags: ['Game'],
     }),
+    getBotConnectionStatus: builder.query<string, string>({
+      query: (teamName) => ({
+        method: RequestType.GET,
+        params: { teamName: teamName },
+        responseHandler: 'text',
+        url: '/remotebot/connectedState',
+      }),
+    }),
+    connectBot: builder.mutation<void, string>({
+      query: (teamName) => ({
+        body: teamName,
+        headers: {
+          'content-type': 'text/plain',
+        },
+        method: RequestType.POST,
+        responseHandler: 'text',
+        url: '/remotebot/connect',
+      }),
+    }),
+    disconnectBot: builder.mutation<void, string>({
+      query: (teamName) => ({
+        body: teamName,
+        headers: {
+          'content-type': 'text/plain',
+        },
+        method: RequestType.POST,
+        responseHandler: 'text',
+        url: '/remotebot/disconnect',
+      }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        // API call takes a very long time to respond!
+        try {
+          await queryFulfilled;
+        } catch {
+          // Ignore response to treat as fire and forget
+        }
+      },
+    }),
   }),
 });
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
 export const {
+  useConnectBotMutation,
   useCreateGameMutation,
   useCreateHackathonMutation,
   useCreateTeamMutation,
   useDeleteHackathonMutation,
   useDeleteTeamMutation,
-  useGetHackathonQuery,
+  useDisconnectBotMutation,
+  useGetBotConnectionStatusQuery,
+  useGetHackathonForTeamUserQuery,
   useGetHackathonGamesQuery,
+  useGetHackathonQuery,
   useGetHackathonTeamsQuery,
   useGetHackathonsQuery,
   useGetMilestonesQuery,
@@ -219,5 +260,4 @@ export const {
   useLoginMutation,
   useUpdateHackathonMutation,
   useUpdateTeamMutation,
-  useGetHackathonForTeamUserQuery,
 } = api;
