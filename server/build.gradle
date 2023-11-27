@@ -62,6 +62,8 @@ dependencies {
     runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1' // Needed by hibernate in Java 9+
     runtimeOnly project(path: ':viewer', configuration: 'archives')
     runtimeOnly project(path: ':ui', configuration: 'archives')
+
+    testImplementation 'junit:junit:4.4'
 }
 
 jar {

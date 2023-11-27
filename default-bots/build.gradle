@@ -21,6 +21,7 @@ configurations {
 
 dependencies {
     api project(":game")
+    testImplementation 'junit:junit:4.4'
 }
 
 /*
