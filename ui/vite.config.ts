@@ -30,6 +30,13 @@ export default defineConfig(({ mode }) => ({
         return false;
       }
     },
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+      statements: 98,
+      branches: 97,
+      functions: 89,
+      lines: 98,
+    },
   },
   ...(mode === 'production' && { base: '/application/ui/' }),
 }));

@@ -1,6 +1,7 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
+    id 'jacoco'
 }
 
 group 'com.scottlogic.hackathon'
@@ -47,3 +48,22 @@ jar {
                 "Main-Class": "com.scottlogic.hackathon.remote.client.Main")
     }
 }
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.24
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification

@@ -29,9 +29,9 @@ check.dependsOn lintTypeScript
 
 task testReactApp(type: NpmTask, dependsOn: npmInstall) {
     group = 'Verification'
-    description = 'Runs UI tests'
+    description = 'Runs UI tests with coverage'
 
-    args = ['run', 'test']
+    args = ['run', 'coverage']
 }
 check.dependsOn testReactApp
 

@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'jacoco'
 }
 
 repositories {
@@ -65,6 +66,25 @@ dependencies {
 
     testImplementation 'junit:junit:4.4'
 }
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.01
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
 
 jar {
     manifest {

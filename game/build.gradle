@@ -1,6 +1,7 @@
 plugins {
     id 'groovy'
     id 'java-library'
+    id 'jacoco'
 }
 
 group "com.scottlogic.hackathon"
@@ -14,6 +15,25 @@ dependencies {
     implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jacksonVersion
     implementation group: "javax.persistence", name: "javax.persistence-api", version: "2.2"
 }
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.17
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
 
 jar {
     from sourceSets.main.allSource
