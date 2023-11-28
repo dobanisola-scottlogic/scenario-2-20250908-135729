@@ -8,7 +8,7 @@ import {
   Box,
   Button,
   CircularProgress,
-  Stack,
+  Grid,
   Typography,
 } from '@mui/material';
 import { skipToken } from '@reduxjs/toolkit/dist/query/react';
@@ -103,65 +103,87 @@ const Team = () => {
           </Alert>
         )}
 
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 'normal' }}>
-            <strong>Current Milestone: </strong>
-            {isHackathonLoading && (
-              <CircularProgress size={15} sx={{ ml: 1 }} />
-            )}
-            {isHackathonError && (
-              <span style={{ color: colours.errorRed }}>
-                Failed to fetch current milestone.
-              </span>
-            )}
-            {!isHackathonLoading &&
-              !isHackathonError &&
-              `Map: ${hackathon?.currentMilestoneMap} - Bot: ${hackathon?.readableCurrentMilestoneClassName}`}
-          </Typography>
-          <Typography sx={{ fontWeight: 'normal' }}>
-            To view the information needed to access your development
-            environment, click here:
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography sx={{ fontWeight: 'normal' }}>
+              <strong>Current Milestone: </strong>
+              {isHackathonLoading && (
+                <CircularProgress size={15} sx={{ ml: 1 }} />
+              )}
+              {isHackathonError && (
+                <span style={{ color: colours.errorRed }}>
+                  Failed to fetch current milestone.
+                </span>
+              )}
+              {!isHackathonLoading &&
+                !isHackathonError &&
+                `Map: ${hackathon?.currentMilestoneMap} - Bot: ${hackathon?.readableCurrentMilestoneClassName}`}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={9}>
+            <Typography sx={{ fontWeight: 'normal' }}>
+              To view the information needed to access your development
+              environment, click here:
+            </Typography>
+          </Grid>
+
+          <Grid item xs={3}>
             <Button
               variant='outlined'
               onClick={handleIsViewInformationOpen}
               startIcon={<VisibilityOutlinedIcon />}
               sx={{ ml: 2 }}
+              fullWidth
             >
               View information
             </Button>
-          </Typography>
+          </Grid>
 
-          <Typography sx={{ fontWeight: 'normal' }}>
-            The connection status of your bot is:
+          <Grid item xs={9}>
+            <Typography sx={{ fontWeight: 'normal' }}>
+              The connection status of your bot is:
+              <Typography component='span' sx={{ fontWeight: 'normal', ml: 2 }}>
+                {!isBotConnectionStatusLoading &&
+                  botConnectionStatusMetadata.connectionStatusText}
+              </Typography>
+            </Typography>
+          </Grid>
+
+          <Grid item xs={3}>
             <Button
               variant='outlined'
               onClick={handleRefreshBotStatusClick}
               startIcon={<RefreshOutlined />}
               sx={{ ml: 2 }}
+              fullWidth
             >
               Refresh
             </Button>
-            <Typography component='span' sx={{ fontWeight: 'normal', ml: 2 }}>
-              {!isBotConnectionStatusLoading &&
-                botConnectionStatusMetadata.connectionStatusText}
-            </Typography>
-          </Typography>
+          </Grid>
 
-          <Typography sx={{ fontWeight: 'normal' }}>
-            To connect your bot, click on the connect button and then start your
-            bot:
+          <Grid item xs={9}>
+            <Typography sx={{ fontWeight: 'normal' }}>
+              To connect your bot, click on the connect button and then start
+              your bot:
+            </Typography>
+          </Grid>
+
+          <Grid item xs={3}>
             <Button
               variant='outlined'
               onClick={handleConnectBotClick}
               startIcon={botConnectionStatusMetadata.icon}
               sx={{ ml: 2 }}
               data-testid='connectButton'
+              fullWidth
             >
               {!isBotConnectionStatusLoading &&
                 botConnectionStatusMetadata.connectButtonLabel}
             </Button>
-          </Typography>
-        </Stack>
+          </Grid>
+        </Grid>
+
         <Box sx={{ mb: 3, mt: 4 }}>
           <AddButton
             disabled={
