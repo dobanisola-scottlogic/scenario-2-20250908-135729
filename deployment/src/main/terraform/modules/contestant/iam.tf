@@ -31,7 +31,20 @@ resource "time_sleep" "wait_for_login_profile_creation" {
 resource "null_resource" "update_hackathon_contestant_password" {
 
   provisioner "local-exec" {
-    command = "aws iam update-login-profile --user-name ${aws_iam_user.hackathon_contestant.name} --password ${var.hackathon_contestant_password}"
+    # Pass our key credentials as environment variables to ensure
+    # that the appropriate credentials are used, then explicitly
+    # assume the appropriate hackathon-deployer-role
+    environment = {
+      AWS_ACCESS_KEY_ID     = var.aws_access_key
+      AWS_SECRET_ACCESS_KEY = var.aws_secret_key
+    }
+    command = <<-EOT
+      eval $(aws sts assume-role --role-arn ${var.aws_role_arn} \
+        --role-session-name=${var.workspace}-role-session \
+        --query "join('', ['export AWS_ACCESS_KEY_ID=', Credentials.AccessKeyId, ' AWS_SECRET_ACCESS_KEY=', Credentials.SecretAccessKey, ' AWS_SESSION_TOKEN=', Credentials.SessionToken])" \
+        --output text)
+      aws iam update-login-profile --user-name ${aws_iam_user.hackathon_contestant.name} --password ${var.hackathon_contestant_password}
+    EOT
   }
 
   depends_on = [time_sleep.wait_for_login_profile_creation]

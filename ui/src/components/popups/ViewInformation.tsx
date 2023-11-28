@@ -23,7 +23,7 @@ const ViewInformation = ({ isOpen, setIsOpen }: PopupProps) => {
           <Typography sx={commonStyles.spacingStyleNormal}>
             Use these details to access your development environment:
           </Typography>
-          <CopyTextField label='Account ID' value='032044580362' />
+          <CopyTextField label='Account ID' value='033692923448' />
           <CopyTextField label='IAM user name' value='hackathon-contestant' />
           <CopyTextField label='Password' value='Password!1' />
           <Typography sx={commonStyles.spacingStyleNormal}>

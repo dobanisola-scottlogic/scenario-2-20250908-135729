@@ -20,7 +20,7 @@ cd "$PROJECT_ROOT_DIR" || exit $?
 
 # Variables
 IMAGE_NAME="hackathon-gameserver"
-REPOSITORY_PATH="032044580362.dkr.ecr.eu-west-2.amazonaws.com"
+REPOSITORY_PATH="033692923448.dkr.ecr.eu-west-2.amazonaws.com"
 FULLY_QUALIFIED_IMAGE_NAME="$REPOSITORY_PATH/$IMAGE_NAME"
 IMAGE_VERSION=$(git rev-parse --short HEAD)
 

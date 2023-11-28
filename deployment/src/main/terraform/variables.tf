@@ -20,6 +20,13 @@ variable "aws_secret_key" {
   sensitive   = true
 }
 
+variable "aws_role_arn" {
+  type        = string
+  description = "AWS role that provides required permissions"
+  sensitive   = true
+  default     = "arn:aws:iam::033692923448:role/hackathon-deployer-role"
+}
+
 variable "company" {
   type        = string
   description = "Company name for resource tagging"
@@ -75,9 +82,9 @@ variable "db_password" {
 }
 
 variable "server_image" {
-  description = "The fully-qualified name of the server Docker image to use (e.g. 032044580362.dkr.ecr.eu-west-2.amazonaws.com/hackathon-gameserver:latest)"
+  description = "The fully-qualified name of the server Docker image to use (e.g. 033692923448.dkr.ecr.eu-west-2.amazonaws.com/hackathon-gameserver:latest)"
   type        = string
-  default     = "032044580362.dkr.ecr.eu-west-2.amazonaws.com/hackathon-gameserver:latest"
+  default     = "033692923448.dkr.ecr.eu-west-2.amazonaws.com/hackathon-gameserver:latest"
 }
 
 variable "team_count" {

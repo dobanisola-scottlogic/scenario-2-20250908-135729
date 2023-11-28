@@ -2,6 +2,9 @@ module "contestant" {
   source = "./modules/contestant"
 
   aws_region       = var.aws_region
+  aws_access_key   = var.aws_access_key
+  aws_secret_key   = var.aws_secret_key
+  aws_role_arn     = var.aws_role_arn
   public_subnet_id = aws_subnet.public_subnets[0].id
   team_count       = var.team_count
   workspace        = local.workspace

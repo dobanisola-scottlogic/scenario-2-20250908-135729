@@ -7,6 +7,10 @@ provider "aws" {
   secret_key = var.aws_secret_key
   region     = var.aws_region
 
+  assume_role {
+    role_arn = var.aws_role_arn
+  }
+
   default_tags {
     tags = {
       company     = var.company
