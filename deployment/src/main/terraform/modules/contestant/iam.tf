@@ -37,13 +37,18 @@ resource "null_resource" "update_hackathon_contestant_password" {
     environment = {
       AWS_ACCESS_KEY_ID     = var.aws_access_key
       AWS_SECRET_ACCESS_KEY = var.aws_secret_key
+      AWS_ROLE              = var.aws_role_arn
+      WORKSPACE             = var.workspace
+      CONTESTANT_NAME       = aws_iam_user.hackathon_contestant.name
+      CONTESTANT_PASSWORD   = var.hackathon_contestant_password
     }
-    command = <<-EOT
-      eval $(aws sts assume-role --role-arn ${var.aws_role_arn} \
-        --role-session-name=${var.workspace}-role-session \
+    interpreter = ["bash", "-c"]
+    command     = <<-EOT
+      eval $(aws sts assume-role --role-arn $AWS_ROLE \
+        --role-session-name=$WORKSPACE-role-session \
         --query "join('', ['export AWS_ACCESS_KEY_ID=', Credentials.AccessKeyId, ' AWS_SECRET_ACCESS_KEY=', Credentials.SecretAccessKey, ' AWS_SESSION_TOKEN=', Credentials.SessionToken])" \
         --output text)
-      aws iam update-login-profile --user-name ${aws_iam_user.hackathon_contestant.name} --password ${var.hackathon_contestant_password}
+      aws iam update-login-profile --user-name $CONTESTANT_NAME --password $CONTESTANT_PASSWORD
     EOT
   }
 
