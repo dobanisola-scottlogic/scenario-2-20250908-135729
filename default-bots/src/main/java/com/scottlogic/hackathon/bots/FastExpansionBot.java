@@ -29,7 +29,11 @@ public class FastExpansionBot extends Bot {
   private LinkedList<Node> enemyHiveMemory = new LinkedList<Node>();
 
   public FastExpansionBot() {
-    super("Fast Expansion");
+    this("Fast Expansion");
+  }
+
+  public FastExpansionBot(String name) {
+    super(name);
   }
 
   @Override

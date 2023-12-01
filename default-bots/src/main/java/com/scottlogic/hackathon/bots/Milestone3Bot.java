@@ -9,7 +9,11 @@ public class Milestone3Bot extends Bot {
   private List<Position> nextPositions;
 
   public Milestone3Bot() {
-    super("Milestone 1");
+    this("Milestone 1");
+  }
+
+  public Milestone3Bot(String name) {
+    super(name);
   }
 
   @Override

@@ -14,6 +14,10 @@ public class Milestone5Bot extends Bot {
     super("Milestone 5");
   }
 
+  public Milestone5Bot(String name) {
+    super(name);
+  }
+
   @Override
   public List<Move> makeMoves(final GameState gameState) {
 

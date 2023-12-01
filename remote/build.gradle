@@ -32,6 +32,14 @@ dependencies {
     implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: jettyVersion
 }
 
+test {
+    // Since PowerMock makes reflection access, we need to open the needed packages ourselves
+    // HAC-244 - PowerMock is no longer maintained so it should probably be removed
+    [ 'java.lang', 'java.util', 'java.util.concurrent', 'java.util.concurrent.locks' ].forEach {
+        jvmArgs '--add-opens', "java.base/$it=ALL-UNNAMED"
+    }
+}
+
 apply plugin: 'com.github.johnrengelman.shadow'
 
 shadowJar {

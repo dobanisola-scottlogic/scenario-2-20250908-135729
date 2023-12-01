@@ -8,7 +8,11 @@ public class Milestone1Bot extends Bot {
   private HashMap<Id, Direction> playerDirectionHashMap;
 
   public Milestone1Bot() {
-    super("Milestone 1");
+    this("Milestone 1");
+  }
+
+  public Milestone1Bot(String name) {
+    super(name);
   }
 
   @Override

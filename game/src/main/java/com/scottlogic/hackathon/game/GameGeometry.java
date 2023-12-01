@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -45,6 +46,7 @@ public interface GameGeometry {
   Position getPosition(int x, int y);
 
   /** Returns all distinct {@linkplain Position}s that can exist within this geometry. */
+  @JsonIgnore
   default Stream<Position> getAllPositions() {
     return IntStream.rangeClosed(0, getWidth())
         .mapToObj(x -> IntStream.rangeClosed(0, getHeight()).mapToObj(y -> getPosition(x, y)))

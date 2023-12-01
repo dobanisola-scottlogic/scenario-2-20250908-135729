@@ -72,7 +72,7 @@ public class GameStateFixture {
     String gameStateJson =
         "{"
             + "\"phase\":0,"
-            + "\"map\":{\"width\":100,\"height\":100,\"allPositions\":{\"parallel\":false}},"
+            + "\"map\":{\"width\":100,\"height\":100},"
             + "\"outOfBoundsPositions\":[{\"x\":35,\"y\":14}],"
             + "\"players\":["
             + "{\"id\":"
