@@ -8,7 +8,7 @@ export class CreateGamePage {
   readonly gamePlayer3Field: Locator;
   readonly gamePlayer4Field: Locator;
   readonly gameMapField: Locator;
-  readonly option: Locator;
+  readonly option: ({ option }: { option: string; }) => Locator;
   readonly dropdownOptions: Locator;
   readonly addNewGameButton: Locator;
   readonly cancelButton: Locator;
@@ -21,7 +21,7 @@ export class CreateGamePage {
     this.gamePlayer3Field = page.getByTestId('player-3');
     this.gamePlayer4Field = page.getByTestId('player-4');
     this.gameMapField = page.getByTestId('game-map');
-    this.option = page.getByRole('option');
+    this.option = ({option}) => page.getByRole('option', {name: option});
     this.dropdownOptions = page.getByRole('listbox');
     this.addNewGameButton = page.getByRole('button', {
       name: 'Add a new game',
@@ -34,26 +34,33 @@ export class CreateGamePage {
   }
 
   async selectOption(option: string) {
-    await this.option.getByText(option).click();
+    await this.option({option: option}).click();
   }
 
   async verifyCreateGamePopUpWithFieldLabels() {
-    await expect(this.createGamePopup).toContainText('Select player 1');
-    await expect(this.createGamePopup).toContainText('Select player 2');
+    await expect(this.createGamePopup).toContainText('Select player 1 *');
+    await expect(this.createGamePopup).toContainText('Select player 2 *');
     await expect(this.createGamePopup).toContainText(
-      'Select player 3 (Optional)'
+      'Select player 3'
     );
     await expect(this.createGamePopup).toContainText(
-      'Select player 4 (Optional)'
+      'Select player 4'
     );
     await expect(this.createGamePopup).toContainText('Select map');
     await expect(this.addNewGameButton).toBeDisabled();
     await expect(this.cancelButton).toBeVisible();
   }
 
-  async verifyPlayerDropdownField() {
+  async verifyMandatoryPlayerDropdownField() {
     await expect(this.dropdownOptions).toContainText(
       'TeamsMilestonesMilestone1BotMilestone2BotMilestone3BotMilestone4BotMilestone5BotFastExpansionBot'
+    );
+    await this.dropdownOptions.click();
+  }
+
+  async verifyOptionalPlayerDropdownField() {
+    await expect(this.dropdownOptions).toContainText(
+      'NoneTeamsMilestonesMilestone1BotMilestone2BotMilestone3BotMilestone4BotMilestone5BotFastExpansionBot'
     );
     await this.dropdownOptions.click();
   }

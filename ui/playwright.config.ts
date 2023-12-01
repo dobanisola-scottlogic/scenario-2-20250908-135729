@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './playwright',
   outputDir: './playwright/report/trace',
+  globalTeardown: './playwright/global-teardown',
   timeout: 50000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

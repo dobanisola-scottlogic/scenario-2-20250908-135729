@@ -26,7 +26,12 @@ export class LoginPage {
     await this.passwordField.fill(password);
   }
 
+  async verifyLoginButtonIsDisabled() {
+    await expect(this.loginButton).toBeDisabled();
+  }
+
   async attemptLogin() {
+    await expect (this.loginButton).toBeEnabled();
     await this.loginButton.click();
   }
 

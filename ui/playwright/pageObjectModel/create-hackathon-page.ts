@@ -44,7 +44,7 @@ export class CreateHackathonPage {
         },
       }
     );
-    expect(hackathonPostResponse.status()).toBe(200);
+    expect(hackathonPostResponse.status()).toBe(201);
   }
 
   async mock400ErrorOnCreatingHackathon() {

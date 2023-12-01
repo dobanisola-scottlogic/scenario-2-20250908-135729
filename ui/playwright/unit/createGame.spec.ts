@@ -3,6 +3,7 @@ import { HackathonHelpers } from '../helpers';
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
+let teamName = ''
 const player1 = 'Milestone1Bot';
 const player2 = 'Milestone2Bot';
 const player3 = 'Milestone3Bot';
@@ -11,7 +12,7 @@ const map = 'Hard';
 
 test.beforeEach(
   async ({ page, createHackathonPage, hackathonListPage, login }) => {
-    hackathonName = 'createGame' + uniqueHackathonId;
+    hackathonName = teamName = 'createGame' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto('/');
     await login.inputCredentials('admin', 'secret');
@@ -117,18 +118,18 @@ test.describe('create a new game popup without a team being created', () => {
     createGamePage,
   }) => {
     await createGamePage.gamePlayer1Field.click();
-    await createGamePage.verifyPlayerDropdownField();
+    await createGamePage.verifyMandatoryPlayerDropdownField();
     await createGamePage.gamePlayer2Field.click();
-    await createGamePage.verifyPlayerDropdownField();
+    await createGamePage.verifyMandatoryPlayerDropdownField();
     await createGamePage.gamePlayer3Field.click();
-    await createGamePage.verifyPlayerDropdownField();
+    await createGamePage.verifyOptionalPlayerDropdownField();
     await createGamePage.gamePlayer4Field.click();
-    await createGamePage.verifyPlayerDropdownField();
+    await createGamePage.verifyOptionalPlayerDropdownField();
     await createGamePage.gameMapField.click();
     await createGamePage.verifyMapDropdownField();
   });
 
-  test('game cannot be created if fields are missing', async ({
+  test('game cannot be created if mandatory fields are missing', async ({
     createGamePage,
     commonPageObjects,
     hackathonDetailsPage,
@@ -143,6 +144,15 @@ test.describe('create a new game popup without a team being created', () => {
     await hackathonDetailsPage.openCreateGamePopup();
     await createGamePage.gamePlayer1Field.click();
     await createGamePage.selectOption(player1);
+    await createGamePage.gameMapField.click();
+    await createGamePage.selectOption(map);
+    await createGamePage.verifyGameCannotBeCreated();
+    await commonPageObjects.cancelCurrentAction();
+    await hackathonDetailsPage.openCreateGamePopup();
+    await createGamePage.gamePlayer1Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gamePlayer3Field.click();
+    await createGamePage.selectOption(player3);
     await createGamePage.gameMapField.click();
     await createGamePage.selectOption(map);
     await createGamePage.verifyGameCannotBeCreated();
@@ -166,20 +176,37 @@ test.describe('create a new game popup without a team being created', () => {
 });
 
 test.describe('create a team before entering the create game popup', () => {
-  test('created team appears in dropdown lists', async ({
-    hackathonDetailsPage,
+  test.beforeEach(async ({ hackathonDetailsPage,
     commonPageObjects,
     createTeamPage,
+    createGamePage, }) => {
+      await hackathonDetailsPage.openCreateTeamPopup();
+      await commonPageObjects.confirmPopupIsVisible();
+      await createTeamPage.inputTeamName(teamName);
+      await createTeamPage.inputTeamPassword('teamPassword');
+      await createTeamPage.addNewTeam();
+      await hackathonDetailsPage.openCreateGamePopup();
+      await commonPageObjects.confirmPopupIsVisible();
+      await createGamePage.gamePlayer1Field.click();
+  });
+  test('created team appears in dropdown lists', async ({
     createGamePage,
   }) => {
-    await hackathonDetailsPage.openCreateTeamPopup();
-    await commonPageObjects.confirmPopupIsVisible();
-    await createTeamPage.inputTeamName('teamName');
-    await createTeamPage.inputTeamPassword('teamPassword');
-    await createTeamPage.addNewTeam();
-    await hackathonDetailsPage.openCreateGamePopup();
-    await commonPageObjects.confirmPopupIsVisible();
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.verifyPlayerDropdownFieldWithTeam('teamName');
+    await createGamePage.verifyPlayerDropdownFieldWithTeam(teamName);
+  });
+
+  test('internal server error appears when attempting to run an unconnected team bot', async ({
+    commonPageObjects,
+    createGamePage,
+  }) => {
+    await createGamePage.selectOption(teamName);
+    await createGamePage.gamePlayer2Field.click();
+    await createGamePage.selectOption(player2);
+    await createGamePage.gameMapField.click();
+    await createGamePage.selectOption(map);
+    await createGamePage.addNewGame();
+    await commonPageObjects.confirmErrorMessageIs(
+      'Error creating game - internal server error'
+    );
   });
 });

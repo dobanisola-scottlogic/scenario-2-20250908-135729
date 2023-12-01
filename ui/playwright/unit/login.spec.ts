@@ -1,6 +1,6 @@
 import test from '../fixtures';
 
-const emptyFieldErrors: {
+const emptyFields: {
   username: string;
   password: string;
 }[] = [
@@ -35,20 +35,16 @@ test('team can successfully log in', async ({ login, teamDashboardPage }) => {
   await teamDashboardPage.verifyLoginSuccess();
 });
 
-for (const emptyFieldError of emptyFieldErrors) {
-  test(`username '${emptyFieldError.username}' and password '${emptyFieldError.password}' returns empty fields error message`, async ({
+for (const emptyField of emptyFields) {
+  test(`username '${emptyField.username}' and password '${emptyField.password}' disables the login button`, async ({
     login,
-    commonPageObjects,
   }) => {
     await login.inputCredentials(
-      emptyFieldError.username,
-      emptyFieldError.password
+      emptyField.username,
+      emptyField.password
     );
-    await login.attemptLogin();
-    await commonPageObjects.confirmErrorMessageIs(
-      'Username and password cannot be empty.'
-    );
-  });
+    await login.verifyLoginButtonIsDisabled();
+});
 }
 
 test("invalid username and password returns 'unable to login' error message", async ({
