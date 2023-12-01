@@ -29,6 +29,10 @@ const GameResultListTable = ({ hackathonId }: GameResultListTableProps) => {
         >
           {row.game.title}
         </Link>
+        {/* For use during development - remove old link when new player is in usable state */}
+        {/* <Link to={`${gameViewerBaseUrl}${row.game.hackathonId}/game/${row.id}`}>
+          {row.game.title}
+        </Link> */}
       </TableCell>
       <TableCell>{row?.game?.map?.name}</TableCell>
       <TableCell>{getGameTimeString(row?.game?.gameTime)}</TableCell>

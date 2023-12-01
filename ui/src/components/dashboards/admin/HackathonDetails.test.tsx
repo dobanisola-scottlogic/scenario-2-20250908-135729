@@ -26,7 +26,7 @@ describe('HackathonDetails', () => {
     );
 
     expect(
-      screen.getByRole('link', { name: 'Hackathons' })
+      await screen.findByRole('link', { name: 'Hackathons' })
     ).toBeInTheDocument();
     expect(await screen.findByText(hackathonName)).toBeInTheDocument();
     expect(screen.getByText('Current Milestone:')).toBeInTheDocument();

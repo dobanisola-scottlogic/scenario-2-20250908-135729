@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import HackathonDetails from '~/components/dashboards/admin/HackathonDetails';
 import HackathonList from '~/components/dashboards/admin/HackathonList';
 import Team from '~/components/dashboards/team/Team';
+import GameViewer from '~/components/game/GameViewer';
 import Login from '~/components/login/Login';
 import { UserRole } from '~/enums/UserRole';
 import { useAppSelector } from '~/hooks';
@@ -33,6 +34,10 @@ const Routing = () => {
           <Route
             path={`${import.meta.env.BASE_URL}:id`}
             element={<HackathonDetails />}
+          />
+          <Route
+            path={`${import.meta.env.BASE_URL}:id/game/:gameId`}
+            element={<GameViewer />}
           />
         </Route>
       </Routes>

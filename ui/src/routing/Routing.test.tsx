@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import { UserRole } from '~/enums/UserRole';
+import { testGameId } from '~/mocks/test-data/game';
 import { testHackathonId } from '~/mocks/test-data/hackathon';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import Routing from './Routing';
@@ -37,7 +38,7 @@ describe('Routing', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the HackathonDetails component when userRole is ADMIN and url is a specified hackathon ID', () => {
+  it('renders the HackathonDetails component when userRole is ADMIN and url is a specified hackathon ID', async () => {
     renderWithRouterAndProvider(<Routing />, {
       preloadedState: {
         auth: { name: 'admin', role: UserRole.ADMIN, credentials: '' },
@@ -46,7 +47,23 @@ describe('Routing', () => {
     });
 
     expect(
-      screen.getByRole('link', { name: 'Hackathons' })
+      await screen.findByRole('link', { name: 'Hackathons' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders the GameViewer component when userRole is ADMIN and url is a specified hackathon ID with game ID', async () => {
+    renderWithRouterAndProvider(<Routing />, {
+      preloadedState: {
+        auth: { name: 'admin', role: UserRole.ADMIN, credentials: '' },
+      },
+      initialEntries: [`/${hackathonId}/game/${testGameId.valid}`],
+    });
+
+    expect(
+      await screen.findByRole('link', { name: 'Hackathons' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Milestone1Bot vs Milestone2Bot')
     ).toBeInTheDocument();
   });
 

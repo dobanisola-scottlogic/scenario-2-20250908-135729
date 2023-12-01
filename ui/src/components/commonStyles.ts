@@ -19,4 +19,13 @@ const popupStyles = {
   } as const,
 };
 
-export { commonStyles, listTableStyles, popupStyles };
+const viewerStyles = {
+  commonBoxStyles: {
+    backgroundColor: 'white',
+    borderRadius: '9px',
+    height: '2rem',
+    textAlign: 'center',
+  } as const,
+};
+
+export { commonStyles, listTableStyles, popupStyles, viewerStyles };

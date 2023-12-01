@@ -1,3 +1,6 @@
+import { GameTeam } from '~/interfaces/GameTeam';
+import { removeMilestoneBotPrefix } from './milestone-utils';
+
 export const getGameTimeString = (
   gameTimeMilliseconds: number | null
 ): string => {
@@ -13,3 +16,6 @@ export const getGameTimeString = (
 
   return `${weekday}, ${time}`;
 };
+
+export const getGameTitle = (teams: GameTeam[]): string =>
+  teams.map((team) => removeMilestoneBotPrefix(team.teamName)).join(' vs ');

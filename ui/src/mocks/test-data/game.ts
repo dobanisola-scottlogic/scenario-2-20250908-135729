@@ -14,6 +14,12 @@ export const testArena: Arena = {
   width: 128,
 };
 
+export const testGameId = {
+  valid: 'test-game-id',
+  badRequest: 'bad-request-id',
+  networkError: 'network-error-id',
+};
+
 export const testGameResultBody: GameResult = {
   cutoffCondition: CutoffCondition.LONE_SURVIVOR,
   game: {
@@ -34,5 +40,5 @@ export const testGameResultBody: GameResult = {
       },
     ],
   },
-  id: '59A17EC8-D5AB-48DC-9800-FDCF6DC86F7D',
+  id: testGameId.valid,
 };

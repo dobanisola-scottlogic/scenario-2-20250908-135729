@@ -7,6 +7,7 @@ import { LoginResponse } from '~/interfaces/LoginResponse';
 import { Milestone } from '~/interfaces/Milestone';
 import { Team } from '~/interfaces/Team';
 import { RootState } from '~/store';
+import { getGameTitle } from '~/utils/game-utils';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 
 export const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -189,13 +190,18 @@ export const api = createApi({
             ...result,
             game: {
               ...result.game,
-              title: teams
-                .map((team) => removeMilestoneBotPrefix(team.teamName))
-                .join(' vs '),
+              title: getGameTitle(teams),
             },
           };
         });
       },
+      providesTags: ['Game'],
+    }),
+    getHackathonGame: builder.query<GameResult, string>({
+      query: (id) => ({
+        url: `/game/${id}`,
+        method: RequestType.GET,
+      }),
       providesTags: ['Game'],
     }),
     getBotConnectionStatus: builder.query<string, string>({
@@ -252,6 +258,7 @@ export const {
   useGetBotConnectionStatusQuery,
   useGetHackathonForTeamUserQuery,
   useGetHackathonGamesQuery,
+  useGetHackathonGameQuery,
   useGetHackathonQuery,
   useGetHackathonTeamsQuery,
   useGetHackathonsQuery,
