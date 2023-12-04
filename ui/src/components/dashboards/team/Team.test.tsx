@@ -3,6 +3,7 @@ import { UserRole } from '~/enums/UserRole';
 import {
   getConnectedStateConnectedResponseHandler,
   getConnectedStateWaitingResponseHandler,
+  getConnectedStateUnauthorizedResponseHandler,
 } from '~/mocks/handlers/remoteBot';
 import { server } from '~/mocks/server';
 import {
@@ -195,6 +196,38 @@ describe('Team', () => {
       expect(screen.getByText('Connected')).toBeInTheDocument();
       expect(addANewGameButton).not.toHaveAttribute('disabled');
       expect(connectButton).toHaveTextContent('Disconnect');
+    });
+  });
+
+  it('should force logout if the team is no longer authorised (e.g. deleted)', async () => {
+    server.use(getConnectedStateUnauthorizedResponseHandler);
+
+    const { store } = renderWithRouterAndProvider(<Team />, {
+      preloadedState: {
+        auth: {
+          name: 'Team1',
+          role: UserRole.TEAM,
+          credentials: validTeamCredentials.credentials,
+        },
+      },
+    });
+
+    const addANewGameButton = screen.getByRole('button', {
+      name: 'Add a new game',
+    });
+
+    const connectButton = screen.getByTestId('connectButton');
+
+    expect(addANewGameButton).toBeInTheDocument();
+    expect(connectButton).toBeInTheDocument();
+
+    act(() => {
+      fireEvent.click(connectButton);
+    });
+
+    await waitFor(() => {
+      const reduxState = store.getState();
+      expect(reduxState.auth.role).toBeNull();
     });
   });
 });

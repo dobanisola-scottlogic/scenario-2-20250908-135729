@@ -1,4 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  createApi,
+  fetchBaseQuery,
+} from '@reduxjs/toolkit/query/react';
+import { UserRole } from '~/enums/UserRole';
 import { CreateGameRequest } from '~/interfaces/CreateGameRequest';
 import { CreateTeamRequest } from '~/interfaces/CreateTeamRequest';
 import { GameResult } from '~/interfaces/GameResult';
@@ -6,6 +13,7 @@ import { Hackathon } from '~/interfaces/Hackathon';
 import { LoginResponse } from '~/interfaces/LoginResponse';
 import { Milestone } from '~/interfaces/Milestone';
 import { Team } from '~/interfaces/Team';
+import { logout } from '~/slices/authSlice';
 import { RootState } from '~/store';
 import { getGameTitle } from '~/utils/game-utils';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
@@ -19,20 +27,39 @@ enum RequestType {
   PUT = 'PUT',
 }
 
+const baseQuery = fetchBaseQuery({
+  baseUrl: baseUrl,
+  prepareHeaders: (headers, { getState }) => {
+    const credentials: string | null = (getState() as RootState).auth
+      .credentials;
+    if (credentials) {
+      headers.set('Authorization', `Basic ${credentials}`);
+    }
+    return headers;
+  },
+});
+
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const result = await baseQuery(args, api, extraOptions);
+  if (result?.error?.status === 401) {
+    // If we already have a role, we must have been logged in
+    const role: UserRole | null = (api.getState() as RootState).auth.role;
+    if (role) {
+      // Force logout
+      api.dispatch(logout());
+    }
+  }
+  return result;
+};
+
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl,
-    prepareHeaders: (headers, { getState }) => {
-      const credentials: string | null = (getState() as RootState).auth
-        .credentials;
-      if (credentials) {
-        headers.set('Authorization', `Basic ${credentials}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ['Game', 'Hackathon', 'Team'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, void>({

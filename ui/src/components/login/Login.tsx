@@ -33,7 +33,7 @@ const Login = () => {
     login()
       .unwrap() // success handled by the `fulfilled` action creator
       .catch((e: unknown) => {
-        if ((e as { originalStatus?: number }).originalStatus === 401) {
+        if ((e as { status?: number }).status === 401) {
           setError(
             'Invalid username or password. Please check your credentials.'
           );

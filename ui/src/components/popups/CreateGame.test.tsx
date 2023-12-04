@@ -25,11 +25,13 @@ const selectAndVerifyDropDownValue = async (
   optionText: string,
   testId: string
 ) => {
-  fireEvent.mouseDown(
-    screen.getByRole('button', {
-      name: selectLabelRegExp,
-    })
-  );
+  act(() => {
+    fireEvent.mouseDown(
+      screen.getByRole('button', {
+        name: selectLabelRegExp,
+      })
+    );
+  });
 
   const listboxPlayer1 = within(
     screen.getByRole('listbox', { name: selectLabelRegExp })

@@ -21,9 +21,10 @@ export const badRequestResponse = () => {
 };
 
 export const unauthorizedResponse = () => {
-  return new HttpResponse('Credentials are required to access this resource.', {
-    status: 401,
-  });
+  return HttpResponse.json(
+    { error: 'Credentials are required to access this resource.' },
+    { status: 401 }
+  );
 };
 
 export const plainTextOkResponse = (body: string | null) => {
