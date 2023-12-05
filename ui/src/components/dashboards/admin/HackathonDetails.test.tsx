@@ -4,6 +4,7 @@ import {
   testHackathonBody,
   testHackathonId,
 } from '~/mocks/test-data/hackathon';
+import { hackathonRoute, hackathonRouteForTesting } from '~/routing/Routes';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import HackathonDetails from './HackathonDetails';
@@ -18,10 +19,13 @@ describe('HackathonDetails', () => {
   it('should render the hackathon details of the hackathon with ID specified in the url path', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id' element={<HackathonDetails />}></Route>
+        <Route
+          path={hackathonRouteForTesting}
+          element={<HackathonDetails />}
+        ></Route>
       </Routes>,
       {
-        initialEntries: [`/${testHackathonId.valid}`],
+        initialEntries: [hackathonRoute(testHackathonId.valid)],
       }
     );
 
@@ -47,10 +51,13 @@ describe('HackathonDetails', () => {
   it('should render the success snackbar correctly', () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id' element={<HackathonDetails />}></Route>
+        <Route
+          path={hackathonRouteForTesting}
+          element={<HackathonDetails />}
+        ></Route>
       </Routes>,
       {
-        initialEntries: [`/${testHackathonId.valid}`],
+        initialEntries: [hackathonRoute(testHackathonId.valid)],
         preloadedState: {
           snackbar: { isOpen: true, message: 'Team created successfully!' },
         },
@@ -65,10 +72,13 @@ describe('HackathonDetails', () => {
   it('should show correct error message for non-existent hackathon', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id' element={<HackathonDetails />}></Route>
+        <Route
+          path={hackathonRouteForTesting}
+          element={<HackathonDetails />}
+        ></Route>
       </Routes>,
       {
-        initialEntries: [`/${testHackathonId.notFound}`],
+        initialEntries: [hackathonRoute(testHackathonId.notFound)],
       }
     );
 
@@ -82,10 +92,13 @@ describe('HackathonDetails', () => {
   it('should show correct error message for fetch error', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id' element={<HackathonDetails />}></Route>
+        <Route
+          path={hackathonRouteForTesting}
+          element={<HackathonDetails />}
+        ></Route>
       </Routes>,
       {
-        initialEntries: [`/${testHackathonId.networkError}`],
+        initialEntries: [hackathonRoute(testHackathonId.networkError)],
       }
     );
 

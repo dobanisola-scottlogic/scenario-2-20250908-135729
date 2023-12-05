@@ -4,6 +4,7 @@ import { render } from '@testing-library/react';
 import React, { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
+import { baseRouteForTesting } from '~/routing/Routes';
 import { AppStore, RootState, setupStore } from '~/store';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
@@ -17,7 +18,7 @@ export function renderWithRouterAndProvider(
   {
     preloadedState = {},
     store = setupStore(preloadedState),
-    initialEntries = ['/'],
+    initialEntries = [baseRouteForTesting],
     ...renderOptions
   }: ExtendedRenderOptions = {}
 ) {

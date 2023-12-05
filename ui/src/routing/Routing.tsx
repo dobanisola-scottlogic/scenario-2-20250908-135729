@@ -8,6 +8,11 @@ import { UserRole } from '~/enums/UserRole';
 import { useAppSelector } from '~/hooks';
 import { selectUserRole } from '~/slices/authSlice';
 import ProtectedRoute from './ProtectedRoute';
+import {
+  baseRoute,
+  hackathonGameRouterRoute,
+  hackathonRouterRoute,
+} from './Routes';
 
 const Routing = () => {
   const userRole = useAppSelector(selectUserRole);
@@ -26,19 +31,10 @@ const Routing = () => {
   return (
     <>
       <Routes>
-        <Route
-          path={import.meta.env.BASE_URL}
-          element={renderComponentBasedOnRole()}
-        />
+        <Route path={baseRoute} element={renderComponentBasedOnRole()} />
         <Route element={<ProtectedRoute allowedRoles={UserRole.ADMIN} />}>
-          <Route
-            path={`${import.meta.env.BASE_URL}:id`}
-            element={<HackathonDetails />}
-          />
-          <Route
-            path={`${import.meta.env.BASE_URL}:id/game/:gameId`}
-            element={<GameViewer />}
-          />
+          <Route path={hackathonRouterRoute} element={<HackathonDetails />} />
+          <Route path={hackathonGameRouterRoute} element={<GameViewer />} />
         </Route>
       </Routes>
     </>

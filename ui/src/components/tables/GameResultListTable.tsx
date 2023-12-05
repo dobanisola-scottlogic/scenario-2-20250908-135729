@@ -30,7 +30,7 @@ const GameResultListTable = ({ hackathonId }: GameResultListTableProps) => {
           {row.game.title}
         </Link>
         {/* For use during development - remove old link when new player is in usable state */}
-        {/* <Link to={`${gameViewerBaseUrl}${row.game.hackathonId}/game/${row.id}`}>
+        {/* <Link to={hackathonGameRoute(row.game.hackathonId, row.id)}>
           {row.game.title}
         </Link> */}
       </TableCell>

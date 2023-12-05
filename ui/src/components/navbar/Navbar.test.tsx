@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { UserRole } from '~/enums/UserRole';
+import { baseRouteForTesting } from '~/routing/Routes';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import Navbar from './Navbar';
 
@@ -26,10 +27,13 @@ describe('Navbar', () => {
   it('should navigate back to the / page when the navbar title is clicked', () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/' element={<div data-testid='landing-page' />} />
-        <Route path='/test-path' element={<Navbar />} />
+        <Route
+          path={baseRouteForTesting}
+          element={<div data-testid='landing-page' />}
+        />
+        <Route path={`${baseRouteForTesting}test-path`} element={<Navbar />} />
       </Routes>,
-      { initialEntries: ['/test-path'] }
+      { initialEntries: [`${baseRouteForTesting}test-path`] }
     );
 
     fireEvent.click(screen.getByText('Hackathon'));

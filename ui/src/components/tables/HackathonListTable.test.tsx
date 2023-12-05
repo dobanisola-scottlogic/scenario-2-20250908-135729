@@ -4,6 +4,10 @@ import { Route, Routes } from 'react-router-dom';
 import { getHackathonsNetworkErrorResponseHandler } from '~/mocks/handlers/hackathon';
 import { server } from '~/mocks/server';
 import { testHackathonBody } from '~/mocks/test-data/hackathon';
+import {
+  baseRouteForTesting,
+  hackathonRouteForTesting,
+} from '~/routing/Routes';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import HackathonListTable from './HackathonListTable';
@@ -18,9 +22,9 @@ describe('HackathonListTable', () => {
   it('should render the table correctly after successful data fetch', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/' element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
         <Route
-          path='/:id'
+          path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
         />
       </Routes>
@@ -60,9 +64,9 @@ describe('HackathonListTable', () => {
 
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/' element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
         <Route
-          path='/:id'
+          path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
         />
       </Routes>
@@ -77,9 +81,9 @@ describe('HackathonListTable', () => {
   it('should navigate to the hackathon details page', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/' element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
         <Route
-          path='/:id'
+          path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
         />
       </Routes>

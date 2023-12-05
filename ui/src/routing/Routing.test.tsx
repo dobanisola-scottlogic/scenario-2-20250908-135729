@@ -3,6 +3,7 @@ import { UserRole } from '~/enums/UserRole';
 import { testGameId } from '~/mocks/test-data/game';
 import { testHackathonId } from '~/mocks/test-data/hackathon';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
+import { hackathonGameRoute, hackathonRoute } from './Routes';
 import Routing from './Routing';
 
 describe('Routing', () => {
@@ -43,7 +44,7 @@ describe('Routing', () => {
       preloadedState: {
         auth: { name: 'admin', role: UserRole.ADMIN, credentials: '' },
       },
-      initialEntries: [`/${hackathonId}`],
+      initialEntries: [hackathonRoute(hackathonId)],
     });
 
     expect(
@@ -56,7 +57,7 @@ describe('Routing', () => {
       preloadedState: {
         auth: { name: 'admin', role: UserRole.ADMIN, credentials: '' },
       },
-      initialEntries: [`/${hackathonId}/game/${testGameId.valid}`],
+      initialEntries: [hackathonGameRoute(hackathonId, testGameId.valid)],
     });
 
     expect(
@@ -69,7 +70,7 @@ describe('Routing', () => {
 
   it('redirects the user back to landing page when userRole is not ADMIN and url is a specified hackathon ID', () => {
     renderWithRouterAndProvider(<Routing />, {
-      initialEntries: [`/${hackathonId}`],
+      initialEntries: [hackathonRoute(hackathonId)],
     });
 
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();

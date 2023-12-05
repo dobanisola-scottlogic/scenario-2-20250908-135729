@@ -3,6 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { BreadcrumbLevel } from '~/enums/BreadcrumbLevel';
 import { Hackathon } from '~/interfaces/Hackathon';
+import { baseRoute, hackathonRoute } from '~/routing/Routes';
 
 interface BreadcrumbProps {
   breadcrumbLevel: BreadcrumbLevel | undefined;
@@ -32,7 +33,7 @@ const Breadcrumb = ({
             fontWeight: 'normal',
           }}
         >
-          <Link to={import.meta.env.BASE_URL}>Hackathons</Link>
+          <Link to={baseRoute}>Hackathons</Link>
           {hackathon && (
             <>
               <KeyboardArrowRight />
@@ -40,7 +41,7 @@ const Breadcrumb = ({
                 hackathonDetails
               ) : (
                 <>
-                  <Link to={`${import.meta.env.BASE_URL}${hackathon.id}`}>
+                  <Link to={hackathonRoute(hackathon.id)}>
                     {hackathonDetails}
                   </Link>
                   <KeyboardArrowRight />

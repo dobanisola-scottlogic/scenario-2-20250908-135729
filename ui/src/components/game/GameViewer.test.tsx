@@ -6,6 +6,7 @@ import {
   testHackathonBody,
   testHackathonId,
 } from '~/mocks/test-data/hackathon';
+import { gameRouteForTesting, hackathonGameRoute } from '~/routing/Routes';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import GameViewer from './GameViewer';
@@ -20,10 +21,12 @@ describe('GameViewer', () => {
   it('should render the game viewer with the game ID specified in the url path', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id/game/:gameId' element={<GameViewer />}></Route>
+        <Route path={gameRouteForTesting} element={<GameViewer />}></Route>
       </Routes>,
       {
-        initialEntries: [`/${testHackathonId.valid}/game/${testGameId.valid}`],
+        initialEntries: [
+          hackathonGameRoute(testHackathonId.valid, testGameId.valid),
+        ],
       }
     );
 
@@ -46,10 +49,12 @@ describe('GameViewer', () => {
   it('should render the game viewer with the expected components', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id/game/:gameId' element={<GameViewer />}></Route>
+        <Route path={gameRouteForTesting} element={<GameViewer />}></Route>
       </Routes>,
       {
-        initialEntries: [`/${testHackathonId.valid}/game/${testGameId.valid}`],
+        initialEntries: [
+          hackathonGameRoute(testHackathonId.valid, testGameId.valid),
+        ],
       }
     );
 
@@ -68,11 +73,11 @@ describe('GameViewer', () => {
   it('should render the game viewer with an error message if a bad request occurs', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id/game/:gameId' element={<GameViewer />}></Route>
+        <Route path={gameRouteForTesting} element={<GameViewer />}></Route>
       </Routes>,
       {
         initialEntries: [
-          `/${testHackathonId.valid}/game/${testGameId.badRequest}`,
+          hackathonGameRoute(testHackathonId.valid, testGameId.badRequest),
         ],
       }
     );
@@ -85,11 +90,11 @@ describe('GameViewer', () => {
   it('should render the game viewer with an error message if a network error occurs', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path='/:id/game/:gameId' element={<GameViewer />}></Route>
+        <Route path={gameRouteForTesting} element={<GameViewer />}></Route>
       </Routes>,
       {
         initialEntries: [
-          `/${testHackathonId.valid}/game/${testGameId.networkError}`,
+          hackathonGameRoute(testHackathonId.valid, testGameId.networkError),
         ],
       }
     );
