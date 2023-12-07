@@ -1,6 +1,10 @@
 import { http } from 'msw';
 import { baseUrl } from '~/api/api';
-import { jsonOkResponse, plainTextOkResponse, unauthorizedResponse } from './utils';
+import {
+  jsonOkResponse,
+  plainTextOkResponse,
+  unauthorizedResponse,
+} from './utils';
 
 const endpoint = `${baseUrl}/remotebot`;
 const connectedStateEndpoint = `${endpoint}/connectedState`;

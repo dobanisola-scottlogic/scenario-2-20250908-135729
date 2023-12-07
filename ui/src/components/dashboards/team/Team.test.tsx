@@ -2,8 +2,8 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { UserRole } from '~/enums/UserRole';
 import {
   getConnectedStateConnectedResponseHandler,
-  getConnectedStateWaitingResponseHandler,
   getConnectedStateUnauthorizedResponseHandler,
+  getConnectedStateWaitingResponseHandler,
 } from '~/mocks/handlers/remoteBot';
 import { server } from '~/mocks/server';
 import {
