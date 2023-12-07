@@ -74,13 +74,13 @@ const CreateUpdateTeam = ({
       clearForm();
     }
 
+    setFormError(undefined);
     setIsOpen(false);
   };
 
   const clearForm = () => {
     setTeamName('');
     setTeamPassword('');
-    setFormError(undefined);
   };
 
   const handleCreateTeam = () => {

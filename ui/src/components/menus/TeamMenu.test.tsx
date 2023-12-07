@@ -18,4 +18,11 @@ describe('TeamMenu', () => {
       screen.getByText('Are you sure you want to delete the team?')
     ).toBeInTheDocument();
   });
+
+  it('should open the Edit popup on edit', () => {
+    fireEvent.click(screen.getByRole('button', { name: 'more' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Edit...' }));
+
+    expect(screen.getByText('Edit team')).toBeInTheDocument();
+  });
 });
