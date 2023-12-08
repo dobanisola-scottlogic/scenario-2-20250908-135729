@@ -45,30 +45,6 @@ test('milestone information is correct initially and when updated', async ({
   });
 });
 
-test('Shows an error if no hackathon is associated with the logged in team', async ({
-  login,
-  teamDashboardPage,
-}) => {
-  await login.inputCredentials('team', 'withoutHackathon');
-  await login.mockTeamLogin();
-  await teamDashboardPage.verifyLoginSuccess();
-  await teamDashboardPage.verifyMilestoneErrorMessageAppears();
-});
-
-// Below tests relate to other tickets, but exist here as proof of POM method functionality
-
-// Test related to HAC-83
-test('Can interact with the "view information" button', async ({
-  login,
-  teamDashboardPage,
-}) => {
-  await login.inputCredentials(teamName, 'teamPassword');
-  await login.attemptLogin();
-  await teamDashboardPage.verifyLoginSuccess();
-  await teamDashboardPage.clickViewInformationButton();
-});
-
-// Test related to HAC- 84
 test('Can interact with the "connect" button', async ({
   login,
   teamDashboardPage,

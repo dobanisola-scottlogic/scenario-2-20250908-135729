@@ -3,6 +3,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 export class TeamDashboardPage {
   readonly page: Page;
   readonly viewInformationButton: Locator;
+  readonly refreshButton: Locator;
   readonly connectButton: Locator;
   readonly addGameButton: Locator;
   readonly milestoneInformation: ({
@@ -24,9 +25,8 @@ export class TeamDashboardPage {
     this.viewInformationButton = page.getByRole('button', {
       name: 'View information',
     });
-    this.connectButton = page.getByRole('button', {
-      name: 'Connect',
-    });
+    this.refreshButton = page.getByRole('button', { name: 'Refresh' })
+    this.connectButton = page.getByTestId('connectButton');
     this.addGameButton = page.getByRole('button', {
       name: 'Add a new game',
     });
@@ -41,6 +41,7 @@ export class TeamDashboardPage {
 
   async verifyLoginSuccess() {
     await expect(this.viewInformationButton).toBeEnabled();
+    await expect(this.refreshButton).toBeEnabled();
     await expect(this.connectButton).toBeEnabled();
     await expect(this.addGameButton).toBeDisabled();
   }

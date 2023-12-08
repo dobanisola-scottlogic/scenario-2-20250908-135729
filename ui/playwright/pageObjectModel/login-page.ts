@@ -39,7 +39,7 @@ export class LoginPage {
     await this.page.route(
       'http://localhost:8080/application/api/login',
       async (route) => {
-        const json = { name: 'team', role: 'TEAM', admin: false, team: true };
+        const json = { name: 'team', role: 'TEAM',  team: true, admin: false,};
         await route.fulfill({ json });
       }
     );

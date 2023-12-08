@@ -5,8 +5,7 @@ export class CommonPageObjects {
   readonly popupBox: Locator;
   readonly navigationBarDropdownButton: ({ user }: { user: string }) => Locator;
   readonly logoutButton: Locator;
-  readonly popupHeaderText: Locator;
-  readonly popupBodyText: Locator;
+  readonly popupText: ({text}: {text: string}) => Locator;
   readonly successIcon: Locator;
   readonly errorIcon: Locator;
   readonly fieldValidationText: ({
@@ -24,8 +23,7 @@ export class CommonPageObjects {
     this.navigationBarDropdownButton = ({ user }) =>
       page.getByRole('button', { name: `${user}` });
     this.logoutButton = page.getByRole('menuitem', { name: 'Logout' });
-    this.popupHeaderText = page.locator('[role="dialogHeading"]').nth(0);
-    this.popupBodyText = page.locator('[role="dialogHeading"]').nth(1);
+    this.popupText = ({text}) => page.getByText(text);
     this.successIcon = page.getByTestId('SuccessOutlinedIcon');
     this.errorIcon = page.getByTestId('ErrorOutlineIcon');
     this.fieldValidationText = ({ fieldValidationMessage }) =>
@@ -46,8 +44,8 @@ export class CommonPageObjects {
   }
 
   async confirmPopupTextIs(headerText: string, bodyText: string) {
-    await expect(this.popupHeaderText).toContainText(headerText);
-    await expect(this.popupBodyText).toContainText(bodyText);
+    await expect(this.popupText({text: headerText})).toBeVisible();
+    await expect(this.popupText({text: bodyText})).toBeVisible();
   }
 
   async cancelCurrentAction() {

@@ -1,3 +1,4 @@
+import { HackathonHelpers } from 'playwright/helpers';
 import test from '../fixtures';
 
 const fieldCheckers: {
@@ -9,11 +10,22 @@ const fieldCheckers: {
   { textbox: 'Password', text: 'Password!1' },
 ];
 
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+let hackathonName = '';
+let teamName = '';
+
 test.beforeEach(
-  async ({ page, login, teamDashboardPage, commonPageObjects }) => {
+  async ({ page, login, createHackathonPage, createTeamPage, teamDashboardPage, commonPageObjects }) => {
+    hackathonName = teamName =
+    'viewInformation' + uniqueHackathonId
+  await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
+  await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
+    hackathonName,
+    teamName
+  );
     await page.goto('/');
-    await login.inputCredentials('team', 'secret');
-    await login.mockTeamLogin();
+    await login.inputCredentials(teamName, 'teamPassword');
+    await login.attemptLogin();
     await teamDashboardPage.verifyLoginSuccess();
     await teamDashboardPage.clickViewInformationButton();
     await commonPageObjects.confirmPopupIsVisible();

@@ -70,9 +70,9 @@ test('hackathon deletion can be cancelled', async ({ commonPageObjects }) => {
 });
 
 test('hackathon popup has the expected text', async ({
-  deleteHackathonPage,
+  commonPageObjects,
 }) => {
-  await deleteHackathonPage.confirmPopupTextIs(
+  await commonPageObjects.confirmPopupTextIs(
     'Are you sure you want to delete the hackathon?',
     'This will delete teams and games in the hackathon as well. You cannot undo this action.'
   );

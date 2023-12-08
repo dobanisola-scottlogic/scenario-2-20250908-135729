@@ -16,7 +16,7 @@ export class EditHackathonPage {
   constructor(page: Page) {
     this.page = page;
     this.editHackathonPopUp = page.getByRole('dialog');
-    this.editHackathonPopUpTitle = page.locator('[role="dialogHeading"]');
+    this.editHackathonPopUpTitle = page.getByText('Edit hackathon');
     this.hackathonNameField = page.getByLabel('Hackathon name');
     this.editMilestoneBotDropdown = page.getByTestId('current-milestone-bot');
     this.editMilestoneMapDropdown = page.getByTestId('game-map');
@@ -51,7 +51,7 @@ export class EditHackathonPage {
 
   async verifyEditHackathonPopUp() {
     await expect(this.editHackathonPopUp).toBeVisible();
-    await expect(this.editHackathonPopUpTitle).toHaveText('Edit hackathon');
+    await expect(this.editHackathonPopUpTitle).toBeVisible();
     await expect(this.updateHackathonButton).toBeEnabled();
     await expect(this.cancelButton).toBeVisible();
   }

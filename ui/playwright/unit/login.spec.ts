@@ -1,3 +1,4 @@
+import { HackathonHelpers } from 'playwright/helpers';
 import test from '../fixtures';
 
 const emptyFields: {
@@ -8,6 +9,10 @@ const emptyFields: {
   { username: 'admin', password: ' ' },
   { username: ' ', password: 'secret' },
 ];
+
+const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+let hackathonName = '';
+let teamName = '';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -29,9 +34,17 @@ test('admin can successfully log in with enter key', async ({
   await hackathonListPage.verifyLoginSuccess();
 });
 
-test('team can successfully log in', async ({ login, teamDashboardPage }) => {
-  await login.inputCredentials('team', 'secret');
-  await login.mockTeamLogin();
+test('team can successfully log in', async ({ login, createHackathonPage, createTeamPage, teamDashboardPage }) => {
+
+  hackathonName = teamName =
+    'login' + uniqueHackathonId
+  await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
+  await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
+    hackathonName,
+    teamName
+  );
+  await login.inputCredentials(teamName, 'teamPassword');
+  await login.attemptLogin();
   await teamDashboardPage.verifyLoginSuccess();
 });
 

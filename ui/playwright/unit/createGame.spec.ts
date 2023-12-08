@@ -158,6 +158,21 @@ test.describe('create a new game popup without a team being created', () => {
     await createGamePage.verifyGameCannotBeCreated();
   });
 
+  test('duplicate teams cannot be selected', async ({
+    createGamePage, commonPageObjects
+  }) => {
+    await createGamePage.gamePlayer1Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gamePlayer2Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gameMapField.click();
+    await createGamePage.selectOption(map);
+    await createGamePage.addNewGame();
+    await commonPageObjects.confirmErrorMessageIs(
+      'Error creating game - all players must be unique'
+    );
+  });
+
   test('bad request error will appear', async ({
     createGamePage,
     commonPageObjects,
