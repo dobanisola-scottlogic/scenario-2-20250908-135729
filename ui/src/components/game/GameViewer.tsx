@@ -58,7 +58,7 @@ const GameViewer = () => {
               </Grid>
 
               <Grid container item xs={12} md={11} spacing={2}>
-                <GameDetails />
+                <GameDetails game={hackathonGameData.game} />
                 <Grid item xs={12}>
                   <Box
                     sx={{ ...viewerStyles.commonBoxStyles, height: '25rem' }}

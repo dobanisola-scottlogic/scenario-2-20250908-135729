@@ -1,4 +1,5 @@
 import { GameTeam } from '~/interfaces/GameTeam';
+import { colours, playerColours } from '~/theme';
 import { removeMilestoneBotPrefix } from './milestone-utils';
 
 export const getGameTimeString = (
@@ -19,3 +20,11 @@ export const getGameTimeString = (
 
 export const getGameTitle = (teams: GameTeam[]): string =>
   teams.map((team) => removeMilestoneBotPrefix(team.teamName)).join(' vs ');
+
+export const getTeamColour = (playerNumber: number): string => {
+  if (playerNumber >= 0 && playerNumber < 4) {
+    return playerColours[playerNumber];
+  }
+
+  return colours.darkGrey;
+};

@@ -1,3 +1,5 @@
+import { colours } from '~/theme';
+
 const commonStyles = {
   alertStyle: { mr: 1, my: 2 } as const,
   spacingStyle: { m: 1, mx: 'auto' } as const,
@@ -25,6 +27,14 @@ const viewerStyles = {
     borderRadius: '9px',
     height: '2rem',
     textAlign: 'center',
+  } as const,
+  chipItem: {
+    textAlign: 'center',
+  } as const,
+  chipStyles: {
+    backgroundColor: colours.darkGrey,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   } as const,
 };
 

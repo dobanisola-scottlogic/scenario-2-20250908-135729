@@ -1,16 +1,16 @@
 import { screen } from '@testing-library/react';
+import { testGameResultBody } from '~/mocks/test-data/game';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import GameDetails from './GameDetails';
 
 describe('GameDetails', () => {
   it('should render the game viewer with the expected components', () => {
-    renderWithRouterAndProvider(<GameDetails />);
+    renderWithRouterAndProvider(<GameDetails game={testGameResultBody.game} />);
 
-    // Addition for code coverage should be replaced as elements are implemented
-    expect(screen.getByText('Map details')).toBeInTheDocument();
-    expect(
-      screen.getByText('Player details (p1 vs p2) placeholder')
-    ).toBeInTheDocument();
-    expect(screen.getByText('Date time details')).toBeInTheDocument();
+    expect(screen.getByText('Map: Easy')).toBeInTheDocument();
+    expect(screen.getByText('Milestone1Bot')).toBeInTheDocument();
+    expect(screen.getByText('vs')).toBeInTheDocument();
+    expect(screen.getByText('Milestone2Bot')).toBeInTheDocument();
+    expect(screen.getByText('Fri, 09:12:34')).toBeInTheDocument();
   });
 });

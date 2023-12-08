@@ -2,10 +2,10 @@ import { TableCell, TableRow } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import { useGetHackathonGamesQuery } from '~/api/api';
+import ListTable from '~/components/common/ListTable';
 import { listTableStyles } from '~/components/commonStyles';
 import { GameResult } from '~/interfaces/GameResult';
 import { getGameTimeString } from '~/utils/game-utils';
-import ListTable from '../common/ListTable';
 
 const gameViewerBaseUrl = import.meta.env.VITE_GAME_VIEWER_BASE_URL;
 
