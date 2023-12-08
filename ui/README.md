@@ -36,6 +36,20 @@ npm run build
 
 Run the backend via the Gradle application run task. Running the task in the root directory will bundle the UI and server together on [localhost:8080/application](http://localhost:8080/application). Currently, this loads the old viewer. The new UI can be accessed at [localhost:8080/application/ui](http://localhost:8080/application/ui), and the API at [localhost:8080/application/api](http://localhost:8080/application/api). Running the task in the server directory will run the API only.
 
+## Running with the backend database
+
+The database used for this application is H2. A local database can be used - the instructions below use Postgres as an example.
+To use Postgres instead of H2:
+
+- Install Postgres locally
+- Open server/server.yml
+- Edit the section under database
+- Edit the following fields: driverClass, url, user, password
+- The driverClass will be org.postgresql.Driver
+- The URL will be some variation on jdbc:postgresql://localhost:{port}/{database} e.g. jdbc:postgresql://localhost:5432/postgres
+- The user and password will be the credentials set up by the user on installation
+- Run the UI and backend as usual. Programs such as DbVisualizer can be used to connect to the local database and view the data being added
+
 ### CORS errors
 
 To allow [localhost:5173](http://localhost:5173) to make API calls to the backend at [localhost:8080/application/api](http://localhost:8080/application/api), you need to modify the run configuration to use the environment variable `ENVIRONMENT=dev`. Without this, you will encounter CORS issues when trying to develop locally on [localhost:5173](http://localhost:5173) against the API.
