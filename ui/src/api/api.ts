@@ -66,6 +66,9 @@ export const api = createApi({
       query: () => ({
         url: '/login',
         method: RequestType.POST,
+        // HAC-245 / HAC-266 This fix should not be needed when the backend is fixed - standardise to response.json
+        responseHandler: (response) =>
+          response.status === 200 ? response.json() : response.text(),
       }),
       invalidatesTags: ['Hackathon', 'Team', 'Game'],
     }),
