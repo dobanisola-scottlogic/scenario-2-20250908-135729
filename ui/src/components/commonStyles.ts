@@ -33,7 +33,7 @@ const viewerStyles = {
   } as const,
   chipStyles: {
     backgroundColor: colours.darkGrey,
-    color: '#FFFFFF',
+    color: colours.white,
     fontWeight: 'bold',
   } as const,
 };

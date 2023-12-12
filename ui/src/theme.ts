@@ -5,7 +5,7 @@ export const colours = {
   darkPurple: '#6200EE',
   midGrey: '#EFEFEF',
   lightGrey: '#F5F5F5',
-  darkGrey: '#777777',
+  darkGrey: '#575757',
   textBlack: '#000000DE',
   outlineGrey: '#0000001F',
   errorRed: '#D8332E',
@@ -13,9 +13,9 @@ export const colours = {
 };
 
 export const playerColours = [
-  '#FF0000', // red
+  '#A80000', // red
   '#0000FF', // blue
-  '#00FF00', // green
+  '#006100', // green
   '#9400D3', // purple
 ];
 
