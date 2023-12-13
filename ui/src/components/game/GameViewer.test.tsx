@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
-
+import GameViewer from '~/components/game/GameViewer';
 import { testGameId } from '~/mocks/test-data/game';
 import {
   testHackathonBody,
@@ -9,7 +9,6 @@ import {
 import { gameRouteForTesting, hackathonGameRoute } from '~/routing/Routes';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import GameViewer from './GameViewer';
 
 describe('GameViewer', () => {
   const hackathonName = testHackathonBody.name;

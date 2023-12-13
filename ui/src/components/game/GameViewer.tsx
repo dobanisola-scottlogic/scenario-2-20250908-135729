@@ -4,13 +4,17 @@ import { useGetHackathonGameQuery, useGetHackathonQuery } from '~/api/api';
 import Breadcrumb from '~/components/common/Breadcrumb';
 import { CommonContainer } from '~/components/common/CommonContainer';
 import { viewerStyles } from '~/components/commonStyles';
+import GameDetails from '~/components/game/GameDetails';
+import GamePlayback from '~/components/game/GamePlayback';
 import { BreadcrumbLevel } from '~/enums/BreadcrumbLevel';
 import { ContainerRole } from '~/enums/ContainerRole';
 import { colours } from '~/theme';
 import { getGameTitle } from '~/utils/game-utils';
-import GameDetails from './GameDetails';
 
 const GameViewer = () => {
+  const gamePlaybackHeight = 640;
+  const gamePlaybackWidth = 1280;
+
   const { gameId, id } = useParams();
 
   const { data: hackathon, isLoading, isError } = useGetHackathonQuery(id!);
@@ -60,11 +64,11 @@ const GameViewer = () => {
               <Grid container item xs={12} md={11} spacing={2}>
                 <GameDetails game={hackathonGameData.game} />
                 <Grid item xs={12}>
-                  <Box
-                    sx={{ ...viewerStyles.commonBoxStyles, height: '25rem' }}
-                  >
-                    Playback placeholder
-                  </Box>
+                  <GamePlayback
+                    game={hackathonGameData.game}
+                    height={gamePlaybackHeight}
+                    width={gamePlaybackWidth}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Box sx={viewerStyles.commonBoxStyles}>

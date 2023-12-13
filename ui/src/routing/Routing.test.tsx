@@ -2,9 +2,9 @@ import { screen } from '@testing-library/react';
 import { UserRole } from '~/enums/UserRole';
 import { testGameId } from '~/mocks/test-data/game';
 import { testHackathonId } from '~/mocks/test-data/hackathon';
+import { hackathonGameRoute, hackathonRoute } from '~/routing/Routes';
+import Routing from '~/routing/Routing';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import { hackathonGameRoute, hackathonRoute } from './Routes';
-import Routing from './Routing';
 
 describe('Routing', () => {
   const hackathonId = testHackathonId.valid;

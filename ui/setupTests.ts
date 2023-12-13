@@ -1,11 +1,21 @@
 import '@testing-library/jest-dom';
+
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
-import { api } from './src/api/api';
-import { server } from './src/mocks/server';
-import store from './src/store';
+import { api } from '~/api/api';
+import { server } from '~/mocks/server';
+import store from '~/store';
 
-beforeAll(() => server.listen());
+beforeAll(() => {
+  // We need to mock our GamePlayback component since there is not support for mocking the canvas that the actual component creates.
+  vi.mock('~/components/game/GamePlayback', () => ({
+    default: () => {
+      return 'Playback placeholder';
+    },
+  }));
+
+  server.listen();
+});
 
 afterEach(() => {
   cleanup();
