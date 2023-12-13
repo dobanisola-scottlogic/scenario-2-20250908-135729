@@ -1,6 +1,5 @@
 package com.scottlogic.hackathon.remote.client;
 
-import java.io.IOException;
 import java.util.List;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
@@ -9,8 +8,7 @@ import org.eclipse.jetty.websocket.client.io.WebSocketClientConnection;
 import org.eclipse.jetty.websocket.common.WebSocketRemoteEndpoint;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.scottlogic.hackathon.game.*;
 import com.scottlogic.hackathon.remote.TeamId;
@@ -21,12 +19,9 @@ import com.scottlogic.hackathon.remote.serialization.TeamIdBroker;
 import static com.scottlogic.hackathon.remote.client.RemoteClient.GAME_OVER_MESSAGE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(BotStub.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RemoteClientTest {
   @Test
   public void testOnConnect() throws Exception {
@@ -121,7 +116,7 @@ class DummyEndpoint extends WebSocketRemoteEndpoint {
   }
 
   @Override
-  public void sendString(String text) throws IOException {
+  public void sendString(String text) {
     // do nothing
   }
 }

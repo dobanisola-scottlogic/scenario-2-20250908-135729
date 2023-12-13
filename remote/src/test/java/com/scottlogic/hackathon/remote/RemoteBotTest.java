@@ -6,8 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.scottlogic.hackathon.game.GameState;
 import com.scottlogic.hackathon.game.Move;
@@ -18,8 +17,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({RemoteBot.class, Turn.class, GameState.class})
+@RunWith(MockitoJUnitRunner.class)
 public class RemoteBotTest {
 
   @Mock Turn turn;

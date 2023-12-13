@@ -6,9 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.scottlogic.hackathon.game.Move;
 import com.scottlogic.hackathon.game.UniqueIdGenerator;
@@ -24,218 +22,213 @@ import static com.scottlogic.hackathon.remote.server.RemoteBotSocketProtocol.Sta
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({
-  HeartBeat.class,
-  Sender.class,
-  GameStateBroker.class,
-  MakeMovesBroker.class,
-  TeamIdBroker.class,
-  RemoteBot.class,
-  RemoteBotSocketProtocol.class,
-  ConnectionListener.class
-})
+@RunWith(MockitoJUnitRunner.class)
 public class RemoteBotSocketProtocolTest {
 
   @Mock Turn turn;
 
   @Mock Sender sender;
 
-  @Mock HeartBeat hb;
-
   @Mock ConnectionListener listener;
 
   @Test
   public void testCreateBot() throws Exception {
-    // Given
-    ConnectionChangeSupport changeSupport = Mockito.spy(new ConnectionChangeSupport());
+    var teamIdBroker = mockStatic(TeamIdBroker.class);
+    var remoteBot = mockConstruction(
+            RemoteBot.class,
+            (mock, context) -> when(mock.getDisplayName()).thenReturn("team1")
+    );
 
-    PowerMockito.when(listener.isTeam("team1")).thenReturn(true);
-    changeSupport.addChangeEventListener(listener);
-    RemoteBotSocketProtocol protocol = new RemoteBotSocketProtocol(sender, changeSupport, turn);
-    TeamId team = new TeamId("team1", UniqueIdGenerator.INSTANCE.next());
-    RemoteBot remoteBot = new RemoteBot(team, turn);
+    try (teamIdBroker; remoteBot) {
+      // Given
+      ConnectionChangeSupport changeSupport = Mockito.spy(new ConnectionChangeSupport());
 
-    PowerMockito.mockStatic(TeamIdBroker.class);
-    PowerMockito.when(TeamIdBroker.deserialize("input")).thenReturn(team);
-    whenNew(RemoteBot.class).withAnyArguments().thenReturn(remoteBot);
+      when(listener.isTeam("team1")).thenReturn(true);
+      changeSupport.addChangeEventListener(listener);
+      RemoteBotSocketProtocol protocol = new RemoteBotSocketProtocol(sender, changeSupport, turn);
+      TeamId team = new TeamId("team1", UniqueIdGenerator.INSTANCE.next());
 
-    ArgumentCaptor<ConnectionChangeEvent> eventArgumentCaptor =
-        ArgumentCaptor.forClass(ConnectionChangeEvent.class);
+      teamIdBroker.when(() -> TeamIdBroker.deserialize("input")).thenReturn(team);
 
-    // When
-    protocol.createBot("input");
+      ArgumentCaptor<ConnectionChangeEvent> eventArgumentCaptor =
+              ArgumentCaptor.forClass(ConnectionChangeEvent.class);
 
-    // Then
-    verify(changeSupport, times(1)).fireChangeEvent(eventArgumentCaptor.capture());
-    assertEquals(eventArgumentCaptor.getValue().getTarget(), team.getName());
-    assertEquals(
-        eventArgumentCaptor.getValue().getNewValue().getBot().getDisplayName(),
-        team.getName(),
-        team.getName());
-    assertNull(eventArgumentCaptor.getValue().getOldValue());
+      // When
+      protocol.createBot("input");
+
+      // Then
+      verify(changeSupport, times(1)).fireChangeEvent(eventArgumentCaptor.capture());
+      assertEquals(eventArgumentCaptor.getValue().getTarget(), team.getName());
+      assertEquals(
+              eventArgumentCaptor.getValue().getNewValue().getBot().getDisplayName(),
+              team.getName(),
+              team.getName());
+      assertNull(eventArgumentCaptor.getValue().getOldValue());
+    }
   }
 
   @Test
   public void testCreateBot_Unexpected() throws Exception {
-    // Given
-    ConnectionChangeSupport changeSupport = Mockito.spy(new ConnectionChangeSupport());
-    RemoteBotSocketProtocol protocol = new RemoteBotSocketProtocol(sender, changeSupport, turn);
-    TeamId team = new TeamId("team1", UniqueIdGenerator.INSTANCE.next());
-    RemoteBot remoteBot = new RemoteBot(team, turn);
+    var teamBrokerId = mockStatic(TeamIdBroker.class);
+    var remoteBot = mockConstruction(RemoteBot.class);
 
-    PowerMockito.mockStatic(TeamIdBroker.class);
-    PowerMockito.when(TeamIdBroker.deserialize("input")).thenReturn(team);
-    whenNew(RemoteBot.class).withAnyArguments().thenReturn(remoteBot);
+    try (teamBrokerId; remoteBot) {
+      // Given
+      ConnectionChangeSupport changeSupport = Mockito.spy(new ConnectionChangeSupport());
+      RemoteBotSocketProtocol protocol = new RemoteBotSocketProtocol(sender, changeSupport, turn);
+      TeamId team = new TeamId("team1", UniqueIdGenerator.INSTANCE.next());
 
-    // When (no one listening)
-    protocol.createBot("input");
+      teamBrokerId.when(() -> TeamIdBroker.deserialize("input")).thenReturn(team);
 
-    // Then
-    verify(sender, times(1)).sendDisconnect();
+      // When (no one listening)
+      protocol.createBot("input");
+
+      // Then
+      verify(sender, times(1)).sendDisconnect();
+    }
   }
 
   @Test
-  public void testStartHeartBeat() throws Exception {
-    // Given
-    long period = 5;
-    TimeUnit periodUnit = TimeUnit.SECONDS;
-    RemoteBotSocketProtocol protocol =
-        new RemoteBotSocketProtocol(sender, Mockito.mock(ConnectionChangeSupport.class), turn);
-    PowerMockito.whenNew(HeartBeat.class).withAnyArguments().thenReturn(hb);
+  public void testStartHeartBeat() {
+    try (var hb = mockConstruction(HeartBeat.class)) {
+      // Given
+      long period = 5;
+      TimeUnit periodUnit = TimeUnit.SECONDS;
+      RemoteBotSocketProtocol protocol =
+              new RemoteBotSocketProtocol(sender, Mockito.mock(ConnectionChangeSupport.class), turn);
 
-    // When
-    protocol.startHeartBeat(period, periodUnit);
+      // When
+      protocol.startHeartBeat(period, periodUnit);
 
-    // Then
-    verify(hb, times(1)).start();
+      // Then
+      verify(hb.constructed().get(0), times(1)).start();
+    }
   }
 
   @Test
   public void testInitialise() throws Exception {
-    // Given
-    String SERIALIZED_GAMESTATE = "Serialized GameState";
-    PowerMockito.mockStatic(GameStateBroker.class);
-    PowerMockito.when(GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
-    FakeRemoteBotSocketProtocol protocol =
-        new FakeRemoteBotSocketProtocol(sender, Mockito.mock(ConnectionChangeSupport.class), turn);
-    RemoteBot remoteBot =
-        PowerMockito.spy(
-            new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
-    protocol.setBot(remoteBot);
+    try (var gameStateBroker = mockStatic(GameStateBroker.class)) {
+      // Given
+      String SERIALIZED_GAMESTATE = "Serialized GameState";
+      gameStateBroker.when(() -> GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
+      FakeRemoteBotSocketProtocol protocol =
+              new FakeRemoteBotSocketProtocol(sender, mock(ConnectionChangeSupport.class), turn);
+      RemoteBot remoteBot = spy(
+                      new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
+      protocol.setBot(remoteBot);
 
-    // When
-    protocol.initialise();
+      // When
+      protocol.initialise();
 
-    // Then
-    verify(turn, times(1)).waitForTurn();
-    verify(remoteBot, times(1)).responseReceived(any());
-    verify(sender, times(1)).send(SERIALIZED_GAMESTATE);
+      // Then
+      verify(turn, times(1)).waitForTurn();
+      verify(remoteBot, times(1)).responseReceived(any());
+      verify(sender, times(1)).send(SERIALIZED_GAMESTATE);
+    }
   }
 
   @Test
   public void testSendMakeMoves() throws Exception {
-    // Given
-    String SERIALIZED_GAMESTATE = "Serialized GameState";
-    PowerMockito.mockStatic(GameStateBroker.class);
-    PowerMockito.when(GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
-    RemoteBotSocketProtocol protocol =
-        PowerMockito.spy(
-            new RemoteBotSocketProtocol(sender, Mockito.mock(ConnectionChangeSupport.class), turn));
+    try (var gameStateBroker = mockStatic(GameStateBroker.class)) {
+      // Given
+      String SERIALIZED_GAMESTATE = "Serialized GameState";
+      gameStateBroker.when(() -> GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
+      RemoteBotSocketProtocol protocol = spy(
+                      new RemoteBotSocketProtocol(sender, Mockito.mock(ConnectionChangeSupport.class), turn));
 
-    // When
-    protocol.sendMakeMoves();
+      // When
+      protocol.sendMakeMoves();
 
-    // Then
-    verify(turn, times(1)).waitForTurn();
-    verify(sender, times(1)).send(SERIALIZED_GAMESTATE);
+      // Then
+      verify(turn, times(1)).waitForTurn();
+      verify(sender, times(1)).send(SERIALIZED_GAMESTATE);
+    }
   }
 
   @Test
   public void testProcessMakeMoves() throws Exception {
-    List<Move> moves = new ArrayList<>();
-    String SERIALIZED_GAMESTATE = "Serialized GameState";
+    var makeMovesBroker = mockStatic(MakeMovesBroker.class);
+    var gameStateBroker = mockStatic(GameStateBroker.class);
 
-    PowerMockito.mockStatic(MakeMovesBroker.class);
-    PowerMockito.when(MakeMovesBroker.deserialize(any())).thenReturn(moves);
-    PowerMockito.mockStatic(GameStateBroker.class);
-    PowerMockito.when(GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
-    PowerMockito.when(turn.isInitialise()).thenReturn(false);
-    FakeRemoteBotSocketProtocol protocol =
-        PowerMockito.spy(
-            new FakeRemoteBotSocketProtocol(
-                sender, Mockito.mock(ConnectionChangeSupport.class), turn));
-    RemoteBot remoteBot =
-        PowerMockito.spy(
-            new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
-    protocol.setBot(remoteBot);
+    try (makeMovesBroker; gameStateBroker) {
+      List<Move> moves = new ArrayList<>();
+      String SERIALIZED_GAMESTATE = "Serialized GameState";
 
-    // When
-    protocol.processMakeMoves("input");
+      makeMovesBroker.when(() -> MakeMovesBroker.deserialize(any())).thenReturn(moves);
+      gameStateBroker.when(() -> GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
+      when(turn.isInitialise()).thenReturn(false);
+      FakeRemoteBotSocketProtocol protocol = spy(
+              new FakeRemoteBotSocketProtocol(
+                      sender, mock(ConnectionChangeSupport.class), turn));
+      RemoteBot remoteBot = spy(
+                      new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
+      protocol.setBot(remoteBot);
 
-    // Then
-    verify(remoteBot, times(1)).responseReceived(moves);
-    verify(turn, times(1)).waitForTurn();
-    verify(sender, times(1)).send(SERIALIZED_GAMESTATE);
-    assertFalse(protocol.getState() == GAME_OVER);
+      // When
+      protocol.processMakeMoves("input");
+
+      // Then
+      verify(remoteBot, times(1)).responseReceived(moves);
+      verify(turn, times(1)).waitForTurn();
+      verify(sender, times(1)).send(SERIALIZED_GAMESTATE);
+      assertNotSame(protocol.getState(), GAME_OVER);
+    }
   }
 
   @Test
   public void testProcessMakeMovesGameOver() throws Exception {
-    List<Move> moves = new ArrayList<>();
-    String GAME_OVER_RESPONSE = GAME_OVER.name();
+    var makeMovesBroker = mockStatic(MakeMovesBroker.class);
+    var gameStateBroker = mockStatic(GameStateBroker.class);
 
-    PowerMockito.mockStatic(MakeMovesBroker.class);
-    PowerMockito.when(MakeMovesBroker.deserialize(any())).thenReturn(moves);
-    PowerMockito.mockStatic(GameStateBroker.class);
-    PowerMockito.when(GameStateBroker.serialize(any())).thenReturn(GAME_OVER_RESPONSE);
-    FakeRemoteBotSocketProtocol protocol =
-        PowerMockito.spy(
-            new FakeRemoteBotSocketProtocol(
-                sender, Mockito.mock(ConnectionChangeSupport.class), turn));
-    RemoteBot remoteBot =
-        PowerMockito.spy(
-            new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
-    protocol.setBot(remoteBot);
-    PowerMockito.when(turn.isInitialise()).thenReturn(true);
+    try (makeMovesBroker; gameStateBroker) {
+      List<Move> moves = new ArrayList<>();
+      String GAME_OVER_RESPONSE = GAME_OVER.name();
 
-    // When
-    protocol.processMakeMoves("input");
+      makeMovesBroker.when(() -> MakeMovesBroker.deserialize(any())).thenReturn(moves);
+      gameStateBroker.when(() -> GameStateBroker.serialize(any())).thenReturn(GAME_OVER_RESPONSE);
+      FakeRemoteBotSocketProtocol protocol = spy(
+              new FakeRemoteBotSocketProtocol(
+                      sender, mock(ConnectionChangeSupport.class), turn));
+      RemoteBot remoteBot = spy(
+                      new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
+      protocol.setBot(remoteBot);
+      when(turn.isInitialise()).thenReturn(true);
 
-    // Then
-    verify(remoteBot, times(1)).responseReceived(moves);
-    verify(turn, times(1)).waitForTurn();
-    verify(sender, times(1)).send(GAME_OVER_RESPONSE);
-    assertTrue(protocol.getState() == GAME_OVER);
+      // When
+      protocol.processMakeMoves("input");
+
+      // Then
+      verify(remoteBot, times(1)).responseReceived(moves);
+      verify(turn, times(1)).waitForTurn();
+      verify(sender, times(1)).send(GAME_OVER_RESPONSE);
+      assertSame(protocol.getState(), GAME_OVER);
+    }
   }
 
   @Test
   public void testMakeFirstMove() throws Exception {
-    String SERIALIZED_GAMESTATE = "Serialized GameState";
-    PowerMockito.mockStatic(GameStateBroker.class);
-    PowerMockito.when(GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
-    FakeRemoteBotSocketProtocol protocol =
-        PowerMockito.spy(
-            new FakeRemoteBotSocketProtocol(
-                sender, Mockito.mock(ConnectionChangeSupport.class), turn));
-    RemoteBot remoteBot =
-        PowerMockito.spy(
-            new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
-    protocol.setBot(remoteBot);
-    PowerMockito.when(turn.isInitialise()).thenReturn(true);
+    try (var gameStateBroker = mockStatic(GameStateBroker.class)) {
+      String SERIALIZED_GAMESTATE = "Serialized GameState";
+      gameStateBroker.when(() -> GameStateBroker.serialize(any())).thenReturn(SERIALIZED_GAMESTATE);
+      FakeRemoteBotSocketProtocol protocol = spy(
+              new FakeRemoteBotSocketProtocol(
+                      sender, mock(ConnectionChangeSupport.class), turn));
+      RemoteBot remoteBot = spy(
+                      new RemoteBot(new TeamId("team1", UniqueIdGenerator.INSTANCE.next()), turn));
+      protocol.setBot(remoteBot);
 
-    // When
-    protocol.makeFirstMove();
+      // When
+      protocol.makeFirstMove();
 
-    // Then
-    verify(remoteBot, times(1)).responseReceived(emptyList());
-    verify(sender, times(2)).send(SERIALIZED_GAMESTATE);
-    assertTrue(protocol.getState() == MAKE_MOVES);
+      // Then
+      verify(remoteBot, times(1)).responseReceived(emptyList());
+      verify(sender, times(2)).send(SERIALIZED_GAMESTATE);
+      assertSame(protocol.getState(), MAKE_MOVES);
+    }
   }
 
-  class FakeRemoteBotSocketProtocol extends RemoteBotSocketProtocol {
+  static class FakeRemoteBotSocketProtocol extends RemoteBotSocketProtocol {
     public FakeRemoteBotSocketProtocol(
         Sender sender, ConnectionChangeSupport changeSupport, Turn turn) {
       super(sender, changeSupport, turn);

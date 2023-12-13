@@ -5,31 +5,28 @@ import org.awaitility.Awaitility;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.atLeast;
-import static org.powermock.api.mockito.PowerMockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HeartBeat.class, Sender.class, Executors.class})
+@RunWith(MockitoJUnitRunner.class)
 public class HeartBeatTest {
 
   @Mock Sender sender;
 
   @Test(timeout = 1000)
-  public void testStart() throws Exception {
+  public void testStart() {
     HeartBeat hb =
         new HeartBeat(
             sender, 5, TimeUnit.MILLISECONDS, Executors.newSingleThreadScheduledExecutor());
 
     final int[] counter = new int[1];
 
-    doNothing().doAnswer((Answer<Integer>) invocation -> ++counter[0]).when(sender).sendPing();
+    doAnswer((Answer<Integer>) invocation -> ++counter[0]).when(sender).sendPing();
 
     hb.start();
 
@@ -42,7 +39,7 @@ public class HeartBeatTest {
   }
 
   @Test(timeout = 1000)
-  public void testShutdown() throws Exception {
+  public void testShutdown() {
     ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
     HeartBeat hb = new HeartBeat(sender, 10, TimeUnit.MILLISECONDS, service);
 

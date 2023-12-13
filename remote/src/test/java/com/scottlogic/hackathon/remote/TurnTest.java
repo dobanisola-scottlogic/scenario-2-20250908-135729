@@ -5,16 +5,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.scottlogic.hackathon.game.GameState;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({GameState.class})
+@RunWith(MockitoJUnitRunner.class)
 public class TurnTest {
 
   @Mock GameState gameState;
@@ -35,7 +32,7 @@ public class TurnTest {
     assertEquals(waiter.getState(), Thread.State.NEW);
     waiter.start();
 
-    assertNotEquals(waiter.getState(), Thread.State.NEW);
+    assertNotSame(waiter.getState(), Thread.State.NEW);
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
