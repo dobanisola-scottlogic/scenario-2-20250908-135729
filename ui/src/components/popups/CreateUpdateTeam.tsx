@@ -30,7 +30,7 @@ interface CreateUpdateTeamProps extends PopupProps {
 }
 
 export const teamNameErrorMsg =
-  'Team name must not be empty, include special characters or be a prohibited name';
+  'Team name must not be empty, include special characters, be a prohibited name or include multiple spaces';
 
 const CreateUpdateTeam = ({
   isOpen,

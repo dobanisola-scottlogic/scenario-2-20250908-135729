@@ -25,8 +25,10 @@ import { commonStyles, popupStyles } from '~/components/commonStyles';
 import { useAppDispatch } from '~/hooks';
 import { PopupProps } from '~/interfaces/PopupProps';
 import { setSnackbarState } from '~/slices/snackbarSlice';
-
 import { isValidName } from './utils';
+
+export const hackathonNameErrorMsg =
+  'Hackathon name must not be empty, include special characters or include multiple spaces';
 
 const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
   const dispatch = useAppDispatch();
@@ -156,9 +158,7 @@ const CreateUpdateHackathon = ({ id, isOpen, setIsOpen }: PopupProps) => {
               disabled={isEditing}
               error={hackathonNameShowError()}
               helperText={
-                hackathonNameShowError()
-                  ? 'Hackathon name must not be empty or include special characters'
-                  : null
+                hackathonNameShowError() ? hackathonNameErrorMsg : null
               }
               fullWidth
               inputProps={{ maxLength: 255 }}

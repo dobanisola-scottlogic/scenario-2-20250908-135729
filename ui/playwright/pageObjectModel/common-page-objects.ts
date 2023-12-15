@@ -71,11 +71,11 @@ export class CommonPageObjects {
     let fieldValidationMessage = '';
     switch (field) {
       case 'Team': {
-        fieldValidationMessage = `Team name must not be empty, include special characters or be a prohibited name`;
+        fieldValidationMessage = `Team name must not be empty, include special characters, be a prohibited name or include multiple spaces`;
         break;
       }
       case 'Hackathon': {
-        fieldValidationMessage = `Hackathon name must not be empty or include special characters`;
+        fieldValidationMessage = `Hackathon name must not be empty, include special characters or include multiple spaces`;
         break;
       }
     }

@@ -123,6 +123,37 @@ describe('CreateUpdateTeam Popup Component', () => {
       expect(screen.getByText(teamNameErrorMsg)).toBeInTheDocument();
     });
 
+    it('disables the add hackathon button if multiple spaces are entered', () => {
+      renderWithRouterAndProvider(
+        <CreateUpdateTeam
+          isOpen
+          hackathonId={hackathonId}
+          setIsOpen={mockFunction}
+        />
+      );
+
+      expect(screen.getByText('Add a new team')).toBeInTheDocument();
+
+      const nameInput = screen.getByRole('textbox', { name: 'Name' });
+      const passwordInput = screen.getByTestId('password-input');
+      const submitButton = screen.getByRole('button', { name: 'Add team' });
+
+      expect(submitButton).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+
+      fireEvent.change(nameInput, {
+        target: { value: 'Has  multiple  spaces' },
+      });
+      fireEvent.change(passwordInput, { target: { value: teamPassword } });
+
+      expect(submitButton).toBeDisabled();
+      expect(screen.getByText(teamNameErrorMsg)).toBeInTheDocument();
+
+      fireEvent.change(nameInput, { target: { value: 'Has single spaces' } });
+
+      expect(submitButton).not.toBeDisabled();
+    });
+
     it('does not allow more than 255 characters to be entered for the team name', async () => {
       renderWithRouterAndProvider(
         <CreateUpdateTeam

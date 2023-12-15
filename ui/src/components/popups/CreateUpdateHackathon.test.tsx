@@ -9,7 +9,9 @@ import {
 } from '~/mocks/test-data/hackathon';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import CreateUpdateHackathon from './CreateUpdateHackathon';
+import CreateUpdateHackathon, {
+  hackathonNameErrorMsg,
+} from './CreateUpdateHackathon';
 
 describe('Create Update Hackathon Popup Component', () => {
   const mockFunction = () => null;
@@ -72,11 +74,27 @@ describe('Create Update Hackathon Popup Component', () => {
         expect(
           screen.getByRole('button', { name: 'Add a new hackathon' })
         ).toHaveAttribute('disabled');
+        expect(screen.getByText(hackathonNameErrorMsg)).toBeInTheDocument();
+      });
+
+      it('disables the add hackathon button if multiple spaces are entered', () => {
+        renderWithRouterAndProvider(
+          <CreateUpdateHackathon isOpen setIsOpen={mockFunction} />
+        );
+
+        expect(screen.getAllByText('Add a new hackathon')).toHaveLength(2);
+
+        const textInput = screen.getByRole('textbox', {
+          name: 'Hackathon name',
+        });
+        fireEvent.change(textInput, {
+          target: { value: 'Has  multiple   spaces' },
+        });
+
         expect(
-          screen.getByText(
-            'Hackathon name must not be empty or include special characters'
-          )
-        ).toBeInTheDocument();
+          screen.getByRole('button', { name: 'Add a new hackathon' })
+        ).toHaveAttribute('disabled');
+        expect(screen.getByText(hackathonNameErrorMsg)).toBeInTheDocument();
       });
 
       it('does not allow more than 255 characters to be entered for the hackathon name', async () => {
