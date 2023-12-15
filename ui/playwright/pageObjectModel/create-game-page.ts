@@ -80,14 +80,4 @@ export class CreateGamePage {
   async verifyGameCannotBeCreated() {
     await expect(this.addNewGameButton).toBeDisabled();
   }
-
-  async mock400ErrorOnCreatingGame() {
-    await this.page.route(
-      `http://localhost:8080/application/api/game`,
-      async (route) => {
-        await route.fulfill({ status: 400 });
-      }
-    );
-    await this.addNewGame();
-  }
 }

@@ -64,13 +64,13 @@ test.describe('create a new game popup without a team being created', () => {
     );
     await commonPageObjects.closeSuccessAlert();
     // below can be used instead when bug HAC-202 has been completed
-    // await hackathonDetailsPage.verifyGameExists('Milestone1Bot vs Milestone2Bot');
-    await hackathonDetailsPage.verifyGameExists('Milestone1Bot');
-    await hackathonDetailsPage.verifyGameExists('Milestone2Bot');
+    // await hackathonDetailsPage.verifyGameExists('player1 vs player2');
+    await hackathonDetailsPage.verifyGameExists(player1);
+    await hackathonDetailsPage.verifyGameExists(player2);
     // below can be used instead when bug HAC-202 has been completed
-    // await hackathonDetailsPage.verifyGameExists('Milestone3Bot vs Milestone4Bot');
-    await hackathonDetailsPage.verifySecondGameExists('Milestone3Bot');
-    await hackathonDetailsPage.verifySecondGameExists('Milestone4Bot');
+    // await hackathonDetailsPage.verifyGameExists('player3 vs player4');
+    await hackathonDetailsPage.verifySecondGameExists(player3);
+    await hackathonDetailsPage.verifySecondGameExists(player4);
   });
 
   test('games with four teams can be created', async ({
@@ -94,11 +94,11 @@ test.describe('create a new game popup without a team being created', () => {
     );
     await commonPageObjects.closeSuccessAlert();
     // below can be used instead when bug HAC-202 has been completed
-    // await hackathonDetailsPage.verifyGameExists('Milestone1Bot vs Milestone2Bot vs Milestone3Bot vs Milestone4Bot');
-    await hackathonDetailsPage.verifyGameExists('Milestone1Bot');
-    await hackathonDetailsPage.verifyGameExists('Milestone2Bot');
-    await hackathonDetailsPage.verifyGameExists('Milestone3Bot');
-    await hackathonDetailsPage.verifyGameExists('Milestone4Bot');
+    // await hackathonDetailsPage.verifyGameExists('player1 vs player2 vs player3 vs player4');
+    await hackathonDetailsPage.verifyGameExists(player1);
+    await hackathonDetailsPage.verifyGameExists(player2);
+    await hackathonDetailsPage.verifyGameExists(player3);
+    await hackathonDetailsPage.verifyGameExists(player4);
   });
 
   test('admin can cancel creation of a new game', async ({
@@ -127,6 +127,26 @@ test.describe('create a new game popup without a team being created', () => {
     await createGamePage.verifyOptionalPlayerDropdownField();
     await createGamePage.gameMapField.click();
     await createGamePage.verifyMapDropdownField();
+  });
+
+  test('game cannot be created if number of players exceed number of available spawn points', async ({
+    createGamePage,
+    commonPageObjects
+  }) => {
+    await createGamePage.gamePlayer1Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gamePlayer2Field.click();
+    await createGamePage.selectOption(player2);
+    await createGamePage.gamePlayer3Field.click();
+    await createGamePage.selectOption(player3);
+    await createGamePage.gamePlayer4Field.click();
+    await createGamePage.selectOption(player4);
+    await createGamePage.gameMapField.click();
+    await createGamePage.selectOption("Three Straight");
+    await createGamePage.addNewGame();
+    await commonPageObjects.confirmErrorMessageIs(
+      "Error creating game - The specified number of bots (4) exceeds the available number of spawn points (3)"
+    );
   });
 
   test('game cannot be created if mandatory fields are missing', async ({
@@ -173,23 +193,7 @@ test.describe('create a new game popup without a team being created', () => {
       'Error creating game - all players must be unique'
     );
   });
-
-  test('bad request error will appear', async ({
-    createGamePage,
-    commonPageObjects,
-  }) => {
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player2);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
-    await createGamePage.mock400ErrorOnCreatingGame();
-    await commonPageObjects.confirmErrorMessageIs(
-      'Error creating game - bad request'
-    );
-  });
-});
+})
 
 test.describe('create a team before entering the create game popup', () => {
   test.beforeEach(
