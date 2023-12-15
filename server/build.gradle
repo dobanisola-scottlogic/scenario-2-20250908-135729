@@ -37,6 +37,9 @@ dependencies {
 
     implementation group: 'ru.vyarus', name: 'dropwizard-guicey'
 
+    implementation(platform("software.amazon.awssdk:bom:2.21.38"))
+    implementation("software.amazon.awssdk:cloud9")
+
     implementation project(":game")
     implementation project(":game-engine")
     implementation project(":default-bots")
@@ -51,9 +54,13 @@ dependencies {
     runtimeOnly project(path: ':ui', configuration: 'archives')
 
     testImplementation 'junit:junit:4.4'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.+'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.+'
 }
 
 test {
+    environment 'CONTESTANT_PASSWORD', 'test-password'
+    environment 'WORKSPACE', 'test-workspace'
     finalizedBy jacocoTestReport
 }
 
@@ -65,7 +72,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.01
+                minimum = 0.05
             }
         }
     }
@@ -98,6 +105,11 @@ if(project.hasProperty('database')) {
 
 run {
     args "server", "$defaultConfigFile"
+
+    // Uncomment and populate these lines to enable team info requests
+    // environment 'AWS_ACCESS_KEY_ID', 'access-key'
+    // environment 'AWS_SECRET_ACCESS_KEY', 'secret-key'
+    // environment 'WORKSPACE', 'workspace'
 }
 
 task('dockerContext', type: Sync) {

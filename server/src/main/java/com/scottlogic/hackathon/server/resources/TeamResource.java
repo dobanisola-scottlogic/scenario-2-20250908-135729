@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
@@ -12,7 +15,9 @@ import io.dropwizard.hibernate.UnitOfWork;
 
 import com.scottlogic.hackathon.server.HackathonConfiguration;
 import com.scottlogic.hackathon.server.authentication.Authorizer;
+import com.scottlogic.hackathon.server.authentication.User;
 import com.scottlogic.hackathon.server.models.Team;
+import com.scottlogic.hackathon.server.models.TeamInfo;
 import com.scottlogic.hackathon.server.services.TeamService;
 import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
 
@@ -78,5 +83,22 @@ public class TeamResource {
   @RolesAllowed(Authorizer.ROLE_ADMIN)
   public void deleteTeam(@PathParam("id") final UUID id) {
     teamService.deleteTeam(id);
+  }
+
+  @GET
+  @UnitOfWork
+  @Timed
+  @Path("/info")
+  @RolesAllowed(Authorizer.ROLE_TEAM)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getTeamInfo(@Context SecurityContext context) {
+    User user = (User) context.getUserPrincipal();
+    TeamInfo teamInfo = teamService.getTeamInfo(user.getName());
+
+    if (teamInfo != null) {
+      return Response.ok(teamInfo).build();
+    }
+
+    return Response.status(Response.Status.NOT_FOUND).build();
   }
 }

@@ -40,6 +40,22 @@ resource "aws_ecs_task_definition" "task_definition" {
       ]
       environment = [
         {
+          name  = "CONTESTANT_PASSWORD"
+          value = module.contestant.hackathon_contestant_password
+        },
+        {
+          name  = "AWS_ACCESS_KEY_ID"
+          value = var.server_user_access_key
+        },
+        {
+          name  = "AWS_SECRET_ACCESS_KEY"
+          value = var.server_user_secret_key
+        },
+        {
+          name  = "WORKSPACE"
+          value = local.workspace
+        },
+        {
           name  = "DB_NAME"
           value = local.db_name
         },
