@@ -122,15 +122,3 @@ variable "stop_hour" {
   type        = number
   default     = 18
 }
-
-variable "server_user_access_key" {
-  description = "Access key for the server user (to be replaced by HAC-270)"
-  type        = string
-  sensitive   = true
-}
-
-variable "server_user_secret_key" {
-  description = "Secret key for the server user (to be replaced by HAC-270)"
-  type        = string
-  sensitive   = true
-}

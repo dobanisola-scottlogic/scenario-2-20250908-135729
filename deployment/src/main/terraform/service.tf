@@ -45,11 +45,11 @@ resource "aws_ecs_task_definition" "task_definition" {
         },
         {
           name  = "AWS_ACCESS_KEY_ID"
-          value = var.server_user_access_key
+          value = aws_iam_access_key.server_user_access_key.id
         },
         {
           name  = "AWS_SECRET_ACCESS_KEY"
-          value = var.server_user_secret_key
+          value = aws_iam_access_key.server_user_access_key.secret
         },
         {
           name  = "WORKSPACE"
@@ -97,7 +97,6 @@ resource "aws_ecs_task_definition" "task_definition" {
     Name = "${local.workspace}-ecs-task-definition"
   }
 }
-
 
 # The service. The service is a resource which allows you to run multiple
 # copies of a type of task, and gather up their logs and metrics, as well

@@ -194,3 +194,38 @@ resource "aws_iam_instance_profile" "contestant_instance_profile" {
     Name = "${local.workspace}-contestant-instance-profile"
   }
 }
+
+################################################################################
+# Server user definitions
+################################################################################
+
+resource "aws_iam_user" "server_user" {
+  name = "${local.workspace}-server-user"
+  path = "/"
+
+  tags = {
+    Name = "${local.workspace}-server-user"
+  }
+}
+
+resource "aws_iam_user_policy" "server_user_policy" {
+  name = "${local.workspace}-server-user-policy"
+  user = aws_iam_user.server_user.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "cloud9:ListEnvironments",
+          "cloud9:DescribeEnvironments"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_access_key" "server_user_access_key" {
+  user = aws_iam_user.server_user.name
+}
