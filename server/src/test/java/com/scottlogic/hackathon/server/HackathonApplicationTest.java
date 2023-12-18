@@ -1,8 +1,8 @@
 package com.scottlogic.hackathon.server;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HackathonApplicationTest {
   @Test

@@ -1,25 +1,27 @@
 package com.scottlogic.hackathon.server.models;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.services.cloud9.model.Environment;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TeamInfoTest {
   @Mock Environment environment;
 
-  @Before
+  @BeforeEach
   public void init() {
     environment = mock(Environment.class);
-    when(environment.arn()).thenReturn("arn:partition:service:region:account-id:resource-type:resource-id");
-    when(environment.ownerArn()).thenReturn("arn:partition:service:region:account-id:resource-type/resource-id");
+    when(environment.arn())
+        .thenReturn("arn:partition:service:region:account-id:resource-type:resource-id");
+    when(environment.ownerArn())
+        .thenReturn("arn:partition:service:region:account-id:resource-type/resource-id");
     when(environment.id()).thenReturn("environment-id");
   }
 

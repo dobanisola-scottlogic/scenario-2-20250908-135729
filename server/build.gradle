@@ -43,7 +43,7 @@ dependencies {
     implementation project(":game")
     implementation project(":game-engine")
     implementation project(":default-bots")
-    implementation (project(":remote")) {
+    implementation(project(":remote")) {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
@@ -52,10 +52,10 @@ dependencies {
     runtimeOnly group: "com.h2database", name: "h2"
     runtimeOnly project(path: ':viewer', configuration: 'archives')
     runtimeOnly project(path: ':ui', configuration: 'archives')
-
-    testImplementation 'junit:junit:4.4'
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.+'
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.+'
+    
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
 }
 
 test {

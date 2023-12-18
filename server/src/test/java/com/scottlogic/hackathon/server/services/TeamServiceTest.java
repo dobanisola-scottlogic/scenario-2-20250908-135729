@@ -1,13 +1,13 @@
 package com.scottlogic.hackathon.server.services;
 
 import java.util.Collections;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.services.cloud9.Cloud9Client;
 import software.amazon.awssdk.services.cloud9.Cloud9ClientBuilder;
 import software.amazon.awssdk.services.cloud9.model.DescribeEnvironmentsRequest;
@@ -18,13 +18,13 @@ import software.amazon.awssdk.services.cloud9.model.ListEnvironmentsResponse;
 import com.scottlogic.hackathon.server.models.TeamInfo;
 import com.scottlogic.hackathon.server.services.stores.TeamStore;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TeamServiceTest {
   @Mock TeamStore teamStore;
   @Mock Cloud9Client cloud9;
@@ -36,7 +36,7 @@ public class TeamServiceTest {
   MockedStatic<Cloud9Client> cloud9Client;
   MockedStatic<TeamInfo> teamInfoStatic;
 
-  @Before
+  @BeforeEach
   public void init() {
     cloud9 = mock(Cloud9Client.class);
     teamStore = mock(TeamStore.class);
@@ -64,7 +64,7 @@ public class TeamServiceTest {
     teamInfoStatic.when(() -> TeamInfo.fromEnvironment(environment)).thenReturn(teamInfo);
   }
 
-  @After
+  @AfterEach
   public void close() {
     cloud9Client.close();
     teamInfoStatic.close();
