@@ -180,23 +180,24 @@ To delete both of the CloudFormation stacks
 ```
 If you are not sure whether it was successful or not you can check on aws that both the ECS cluster and EC2 instance no longer exist.
 
-## Subprojects
+## Sub-projects
 
-This project is made up of a number of subcomponents:
-  - [code-server](code-server) - Builds the docker image for a fully bootstrapped VS Code,
-
-  - [default-bots](default-bots) - A library containing built in game strategies that contestants can play against
-    on the server.
-  - [deployment](deployment) - Scripts and configs for automating cloud  production deployment
-
-  - [game](game) - A library containing the API of the game itself, including the interfaces available to contestants
-    _and_ the game state model given to the server for rendering.
-  - [game-engine](game-engine) - A library implementing the game API.
-  - [java-contestant](java-contestant) - The java contestant files used in code-server.
-  - [python-contestant](python-contestant) - The python contestant files used in code-server.
-  - [remote](remote) - a distributed client for the game server to run the contestants game code.
-  - [server](server) - The web server application and REST back-end.
-  - [viewer](viewer) - The front-end web application.
+This project is made up of a number of sub-components:
+  - [default-bots](default-bots) - Library containing built-in game strategies
+    that contestants can play against on the server
+  - [deployment](deployment) - Scripts and Terraform configuration for
+    automating cloud deployment
+  - [game](game) - Library containing the API of the game itself, including the
+    interfaces available to contestants _and_ the game state model given to the
+    server for rendering
+  - [game-engine](game-engine) - Library implementing the game API
+  - [java-contestant](java-contestant) - Java contestant files
+  - [python-contestant](python-contestant) - Python contestant files
+  - [remote](remote) - Distributed client for the game server to run the
+    contestant's game code
+  - [server](server) - Web server application and REST back-end
+  - [ui](ui) - Front-end web application written in Vite
+  - [viewer](viewer) - Front-end web application (being replaced by new UI)
 
 ## Development
 

@@ -8,5 +8,4 @@ include 'game',
         'remote',
         'java-contestant',
         'python-contestant',
-        'code-server',
         'ui'

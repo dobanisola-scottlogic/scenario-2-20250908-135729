@@ -12,16 +12,6 @@ It contains:
 - docs - source for the Sphinx documentation site
 - util - utility module for JSON handling and converting camelCase/snake_case attributes
 
-
-## NOTE  
-The gradle build builds a python-contestant.zip that is used with code-server
-Currently it relies upon the docs_html having benn previously built using python.
-
-## TODO: Need better way to assemble docs_html via python so it can be picked up by the gradle build.
-
-
-#~~# Build documentation (don't need this bit any longer '~~~~& contestant distributable~~')~~
-
 To build:
 - Install Python
 - Open a terminal at the root of this project
