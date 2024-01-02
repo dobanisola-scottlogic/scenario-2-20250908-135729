@@ -1,8 +1,10 @@
 package com.scottlogic.hackathon.server.services;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.hibernate.criterion.Restrictions;
@@ -127,56 +129,49 @@ public class BotService {
         .collect(toUnmodifiableList());
   }
 
-  public Map<Team, Bot> createTeamBotMap(
-      final User user, final GameConfiguration gameConfiguration) {
-    final var userAccessibleBots =
+  public Map<Team, Bot> createTeamBotMap(User user, GameConfiguration gameConfiguration) {
+    var userAccessibleBots =
         this.getUserAccessibleBots(user).stream()
             .collect(toMap(TeamBot::getTeamId, Function.identity()));
 
-    final var milestoneBots =
+    var allMilestoneBots =
         milestoneService.getMilestones().stream()
             .collect(toMap(MilestoneBot::getMilestoneClassName, Function.identity()));
 
-    final var teams =
-        gameConfiguration.getTeams().stream().collect(toMap(Function.identity(), this::getTeam));
+    var teamBotMap =
+        gameConfiguration.getTeams().stream()
+            .filter(name -> !MilestoneBot.isMilestoneBot(name))
+            .map(teamService::getTeam)
+            .collect(toMap(Function.identity(), team -> getTeamBot(team, userAccessibleBots)));
 
-    return teams.values().stream()
-        .filter(Objects::nonNull)
-        .collect(
-            toMap(
-                Function.identity(),
-                team -> getTeamOrMileStoneBot(team, userAccessibleBots, milestoneBots)));
+    var milestoneBotMap =
+            gameConfiguration.getTeams().stream()
+                    .filter(MilestoneBot::isMilestoneBot)
+                    .collect(toMap(Team::createTeam, name -> getMilestoneBot(name, allMilestoneBots)));
+
+    return Stream.concat(teamBotMap.entrySet().stream(), milestoneBotMap.entrySet().stream())
+        .collect(toMap(Map.Entry::getKey, Entry::getValue));
   }
 
-  private Team getTeam(String teamName) {
-    if (teamName.startsWith(MilestoneBot.MILESTONE_BOT_PREFIX)) {
-      Team adminTeam = new Team();
-      adminTeam.setName(teamName);
-      return adminTeam;
-    } else {
-      return teamService.getTeam(teamName);
+  private Bot getTeamBot(Team team, Map<UUID, TeamBot> teamBots) {
+
+    if (!teamBots.containsKey(team.getId())) {
+      throw new IllegalArgumentException("Team " + team.getName() + " has no bots.");
     }
+
+    return remoteBotStore
+        .get(teamBots.get(team.getId()).getId())
+        .map(b -> (Bot) b)
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Team " + team.getName() + " is not connected to the server."));
   }
 
-  private Bot getTeamOrMileStoneBot(
-      Team team, Map<UUID, TeamBot> teamBots, Map<String, MilestoneBot> milestoneBots) {
-    try {
-      return ofNullable(team.getId())
-          .flatMap(id -> remoteBotStore.get(teamBots.get(id).getId()).map(b -> (Bot) b))
-          .orElseGet(() -> milestoneBots.get(team.getName()).getBot());
-    } catch (NullPointerException npe) {
-      logger.error(
-          "Error in getTeamOrMileStoneBot\n" +
-              "Team ID: {}\n" +
-              "Team name: {}\n" +
-              "Team bots: {}\n" +
-              "Milestone bots: {}",
-          team.getId(),
-          team.getName(),
-          teamBots.keySet(),
-          milestoneBots.values().stream().map(MilestoneBot::getId).collect(toSet()));
-      throw npe;
-    }
+  private Bot getMilestoneBot(String name, Map<String, MilestoneBot> milestoneBots) {
+    return ofNullable(milestoneBots.get(name))
+        .map(MilestoneBot::getBot)
+        .orElseThrow(() -> new IllegalArgumentException(name + " is not a valid milestone bot."));
   }
 
   private void removeOldMilestoneGames(Team team) {

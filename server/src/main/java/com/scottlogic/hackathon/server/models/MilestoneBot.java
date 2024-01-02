@@ -60,4 +60,8 @@ public class MilestoneBot {
           throw new RuntimeException(String.format("Unable to instantiate bot: %s", milestoneClassName), e);
       }
   }
+
+  public static boolean isMilestoneBot(String name) {
+    return name.startsWith(MILESTONE_BOT_PREFIX);
+  }
 }

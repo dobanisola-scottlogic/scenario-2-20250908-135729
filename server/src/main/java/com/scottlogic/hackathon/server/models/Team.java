@@ -3,9 +3,11 @@ package com.scottlogic.hackathon.server.models;
 import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import io.dropwizard.auth.basic.BasicCredentials;
 
 @Entity
+@EqualsAndHashCode
 public class Team {
   @Id
   @Column(columnDefinition = "uuid")
@@ -21,6 +23,12 @@ public class Team {
 
   public Team(final UUID id) {
     this.id = id;
+  }
+
+  public static Team createTeam(String name) {
+    var team = new Team();
+    team.setName(name);
+    return team;
   }
 
   public UUID getId() {
