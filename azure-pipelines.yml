@@ -13,7 +13,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: Gradle@2
+- task: Gradle@3
   inputs:
     workingDirectory: ''
     gradleWrapperFile: 'gradlew'
@@ -24,3 +24,9 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'check'
+
+- task: PublishCodeCoverageResults@2
+  inputs: 
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/+(*coverage|jacocoTestReport).xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)'
+    failIfCoverageEmpty: true
