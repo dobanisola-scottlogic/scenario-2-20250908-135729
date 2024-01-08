@@ -27,9 +27,13 @@ public class Hackathon {
   public Hackathon() {}
 
   public Hackathon(final String name) {
-    this.id = name.toLowerCase().replace(" ", "-");
-    this.name = name;
+    this.setName(name);
     this.currentMilestoneClassName = MilestoneBot.MILESTONE_BOT_PREFIX + "Milestone1Bot";
     this.currentMilestoneMap = "Easy";
+  }
+
+  public void setName(final String name) {
+    this.name = name.trim().replaceAll("\\s+", " ");
+    this.id = this.name.toLowerCase().replace(" ", "-");
   }
 }
