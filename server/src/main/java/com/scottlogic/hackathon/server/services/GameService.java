@@ -1,6 +1,10 @@
 package com.scottlogic.hackathon.server.services;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
 import com.google.inject.Inject;
 import org.hibernate.criterion.Criterion;
@@ -40,22 +44,21 @@ public class GameService {
     this.botThreadFactory = botThreadFactory;
   }
 
-  public GameResult playGame(
-      final User user, final GameConfiguration gameConfiguration, Map<Team, Bot> teamBotMap) {
-    final Game game = gameFactory.create(teamBotMap, gameConfiguration);
+  public GameResult playGame(UUID gameId, GameConfiguration gameConfiguration, Map<Team, Bot> teamBotMap) {
+    var game = gameFactory.create(teamBotMap, gameConfiguration);
     if (game == null) {
       return null;
     }
-    final Set<Bot> bots = new HashSet<>(teamBotMap.values());
+    var bots = new HashSet<>(teamBotMap.values());
 
-    final GameEngine gameEngine =
-        GameEngine.create(
-            retrieveConfig(),
-            new MapFileReader().readMapFile(gameConfiguration.getMap()),
-            bots,
-            botThreadFactory);
+    var gameEngine =
+            GameEngine.create(
+                    retrieveConfig(),
+                    new MapFileReader().readMapFile(gameConfiguration.getMap()),
+                    bots,
+                    botThreadFactory);
 
-    return play(game, gameEngine);
+    return play(gameId, game, gameEngine);
   }
 
   public GameResult playGameDebug(
@@ -69,7 +72,7 @@ public class GameService {
     final GameEngine gameEngine =
         GameEngine.createDebug(
             retrieveConfig(), new MapFileReader().readMapFile(gameConfiguration.getMap()), bots);
-    return play(game, gameEngine);
+    return play(UUID.randomUUID(), game, gameEngine);
   }
 
   public List<GameResult> getGameResults() {
@@ -110,11 +113,11 @@ public class GameService {
         .orElse(GameConfigLayerBuilder.createEmpty());
   }
 
-  private GameResult play(final Game game, final GameEngine gameEngine) {
+  private GameResult play(UUID gameId, Game game, GameEngine gameEngine) {
     try {
-      final com.scottlogic.hackathon.game.GameResult engineGameResult = gameEngine.play();
+      final com.scottlogic.hackathon.game.GameResult engineGameResult = gameEngine.play(gameId);
       final GameResult gameResult =
-          GameResult.create(gameEngine.getIdGenerator(), game, engineGameResult);
+              GameResult.create(gameEngine.getIdGenerator(), game, engineGameResult);
       gameStore.saveOrUpdate(gameResult);
       return gameResult;
     } catch (final Exception ex) {

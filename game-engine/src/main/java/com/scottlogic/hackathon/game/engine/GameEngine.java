@@ -1,17 +1,6 @@
 package com.scottlogic.hackathon.game.engine;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -152,8 +141,8 @@ public class GameEngine {
    *
    * @return The result of running the game simulation
    */
-  public GameResult play() throws Exception {
-    return play((a, b) -> true);
+  public GameResult play(UUID gameId) throws Exception {
+    return play(gameId, (a, b) -> true);
   }
 
   /**
@@ -167,8 +156,8 @@ public class GameEngine {
    * @param phaseCallback A callback to be invoked after each phase completes
    * @return The result of running the game simulation
    */
-  public GameResult play(BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback)
-      throws InterruptedException {
+  public GameResult play(UUID gameId, BiPredicate<PhaseResult, Optional<CutoffCondition>> phaseCallback)
+          throws InterruptedException {
     players = new TrackedSetImpl<>();
     collectables = new TrackedSetImpl<>();
     spawnPoints = new TrackedSetImpl<>();
@@ -205,7 +194,7 @@ public class GameEngine {
     LOGGER.info("Cut Off Condition: " + cutoffCondition);
 
     return new GameResultImpl(
-        phaseResults, map.getGeometry(), map.getOutOfBoundsPositions(), cutoffCondition);
+            gameId, phaseResults, map.getGeometry(), map.getOutOfBoundsPositions(), cutoffCondition);
   }
 
   public void dispose() {
