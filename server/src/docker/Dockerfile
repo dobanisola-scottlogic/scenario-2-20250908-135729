@@ -1,4 +1,4 @@
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 ARG MAINTAINER="Scott Logic"
 ARG PORT=8080
 ARG CONF_FILE_NAME

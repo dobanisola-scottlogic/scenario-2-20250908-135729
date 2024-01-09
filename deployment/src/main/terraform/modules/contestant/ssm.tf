@@ -34,7 +34,11 @@ resource "aws_ssm_document" "s3_cloud9_sync_command" {
             "echo export TEAM_NAME=\"{{TeamName}}\" >> /home/ec2-user/.bash_profile",
             "echo export GAME_SERVER_HOST=\"${var.game_server_host}\" >> /home/ec2-user/.bash_profile",
             "echo export GAME_SERVER_PORT=\"${var.game_server_port}\" >> /home/ec2-user/.bash_profile",
-            "sudo yum -y install java-17-amazon-corretto-devel.x86_64", # HAC-203 Remove this line when Terraform supports Amazon Linux 2023
+            # "sudo yum -y install java-21-amazon-corretto-devel.x86_64",
+            # HAC-203 Uncomment the above line and remove the below 3 lines when Terraform supports Amazon Linux 2023
+            "curl -fL -o corretto.rpm https://corretto.aws/downloads/latest/amazon-corretto-21-x64-linux-jdk.rpm",
+            "sudo yum localinstall -y corretto.rpm",
+            "export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto",
             join(" ",
               [
                 "su ec2-user -c",

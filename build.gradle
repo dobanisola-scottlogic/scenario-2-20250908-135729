@@ -11,13 +11,13 @@ group "com.scottlogic.hackathon"
 version "1.0-SNAPSHOT"
 
 wrapper {
-    gradleVersion = "8.2.1"
+    gradleVersion = "8.5"
     distributionType = Wrapper.DistributionType.ALL
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -54,7 +54,7 @@ subprojects {
 
         java {
             toolchain {
-                languageVersion = JavaLanguageVersion.of(17)
+                languageVersion = JavaLanguageVersion.of(21)
             }
         }
 
