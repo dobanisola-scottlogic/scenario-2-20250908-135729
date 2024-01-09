@@ -2,6 +2,7 @@ import test from '../fixtures';
 import { HackathonHelpers } from '../helpers';
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 
 test.beforeEach(
@@ -13,7 +14,7 @@ test.beforeEach(
     commonPageObjects,
   }) => {
     hackathonName = 'deleteHackathon' + uniqueHackathonId;
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();

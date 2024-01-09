@@ -76,4 +76,22 @@ export class LoginPage {
   async verifyLogoutSuccess() {
     await expect(this.loginTitle).toContainText('Login');
   }
+
+  async loginWithUnknownMilestoneBot() {
+    await this.page.route('./api/milestone', async (route) => {
+      const response = await route.fetch();
+      const json = (await response.json()) as {
+        id: string;
+        milestoneClassName: string;
+        timeStamp: number;
+      }[];
+      json.push({
+        id: 'abcdefgh-0123-4567-ijkl-mnopqr890123',
+        milestoneClassName: 'com.scottlogic.hackathon.bots.Milestone6Bot',
+        timeStamp: Date.now(),
+      });
+      await route.fulfill({ json });
+    });
+    await this.attemptLogin();
+  }
 }

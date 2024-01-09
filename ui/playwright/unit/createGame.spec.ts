@@ -2,21 +2,27 @@ import test from '../fixtures';
 import { HackathonHelpers } from '../helpers';
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 let teamName = '';
 const player1 = 'Milestone1Bot';
 const player2 = 'Milestone2Bot';
 const player3 = 'Milestone3Bot';
 const player4 = 'Milestone4Bot';
+const playerUnknown = 'Milestone6Bot';
 const map = 'Hard';
 
 test.beforeEach(
-  async ({ page, createHackathonPage, hackathonListPage, login }) => {
+  async ({ page, createHackathonPage, hackathonListPage, login }, testInfo) => {
     hackathonName = teamName = 'createGame' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
+    if (testInfo.title.includes('unknown milestone bot')) {
+      await login.loginWithUnknownMilestoneBot();
+    } else {
+      await login.attemptLogin();
+    }
     await hackathonListPage.verifyLoginSuccess();
     await hackathonListPage.openTheHackathonPage(hackathonName);
   }
@@ -63,29 +69,23 @@ test.describe('create a new game popup without a team being created', () => {
       'Game created successfully!'
     );
     await commonPageObjects.closeSuccessAlert();
-    // below can be used instead when bug HAC-202 has been completed
-    // await hackathonDetailsPage.verifyGameExists('player1 vs player2');
-    await hackathonDetailsPage.verifyGameExists(player1);
-    await hackathonDetailsPage.verifyGameExists(player2);
-    // below can be used instead when bug HAC-202 has been completed
-    // await hackathonDetailsPage.verifyGameExists('player3 vs player4');
-    await hackathonDetailsPage.verifySecondGameExists(player3);
-    await hackathonDetailsPage.verifySecondGameExists(player4);
+    await hackathonDetailsPage.verifyGameExists(`${player1} vs ${player2}`);
+    await hackathonDetailsPage.verifyGameExists(`${player3} vs ${player4}`);
   });
 
-  test('games with four teams can be created', async ({
+  test('games with four teams can be created and are sorted alphabetically', async ({
     createGamePage,
     commonPageObjects,
     hackathonDetailsPage,
   }) => {
     await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player2);
-    await createGamePage.gamePlayer3Field.click();
     await createGamePage.selectOption(player3);
-    await createGamePage.gamePlayer4Field.click();
+    await createGamePage.gamePlayer2Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gamePlayer3Field.click();
     await createGamePage.selectOption(player4);
+    await createGamePage.gamePlayer4Field.click();
+    await createGamePage.selectOption(player2);
     await createGamePage.gameMapField.click();
     await createGamePage.selectOption(map);
     await createGamePage.addNewGame();
@@ -93,12 +93,9 @@ test.describe('create a new game popup without a team being created', () => {
       'Game created successfully!'
     );
     await commonPageObjects.closeSuccessAlert();
-    // below can be used instead when bug HAC-202 has been completed
-    // await hackathonDetailsPage.verifyGameExists('player1 vs player2 vs player3 vs player4');
-    await hackathonDetailsPage.verifyGameExists(player1);
-    await hackathonDetailsPage.verifyGameExists(player2);
-    await hackathonDetailsPage.verifyGameExists(player3);
-    await hackathonDetailsPage.verifyGameExists(player4);
+    await hackathonDetailsPage.verifyGameExists(
+      `${player1} vs ${player2} vs ${player3} vs ${player4}`
+    );
   });
 
   test('admin can cancel creation of a new game', async ({
@@ -193,6 +190,22 @@ test.describe('create a new game popup without a team being created', () => {
       'Error creating game - all players must be unique'
     );
   });
+
+  test('Error message appears when unknown milestone bot is used', async ({
+    createGamePage,
+    commonPageObjects,
+  }) => {
+    await createGamePage.gamePlayer1Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gamePlayer2Field.click();
+    await createGamePage.selectOption(playerUnknown);
+    await createGamePage.gameMapField.click();
+    await createGamePage.selectOption(map);
+    await createGamePage.addNewGame();
+    await commonPageObjects.confirmErrorMessageIs(
+      `Error creating game - com.scottlogic.hackathon.bots.${playerUnknown} is not a valid milestone bot.`
+    );
+  });
 });
 
 test.describe('create a team before entering the create game popup', () => {
@@ -228,7 +241,7 @@ test.describe('create a team before entering the create game popup', () => {
     await createGamePage.selectOption(map);
     await createGamePage.addNewGame();
     await commonPageObjects.confirmErrorMessageIs(
-      'Error creating game - internal server error'
+      `Error creating game - Team ${teamName} has no bots`
     );
   });
 });

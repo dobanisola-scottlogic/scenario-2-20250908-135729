@@ -2,6 +2,7 @@ import test from '../fixtures';
 import { HackathonHelpers } from '../helpers';
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 let teamName = '';
 
@@ -21,7 +22,7 @@ test.beforeEach(
       hackathonName,
       teamName
     );
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();

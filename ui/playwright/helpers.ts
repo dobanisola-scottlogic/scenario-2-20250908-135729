@@ -4,6 +4,7 @@ export class HackathonHelpers {
     invalidName: string;
   }[];
   readonly generateRandomString: string;
+  readonly initialURL: string;
 
   constructor() {
     this.invalidCharacterErrors = [
@@ -12,5 +13,6 @@ export class HackathonHelpers {
       { errorReason: 'multiple spaces', invalidName: 'my  Hackathon' },
     ];
     this.generateRandomString = Math.random().toString(36).substring(2, 7);
+    this.initialURL = './ui/';
   }
 }

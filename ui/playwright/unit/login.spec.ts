@@ -11,11 +11,12 @@ const emptyFields: {
 ];
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 let teamName = '';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto(initialURL);
 });
 
 test('admin can successfully log in', async ({ login, hackathonListPage }) => {

@@ -4,6 +4,7 @@ import { HackathonHelpers } from '../helpers';
 const uniqueHackathonId = new HackathonHelpers();
 let hackathonName = '';
 let teamName = '';
+const initialURL = new HackathonHelpers().initialURL;
 
 test.beforeEach(async ({ page, createHackathonPage, createTeamPage }) => {
   hackathonName = teamName =
@@ -13,7 +14,7 @@ test.beforeEach(async ({ page, createHackathonPage, createTeamPage }) => {
     hackathonName,
     teamName
   );
-  await page.goto('/');
+  await page.goto(initialURL);
 });
 
 test.afterEach(async ({ hackathonListPage }) => {

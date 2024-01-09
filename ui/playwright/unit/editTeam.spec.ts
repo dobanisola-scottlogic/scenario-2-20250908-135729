@@ -4,7 +4,7 @@ import { HackathonHelpers } from '../helpers';
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 let teamName = '';
-
+const initialURL = new HackathonHelpers().initialURL;
 const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
 
 test.beforeEach(
@@ -23,7 +23,7 @@ test.beforeEach(
       hackathonName,
       teamName
     );
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();

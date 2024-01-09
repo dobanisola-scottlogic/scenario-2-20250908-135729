@@ -3,12 +3,13 @@ import { HackathonHelpers } from '../helpers';
 
 const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 
 test.beforeEach(
   async ({ login, page, hackathonListPage, createHackathonPage }) => {
     hackathonName = 'createHackathon' + uniqueHackathonId;
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();

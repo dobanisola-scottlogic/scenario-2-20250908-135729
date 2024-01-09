@@ -11,6 +11,7 @@ const fieldCheckers: {
 ];
 
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 let teamName = '';
 
@@ -29,7 +30,7 @@ test.beforeEach(
       hackathonName,
       teamName
     );
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials(teamName, 'teamPassword');
     await login.attemptLogin();
     await teamDashboardPage.verifyLoginSuccess();

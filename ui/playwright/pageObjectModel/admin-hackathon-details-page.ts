@@ -3,7 +3,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 export class HackathonDetailsPage {
   readonly page: Page;
   readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
-  readonly gameTitle: Locator;
+  readonly gameTitle: ({ gameTitleName }: { gameTitleName: string }) => Locator;
   readonly navigationBarDropdownButton: Locator;
   readonly addNewTeamButton: Locator;
   readonly addNewGameButton: Locator;
@@ -32,7 +32,8 @@ export class HackathonDetailsPage {
     this.page = page;
     this.teamMenuButton = ({ teamName }) =>
       page.getByRole('row', { name: `${teamName}` }).getByLabel('more');
-    this.gameTitle = page.getByRole('cell').getByRole('link');
+    this.gameTitle = ({ gameTitleName }) =>
+      page.getByRole('row', { name: `${gameTitleName}` });
     this.navigationBarDropdownButton = page.getByRole('button', {
       name: 'admin',
     });
@@ -98,14 +99,10 @@ export class HackathonDetailsPage {
     );
   }
 
-  // remove .nth(0) when bug HAC-202 has been completed
   async verifyGameExists(gameTitle: string) {
-    await expect(this.gameTitle.nth(0)).toContainText(gameTitle);
-  }
-
-  // below can be deleted when bug HAC-202 has been completed
-  async verifySecondGameExists(gameTitle: string) {
-    await expect(this.gameTitle.nth(1)).toContainText(gameTitle);
+    await expect(this.gameTitle({ gameTitleName: gameTitle })).toContainText(
+      gameTitle
+    );
   }
 
   async verifyMilestoneInformationHasDetails(map: string, milestone: string) {

@@ -2,11 +2,12 @@ import test from '../fixtures';
 import { HackathonHelpers } from '../helpers';
 
 const uniqueHackathonId = new HackathonHelpers();
+const initialURL = new HackathonHelpers().initialURL;
 let hackathonName = '';
 let teamName = '';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto(initialURL);
 });
 
 test('admin can successfully log out', async ({

@@ -6,6 +6,7 @@ invalidCharacterErrors.push({
   errorReason: 'a prohibited name',
   invalidName: 'aDmIn',
 });
+const initialURL = new HackathonHelpers().initialURL;
 const uniqueHackathonId = new HackathonHelpers().generateRandomString;
 let hackathonName = '';
 let teamName = '';
@@ -21,7 +22,7 @@ test.beforeEach(
   }) => {
     hackathonName = teamName = 'createTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
-    await page.goto('/');
+    await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();
     await hackathonListPage.verifyLoginSuccess();

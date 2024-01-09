@@ -11,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html', { outputFolder: 'playwright/report/results' }]],
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:8080/application/',
     httpCredentials: {
       username: 'admin',
       password: 'secret',
@@ -27,7 +27,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
+    url: 'http://localhost:8080/application/ui',
     reuseExistingServer: !process.env.CI,
   },
 });
