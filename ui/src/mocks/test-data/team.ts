@@ -12,3 +12,10 @@ export const testTeamBody = {
   name: 'Team 1',
   password: 'pa$$w0rd',
 };
+
+export const testTeamInfo = {
+  devEnvironment: 'https://test-url.com',
+  accountId: '0123456789',
+  userName: 'test-user',
+  password: 'test-password',
+};

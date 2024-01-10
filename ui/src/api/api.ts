@@ -13,6 +13,7 @@ import { Hackathon } from '~/interfaces/Hackathon';
 import { LoginResponse } from '~/interfaces/LoginResponse';
 import { Milestone } from '~/interfaces/Milestone';
 import { Team } from '~/interfaces/Team';
+import { TeamInformationResponse } from '~/interfaces/TeamInformationResponse';
 import { logout } from '~/slices/authSlice';
 import { RootState } from '~/store';
 import { getGameTitle } from '~/utils/game-utils';
@@ -60,7 +61,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Game', 'Hackathon', 'Team'],
+  tagTypes: ['Game', 'Hackathon', 'Team', 'TeamInformation'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, void>({
       query: () => ({
@@ -156,6 +157,13 @@ export const api = createApi({
         method: RequestType.GET,
       }),
       providesTags: ['Team'],
+    }),
+    getTeamInformation: builder.query<TeamInformationResponse, void>({
+      query: () => ({
+        url: '/team/info',
+        method: RequestType.GET,
+      }),
+      providesTags: ['TeamInformation'],
     }),
     getHackathonTeams: builder.query<Team[], string>({
       query: (hackathonId) => ({
@@ -294,6 +302,7 @@ export const {
   useGetHackathonsQuery,
   useGetMilestonesQuery,
   useGetTeamQuery,
+  useGetTeamInformationQuery,
   useLoginMutation,
   useUpdateHackathonMutation,
   useUpdateTeamMutation,

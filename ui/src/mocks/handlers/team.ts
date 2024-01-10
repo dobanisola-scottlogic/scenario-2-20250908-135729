@@ -1,11 +1,12 @@
 import { http } from 'msw';
 import { baseUrl } from '~/api/api';
-import { testTeamBody, testTeamId } from '~/mocks/test-data/team';
+import { testTeamBody, testTeamId, testTeamInfo } from '~/mocks/test-data/team';
 import {
   badRequestResponse,
   errorResponse,
   jsonOkResponse,
   noContentResponse,
+  notFoundResponse,
 } from './utils';
 
 const teamEndpoint = baseUrl + '/team';
@@ -43,7 +44,17 @@ export const handlers = [
 
     return jsonOkResponse([testTeamBody]);
   }),
+  http.get(`${teamEndpoint}/info`, () => {
+    return jsonOkResponse(testTeamInfo);
+  })
 ];
+
+export const getTeamInfoNotFoundResponseHandler = http.get(
+  `${teamEndpoint}/info`,
+  () => {
+    return notFoundResponse();
+  }
+);
 
 export const getTeamsNetworkErrorResponseHandler = http.get(
   teamEndpoint,

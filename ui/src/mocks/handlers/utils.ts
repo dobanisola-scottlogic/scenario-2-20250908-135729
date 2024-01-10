@@ -28,3 +28,7 @@ export const unauthorizedResponse = () => {
 export const plainTextOkResponse = (body: string | null) => {
   return HttpResponse.text(body, { status: 200 });
 };
+
+export const notFoundResponse = () => {
+  return new HttpResponse(null, { status: 404 });
+}

@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 import com.google.inject.Inject;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
 import software.amazon.awssdk.services.cloud9.Cloud9Client;
+import software.amazon.awssdk.services.cloud9.model.Cloud9Exception;
 import software.amazon.awssdk.services.cloud9.model.DescribeEnvironmentsRequest;
 import software.amazon.awssdk.services.cloud9.model.DescribeEnvironmentsResponse;
 import software.amazon.awssdk.services.cloud9.model.Environment;
@@ -19,6 +21,7 @@ import com.scottlogic.hackathon.server.services.stores.TeamStore;
 import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
 
 public class TeamService {
+  private final Logger logger;
   private final TeamStore teamStore;
   private final Cloud9Client cloud9;
   private final String workspace;
@@ -29,6 +32,7 @@ public class TeamService {
     this.teamStore = teamStore;
     cloud9 = Cloud9Client.builder().build();
     workspace = System.getenv("WORKSPACE");
+    logger = org.slf4j.LoggerFactory.getLogger(this.getClass().getName());
   }
 
   public Team addTeam(final Team team) {
@@ -71,23 +75,27 @@ public class TeamService {
   }
 
   private Environment getTeamDevEnvironment(String teamName) {
-    ListEnvironmentsResponse listResponse = cloud9.listEnvironments();
+    try {
+      ListEnvironmentsResponse listResponse = cloud9.listEnvironments();
 
-    DescribeEnvironmentsRequest describeRequest = DescribeEnvironmentsRequest.builder()
-        .environmentIds(listResponse.environmentIds())
-        .build();
-    DescribeEnvironmentsResponse describeResponse = cloud9.describeEnvironments(describeRequest);
+      DescribeEnvironmentsRequest describeRequest = DescribeEnvironmentsRequest.builder()
+          .environmentIds(listResponse.environmentIds())
+          .build();
+      DescribeEnvironmentsResponse describeResponse = cloud9.describeEnvironments(describeRequest);
 
-    Matcher matcher = teamNumberPattern.matcher(teamName);
-    if (matcher.find()) {
-      int teamNumber = Integer.parseInt(matcher.group());
-      String instanceName = String.format("%s-%02d", workspace, teamNumber);
+      Matcher matcher = teamNumberPattern.matcher(teamName);
+      if (matcher.find()) {
+        int teamNumber = Integer.parseInt(matcher.group());
+        String instanceName = String.format("%s-%02d", workspace, teamNumber);
 
-      for (Environment environment : describeResponse.environments()) {
-        if (environment.name().equals(instanceName)) {
-          return environment;
+        for (Environment environment : describeResponse.environments()) {
+          if (environment.name().equals(instanceName)) {
+            return environment;
+          }
         }
       }
+    } catch (Cloud9Exception cloud9Exception) {
+      logger.debug("Cloud9Exception: " + cloud9Exception.getMessage());
     }
 
     return null;

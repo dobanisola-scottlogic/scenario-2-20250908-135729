@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => ({
       reporter: ['text', 'json', 'html', 'cobertura'],
       statements: 98,
       branches: 97,
-      functions: 89,
+      functions: 90,
       lines: 98,
     },
   },
