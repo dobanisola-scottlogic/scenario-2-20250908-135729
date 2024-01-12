@@ -46,7 +46,7 @@ export const handlers = [
   }),
   http.get(`${teamEndpoint}/info`, () => {
     return jsonOkResponse(testTeamInfo);
-  })
+  }),
 ];
 
 export const getTeamInfoNotFoundResponseHandler = http.get(

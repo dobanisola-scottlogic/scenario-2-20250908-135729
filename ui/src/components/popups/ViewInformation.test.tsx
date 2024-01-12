@@ -1,8 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
-import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import ViewInformation from './ViewInformation';
 import { getTeamInfoNotFoundResponseHandler } from '~/mocks/handlers/team';
 import { server } from '~/mocks/server';
+import { renderWithRouterAndProvider } from '~/utils/test-utils';
+import ViewInformation from './ViewInformation';
 
 const mockFunction = () => null;
 
@@ -38,21 +38,21 @@ describe('ViewInformation', () => {
       <ViewInformation isOpen setIsOpen={mockFunction} />
     );
 
-    const accountIdField: HTMLInputElement = screen.getByRole('textbox', { name: 'Account ID' });
-    const userNameField: HTMLInputElement = screen.getByRole('textbox', { name: 'IAM user name' });
-    const passwordField: HTMLInputElement = screen.getByRole('textbox', { name: 'Password' });
+    const accountIdField: HTMLInputElement = screen.getByRole('textbox', {
+      name: 'Account ID',
+    });
+    const userNameField: HTMLInputElement = screen.getByRole('textbox', {
+      name: 'IAM user name',
+    });
+    const passwordField: HTMLInputElement = screen.getByRole('textbox', {
+      name: 'Password',
+    });
     const devEnvironmentLink: HTMLLinkElement = screen.getByRole('link');
 
     await waitFor(() => {
-      expect(
-        accountIdField.value
-      ).toContain('0123456789');
-      expect(
-        userNameField.value
-      ).toContain('test-user');
-      expect(
-        passwordField.value
-      ).toContain('test-password');
+      expect(accountIdField.value).toContain('0123456789');
+      expect(userNameField.value).toContain('test-user');
+      expect(passwordField.value).toContain('test-password');
       expect(devEnvironmentLink.href).toContain('https://test-url.com');
     });
   });
@@ -63,7 +63,9 @@ describe('ViewInformation', () => {
       <ViewInformation isOpen setIsOpen={setIsOpen} />
     );
 
-    const closeButton: HTMLButtonElement = screen.getByRole('button', { name: 'Close' });
+    const closeButton: HTMLButtonElement = screen.getByRole('button', {
+      name: 'Close',
+    });
 
     closeButton.click();
 
@@ -72,15 +74,13 @@ describe('ViewInformation', () => {
 
   it('displays a message when the team information cannot be retrieved', async () => {
     server.use(getTeamInfoNotFoundResponseHandler);
-    
+
     renderWithRouterAndProvider(
       <ViewInformation isOpen setIsOpen={mockFunction} />
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('alert')
-      ).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toBeInTheDocument();
     });
   });
 });

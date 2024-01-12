@@ -5,7 +5,7 @@ resource "aws_cloud9_environment_ec2" "cloud9_instance" {
   instance_type               = "t2.small"
   automatic_stop_time_minutes = 30
   connection_type             = "CONNECT_SSM"
-  image_id                    = "amazonlinux-2-x86_64" # HAC-203 Change to "amazonlinux-2023-x86_64" when supported by Terraform
+  image_id                    = "amazonlinux-2023-x86_64"
   owner_arn                   = aws_iam_user.hackathon_contestant.arn
   subnet_id                   = var.public_subnet_id
 

@@ -31,4 +31,4 @@ export const plainTextOkResponse = (body: string | null) => {
 
 export const notFoundResponse = () => {
   return new HttpResponse(null, { status: 404 });
-}
+};
