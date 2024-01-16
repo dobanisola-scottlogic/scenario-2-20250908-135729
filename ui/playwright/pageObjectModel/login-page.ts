@@ -43,6 +43,22 @@ export class LoginPage {
     await this.loginButton.click();
   }
 
+  async attemptTeamLoginWithRequiredInformation() {
+    await this.page.route(
+      'http://localhost:8080/application/api/team/info',
+      async (route) => {
+        const json = {
+          accountId: '012345678901',
+          userName: 'haclocal-contestant',
+          password: 'teamPassword',
+          devEnvironment: 'http://localhost:8080/application/ui/',
+        };
+        await route.fulfill({ json });
+      }
+    );
+    await this.attemptLogin();
+  }
+
   async mockTeamLogin() {
     await this.page.route('./api/login', async (route) => {
       const json = { name: 'team', role: 'TEAM', team: true, admin: false };

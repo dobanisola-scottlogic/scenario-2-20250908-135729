@@ -5,7 +5,7 @@ export class ViewInformationPage {
   readonly copyTextButton: Locator;
   readonly textbox: ({ textboxName }: { textboxName: string }) => Locator;
   readonly closeButton: Locator;
-  readonly developmentEnvironmentLink: Locator;
+  readonly mockDevelopmentEnvironmentLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,8 +15,8 @@ export class ViewInformationPage {
     this.closeButton = page.getByRole('button', {
       name: 'Close',
     });
-    this.developmentEnvironmentLink = page.getByLabel(
-      'This link is a placeholder and does not navigate to a functional page'
+    this.mockDevelopmentEnvironmentLink = page.getByLabel(
+      'http://localhost:8080/application/ui/'
     );
   }
 
@@ -54,8 +54,8 @@ export class ViewInformationPage {
   }
 
   async verifyDetailsOfDevelopmentEnvironmentLink() {
-    await expect(this.developmentEnvironmentLink).toBeVisible();
-    await expect(this.developmentEnvironmentLink).toContainText(
+    await expect(this.mockDevelopmentEnvironmentLink).toBeVisible();
+    await expect(this.mockDevelopmentEnvironmentLink).toContainText(
       'Access your development environment'
     );
   }
