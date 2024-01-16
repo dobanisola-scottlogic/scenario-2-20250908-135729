@@ -1,5 +1,6 @@
 package com.scottlogic.hackathon.game;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -30,20 +31,31 @@ class Graph {
    */
   public static Optional<Route> findRoute(
       GameGeometry map, Position from, Position to, Predicate<Position> avoid) {
-    return AStar.findIntRoute(
-            Objects.requireNonNull(from),
-            Objects.requireNonNull(to),
-            new MapGraph(Objects.requireNonNull(map), Objects.requireNonNull(avoid)),
-            map::distance)
-        .map(
-            route ->
-                new RouteImpl(
-                    map,
-                    from,
-                    to,
-                    route.getEdges().stream()
-                        .map(Edge::getDirection)
-                        .collect(Collectors.toList())));
+    try {
+      return AStar.findIntRoute(
+          Objects.requireNonNull(from),
+          Objects.requireNonNull(to),
+          new MapGraph(Objects.requireNonNull(map), Objects.requireNonNull(avoid)),
+          map::distance)
+          .map(
+              route -> new RouteImpl(
+                  map,
+                  from,
+                  to,
+                  route.getEdges().stream()
+                      .map(Edge::getDirection)
+                      .collect(Collectors.toList())));
+    } catch (StackOverflowError error) {
+      System.out.println("Stack overflow error in findRoute library!");
+      StackTraceElement[] stackTrace = error.getStackTrace();
+      if (stackTrace.length > 10) {
+        // Truncate the stack trace so that it doesn't push any useful information
+        // off the top of the terminal
+        System.out.println("Truncating original stack trace to 10 elements");
+        error.setStackTrace(Arrays.copyOfRange(stackTrace, stackTrace.length - 10, stackTrace.length));
+      }
+      throw error;
+    }
   }
 
   private static final class Edge {
