@@ -1,11 +1,12 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import {
+  generateUniqueName,
+  initialURL,
+  invalidCharacterErrors,
+} from '~/helpers';
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-let hackathonName = '';
-let teamName = '';
-const initialURL = new HackathonHelpers().initialURL;
-const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
+const hackathonName = generateUniqueName('editTeam');
+const teamName = hackathonName;
 
 test.beforeEach(
   async ({
@@ -17,7 +18,6 @@ test.beforeEach(
     createTeamPage,
     commonPageObjects,
   }) => {
-    hackathonName = teamName = 'updateTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
       hackathonName,

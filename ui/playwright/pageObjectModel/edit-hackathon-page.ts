@@ -92,7 +92,7 @@ export class EditHackathonPage {
     bot: string
   ) {
     const hackathonPutResponse = await this.page.request.put(
-      `http://localhost:8080/application/api/hackathon/${hackathon}`,
+      `./api/hackathon/${hackathon}`,
       {
         data: {
           milestoneClassName: `com.scottlogic.hackathon.bots.${bot}`,
@@ -104,22 +104,16 @@ export class EditHackathonPage {
   }
 
   async mock400ErrorOnUpdatingHackathon() {
-    await this.page.route(
-      `http://localhost:8080/application/api/hackathon/*`,
-      async (route) => {
-        await route.fulfill({ status: 400 });
-      }
-    );
+    await this.page.route('./api/hackathon/*', async (route) => {
+      await route.fulfill({ status: 400 });
+    });
     await this.clickUpdateHackathon();
   }
 
   async mock500ErrorOnUpdatingHackathon() {
-    await this.page.route(
-      `http://localhost:8080/application/api/hackathon/*`,
-      async (route) => {
-        await route.fulfill({ status: 500 });
-      }
-    );
+    await this.page.route('./api/hackathon/*', async (route) => {
+      await route.fulfill({ status: 500 });
+    });
     await this.clickUpdateHackathon();
   }
 }

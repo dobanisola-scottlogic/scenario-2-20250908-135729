@@ -44,23 +44,17 @@ export class LoginPage {
   }
 
   async mockTeamLogin() {
-    await this.page.route(
-      'http://localhost:8080/application/api/login',
-      async (route) => {
-        const json = { name: 'team', role: 'TEAM', team: true, admin: false };
-        await route.fulfill({ json });
-      }
-    );
+    await this.page.route('./api/login', async (route) => {
+      const json = { name: 'team', role: 'TEAM', team: true, admin: false };
+      await route.fulfill({ json });
+    });
     await this.attemptLogin();
   }
 
   async mockUncaughtErrorOnLogin() {
-    await this.page.route(
-      'http://localhost:8080/application/api/login',
-      async (route) => {
-        await route.fulfill({ status: 500 });
-      }
-    );
+    await this.page.route('./api/login', async (route) => {
+      await route.fulfill({ status: 500 });
+    });
     await this.attemptLogin();
   }
 

@@ -1,14 +1,10 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
-const uniqueHackathonId = new HackathonHelpers();
-let hackathonName = '';
-let teamName = '';
-const initialURL = new HackathonHelpers().initialURL;
+const hackathonName = generateUniqueName('teamPage');
+const teamName = hackathonName;
 
 test.beforeEach(async ({ page, createHackathonPage, createTeamPage }) => {
-  hackathonName = teamName =
-    'teamPage' + uniqueHackathonId.generateRandomString;
   await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
   await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
     hackathonName,
@@ -55,13 +51,3 @@ test('Can interact with the "connect" button', async ({
   await teamDashboardPage.verifyLoginSuccess();
   await teamDashboardPage.clickConnectButton();
 });
-
-/* Test related to HAC-85
-test('team member can connect to the server and add a new game', async ({
-  teamDashboardPage,
-}) => {
-  await teamDashboardPage.clickConnectButton();
-  await teamDashboardPage.verifyConnectionStatusIs("Connected");
-  await teamDashboardPage.verifyGameCanBeAdded();
-  await methodsRelatingToAddingAGame
-});*/

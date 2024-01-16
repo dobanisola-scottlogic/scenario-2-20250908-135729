@@ -41,7 +41,7 @@ export class CreateHackathonPage {
 
   async createHackathonUsingAPIWithName(hackathonName: string) {
     const hackathonPostResponse = await this.page.request.post(
-      'http://localhost:8080/application/api/hackathon',
+      './api/hackathon',
       {
         data: {
           name: hackathonName,
@@ -52,12 +52,9 @@ export class CreateHackathonPage {
   }
 
   async mock500ErrorOnCreatingHackathon() {
-    await this.page.route(
-      `http://localhost:8080/application/api/hackathon`,
-      async (route) => {
-        await route.fulfill({ status: 500 });
-      }
-    );
+    await this.page.route('./api/hackathon', async (route) => {
+      await route.fulfill({ status: 500 });
+    });
     await this.addNewHackathon();
   }
 }

@@ -1,15 +1,17 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import {
+  generateUniqueName,
+  initialURL,
+  invalidCharacterErrors,
+} from '~/helpers';
 
-const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
 invalidCharacterErrors.push({
   errorReason: 'a prohibited name',
   invalidName: 'aDmIn',
 });
-const initialURL = new HackathonHelpers().initialURL;
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-let hackathonName = '';
-let teamName = '';
+
+const hackathonName = generateUniqueName('creaateTeam');
+const teamName = hackathonName;
 
 test.beforeEach(
   async ({
@@ -20,7 +22,6 @@ test.beforeEach(
     hackathonDetailsPage,
     commonPageObjects,
   }) => {
-    hackathonName = teamName = 'createTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');

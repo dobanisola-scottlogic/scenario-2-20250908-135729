@@ -1,14 +1,14 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import {
+  generateUniqueName,
+  initialURL,
+  invalidCharacterErrors,
+} from '~/helpers';
 
-const invalidCharacterErrors = new HackathonHelpers().invalidCharacterErrors;
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
+const hackathonName = generateUniqueName('createHackathon');
 
 test.beforeEach(
   async ({ login, page, hackathonListPage, createHackathonPage }) => {
-    hackathonName = 'createHackathon' + uniqueHackathonId;
     await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();

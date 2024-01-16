@@ -1,9 +1,7 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
+const hackathonName = generateUniqueName('editHackathon');
 
 test.beforeEach(
   async ({
@@ -13,7 +11,6 @@ test.beforeEach(
     editHackathonPage,
     hackathonListPage,
   }) => {
-    hackathonName = 'updateHackathon' + uniqueHackathonId;
     await page.goto(initialURL);
     await page.getByText('Hackathon').click();
     await login.inputCredentials('admin', 'secret');

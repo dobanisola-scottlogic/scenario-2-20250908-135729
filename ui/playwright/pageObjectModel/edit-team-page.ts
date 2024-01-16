@@ -64,12 +64,9 @@ export class EditTeamPage {
   }
 
   async mock400ErrorOnUpdatingTeam() {
-    await this.page.route(
-      `http://localhost:8080/application/api/team/*`,
-      async (route) => {
-        await route.fulfill({ status: 400 });
-      }
-    );
+    await this.page.route('./api/team/*', async (route) => {
+      await route.fulfill({ status: 400 });
+    });
     await this.updateTeam();
   }
 }

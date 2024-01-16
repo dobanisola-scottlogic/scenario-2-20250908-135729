@@ -18,22 +18,16 @@ export class DeleteHackathonPage {
   }
 
   async mock400ErrorOnDeletingHackathon() {
-    await this.page.route(
-      'http://localhost:8080/application/api/hackathon/*',
-      async (route) => {
-        await route.fulfill({ status: 400 });
-      }
-    );
+    await this.page.route('./api/hackathon/*', async (route) => {
+      await route.fulfill({ status: 400 });
+    });
     await this.deleteHackathon();
   }
 
   async mock500ErrorOnDeletingHackathon() {
-    await this.page.route(
-      'http://localhost:8080/application/api/hackathon/*',
-      async (route) => {
-        await route.fulfill({ status: 500 });
-      }
-    );
+    await this.page.route('./api/hackathon/*', async (route) => {
+      await route.fulfill({ status: 500 });
+    });
     await this.deleteHackathon();
   }
 

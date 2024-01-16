@@ -26,22 +26,16 @@ export class DeleteTeamPage {
   }
 
   async mock400ErrorOnTeamDeletion() {
-    await this.page.route(
-      `http://localhost:8080/application/api/team/*`,
-      async (route) => {
-        await route.fulfill({ status: 400 });
-      }
-    );
+    await this.page.route('./api/team/*', async (route) => {
+      await route.fulfill({ status: 400 });
+    });
     await this.deleteTeam();
   }
 
   async mock500ErrorOnTeamDeletion() {
-    await this.page.route(
-      `http://localhost:8080/application/api/team/*`,
-      async (route) => {
-        await route.fulfill({ status: 500 });
-      }
-    );
+    await this.page.route('./api/team/*', async (route) => {
+      await route.fulfill({ status: 500 });
+    });
     await this.deleteTeam();
   }
 }

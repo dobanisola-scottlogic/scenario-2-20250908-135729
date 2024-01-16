@@ -1,5 +1,5 @@
-import { HackathonHelpers } from 'playwright/helpers';
-import test from '../fixtures';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
 const fieldCheckers: {
   textbox: string;
@@ -10,10 +10,8 @@ const fieldCheckers: {
   { textbox: 'Password', text: 'Password!1' },
 ];
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
-let teamName = '';
+const hackathonName = generateUniqueName('viewInformation');
+const teamName = hackathonName;
 
 test.beforeEach(
   async ({
@@ -24,7 +22,6 @@ test.beforeEach(
     teamDashboardPage,
     commonPageObjects,
   }) => {
-    hackathonName = teamName = 'viewInformation' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
       hackathonName,

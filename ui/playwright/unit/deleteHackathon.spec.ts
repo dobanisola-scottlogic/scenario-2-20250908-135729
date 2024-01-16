@@ -1,10 +1,7 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
-
+const hackathonName = generateUniqueName('deleteHackathon');
 test.beforeEach(
   async ({
     login,
@@ -13,7 +10,6 @@ test.beforeEach(
     hackathonListPage,
     commonPageObjects,
   }) => {
-    hackathonName = 'deleteHackathon' + uniqueHackathonId;
     await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');
     await login.attemptLogin();

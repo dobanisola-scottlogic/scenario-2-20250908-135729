@@ -1,18 +1,11 @@
-export class HackathonHelpers {
-  readonly invalidCharacterErrors: {
-    errorReason: string;
-    invalidName: string;
-  }[];
-  readonly generateRandomString: string;
-  readonly initialURL: string;
+const sixRandomCharacters = Math.random().toString(36).substring(2, 7);
 
-  constructor() {
-    this.invalidCharacterErrors = [
-      { errorReason: 'only empty spaces', invalidName: ' ' },
-      { errorReason: 'invalid characters', invalidName: 'myHackathon!' },
-      { errorReason: 'multiple spaces', invalidName: 'my  Hackathon' },
-    ];
-    this.generateRandomString = Math.random().toString(36).substring(2, 7);
-    this.initialURL = './ui/';
-  }
+export const initialURL = './ui/';
+export const invalidCharacterErrors = [
+  { errorReason: 'only empty spaces', invalidName: ' ' },
+  { errorReason: 'invalid characters', invalidName: 'myHackathon!' },
+  { errorReason: 'multiple spaces', invalidName: 'my  Hackathon' },
+];
+export function generateUniqueName(uniqueName: string) {
+  return uniqueName + sixRandomCharacters;
 }

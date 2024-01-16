@@ -68,16 +68,13 @@ export class CreateTeamPage {
     hackathonName: string,
     teamName: string
   ) {
-    const teamPostResponse = await this.page.request.post(
-      'http://localhost:8080/application/api/team',
-      {
-        data: {
-          name: teamName,
-          password: 'teamPassword',
-          hackathonId: hackathonName.toLowerCase(),
-        },
-      }
-    );
+    const teamPostResponse = await this.page.request.post('./api/team', {
+      data: {
+        name: teamName,
+        password: 'teamPassword',
+        hackathonId: hackathonName.toLowerCase(),
+      },
+    });
     expect(teamPostResponse.status()).toBe(200);
   }
 }

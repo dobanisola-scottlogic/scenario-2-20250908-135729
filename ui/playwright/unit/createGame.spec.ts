@@ -1,10 +1,6 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
-let teamName = '';
 const player1 = 'Milestone1Bot';
 const player2 = 'Milestone2Bot';
 const player3 = 'Milestone3Bot';
@@ -12,9 +8,11 @@ const player4 = 'Milestone4Bot';
 const playerUnknown = 'Milestone6Bot';
 const map = 'Hard';
 
+const hackathonName = generateUniqueName('createGame');
+const teamName = hackathonName;
+
 test.beforeEach(
   async ({ page, createHackathonPage, hackathonListPage, login }, testInfo) => {
-    hackathonName = teamName = 'createGame' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto(initialURL);
     await login.inputCredentials('admin', 'secret');

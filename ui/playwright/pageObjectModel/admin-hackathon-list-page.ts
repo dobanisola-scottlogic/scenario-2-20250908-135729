@@ -102,11 +102,11 @@ export class HackathonListPage {
   async clearAnyExistingHackathonWithName(hackathonName: string) {
     const formattedHackathonName = hackathonName.toLowerCase();
     const hackathonPostResponse = await this.page.request.get(
-      `http://localhost:8080/application/api/hackathon/${formattedHackathonName}`
+      `./api/hackathon/${formattedHackathonName}`
     );
     if (hackathonPostResponse.status() == 200) {
       const hackathonDeleteResponse = await this.page.request.delete(
-        `http://localhost:8080/application/api/hackathon/${formattedHackathonName}`
+        `./api/hackathon/${formattedHackathonName}`
       );
       expect(hackathonDeleteResponse.status()).toBe(204);
     }

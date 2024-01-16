@@ -1,11 +1,8 @@
-import test from '../fixtures';
-import { HackathonHelpers } from '../helpers';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
-let teamName = '';
-
+const hackathonName = generateUniqueName('deleteTeam');
+const teamName = hackathonName;
 test.beforeEach(
   async ({
     login,
@@ -16,7 +13,6 @@ test.beforeEach(
     createTeamPage,
     commonPageObjects,
   }) => {
-    hackathonName = teamName = 'deleteTeam' + uniqueHackathonId;
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
       hackathonName,

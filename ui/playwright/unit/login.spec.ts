@@ -1,5 +1,5 @@
-import { HackathonHelpers } from 'playwright/helpers';
-import test from '../fixtures';
+import test from '~/fixtures';
+import { generateUniqueName, initialURL } from '~/helpers';
 
 const emptyFields: {
   username: string;
@@ -10,19 +10,23 @@ const emptyFields: {
   { username: ' ', password: 'secret' },
 ];
 
-const uniqueHackathonId = new HackathonHelpers().generateRandomString;
-const initialURL = new HackathonHelpers().initialURL;
-let hackathonName = '';
-let teamName = '';
+const hackathonName = generateUniqueName('loginLogout');
+const teamName = hackathonName;
 
 test.beforeEach(async ({ page }) => {
   await page.goto(initialURL);
 });
 
-test('admin can successfully log in', async ({ login, hackathonListPage }) => {
+test('admin can successfully log in and then log out', async ({
+  login,
+  hackathonListPage,
+  commonPageObjects,
+}) => {
   await login.inputCredentials('admin', 'secret');
   await login.attemptLogin();
   await hackathonListPage.verifyLoginSuccess();
+  await commonPageObjects.logoutOfAccountWithName('admin');
+  await login.verifyLogoutSuccess();
 });
 
 test('admin can successfully log in with enter key', async ({
@@ -35,13 +39,14 @@ test('admin can successfully log in with enter key', async ({
   await hackathonListPage.verifyLoginSuccess();
 });
 
-test('team can successfully log in', async ({
+test('team can successfully log in and then log out', async ({
   login,
   createHackathonPage,
   createTeamPage,
   teamDashboardPage,
+  commonPageObjects,
+  hackathonListPage,
 }) => {
-  hackathonName = teamName = 'login' + uniqueHackathonId;
   await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
   await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
     hackathonName,
@@ -50,6 +55,9 @@ test('team can successfully log in', async ({
   await login.inputCredentials(teamName, 'teamPassword');
   await login.attemptLogin();
   await teamDashboardPage.verifyLoginSuccess();
+  await commonPageObjects.logoutOfAccountWithName(teamName);
+  await login.verifyLogoutSuccess();
+  await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
 test('username and password fields cannot exceed 255 characters', async ({
