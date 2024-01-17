@@ -3,6 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import {
+  getTeamErrorResponseHandler,
   postTeamBadRequestResponseHandler,
   postTeamInternalServerErrorResponseHandler,
   putTeamBadRequestResponseHandler,
@@ -283,6 +284,24 @@ describe('CreateUpdateTeam Popup Component', () => {
       expect(passwordInput).toBeInTheDocument();
       expect(cancelButton).toBeInTheDocument();
       expect(submitButton).toBeInTheDocument();
+    });
+
+    it('displays an error when the team fails to fetch', async () => {
+      server.use(getTeamErrorResponseHandler);
+
+      renderWithRouterAndProvider(
+        <CreateUpdateTeam
+          isOpen
+          hackathonId={hackathonId}
+          id={testTeamId.networkError}
+          setIsOpen={mockFunction}
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument();
+        expect(screen.getByText('Error fetching team')).toBeInTheDocument();
+      });
     });
 
     it('disables the Update team button until a name and password is entered', async () => {

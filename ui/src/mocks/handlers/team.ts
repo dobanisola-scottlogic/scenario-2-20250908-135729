@@ -49,6 +49,13 @@ export const handlers = [
   }),
 ];
 
+export const getTeamErrorResponseHandler = http.get(
+  `${teamEndpoint}/${testTeamId.networkError}`,
+  () => {
+    return errorResponse();
+  }
+);
+
 export const getTeamInfoNotFoundResponseHandler = http.get(
   `${teamEndpoint}/info`,
   () => {

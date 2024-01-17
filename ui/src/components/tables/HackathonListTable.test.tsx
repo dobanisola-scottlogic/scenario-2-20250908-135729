@@ -40,7 +40,7 @@ describe('HackathonListTable', () => {
       screen.getByRole('columnheader', { name: 'Bot' })
     ).toBeInTheDocument();
 
-    const rowHeader = await screen.findByRole('rowheader', {
+    const rowHeader = await screen.findByRole('cell', {
       name: hackathonName,
     });
     const mapCell = await screen.findByRole('cell', {

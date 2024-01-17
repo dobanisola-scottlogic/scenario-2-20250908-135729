@@ -1,11 +1,7 @@
-import { TableRow } from '@mui/material';
-
 import { useGetHackathonTeamsQuery } from '~/api/api';
-import MenuTableCell from '~/components/common/MenuTableCell';
 import TeamMenu from '~/components/menus/TeamMenu';
 import { Team } from '~/interfaces/Team';
-import ListTable from '../common/ListTable';
-import { listTableStyles } from '../commonStyles';
+import { ListTable } from '../common/ListTable';
 
 interface TeamListTableProps {
   hackathonId: string;
@@ -18,23 +14,29 @@ const TeamListTable = ({ hackathonId }: TeamListTableProps) => {
     isError,
   } = useGetHackathonTeamsQuery(hackathonId);
 
-  const tableRows = teams?.map((row: Team) => (
-    <TableRow key={row.id} sx={listTableStyles.rowStyles}>
-      <MenuTableCell
-        text={row.name}
-        menu={<TeamMenu hackathonId={hackathonId} selectedTeamId={row.id} />}
-      />
-    </TableRow>
-  ));
+  const tableRows = teams?.map((row: Team) => {
+    return {
+      id: row.id,
+      tableCells: [
+        {
+          text: row.name,
+        },
+        {
+          menuElement: (
+            <TeamMenu hackathonId={hackathonId} selectedTeamId={row.id} />
+          ),
+        },
+      ],
+    };
+  });
 
   return (
     <ListTable
       dataType='teams'
-      headerRows={['Name']}
+      headerRows={['Name', 'Action']}
       tableRows={tableRows}
       isError={isError}
       isLoading={isLoading}
-      isNoData={teams?.length === 0}
     />
   );
 };
