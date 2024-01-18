@@ -122,3 +122,9 @@ variable "stop_hour" {
   type        = number
   default     = 18
 }
+
+variable "schedule_days" {
+  description = "The days of the week on which resources should be available. Must be a valid day-of-week expression. See https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#cron-based"
+  type        = string
+  default     = "MON-FRI"
+}
