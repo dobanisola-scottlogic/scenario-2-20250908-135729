@@ -2,7 +2,7 @@
 # internet and directing it to public facing microservices
 resource "aws_lb" "public_load_balancer" {
   enable_deletion_protection = false
-  idle_timeout               = 30
+  idle_timeout               = 600
   internal                   = false
   load_balancer_type         = "application"
   name                       = "${local.workspace}-public-load-balancer"
