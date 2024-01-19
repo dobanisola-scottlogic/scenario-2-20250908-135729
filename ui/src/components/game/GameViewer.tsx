@@ -12,9 +12,6 @@ import { colours } from '~/theme';
 import { getGameTitle } from '~/utils/game-utils';
 
 const GameViewer = () => {
-  const gamePlaybackHeight = 640;
-  const gamePlaybackWidth = 1280;
-
   const { gameId, id } = useParams();
 
   const { data: hackathon, isLoading, isError } = useGetHackathonQuery(id!);
@@ -64,11 +61,13 @@ const GameViewer = () => {
               <Grid container item xs={12} md={11} spacing={2}>
                 <GameDetails game={hackathonGameData.game} />
                 <Grid item xs={12}>
-                  <GamePlayback
-                    game={hackathonGameData.game}
-                    height={gamePlaybackHeight}
-                    width={gamePlaybackWidth}
-                  />
+                  {hackathonGameData && (
+                    <GamePlayback
+                      gameResult={hackathonGameData}
+                      height={hackathonGameData.game.map.height}
+                      width={hackathonGameData.game.map.width}
+                    />
+                  )}
                 </Grid>
                 <Grid item xs={12}>
                   <Box sx={viewerStyles.commonBoxStyles}>

@@ -1,7 +1,7 @@
 import { useGetHackathonGamesQuery } from '~/api/api';
+import { ListTable } from '~/components/common/ListTable';
 import { GameResult } from '~/interfaces/GameResult';
 import { getGameTimeString } from '~/utils/game-utils';
-import { ListTable } from '../common/ListTable';
 
 const gameViewerBaseUrl = import.meta.env.VITE_GAME_VIEWER_BASE_URL;
 

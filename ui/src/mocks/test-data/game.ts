@@ -1,6 +1,7 @@
 import { CutoffCondition } from '~/enums/CutoffCondition';
 import { Arena } from '~/interfaces/Arena';
 import { GameResult } from '~/interfaces/GameResult';
+
 import { testHackathonId } from './hackathon';
 
 export const testArena: Arena = {
@@ -41,6 +42,8 @@ export const testGameResultBody: GameResult = {
     ],
   },
   id: testGameId.valid,
+  phaseResults: [],
+  spawnPoints: [],
 };
 
 export const testGameResultBodyUserTeams: GameResult = {
@@ -64,4 +67,6 @@ export const testGameResultBodyUserTeams: GameResult = {
     ],
   },
   id: testGameId.valid,
+  phaseResults: [],
+  spawnPoints: [],
 };

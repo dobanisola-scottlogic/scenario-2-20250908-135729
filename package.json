@@ -14,7 +14,7 @@
       "npm run eslint:ui",
       "npm run lint-tsc:ui"
     ],
-    "ui/**/*": [
+    "ui/**/": [
       "npm run prettier:ui"
     ]
   }

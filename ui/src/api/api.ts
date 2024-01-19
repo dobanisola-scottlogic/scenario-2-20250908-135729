@@ -1,9 +1,9 @@
 import {
   BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
   createApi,
+  FetchArgs,
   fetchBaseQuery,
+  FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { UserRole } from '~/enums/UserRole';
 import { CreateGameRequest } from '~/interfaces/CreateGameRequest';
