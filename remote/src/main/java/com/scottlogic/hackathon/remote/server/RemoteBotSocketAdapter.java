@@ -73,6 +73,11 @@ public class RemoteBotSocketAdapter extends WebSocketAdapter {
 
   @Override
   public void onWebSocketError(Throwable cause) {
-    logger.error("-->onWebSocketError " + cause.getLocalizedMessage());
+    Throwable underlyingCause = cause.getCause();
+    String message = "unspecified error";
+    if(underlyingCause != null) {
+      message = underlyingCause.getMessage();
+    }
+    logger.debug("-->onWebSocketError: " + message);
   }
 }
