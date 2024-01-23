@@ -97,8 +97,8 @@ class HackathonPhaserScene extends Phaser.Scene {
     }
   }
 
-  populateSpawnPoints(parsedGameData: ParsedGameResult, tileGrid: number[][]) {
-    parsedGameData.constants.spawnPoints.forEach((spawnPoint) => {
+  populateSpawnPoints(parsedGameData: ParsedGameResult) {
+    parsedGameData.constants.spawnPoints.forEach((spawnPoint, index) => {
       const team = parsedGameData.constants.teams.find(
         (t) => t.botId === spawnPoint.owner
       );
@@ -111,7 +111,7 @@ class HackathonPhaserScene extends Phaser.Scene {
         spawnPoint.cell.column * Cell.CellWidth,
         spawnPoint.cell.row * Cell.CellHeight,
         SpawnSpriteSheet.Identifier,
-        tileGrid[spawnPoint.cell.row][spawnPoint.cell.column]
+        index * 18, // index of sprites in this sprite map are 0, 18, 36, 54, 72, 90
       );
 
       sprite.displayHeight = Cell.CellHeight * SpawnSpriteSheet.DisplayHeight;
@@ -131,7 +131,7 @@ class HackathonPhaserScene extends Phaser.Scene {
 
     this.populateObstacles(this.gameData, tileGrid);
 
-    this.populateSpawnPoints(this.gameData, tileGrid);
+    this.populateSpawnPoints(this.gameData);
   };
 
   update = () => {
