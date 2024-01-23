@@ -64,14 +64,14 @@ export const ListTable = ({
     if (tableSortIndex !== null) {
       if (tableSortOrder === TableSort.ASC) {
         return tableRows?.sort((a, b) =>
-          (b.tableCells[tableSortIndex].text ?? '').localeCompare(
-            a.tableCells[tableSortIndex].text ?? ''
+          (a.tableCells[tableSortIndex].text ?? '').localeCompare(
+            b.tableCells[tableSortIndex].text ?? ''
           )
         );
       } else {
         return tableRows?.sort((a, b) =>
-          (a.tableCells[tableSortIndex].text ?? '').localeCompare(
-            b.tableCells[tableSortIndex].text ?? ''
+          (b.tableCells[tableSortIndex].text ?? '').localeCompare(
+            a.tableCells[tableSortIndex].text ?? ''
           )
         );
       }
@@ -82,12 +82,13 @@ export const ListTable = ({
 
   const getListTableHeaders = () => {
     return headerRows.map((row, index) => (
-      <TableCell key={row} onClick={() => requestSort(tableSortOrder, index)}>
+      <TableCell key={row}>
         {row !== 'Action' && (
           <TableSortLabel
             active={index === tableSortIndex}
             direction={tableSortOrder}
             hideSortIcon
+            onClick={() => requestSort(tableSortOrder, index)}
           >
             {row}
           </TableSortLabel>

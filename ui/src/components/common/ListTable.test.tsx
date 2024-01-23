@@ -11,7 +11,7 @@ describe('ListTable', () => {
           id: 'testRowId-1',
           tableCells: [
             {
-              text: 'Banana',
+              text: 'Apple',
             },
             {
               text: '',
@@ -32,7 +32,7 @@ describe('ListTable', () => {
           id: 'testRowId-2',
           tableCells: [
             {
-              text: 'Apple',
+              text: 'Banana',
             },
             {
               text: 'Dill',
@@ -81,11 +81,11 @@ describe('ListTable', () => {
       ).not.toBeInTheDocument();
 
       // Renders rows
-      expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Banana');
+      expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Apple');
       expect(screen.getAllByRole('cell')[1]).toHaveTextContent('');
       expect(screen.getAllByRole('cell')[2]).toHaveTextContent('Egg');
 
-      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Apple');
+      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Banana');
       expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Dill');
       expect(screen.getAllByRole('cell')[6]).toHaveTextContent('Frappucino');
 
@@ -107,26 +107,21 @@ describe('ListTable', () => {
 
     it('should sort rows by ASC and DESC correctly including with empty strings', () => {
       // Unsorted
-      expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Banana');
-      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Apple');
-
-      // Sort on first column - ASC order
-      fireEvent.click(screen.getByRole('columnheader', { name: 'Header 1' }));
       expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Apple');
       expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Banana');
 
-      // Sort on second column with empty string - DESC order
-      fireEvent.click(screen.getByRole('columnheader', { name: 'Header 2' }));
-      expect(screen.getAllByRole('cell')[1]).toHaveTextContent('Dill');
-      expect(screen.getAllByRole('cell')[5]).toHaveTextContent('');
+      // Sort on first column - DESC order
+      fireEvent.click(screen.getByRole('button', { name: 'Header 1' }));
+      expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Banana');
+      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Apple');
 
       // Sort on second column with empty string - ASC order
-      fireEvent.click(screen.getByRole('columnheader', { name: 'Header 2' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Header 2' }));
       expect(screen.getAllByRole('cell')[1]).toHaveTextContent('');
       expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Dill');
 
       // Sort on third link column - DESC order
-      fireEvent.click(screen.getByRole('columnheader', { name: 'Header 3' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Header 3' }));
       expect(screen.getAllByRole('cell')[2]).toHaveTextContent('Frappucino');
       expect(screen.getAllByRole('cell')[6]).toHaveTextContent('Egg');
     });
