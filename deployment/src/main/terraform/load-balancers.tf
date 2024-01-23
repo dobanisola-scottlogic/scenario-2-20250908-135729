@@ -33,18 +33,127 @@ resource "aws_lb_target_group" "public_load_balancer_target_group" {
   }
 }
 
-resource "aws_lb_listener" "public_load_balancer_listener" {
+# By default, block HTTPS access to the load balancer's auto-generated URL
+resource "aws_lb_listener" "https_listener" {
+  load_balancer_arn = aws_lb.public_load_balancer.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = var.ssl_certificate_arn
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Unsupported host domain name"
+      status_code  = "403"
+    }
+  }
+}
+
+# Redirect HTTPS requests without a specific path to the application
+resource "aws_lb_listener_rule" "https_default_redirect" {
+  listener_arn = aws_lb_listener.https_listener.arn
+
+  condition {
+    host_header {
+      values = ["${local.host_name}.${var.domain_name}"]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/"]
+    }
+  }
+  action {
+    type = "redirect"
+    redirect {
+      path        = "/application"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+# Forward HTTPS traffic to the target group when using the correct domain name
+resource "aws_lb_listener_rule" "https_forward_alias" {
+  listener_arn = aws_lb_listener.https_listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ecs_service_target_group.arn
+  }
+
+  condition {
+    host_header {
+      values = ["${local.host_name}.${var.domain_name}"]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/application*", "/admin/healthcheck"]
+    }
+
+  }
+
+  tags = {
+    Name = "${local.workspace}-https-forward-alias"
+  }
+}
+
+# By default, block HTTP access to the load balancer's auto-generated URL
+resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.public_load_balancer.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.public_load_balancer_target_group.arn
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Unsupported host domain name"
+      status_code  = "403"
+    }
+  }
+}
+
+# Redirect HTTP traffic to HTTPS when using the correct domain name
+resource "aws_lb_listener_rule" "http_redirect_alias" {
+  listener_arn = aws_lb_listener.http_listener.arn
+
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["${local.host_name}.${var.domain_name}"]
+    }
   }
 
   tags = {
-    Name = "${local.workspace}-public-load-balancer-listener"
+    Name = "${local.workspace}-http-redirect-alias"
+  }
+}
+
+# Forward contestant connections on port 8080 to the target group
+resource "aws_lb_listener" "contestant_listener" {
+  load_balancer_arn = aws_lb.public_load_balancer.arn
+  port              = 8080
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ecs_service_target_group.arn
   }
 }
 
@@ -73,23 +182,5 @@ resource "aws_lb_target_group" "ecs_service_target_group" {
 
   tags = {
     Name = "${local.workspace}-ecs-service-target-group"
-  }
-}
-
-# Create a rule on the public load balancer for routing application traffic 
-# to the ECS service target group
-resource "aws_lb_listener_rule" "application_load_balancer_rule" {
-  listener_arn = aws_lb_listener.public_load_balancer_listener.arn
-  priority     = 1
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_service_target_group.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/application*", "/admin/healthcheck"]
-    }
   }
 }

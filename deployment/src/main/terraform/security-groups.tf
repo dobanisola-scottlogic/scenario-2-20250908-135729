@@ -73,14 +73,45 @@ resource "aws_vpc_security_group_ingress_rule" "db_to_ecs" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "public_load_balancer_sg_ingress_rule" {
+# Allow IPv4 traffic on port 443 from anywhere on the internet
+resource "aws_vpc_security_group_ingress_rule" "public_load_balancer_sg_https_ingress_rule" {
   security_group_id = aws_security_group.public_load_balancer_sg.id
 
   cidr_ipv4   = "0.0.0.0/0" # Allow access from anywhere on the internet
-  ip_protocol = "-1"        # Use -1 to specify all protocols, allows traffic on all ports
+  ip_protocol = "tcp"
+  from_port   = 443
+  to_port     = 443
 
   tags = {
-    Name = "${local.workspace}-public-load-balancer-security-group-ingress-rule"
+    Name = "${local.workspace}-public-load-balancer-security-group-https-ingress-rule"
+  }
+}
+
+# Allow IPv4 traffic on port 80 from anywhere on the internet (will be redirected to HTTPS)
+resource "aws_vpc_security_group_ingress_rule" "public_load_balancer_sg_http_ingress_rule" {
+  security_group_id = aws_security_group.public_load_balancer_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0" # Allow access from anywhere on the internet
+  ip_protocol = "tcp"
+  from_port   = 80
+  to_port     = 80
+
+  tags = {
+    Name = "${local.workspace}-public-load-balancer-security-group-http-ingress-rule"
+  }
+}
+
+# Allow contestant connections on port 8080
+resource "aws_vpc_security_group_ingress_rule" "public_load_balancer_sg_contestant_ingress_rule" {
+  security_group_id = aws_security_group.public_load_balancer_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0" # Allow access from anywhere on the internet
+  ip_protocol = "tcp"
+  from_port   = var.server_http_port
+  to_port     = var.server_http_port
+
+  tags = {
+    Name = "${local.workspace}-public-load-balancer-security-group-contestant-ingress-rule"
   }
 }
 
@@ -88,8 +119,8 @@ resource "aws_vpc_security_group_egress_rule" "public_load_balancer_sg_egress_ru
   security_group_id = aws_security_group.public_load_balancer_sg.id
 
   cidr_ipv4   = var.vpc_cidr_block
-  from_port   = 8080
-  to_port     = 8080
+  from_port   = var.server_http_port
+  to_port     = var.server_http_port
   ip_protocol = "tcp"
 
   tags = {

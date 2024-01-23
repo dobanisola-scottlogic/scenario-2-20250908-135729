@@ -128,3 +128,15 @@ variable "schedule_days" {
   type        = string
   default     = "MON-FRI"
 }
+
+variable "domain_name" {
+  description = "The domain name to use for the application"
+  type        = string
+  default     = "hackathon-sl.com"
+}
+
+variable "ssl_certificate_arn" {
+  description = "The ARN of the SSL certificate associated with domain_name"
+  type        = string
+  default     = "arn:aws:acm:eu-west-2:033692923448:certificate/e3162ccd-12f6-40c3-be6b-fe5ffc2f8a2e"
+}

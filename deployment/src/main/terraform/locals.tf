@@ -1,5 +1,6 @@
 locals {
   workspace           = lower(terraform.workspace == "default" ? var.project : replace(terraform.workspace, "-", ""))
+  host_name           = lower(terraform.workspace == "default" ? "dashboard" : replace(terraform.workspace, "-", ""))
   server_service_name = "${local.workspace}-server"
   db_name             = local.workspace
 

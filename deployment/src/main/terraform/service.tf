@@ -102,8 +102,13 @@ resource "aws_ecs_task_definition" "task_definition" {
 # copies of a type of task, and gather up their logs and metrics, as well
 # as monitor the number of running tasks and replace any that have crashed
 resource "aws_ecs_service" "service" {
-  cluster                            = aws_ecs_cluster.ecs_cluster.id
-  depends_on                         = [aws_iam_policy.ecs_task_execution_iam_role_policy, aws_db_instance.database]
+  cluster = aws_ecs_cluster.ecs_cluster.id
+  depends_on = [
+    aws_iam_policy.ecs_task_execution_iam_role_policy,
+    aws_db_instance.database,
+    aws_lb_listener.http_listener,
+    aws_lb_listener.https_listener
+  ]
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
   desired_count                      = 1
