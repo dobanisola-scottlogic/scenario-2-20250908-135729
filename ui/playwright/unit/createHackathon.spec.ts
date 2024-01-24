@@ -7,16 +7,13 @@ import {
 
 const hackathonName = generateUniqueName('createHackathon');
 
-test.beforeEach(
-  async ({ login, page, hackathonListPage, createHackathonPage }) => {
-    await page.goto(initialURL);
-    await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openCreateHackathonPopup();
-    await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
-  }
-);
+test.use({ storageState: 'playwright/.auth/admin.json' });
+
+test.beforeEach(async ({ page, hackathonListPage, createHackathonPage }) => {
+  await page.goto(initialURL);
+  await hackathonListPage.openCreateHackathonPopup();
+  await createHackathonPage.verifyCreateHackathonPopUp('Add a new hackathon');
+});
 
 test.afterEach(async ({ hackathonListPage }) => {
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);

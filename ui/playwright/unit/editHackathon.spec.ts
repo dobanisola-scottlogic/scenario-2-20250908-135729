@@ -3,27 +3,17 @@ import { generateUniqueName, initialURL } from '~/helpers';
 
 const hackathonName = generateUniqueName('editHackathon');
 
+test.use({ storageState: 'playwright/.auth/admin.json' });
+
 test.beforeEach(
   async ({
-    login,
     page,
     createHackathonPage,
     editHackathonPage,
     hackathonListPage,
   }) => {
+    await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto(initialURL);
-    await page.getByText('Hackathon').click();
-    await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openCreateHackathonPopup();
-    await createHackathonPage.inputHackathonName(hackathonName);
-    await createHackathonPage.addNewHackathon();
-    await hackathonListPage.verifyHackathonDetails(
-      hackathonName,
-      'Easy',
-      'Milestone1Bot'
-    );
     await hackathonListPage.openEditHackathonPopup(hackathonName);
     await editHackathonPage.verifyEditHackathonPopUp();
   }

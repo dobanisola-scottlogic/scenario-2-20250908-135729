@@ -5,7 +5,13 @@ export class TeamDashboardPage {
   readonly viewInformationButton: Locator;
   readonly refreshButton: Locator;
   readonly connectButton: Locator;
+  readonly cancelButton: Locator;
   readonly addGameButton: Locator;
+  readonly connectStatusText: ({
+    statusText,
+  }: {
+    statusText: string;
+  }) => Locator;
   readonly milestoneInformation: ({
     map,
     bot,
@@ -26,10 +32,13 @@ export class TeamDashboardPage {
       name: 'View information',
     });
     this.refreshButton = page.getByRole('button', { name: 'Refresh' });
-    this.connectButton = page.getByTestId('connectButton');
+    this.connectButton = page.getByRole('button', { name: 'Connect' });
+    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
     this.addGameButton = page.getByRole('button', {
       name: 'Add a new game',
     });
+    this.connectStatusText = ({ statusText }) =>
+      page.getByText(`The connection status of your bot is:${statusText}`);
     this.milestoneInformation = ({ map, bot }) =>
       page.getByText(`Current Milestone: Map: ${map} - Bot: ${bot}`);
     this.milestoneNotFoundText = page.getByText(
@@ -46,8 +55,30 @@ export class TeamDashboardPage {
     await expect(this.addGameButton).toBeDisabled();
   }
 
+  async verifyStateIsDisconnected() {
+    await expect(this.connectButton).toBeVisible();
+    await expect(this.cancelButton).toBeHidden();
+    await expect(
+      this.connectStatusText({ statusText: 'Disconnected' })
+    ).toBeVisible();
+  }
+
+  async verifyStateIsAwaitingConnection() {
+    await expect(this.cancelButton).toBeVisible();
+    await expect(this.connectButton).toBeHidden();
+    await expect(
+      this.connectStatusText({
+        statusText: 'Waiting for you to start your bot',
+      })
+    ).toBeVisible();
+  }
+
   async clickViewInformationButton() {
     await this.viewInformationButton.click();
+  }
+
+  async clickRefreshButton() {
+    await this.refreshButton.click();
   }
 
   async clickConnectButton() {
@@ -76,7 +107,7 @@ export class TeamDashboardPage {
 
   async verifyConnectionStatusIs(connectionStatus: string) {
     await expect(
-      this.connectionStatistics({ connectionStatus: connectionStatus })
+      this.connectStatusText({ statusText: connectionStatus })
     ).toBeVisible();
   }
 }

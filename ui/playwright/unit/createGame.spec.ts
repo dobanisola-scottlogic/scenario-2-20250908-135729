@@ -11,20 +11,12 @@ const map = 'Hard';
 const hackathonName = generateUniqueName('createGame');
 const teamName = hackathonName;
 
-test.beforeEach(
-  async ({ page, createHackathonPage, hackathonListPage, login }, testInfo) => {
-    await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
-    await page.goto(initialURL);
-    await login.inputCredentials('admin', 'secret');
-    if (testInfo.title.includes('unknown milestone bot')) {
-      await login.loginWithUnknownMilestoneBot();
-    } else {
-      await login.attemptLogin();
-    }
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openTheHackathonPage(hackathonName);
-  }
-);
+test.use({ storageState: 'playwright/.auth/admin.json' });
+
+test.beforeEach(async ({ page, createHackathonPage }) => {
+  await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
+  await page.goto(initialURL + hackathonName.toLowerCase());
+});
 
 test.afterEach(async ({ hackathonListPage }) => {
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
@@ -32,7 +24,6 @@ test.afterEach(async ({ hackathonListPage }) => {
 
 test.describe('create a new game popup without a team being created', () => {
   // runs tests in serial to prevent clash of game creation tests
-  test.describe.configure({ mode: 'serial' });
   test.beforeEach(async ({ hackathonDetailsPage, commonPageObjects }) => {
     await hackathonDetailsPage.openCreateGamePopup();
     await commonPageObjects.confirmPopupIsVisible();
@@ -188,22 +179,6 @@ test.describe('create a new game popup without a team being created', () => {
       'Error creating game - all players must be unique'
     );
   });
-
-  test('Error message appears when unknown milestone bot is used', async ({
-    createGamePage,
-    commonPageObjects,
-  }) => {
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(playerUnknown);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
-    await createGamePage.addNewGame();
-    await commonPageObjects.confirmErrorMessageIs(
-      `Error creating game - com.scottlogic.hackathon.bots.${playerUnknown} is not a valid milestone bot.`
-    );
-  });
 });
 
 test.describe('create a team before entering the create game popup', () => {
@@ -240,6 +215,37 @@ test.describe('create a team before entering the create game popup', () => {
     await createGamePage.addNewGame();
     await commonPageObjects.confirmErrorMessageIs(
       `Error creating game - Team ${teamName} has no bots`
+    );
+  });
+});
+
+test.describe('create a team before entering the create game popup', () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+
+  test('Error message appears when unknown milestone bot is used', async ({
+    createGamePage,
+    commonPageObjects,
+    hackathonDetailsPage,
+    hackathonListPage,
+    login,
+    page,
+  }) => {
+    await page.goto(initialURL);
+    await login.inputCredentials('admin', 'secret');
+    await login.loginWithUnknownMilestoneBot();
+    await hackathonListPage.verifyLoginSuccess();
+    await hackathonListPage.openTheHackathonPage(hackathonName);
+    await hackathonDetailsPage.openCreateGamePopup();
+    await commonPageObjects.confirmPopupIsVisible();
+    await createGamePage.gamePlayer1Field.click();
+    await createGamePage.selectOption(player1);
+    await createGamePage.gamePlayer2Field.click();
+    await createGamePage.selectOption(playerUnknown);
+    await createGamePage.gameMapField.click();
+    await createGamePage.selectOption(map);
+    await createGamePage.addNewGame();
+    await commonPageObjects.confirmErrorMessageIs(
+      `Error creating game - com.scottlogic.hackathon.bots.${playerUnknown} is not a valid milestone bot.`
     );
   });
 });

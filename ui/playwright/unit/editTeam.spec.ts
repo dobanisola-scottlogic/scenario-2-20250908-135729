@@ -8,12 +8,12 @@ import {
 const hackathonName = generateUniqueName('editTeam');
 const teamName = hackathonName;
 
+test.use({ storageState: 'playwright/.auth/admin.json' });
+
 test.beforeEach(
   async ({
-    login,
     page,
     createHackathonPage,
-    hackathonListPage,
     editTeamPage,
     createTeamPage,
     commonPageObjects,
@@ -23,11 +23,7 @@ test.beforeEach(
       hackathonName,
       teamName
     );
-    await page.goto(initialURL);
-    await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openTheHackathonPage(hackathonName);
+    await page.goto(initialURL + hackathonName.toLowerCase());
     await editTeamPage.openEditPopupOfTeamWithName(teamName);
     await commonPageObjects.confirmPopupIsVisible();
   }
@@ -98,7 +94,7 @@ test('internal server error returns on updating team name to one that already ex
 }) => {
   const secondTeamName = 'anotherTeamName';
   await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
-    hackathonName,
+    hackathonName.toLowerCase(),
     secondTeamName
   );
   await commonPageObjects.refreshPage();

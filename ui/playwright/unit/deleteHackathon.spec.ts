@@ -2,21 +2,18 @@ import test from '~/fixtures';
 import { generateUniqueName, initialURL } from '~/helpers';
 
 const hackathonName = generateUniqueName('deleteHackathon');
+
+test.use({ storageState: 'playwright/.auth/admin.json' });
+
 test.beforeEach(
   async ({
-    login,
     page,
     createHackathonPage,
     hackathonListPage,
     commonPageObjects,
   }) => {
+    await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
     await page.goto(initialURL);
-    await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openCreateHackathonPopup();
-    await createHackathonPage.inputHackathonName(hackathonName);
-    await createHackathonPage.addNewHackathon();
     await hackathonListPage.openDeletePopupOfHackathonWithName(hackathonName);
     await commonPageObjects.confirmPopupIsVisible();
   }

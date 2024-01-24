@@ -4,28 +4,35 @@ import { generateUniqueName, initialURL } from '~/helpers';
 const hackathonName = generateUniqueName('teamPage');
 const teamName = hackathonName;
 
-test.beforeEach(async ({ page, createHackathonPage, createTeamPage }) => {
-  await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
-  await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
-    hackathonName,
-    teamName
-  );
-  await page.goto(initialURL);
-});
+test.beforeEach(
+  async ({
+    page,
+    login,
+    teamDashboardPage,
+    createHackathonPage,
+    createTeamPage,
+  }) => {
+    await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
+    await createTeamPage.createTeamUsingAPIWithHackathonAndTeamName(
+      hackathonName,
+      teamName
+    );
+    await page.goto(initialURL);
+    await login.inputCredentials(teamName, 'teamPassword');
+    await login.attemptLogin();
+    await teamDashboardPage.verifyLoginSuccess();
+  }
+);
 
 test.afterEach(async ({ hackathonListPage }) => {
   await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
 test('milestone information is correct initially and when updated', async ({
-  login,
   teamDashboardPage,
   editHackathonPage,
   commonPageObjects,
 }) => {
-  await login.inputCredentials(teamName, 'teamPassword');
-  await login.attemptLogin();
-  await teamDashboardPage.verifyLoginSuccess();
   await teamDashboardPage.verifyMilestoneInformationIs({
     map: 'Easy',
     bot: 'Milestone1Bot',
@@ -42,12 +49,13 @@ test('milestone information is correct initially and when updated', async ({
   });
 });
 
-test('Can interact with the "connect" button', async ({
-  login,
+test('Team can trigger a connection listener', async ({
   teamDashboardPage,
 }) => {
-  await login.inputCredentials(teamName, 'teamPassword');
-  await login.attemptLogin();
-  await teamDashboardPage.verifyLoginSuccess();
+  await teamDashboardPage.verifyConnectionStatusIs('Disconnected');
   await teamDashboardPage.clickConnectButton();
+  await teamDashboardPage.clickRefreshButton();
+  await teamDashboardPage.verifyConnectionStatusIs(
+    'Waiting for you to start your bot'
+  );
 });

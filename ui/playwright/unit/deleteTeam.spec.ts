@@ -3,12 +3,13 @@ import { generateUniqueName, initialURL } from '~/helpers';
 
 const hackathonName = generateUniqueName('deleteTeam');
 const teamName = hackathonName;
+
+test.use({ storageState: 'playwright/.auth/admin.json' });
+
 test.beforeEach(
   async ({
-    login,
     page,
     createHackathonPage,
-    hackathonListPage,
     deleteTeamPage,
     createTeamPage,
     commonPageObjects,
@@ -18,11 +19,7 @@ test.beforeEach(
       hackathonName,
       teamName
     );
-    await page.goto(initialURL);
-    await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openTheHackathonPage(hackathonName);
+    await page.goto(initialURL + hackathonName.toLowerCase());
     await deleteTeamPage.openDeletePopupOfTeamWithName(hackathonName);
     await commonPageObjects.confirmPopupIsVisible();
   }

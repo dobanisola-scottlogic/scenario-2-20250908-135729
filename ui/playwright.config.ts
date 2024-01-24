@@ -20,9 +20,11 @@ export default defineConfig({
     permissions: ['clipboard-read', 'clipboard-write'],
   },
   projects: [
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup'],
     },
   ],
   webServer: {

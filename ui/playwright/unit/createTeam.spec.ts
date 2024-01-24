@@ -10,24 +10,20 @@ invalidCharacterErrors.push({
   invalidName: 'aDmIn',
 });
 
-const hackathonName = generateUniqueName('creaateTeam');
+const hackathonName = generateUniqueName('createTeam');
 const teamName = hackathonName;
+
+test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.beforeEach(
   async ({
-    login,
     page,
     createHackathonPage,
-    hackathonListPage,
     hackathonDetailsPage,
     commonPageObjects,
   }) => {
     await createHackathonPage.createHackathonUsingAPIWithName(hackathonName);
-    await page.goto(initialURL);
-    await login.inputCredentials('admin', 'secret');
-    await login.attemptLogin();
-    await hackathonListPage.verifyLoginSuccess();
-    await hackathonListPage.openTheHackathonPage(hackathonName);
+    await page.goto(initialURL + hackathonName.toLowerCase());
     await hackathonDetailsPage.openCreateTeamPopup();
     await commonPageObjects.confirmPopupIsVisible();
   }

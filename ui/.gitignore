@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 /playwright/report/
+/playwright/.auth/
 
 # Vitest coverage reports
 /coverage
