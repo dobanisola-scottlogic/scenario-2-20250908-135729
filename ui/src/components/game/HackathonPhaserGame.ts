@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
+import { ParsedGameResult } from '~/components/game/ParsedGameResult';
+import { CollectableSpriteSheet } from '~/components/game/SpriteSheets/CollectableSpriteSheet';
+import { MapSpriteSheet } from '~/components/game/SpriteSheets/MapSpriteSheet';
+import { PlayerSpriteSheet } from '~/components/game/SpriteSheets/PlayerSpriteSheet';
+import { SpawnSpriteSheet } from '~/components/game/SpriteSheets/SpawnSpriteSheet';
+import { SpriteSheetDefinition } from '~/components/game/SpriteSheets/SpriteSheetDefinition';
 import { Cell } from '~/interfaces/Cell';
+import { Collectable } from '~/interfaces/Collectable';
 import { Position } from '~/interfaces/Position';
-
-import { MapSpriteSheet } from './MapSpriteSheet';
-import { ParsedGameResult } from './ParsedGameResult';
-import { PlayerSpriteSheet } from './PlayerSpriteSheet';
-import { SpawnSpriteSheet } from './SpawnSpriteSheet';
 
 export class HackathonPhaserGame extends Phaser.Game {
   constructor(
@@ -24,40 +26,83 @@ export class HackathonPhaserGame extends Phaser.Game {
 }
 
 class HackathonPhaserScene extends Phaser.Scene {
+  private readonly DefaultSpeed: number = 280;
+  private readonly collectableSpriteSheet: CollectableSpriteSheet =
+    new CollectableSpriteSheet();
+  private readonly mapSpriteSheet: MapSpriteSheet = new MapSpriteSheet();
+  private readonly playerSpriteSheet: PlayerSpriteSheet =
+    new PlayerSpriteSheet();
+  private readonly spawnSpriteSheet: SpawnSpriteSheet = new SpawnSpriteSheet();
+
+  private readonly spriteSheets: SpawnSpriteSheet[];
+
+  private collectables: Phaser.GameObjects.Sprite[] = [];
+  private lastPhaseTime = 0;
+  private phaseCount = 0;
+  private phaseIndex = 0;
+
   constructor(public readonly gameData: ParsedGameResult) {
     super({ key: 'MainScene' });
+
+    this.spriteSheets = [
+      this.collectableSpriteSheet,
+      this.mapSpriteSheet,
+      this.playerSpriteSheet,
+      this.spawnSpriteSheet,
+    ];
+
+    this.lastPhaseTime = Date.now() - this.DefaultSpeed;
+    this.phaseCount = this.gameData.deltas.length;
   }
 
-  preload = () => {
-    this.load.spritesheet(
-      MapSpriteSheet.Identifier,
-      `/application/assets/${MapSpriteSheet.Identifier}.png`,
-      {
-        frameHeight: MapSpriteSheet.SpriteHeight,
-        frameWidth: MapSpriteSheet.SpriteWidth,
-      }
+  addSprite = (
+    x: number,
+    y: number,
+    spriteSheetDefinition: SpriteSheetDefinition,
+    frameNumber: number,
+    instanceId: number | null = null
+  ): Phaser.GameObjects.Sprite => {
+    const sprite = this.add.sprite(
+      x * Cell.CellWidth,
+      y * Cell.CellHeight,
+      spriteSheetDefinition.identifier,
+      frameNumber
     );
 
-    this.load.spritesheet(
-      PlayerSpriteSheet.Identifier,
-      `/application/assets/${PlayerSpriteSheet.Identifier}.png`,
-      {
-        frameHeight: PlayerSpriteSheet.SpriteHeight,
-        frameWidth: PlayerSpriteSheet.SpriteWidth,
-      }
-    );
+    // The displayHeight/displayWidth will scale the sprite to the correct dimensions:
+    sprite.displayHeight = spriteSheetDefinition.displayHeight;
+    sprite.displayWidth = spriteSheetDefinition.displayWidth;
 
-    this.load.spritesheet(
-      SpawnSpriteSheet.Identifier,
-      `/application/assets/${SpawnSpriteSheet.Identifier}.png`,
-      {
-        frameHeight: SpawnSpriteSheet.SpriteHeight,
-        frameWidth: SpawnSpriteSheet.SpriteWidth,
-      }
-    );
+    spriteSheetDefinition.animations.forEach((animation) => {
+      sprite.anims.create({
+        key: animation.key,
+        frames: this.anims.generateFrameNumbers(
+          spriteSheetDefinition.identifier,
+          { start: animation.start, end: animation.end }
+        ),
+        frameRate: animation.frameRate,
+        repeat: animation.repeat,
+      });
+    });
+
+    // Set the instanceId on the sprite so we can use it to look it up later:
+    if (instanceId != null) {
+      sprite.setData(spriteSheetDefinition.idKey, instanceId);
+    }
+
+    return sprite;
   };
 
-  scaffoldMapArea(rowCount: number, columnCount: number) {
+  preload = () => {
+    this.spriteSheets.forEach((spriteSheet: SpriteSheetDefinition) => {
+      this.load.spritesheet(spriteSheet.identifier, spriteSheet.url, {
+        frameHeight: spriteSheet.spriteHeight,
+        frameWidth: spriteSheet.spriteWidth,
+      });
+    });
+  };
+
+  scaffoldMapArea = (rowCount: number, columnCount: number) => {
     const tileGrid: number[][] = [];
 
     // Add 1 to rowCount to avoid black line at bottom
@@ -76,9 +121,12 @@ class HackathonPhaserScene extends Phaser.Scene {
     }
 
     return tileGrid;
-  }
+  };
 
-  populateObstacles(parsedGameData: ParsedGameResult, tileGrid: number[][]) {
+  populateObstacles = (
+    parsedGameData: ParsedGameResult,
+    tileGrid: number[][]
+  ) => {
     parsedGameData.constants.outOfBoundPositions.forEach(
       (position: Position) => {
         // Set this map square to the index of the obstruction sprite tile:
@@ -88,20 +136,12 @@ class HackathonPhaserScene extends Phaser.Scene {
 
     for (let row = 0; row < tileGrid.length; row++) {
       for (let column = 0; column <= tileGrid[row].length; column++) {
-        const sprite = this.add.sprite(
-          column * Cell.CellWidth, // x coordinate
-          row * Cell.CellHeight, // y coordinate
-          MapSpriteSheet.Identifier, // map sprite sheet identifier
-          tileGrid[row][column] // Which frame in the sprite sheet to set as this sprite
-        );
-
-        sprite.scale = 0.5; // Ensures the whole frame of the sprite is used
-        sprite.setOrigin(0.5, 0.5);
+        this.addSprite(column, row, this.mapSpriteSheet, tileGrid[row][column]);
       }
     }
-  }
+  };
 
-  populateSpawnPoints(parsedGameData: ParsedGameResult) {
+  populateSpawnPoints = (parsedGameData: ParsedGameResult) => {
     parsedGameData.constants.spawnPoints.forEach((spawnPoint, index) => {
       const team = parsedGameData.constants.teams.find(
         (t) => t.botId === spawnPoint.owner
@@ -111,23 +151,16 @@ class HackathonPhaserScene extends Phaser.Scene {
         throw `No team matches the owner "${spawnPoint.owner}" for the spawn point`;
       }
 
-      const sprite = this.add.sprite(
-        spawnPoint.cell.column * Cell.CellWidth,
-        spawnPoint.cell.row * Cell.CellHeight,
-        SpawnSpriteSheet.Identifier,
-        index * 18 // index of sprites in this sprite map are 0, 18, 36, 54, 72, 90
+      this.addSprite(
+        spawnPoint.cell.column,
+        spawnPoint.cell.row,
+        this.spawnSpriteSheet,
+        index * this.spawnSpriteSheet.repeatsEvery
       );
-
-      sprite.displayHeight = Cell.CellHeight * SpawnSpriteSheet.DisplayHeight;
-      sprite.displayWidth = Cell.CellWidth * SpawnSpriteSheet.DisplayWidth;
-
-      // Set to center of frame:
-      sprite.setOrigin(0.5, 0.5);
     });
-  }
+  };
 
   create = () => {
-    // Scaffold the map area:
     const tileGrid: number[][] = this.scaffoldMapArea(
       this.gameData.constants.height,
       this.gameData.constants.width
@@ -138,7 +171,67 @@ class HackathonPhaserScene extends Phaser.Scene {
     this.populateSpawnPoints(this.gameData);
   };
 
+  addCollectables = (collectables: Collectable[]) => {
+    if (collectables?.length > 0) {
+      collectables.forEach((collectable: Collectable, index: number) => {
+        const sprite = this.addSprite(
+          collectable.position.x,
+          collectable.position.y,
+          this.collectableSpriteSheet,
+          index * this.collectableSpriteSheet.repeatsEvery,
+          collectable.id
+        );
+
+        // Spin that chicken drumstick!
+        sprite.anims.play(this.collectableSpriteSheet.spinAnimation.key);
+
+        // Keep track of the collectables so we can remove them later:
+        this.collectables.push(sprite);
+      });
+    }
+  };
+
+  removeCollectables = (collectedIds: number[]) => {
+    if (collectedIds?.length > 0) {
+      collectedIds.forEach((id: number) => {
+        const index = this.collectables.findIndex(
+          (c) => c.getData(this.collectableSpriteSheet.idKey) === id
+        );
+
+        if (index > -1) {
+          this.collectables[index].anims.play(
+            this.collectableSpriteSheet.collectedAnimation.key
+          );
+          this.collectables[index].destroy(true);
+          this.collectables.splice(index, 1);
+        }
+      });
+    }
+  };
+
   update = () => {
     // todo: process changes on each turn: HAC-255
+    if (this.phaseIndex === this.phaseCount) {
+      // Check for looped, game over etc:
+    }
+
+    const dateTimeNow = Date.now();
+
+    if (
+      dateTimeNow - this.lastPhaseTime > this.DefaultSpeed &&
+      this.phaseIndex < this.phaseCount
+    ) {
+      this.lastPhaseTime = dateTimeNow;
+
+      const delta = this.gameData.deltas[this.phaseIndex];
+
+      if (delta) {
+        this.addCollectables(delta.collectablesAdded);
+
+        this.removeCollectables(delta.collectablesCollected);
+      }
+
+      this.phaseIndex++;
+    }
   };
 }

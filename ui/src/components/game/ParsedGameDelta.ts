@@ -102,9 +102,7 @@ export class ParsedGameDelta {
     index: number,
     gameData: GameResult
   ): number[] => {
-    return gameData.phaseResults[index].removedCollectables.map(
-      (collectable) => collectable.id
-    );
+    return gameData.phaseResults[index].removedCollectables;
   };
 
   private static parseDestroyedPlayers = (

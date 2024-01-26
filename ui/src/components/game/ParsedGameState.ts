@@ -43,9 +43,9 @@ export class ParsedGameState {
 
     // Remove collected collectables:
     gameData.phaseResults[index].removedCollectables.forEach(
-      (removedCollectable) => {
+      (removedCollectableId) => {
         const index = collectables.findIndex(
-          (c) => c.id === removedCollectable.id
+          (c) => c.id === removedCollectableId
         );
 
         if (index !== -1) {

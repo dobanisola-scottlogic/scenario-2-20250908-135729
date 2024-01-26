@@ -11,7 +11,7 @@ export interface PhaseResult {
   id: string;
   phase: number;
   playerPositions: PlayerPosition[];
-  removedCollectables: Collectable[];
+  removedCollectables: number[];
   removedPlayers: number[];
   removedSpawnPoints: SpawnPoint[];
 }
