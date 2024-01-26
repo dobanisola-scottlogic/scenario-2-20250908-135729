@@ -60,7 +60,11 @@ class HackathonPhaserScene extends Phaser.Scene {
   scaffoldMapArea(rowCount: number, columnCount: number) {
     const tileGrid: number[][] = [];
 
-    for (let row = 0; row < rowCount; row++) {
+    // Add 1 to rowCount to avoid black line at bottom
+    // Tried starting at 1, but still get black line
+    // Unsure why, but this fixes it for now.
+    // Investigate in HAC-311
+    for (let row = 0; row < rowCount + 1; row++) {
       const tileRow: number[] = [];
 
       for (let column = 0; column < columnCount; column++) {
@@ -111,7 +115,7 @@ class HackathonPhaserScene extends Phaser.Scene {
         spawnPoint.cell.column * Cell.CellWidth,
         spawnPoint.cell.row * Cell.CellHeight,
         SpawnSpriteSheet.Identifier,
-        index * 18, // index of sprites in this sprite map are 0, 18, 36, 54, 72, 90
+        index * 18 // index of sprites in this sprite map are 0, 18, 36, 54, 72, 90
       );
 
       sprite.displayHeight = Cell.CellHeight * SpawnSpriteSheet.DisplayHeight;
