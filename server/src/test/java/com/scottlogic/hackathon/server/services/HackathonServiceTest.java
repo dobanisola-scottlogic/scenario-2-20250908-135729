@@ -41,10 +41,10 @@ public class HackathonServiceTest {
 
         var result = hackathonService.createHackathon(ADMIN, request);
 
-        assertEquals(result.getId(), ID);
-        assertEquals(result.getName(), NAME);
-        assertEquals(result.getCurrentMilestoneClassName(), "com.scottlogic.hackathon.bots.Milestone1Bot");
-        assertEquals(result.getCurrentMilestoneMap(), "Easy");
+        assertEquals(ID, result.getId());
+        assertEquals(NAME, result.getName());
+        assertEquals("com.scottlogic.hackathon.bots.Milestone1Bot", result.getCurrentMilestoneClassName());
+        assertEquals("Easy", result.getCurrentMilestoneMap());
     }
 
     @Test
@@ -58,6 +58,28 @@ public class HackathonServiceTest {
         var thrown = assertThrows(IllegalArgumentException.class,
                 () -> hackathonService.createHackathon(ADMIN, request));
 
-        assertEquals(thrown.getMessage(), "Hackathon with ID hackathon-name already exists");
+        assertEquals("Hackathon with ID hackathon-name already exists", thrown.getMessage());
+    }
+
+    @Test
+    void createHackathon_exceptionOnEmptyName() {
+        var request = new Hackathon();
+        request.setName("");
+
+        var thrown = assertThrows(IllegalArgumentException.class,
+        () -> hackathonService.createHackathon(ADMIN, request));
+
+        assertEquals("Hackathon name cannot be empty", thrown.getMessage());
+    }
+
+    @Test
+    void createHackathon_exceptionOnSpacesName() {
+        var request = new Hackathon();
+        request.setName("        ");
+
+        var thrown = assertThrows(IllegalArgumentException.class,
+        () -> hackathonService.createHackathon(ADMIN, request));
+
+        assertEquals("Hackathon name cannot be empty", thrown.getMessage());
     }
 }

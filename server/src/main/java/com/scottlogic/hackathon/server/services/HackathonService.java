@@ -21,6 +21,10 @@ public class HackathonService {
     var entity = new Hackathon(hackathon.getName());
 
     Preconditions.checkArgument(
+      !entity.getName().isEmpty(),
+      "Hackathon name cannot be empty");
+
+    Preconditions.checkArgument(
             hackathonStore.get(entity.getId()) == null,
             "Hackathon with ID %s already exists",
             entity.getId()
