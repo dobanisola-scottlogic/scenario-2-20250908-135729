@@ -47,12 +47,9 @@ export const testGameResultBody: GameResult = {
 };
 
 export const testGameResultBodyUserTeams: GameResult = {
-  cutoffCondition: CutoffCondition.LONE_SURVIVOR,
+  ...testGameResultBody,
   game: {
-    arena: testArena,
-    gameTime: Date.parse('13 Oct 2023 09:12:34'),
-    hackathonId: testHackathonId.valid,
-    map: testArena,
+    ...testGameResultBody.game,
     teams: [
       {
         botId: 10,
@@ -66,7 +63,4 @@ export const testGameResultBodyUserTeams: GameResult = {
       },
     ],
   },
-  id: testGameId.valid,
-  phaseResults: [],
-  spawnPoints: [],
 };

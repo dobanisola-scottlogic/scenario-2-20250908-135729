@@ -1,4 +1,18 @@
-import { isValidName } from './utils';
+import { handleEnterKeyPress, isValidName } from './utils';
+
+describe('handleEnterKeyPress', () => {
+  const mockFunction = vi.fn();
+
+  it('should not call handleEnter function when key press is not key code 13', () => {
+    handleEnterKeyPress(14, mockFunction);
+    expect(mockFunction).not.toHaveBeenCalled();
+  });
+
+  it('should call handleEnter function when key press is key code 13 for enter key code', () => {
+    handleEnterKeyPress(13, mockFunction);
+    expect(mockFunction).toHaveBeenCalled();
+  });
+});
 
 describe('isValidName', () => {
   it('should return true when the names are acceptable - numbers and single spaces are allowed', () => {

@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
+import {
+  getHackathonNotFoundResponseHandler,
+  postUpdateHackathonBadRequestResponseHandler,
+  postUpdateHackathonInternalServerErrorResponseHandler,
+} from '~/mocks/handlers/hackathon';
+import { server } from '~/mocks/server';
 import {
   testHackathonBody,
   testHackathonId,
@@ -243,6 +248,12 @@ describe('Create Update Hackathon Popup Component', () => {
       expect(
         screen.getByTestId('current-milestone-bot-option-1')
       ).toHaveTextContent('Milestone2Bot');
+
+      // Updates data successfully
+      fireEvent.click(screen.getByTestId('current-milestone-bot-option-1'));
+      expect(screen.getByTestId('current-milestone-bot')).toHaveTextContent(
+        'Milestone2Bot'
+      );
     });
 
     describe('When the edit button is pressed', () => {
@@ -273,6 +284,73 @@ describe('Create Update Hackathon Popup Component', () => {
           );
           expect(reduxState.snackbar.isOpen).toBeTruthy();
         });
+      });
+
+      it('displays an alert when the hackathon does not fetch successfully', async () => {
+        renderWithRouterAndProvider(
+          <CreateUpdateHackathon
+            id={testHackathonId.networkError}
+            isOpen
+            setIsOpen={mockFunction}
+          />
+        );
+
+        const alert = await screen.findByRole('alert');
+        expect(alert.textContent).toContain('Error fetching hackathon');
+      });
+
+      it('displays an error when the update hackathon function returns unsuccessfully with an internal server error', async () => {
+        server.use(postUpdateHackathonInternalServerErrorResponseHandler);
+
+        renderWithRouterAndProvider(
+          <CreateUpdateHackathon
+            id={testHackathonId.valid}
+            isOpen
+            setIsOpen={mockFunction}
+          />
+        );
+
+        await waitFor(() =>
+          expect(
+            screen.getByRole('button', { name: 'Update hackathon' })
+          ).not.toBeDisabled()
+        );
+
+        fireEvent.click(
+          screen.getByRole('button', { name: 'Update hackathon' })
+        );
+
+        const alert = await screen.findByRole('alert');
+        expect(alert.textContent).toContain(
+          'Error updating hackathon - internal server error'
+        );
+      });
+
+      it('displays an error when the update hackathon function returns unsuccessfully with a bad request error', async () => {
+        server.use(postUpdateHackathonBadRequestResponseHandler);
+
+        renderWithRouterAndProvider(
+          <CreateUpdateHackathon
+            id={testHackathonId.valid}
+            isOpen
+            setIsOpen={mockFunction}
+          />
+        );
+
+        await waitFor(() =>
+          expect(
+            screen.getByRole('button', { name: 'Update hackathon' })
+          ).not.toBeDisabled()
+        );
+
+        fireEvent.click(
+          screen.getByRole('button', { name: 'Update hackathon' })
+        );
+
+        const alert = await screen.findByRole('alert');
+        expect(alert.textContent).toContain(
+          'Error updating hackathon - bad request'
+        );
       });
 
       it('disables update when the hackathon does not load correctly or is not found', async () => {

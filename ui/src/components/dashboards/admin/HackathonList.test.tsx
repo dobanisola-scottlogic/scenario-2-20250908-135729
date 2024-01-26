@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
 import HackathonList from './HackathonList';
 
@@ -27,9 +27,15 @@ describe('HackathonList', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render the success snackbar correctly', () => {
+  it('should render the success snackbar correctly', async () => {
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Hackathon created successfully!'
     );
+
+    // Test close snackbar
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
   });
 });

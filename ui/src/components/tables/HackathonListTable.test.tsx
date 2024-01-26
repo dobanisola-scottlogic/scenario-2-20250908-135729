@@ -1,7 +1,10 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 
-import { getHackathonsNetworkErrorResponseHandler } from '~/mocks/handlers/hackathon';
+import {
+  getHackathonsNetworkErrorResponseHandler,
+  getHackathonsNoContentResponseHandler,
+} from '~/mocks/handlers/hackathon';
 import { server } from '~/mocks/server';
 import { testHackathonBody } from '~/mocks/test-data/hackathon';
 import {
@@ -57,6 +60,23 @@ describe('HackathonListTable', () => {
     expect(mapCell).toBeInTheDocument();
     expect(botCell).toBeInTheDocument();
     expect(moreMenu).toBeInTheDocument();
+  });
+
+  it('should display a message if data is fetched successfully but there are no hackathons', async () => {
+    server.use(getHackathonsNoContentResponseHandler);
+
+    renderWithRouterAndProvider(
+      <Routes>
+        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
+        <Route
+          path={hackathonRouteForTesting}
+          element={<div data-testid='hackathon-details-page' />}
+        />
+      </Routes>
+    );
+
+    const noHackathons = await screen.findByText('No hackathons to display.');
+    expect(noHackathons).toBeInTheDocument();
   });
 
   it('should display an error message after unsuccessful data fetch', async () => {

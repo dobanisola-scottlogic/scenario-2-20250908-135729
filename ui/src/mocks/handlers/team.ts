@@ -27,12 +27,6 @@ export const handlers = [
   http.put(`${teamEndpoint}/${testTeamId.valid}`, () => {
     return jsonOkResponse(testTeamBody);
   }),
-  http.put(`${teamEndpoint}/${testTeamId.badRequest}`, () => {
-    return badRequestResponse();
-  }),
-  http.put(`${teamEndpoint}/${testTeamId.networkError}`, () => {
-    return errorResponse();
-  }),
   http.get(`${teamEndpoint}/${testTeamId.valid}`, () => {
     return jsonOkResponse(testTeamBody);
   }),

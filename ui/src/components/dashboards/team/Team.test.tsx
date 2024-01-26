@@ -53,6 +53,10 @@ describe('Team', () => {
     expect(addANewGameButton).toBeInTheDocument();
     expect(addANewGameButton).toHaveAttribute('disabled');
     expect(screen.getByText('Placeholder for games table')).toBeInTheDocument();
+
+    // View information opens correctly
+    fireEvent.click(screen.getByRole('button', { name: 'View information' }));
+    expect(screen.getByText('Access information')).toBeInTheDocument();
   });
 
   it('should display the correct current milestone for the logged-in team', async () => {

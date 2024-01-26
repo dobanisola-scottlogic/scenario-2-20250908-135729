@@ -14,12 +14,15 @@ describe('ListTable', () => {
               text: 'Apple',
             },
             {
-              text: '',
+              text: 'Cherry',
             },
             {
-              text: 'Egg',
+              text: 'Pear',
               link: 'https://blog.scottlogic.com/',
               linkTarget: '_blank',
+            },
+            {
+              text: undefined,
             },
             {
               menuElement: (
@@ -43,6 +46,9 @@ describe('ListTable', () => {
               linkTarget: '_blank',
             },
             {
+              text: undefined,
+            },
+            {
               menuElement: (
                 <HackathonMenu selectedHackathonId='testHackathonId-2' />
               ),
@@ -54,7 +60,13 @@ describe('ListTable', () => {
       renderWithRouterAndProvider(
         <ListTable
           dataType='games'
-          headerRows={['Header 1', 'Header 2', 'Header 3', 'Action']}
+          headerRows={[
+            'Header 1',
+            'Header 2',
+            'Header 3',
+            'Header 4',
+            'Action',
+          ]}
           tableRows={testTableRows}
           isError={false}
           isFixed
@@ -74,6 +86,9 @@ describe('ListTable', () => {
       expect(
         screen.getByRole('columnheader', { name: 'Header 3' })
       ).toBeInTheDocument();
+      expect(
+        screen.getByRole('columnheader', { name: 'Header 4' })
+      ).toBeInTheDocument();
 
       // Menu header is not rendered
       expect(
@@ -82,21 +97,23 @@ describe('ListTable', () => {
 
       // Renders rows
       expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Apple');
-      expect(screen.getAllByRole('cell')[1]).toHaveTextContent('');
-      expect(screen.getAllByRole('cell')[2]).toHaveTextContent('Egg');
+      expect(screen.getAllByRole('cell')[1]).toHaveTextContent('Cherry');
+      expect(screen.getAllByRole('cell')[2]).toHaveTextContent('Pear');
+      expect(screen.getAllByRole('cell')[3]).toHaveTextContent('');
 
-      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Banana');
-      expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Dill');
-      expect(screen.getAllByRole('cell')[6]).toHaveTextContent('Frappucino');
+      expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Banana');
+      expect(screen.getAllByRole('cell')[6]).toHaveTextContent('Dill');
+      expect(screen.getAllByRole('cell')[7]).toHaveTextContent('Frappucino');
+      expect(screen.getAllByRole('cell')[8]).toHaveTextContent('');
 
       // Menu elements are right-aligned, others are not
       expect(screen.getAllByRole('cell')[0]).toHaveClass(
         'MuiTableCell-alignLeft'
       );
-      expect(screen.getAllByRole('cell')[3]).toHaveClass(
+      expect(screen.getAllByRole('cell')[4]).toHaveClass(
         'MuiTableCell-alignRight'
       );
-      expect(screen.getAllByRole('cell')[7]).toHaveClass(
+      expect(screen.getAllByRole('cell')[9]).toHaveClass(
         'MuiTableCell-alignRight'
       );
 
@@ -108,22 +125,31 @@ describe('ListTable', () => {
     it('should sort rows by ASC and DESC correctly including with empty strings', () => {
       // Unsorted
       expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Apple');
-      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Banana');
+      expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Banana');
 
       // Sort on first column - DESC order
       fireEvent.click(screen.getByRole('button', { name: 'Header 1' }));
       expect(screen.getAllByRole('cell')[0]).toHaveTextContent('Banana');
-      expect(screen.getAllByRole('cell')[4]).toHaveTextContent('Apple');
+      expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Apple');
 
       // Sort on second column with empty string - ASC order
       fireEvent.click(screen.getByRole('button', { name: 'Header 2' }));
-      expect(screen.getAllByRole('cell')[1]).toHaveTextContent('');
-      expect(screen.getAllByRole('cell')[5]).toHaveTextContent('Dill');
+      expect(screen.getAllByRole('cell')[1]).toHaveTextContent('Cherry');
+      expect(screen.getAllByRole('cell')[6]).toHaveTextContent('Dill');
 
       // Sort on third link column - DESC order
       fireEvent.click(screen.getByRole('button', { name: 'Header 3' }));
-      expect(screen.getAllByRole('cell')[2]).toHaveTextContent('Frappucino');
-      expect(screen.getAllByRole('cell')[6]).toHaveTextContent('Egg');
+      expect(screen.getAllByRole('cell')[2]).toHaveTextContent('Pear');
+      expect(screen.getAllByRole('cell')[7]).toHaveTextContent('Frappucino');
+
+      // Sort on fourth column - ASC & DESC order
+      fireEvent.click(screen.getByRole('button', { name: 'Header 4' }));
+      expect(screen.getAllByRole('cell')[3]).toHaveTextContent('');
+      expect(screen.getAllByRole('cell')[8]).toHaveTextContent('');
+
+      fireEvent.click(screen.getByRole('button', { name: 'Header 4' }));
+      expect(screen.getAllByRole('cell')[3]).toHaveTextContent('');
+      expect(screen.getAllByRole('cell')[8]).toHaveTextContent('');
     });
   });
 

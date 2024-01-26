@@ -70,8 +70,31 @@ export const handlers = [
   }),
 ];
 
+export const getHackathonsNoContentResponseHandler = http.get(
+  hackathonEndpoint,
+  () => {
+    return noContentResponse();
+  }
+);
+
 export const getHackathonsNetworkErrorResponseHandler = http.get(
   hackathonEndpoint,
+  () => {
+    return errorResponse();
+  }
+);
+
+export const postUpdateHackathonBadRequestResponseHandler = http.put(
+  `${hackathonEndpoint}/${testHackathonId.valid}`,
+  () => {
+    return badRequestResponse({
+      message: 'Bad request error message',
+    });
+  }
+);
+
+export const postUpdateHackathonInternalServerErrorResponseHandler = http.put(
+  `${hackathonEndpoint}/${testHackathonId.valid}`,
   () => {
     return errorResponse();
   }

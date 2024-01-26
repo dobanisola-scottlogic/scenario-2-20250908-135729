@@ -33,8 +33,8 @@ export default defineConfig(({ mode }) => ({
     coverage: {
       reporter: ['text', 'json', 'html', 'cobertura'],
       statements: 98,
-      branches: 97,
-      functions: 90,
+      branches: 98,
+      functions: 95,
       lines: 98,
     },
   },
