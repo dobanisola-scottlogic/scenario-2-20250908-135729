@@ -12,7 +12,7 @@ export class DeleteTeamPage {
     this.popupBox = page.getByRole('dialog');
     this.deleteTeamButton = page.getByRole('button', { name: 'Delete team' });
     this.teamMenuButton = ({ teamName }) =>
-      page.getByRole('cell', { name: `${teamName}` }).getByLabel('more');
+      page.getByRole('row', { name: `${teamName}` }).getByLabel('more');
     this.deleteTeamOption = page.getByRole('menuitem', { name: 'Delete...' });
   }
 

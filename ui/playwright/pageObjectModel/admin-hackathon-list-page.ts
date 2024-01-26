@@ -1,89 +1,72 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class HackathonListPage {
   readonly page: Page;
-  readonly hackathonName: ({
-    hackathonName,
-  }: {
-    hackathonName: string;
-  }) => Locator;
-  readonly hackathonMap: ({
-    hackathonName,
-  }: {
-    hackathonName: string;
-  }) => Locator;
-  readonly hackathonBot: ({
-    hackathonName,
-  }: {
-    hackathonName: string;
-  }) => Locator;
-  readonly navigationBarDropdownButton: Locator;
-  readonly addNewHackathonButton: Locator;
-  readonly hackathonMenuButton: ({
-    hackathonName,
-  }: {
-    hackathonName: string;
-  }) => Locator;
-  readonly editHackathonButton: Locator;
-  readonly deleteHackathonButton: Locator;
-  readonly hackathonLink: ({ hackName }: { hackName: string }) => Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.hackathonName = ({ hackathonName }) =>
-      page
-        .getByRole('row', { name: `${hackathonName}` })
-        .getByRole('rowheader');
-    this.hackathonMap = ({ hackathonName }) =>
-      page
-        .getByRole('row', { name: `${hackathonName}` })
-        .getByRole('cell')
-        .nth(0);
-    this.hackathonBot = ({ hackathonName }) =>
-      page
-        .getByRole('row', { name: `${hackathonName}` })
-        .getByRole('cell')
-        .nth(1);
-    this.navigationBarDropdownButton = page.getByRole('button', {
-      name: 'admin',
-    });
-    this.addNewHackathonButton = page.getByRole('button', {
-      name: 'Add a new hackathon',
-    });
-    this.hackathonMenuButton = ({ hackathonName }) =>
-      page.getByRole('row', { name: `${hackathonName}` }).getByLabel('more');
-    this.editHackathonButton = page.getByRole('menuitem', {
-      name: 'Edit...',
-    });
-    this.deleteHackathonButton = page.getByRole('menuitem', {
-      name: 'Delete...',
-    });
-    this.hackathonLink = ({ hackName }) =>
-      page.getByRole('link', { name: `${hackName}` });
   }
 
+  //Start of locators
+
+  getHackathonByName = (hackathonName: string) =>
+    this.page.getByRole('link', { name: `${hackathonName}` });
+
+  getHackathonMapByName = (hackathonName: string, hackathonMap: string) =>
+    this.page
+      .getByRole('row', { name: `${hackathonName}` })
+      .getByRole('cell', { name: `${hackathonMap}` });
+
+  getByHackathonBot = (hackathonName: string, hackathonBot: string) =>
+    this.page
+      .getByRole('row', { name: `${hackathonName}` })
+      .getByRole('cell', { name: `${hackathonBot}` });
+
+  getNavigationBarDropdownButton = () =>
+    this.page.getByRole('button', {
+      name: 'admin',
+    });
+
+  getAddNewHackathonButton = () =>
+    this.page.getByRole('button', {
+      name: 'Add a new hackathon',
+    });
+
+  getHackathonMenuButtonByName = (hackathonName: string) =>
+    this.page.getByRole('row', { name: `${hackathonName}` }).getByLabel('more');
+
+  getEditHackathonButton = () =>
+    this.page.getByRole('menuitem', {
+      name: 'Edit...',
+    });
+
+  getDeleteHackathonButton = () =>
+    this.page.getByRole('menuitem', {
+      name: 'Delete...',
+    });
+
+  //End of locators
+
   async openCreateHackathonPopup() {
-    await this.addNewHackathonButton.click();
+    await this.getAddNewHackathonButton().click();
   }
 
   async openDeletePopupOfHackathonWithName(hackathonName: string) {
-    await this.hackathonMenuButton({ hackathonName: hackathonName }).click();
-    await this.deleteHackathonButton.click();
+    await this.getHackathonMenuButtonByName(hackathonName).click();
+    await this.getDeleteHackathonButton().click();
   }
 
   async openEditHackathonPopup(hackathonName: string) {
-    await this.hackathonMenuButton({
-      hackathonName: hackathonName,
-    }).click();
-    await this.editHackathonButton.click();
+    await this.getHackathonMenuButtonByName(hackathonName).click();
+    await this.getEditHackathonButton().click();
   }
 
-  async openTheHackathonPage(teamHackName: string) {
-    await this.hackathonLink({ hackName: teamHackName }).click();
+  async openTheHackathonPage(hackathonName: string) {
+    await this.getHackathonByName(hackathonName).click();
   }
 
   async verifyLoginSuccess() {
-    await expect(this.addNewHackathonButton).toBeVisible();
+    await expect(this.getAddNewHackathonButton()).toBeVisible();
   }
 
   async checkExistenceOfHackathonInTableWithName(
@@ -94,9 +77,9 @@ export class HackathonListPage {
     if (shouldExist) {
       expectedAmount = 1;
     }
-    expect(
-      await this.hackathonMenuButton({ hackathonName: hackathonName }).count()
-    ).toBe(expectedAmount);
+    expect(await this.getHackathonMenuButtonByName(hackathonName).count()).toBe(
+      expectedAmount
+    );
   }
 
   async clearAnyExistingHackathonWithName(hackathonName: string) {
@@ -117,14 +100,12 @@ export class HackathonListPage {
     hackathonMap: string,
     hackathonBot: string
   ) {
+    await expect(this.getHackathonByName(hackathonName)).toBeVisible();
     await expect(
-      this.hackathonName({ hackathonName: hackathonName })
-    ).toHaveText(hackathonName);
+      this.getHackathonMapByName(hackathonName, hackathonMap)
+    ).toBeVisible();
     await expect(
-      this.hackathonMap({ hackathonName: hackathonName })
-    ).toHaveText(hackathonMap);
-    await expect(
-      this.hackathonBot({ hackathonName: hackathonName })
-    ).toHaveText(hackathonBot);
+      this.getByHackathonBot(hackathonName, hackathonBot)
+    ).toBeVisible();
   }
 }

@@ -34,7 +34,6 @@ test('admin can create a new hackathon and verify default map and bot', async ({
     hackathonName,
     true
   );
-  await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
   await hackathonListPage.verifyHackathonDetails(
     hackathonName,
     'Easy',
