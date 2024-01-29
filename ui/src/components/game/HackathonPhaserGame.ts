@@ -7,9 +7,11 @@ import { SpawnSpriteSheet } from '~/components/game/SpriteSheets/SpawnSpriteShee
 import { SpriteSheetDefinition } from '~/components/game/SpriteSheets/SpriteSheetDefinition';
 import { Cell } from '~/interfaces/Cell';
 import { Collectable } from '~/interfaces/Collectable';
-import { Position } from '~/interfaces/Position';
+import { Player } from '~/interfaces/Player';
 
 export class HackathonPhaserGame extends Phaser.Game {
+  private static readonly GameBackgroundGreen: string = '007600';
+
   constructor(
     public readonly gameData: ParsedGameResult,
     public readonly parentElementId: string
@@ -17,6 +19,7 @@ export class HackathonPhaserGame extends Phaser.Game {
     super({
       // Example Phaser config: change this to Hackathon-specific values: HAC-253, HAC-254, HAC-255
       type: Phaser.AUTO,
+      backgroundColor: HackathonPhaserGame.GameBackgroundGreen,
       height: gameData.constants.height * Cell.CellHeight,
       width: gameData.constants.width * Cell.CellWidth,
       parent: parentElementId,
@@ -33,13 +36,13 @@ class HackathonPhaserScene extends Phaser.Scene {
   private readonly playerSpriteSheet: PlayerSpriteSheet =
     new PlayerSpriteSheet();
   private readonly spawnSpriteSheet: SpawnSpriteSheet = new SpawnSpriteSheet();
-
   private readonly spriteSheets: SpawnSpriteSheet[];
 
   private collectables: Phaser.GameObjects.Sprite[] = [];
   private lastPhaseTime = 0;
   private phaseCount = 0;
   private phaseIndex = 0;
+  private players: Phaser.GameObjects.Sprite[] = [];
 
   constructor(public readonly gameData: ParsedGameResult) {
     super({ key: 'MainScene' });
@@ -60,6 +63,7 @@ class HackathonPhaserScene extends Phaser.Scene {
     y: number,
     spriteSheetDefinition: SpriteSheetDefinition,
     frameNumber: number,
+    spriteSheetRow = 0,
     instanceId: number | null = null
   ): Phaser.GameObjects.Sprite => {
     const sprite = this.add.sprite(
@@ -78,7 +82,14 @@ class HackathonPhaserScene extends Phaser.Scene {
         key: animation.key,
         frames: this.anims.generateFrameNumbers(
           spriteSheetDefinition.identifier,
-          { start: animation.start, end: animation.end }
+          {
+            start:
+              spriteSheetRow * spriteSheetDefinition.repeatsEvery +
+              animation.start,
+            end:
+              spriteSheetRow * spriteSheetDefinition.repeatsEvery +
+              animation.end,
+          }
         ),
         frameRate: animation.frameRate,
         repeat: animation.repeat,
@@ -102,73 +113,33 @@ class HackathonPhaserScene extends Phaser.Scene {
     });
   };
 
-  scaffoldMapArea = (rowCount: number, columnCount: number) => {
-    const tileGrid: number[][] = [];
-
-    // Add 1 to rowCount to avoid black line at bottom
-    // Tried starting at 1, but still get black line
-    // Unsure why, but this fixes it for now.
-    // Investigate in HAC-311
-    for (let row = 0; row < rowCount + 1; row++) {
-      const tileRow: number[] = [];
-
-      for (let column = 0; column < columnCount; column++) {
-        // Initialise all map squares to the index of the clear sprite tile:
-        tileRow.push(MapSpriteSheet.IndexOfClear);
-      }
-
-      tileGrid.push(tileRow);
-    }
-
-    return tileGrid;
-  };
-
-  populateObstacles = (
-    parsedGameData: ParsedGameResult,
-    tileGrid: number[][]
-  ) => {
-    parsedGameData.constants.outOfBoundPositions.forEach(
-      (position: Position) => {
-        // Set this map square to the index of the obstruction sprite tile:
-        tileGrid[position.y][position.x] = MapSpriteSheet.IndexOfObstruction;
-      }
-    );
-
-    for (let row = 0; row < tileGrid.length; row++) {
-      for (let column = 0; column <= tileGrid[row].length; column++) {
-        this.addSprite(column, row, this.mapSpriteSheet, tileGrid[row][column]);
-      }
-    }
-  };
-
-  populateSpawnPoints = (parsedGameData: ParsedGameResult) => {
-    parsedGameData.constants.spawnPoints.forEach((spawnPoint, index) => {
-      const team = parsedGameData.constants.teams.find(
-        (t) => t.botId === spawnPoint.owner
+  addObstacles = (parsedGameData: ParsedGameResult) => {
+    parsedGameData.constants.outOfBoundPositions.forEach((position) => {
+      this.addSprite(
+        position.x,
+        position.y,
+        this.mapSpriteSheet,
+        MapSpriteSheet.IndexOfObstruction
       );
+    });
+  };
 
-      if (!team) {
-        throw `No team matches the owner "${spawnPoint.owner}" for the spawn point`;
-      }
-
+  addSpawnPoints = (parsedGameData: ParsedGameResult) => {
+    parsedGameData.constants.spawnPoints.forEach((spawnPoint) => {
       this.addSprite(
         spawnPoint.cell.column,
         spawnPoint.cell.row,
         this.spawnSpriteSheet,
-        index * this.spawnSpriteSheet.repeatsEvery
+        spawnPoint.teamIndex * this.spawnSpriteSheet.repeatsEvery,
+        spawnPoint.teamIndex
       );
     });
   };
 
   create = () => {
-    const tileGrid: number[][] = this.scaffoldMapArea(
-      this.gameData.constants.height,
-      this.gameData.constants.width
-    );
+    this.addObstacles(this.gameData);
 
-    this.populateObstacles(this.gameData, tileGrid);
-
-    this.populateSpawnPoints(this.gameData);
+    this.addSpawnPoints(this.gameData);
   };
 
   addCollectables = (collectables: Collectable[]) => {
@@ -179,6 +150,7 @@ class HackathonPhaserScene extends Phaser.Scene {
           collectable.position.y,
           this.collectableSpriteSheet,
           index * this.collectableSpriteSheet.repeatsEvery,
+          index,
           collectable.id
         );
 
@@ -189,6 +161,28 @@ class HackathonPhaserScene extends Phaser.Scene {
         this.collectables.push(sprite);
       });
     }
+  };
+
+  addPlayers = (players: Player[]) => {
+    players?.forEach((player) => {
+      if (player.teamIndex < 0) {
+        throw `Player with id=${player.id} has no assigned team index`;
+      }
+
+      const sprite = this.addSprite(
+        player.cell.column,
+        player.cell.row,
+        this.playerSpriteSheet,
+        player.teamIndex * this.playerSpriteSheet.repeatsEvery,
+        player.teamIndex,
+        player.id
+      );
+
+      sprite.anims.play(this.playerSpriteSheet.activeAnimation.key);
+
+      // Keep track of the players so we can remove them later:
+      this.players.push(sprite);
+    });
   };
 
   removeCollectables = (collectedIds: number[]) => {
@@ -227,8 +221,9 @@ class HackathonPhaserScene extends Phaser.Scene {
 
       if (delta) {
         this.addCollectables(delta.collectablesAdded);
-
         this.removeCollectables(delta.collectablesCollected);
+
+        this.addPlayers(delta.playersAdded);
       }
 
       this.phaseIndex++;

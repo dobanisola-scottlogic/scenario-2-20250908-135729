@@ -47,45 +47,32 @@ export class ParsedGameDelta {
   };
 
   private static parseAddedPlayers = (
-    index: number,
+    phaseIndex: number,
     gameData: GameResult
   ): Player[] => {
     const playersAdded: Player[] = [];
-    let idsOfPreviousPlayers: number[] = [];
 
-    if (index > 0) {
-      idsOfPreviousPlayers = gameData.phaseResults[
-        index - 1
-      ].playerPositions.map((playerPosition) => playerPosition.id);
-    }
+    const phaseResult = gameData.phaseResults[phaseIndex];
 
-    gameData.phaseResults[index].playerPositions.forEach((playerPosition) => {
-      if (
-        index === 0 ||
-        idsOfPreviousPlayers.indexOf(playerPosition.id) === -1
-      ) {
-        let teamIndex = -1;
+    phaseResult.addedPlayers.forEach((addedPlayer) => {
+      const playerPosition = phaseResult.playerPositions.find(
+        (pp) => pp.id === addedPlayer.id
+      );
 
-        const indexOfAddedPlayer = gameData.phaseResults[
-          index
-        ].addedPlayers.findIndex((player) => player.id === playerPosition.id);
-
-        const owner =
-          gameData.phaseResults[index].addedPlayers[indexOfAddedPlayer].owner;
-
-        spawnPoints.forEach((spawnPoint) => {
-          if (spawnPoint.owner === owner) {
-            teamIndex = spawnPoint.teamIndex;
-          }
-        });
-
-        playersAdded.push({
-          cell: new Cell(playerPosition.position.x, playerPosition.position.y),
-          id: playerPosition.id,
-          owner: owner,
-          teamIndex: teamIndex,
-        });
+      if (!playerPosition) {
+        throw `No PlayerPosition found for Added Player id=${addedPlayer.id} in Phase id=${phaseResult.id}`;
       }
+
+      const teamIndex = gameData.game.teams.findIndex(
+        (t) => t.botId === addedPlayer.owner
+      );
+
+      playersAdded.push({
+        cell: new Cell(playerPosition.position.x, playerPosition.position.y),
+        id: addedPlayer.id,
+        owner: addedPlayer.owner,
+        teamIndex,
+      });
     });
 
     return playersAdded;

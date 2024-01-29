@@ -33,12 +33,20 @@ export class ParsedGameConstants {
 
     const spawnPoints: SpawnPointWithCell[] = [];
 
-    gameResult.spawnPoints.forEach((spawnPoint: SpawnPoint, index: number) => {
+    gameResult.spawnPoints.forEach((spawnPoint: SpawnPoint) => {
+      const teamIndex = gameResult.game.teams.findIndex(
+        (t) => t.botId === spawnPoint.owner
+      );
+
+      if (teamIndex < 0) {
+        throw `Unable to determine an owning team for SpawnPoint with id=${spawnPoint.id} and owner=${spawnPoint.owner}`;
+      }
+
       spawnPoints.push({
         cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
         id: spawnPoint.id,
         owner: spawnPoint.owner,
-        teamIndex: index,
+        teamIndex,
       });
     });
 
