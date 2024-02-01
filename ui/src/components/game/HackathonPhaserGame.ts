@@ -5,9 +5,12 @@ import { MapSpriteSheet } from '~/components/game/SpriteSheets/MapSpriteSheet';
 import { PlayerSpriteSheet } from '~/components/game/SpriteSheets/PlayerSpriteSheet';
 import { SpawnSpriteSheet } from '~/components/game/SpriteSheets/SpawnSpriteSheet';
 import { SpriteSheetDefinition } from '~/components/game/SpriteSheets/SpriteSheetDefinition';
+import PlayerMovementUtils from '~/enums/PlayerMovement';
 import { Cell } from '~/interfaces/Cell';
 import { Collectable } from '~/interfaces/Collectable';
 import { Player } from '~/interfaces/Player';
+
+import { PlayerTravel } from './PlayerTravel';
 
 export class HackathonPhaserGame extends Phaser.Game {
   private static readonly GameBackgroundGreen: string = '007600';
@@ -203,6 +206,56 @@ class HackathonPhaserScene extends Phaser.Scene {
     }
   };
 
+  movePlayers = (playersTravels: Map<number, PlayerTravel>) => {
+    playersTravels.forEach((playerTravel, key) => {
+      const player = this.players.find(
+        (p) => p.getData(this.playerSpriteSheet.idKey) === key
+      );
+
+      if (player) {
+        const targetCell = new Cell(
+          playerTravel.position.x,
+          playerTravel.position.y
+        );
+
+        player.angle = PlayerMovementUtils.getAngle(
+          playerTravel.playerMovement
+        );
+
+        const duration = playerTravel.hasWrappedAroundMap
+          ? 0
+          : this.DefaultSpeed;
+
+        this.tweens.add({
+          targets: player,
+          x: {
+            value: targetCell.getCentreXPosition(),
+            duration,
+          },
+          y: {
+            value: targetCell.getCentreYPosition(),
+            duration,
+          },
+        });
+      }
+    });
+  };
+
+  removePlayers = (playerIds: number[]) => {
+    playerIds.forEach((id) => {
+      const index = this.players.findIndex(
+        (p) => p.getData(this.playerSpriteSheet.idKey) === id
+      );
+
+      if (index > -1) {
+        this.players[index].anims.play(this.playerSpriteSheet.dieAnimation.key);
+
+        this.players[index].destroy(true);
+        this.players.splice(index, 1);
+      }
+    });
+  };
+
   update = () => {
     // todo: process changes on each turn: HAC-255
     if (this.phaseIndex === this.phaseCount) {
@@ -224,6 +277,8 @@ class HackathonPhaserScene extends Phaser.Scene {
         this.removeCollectables(delta.collectablesCollected);
 
         this.addPlayers(delta.playersAdded);
+        this.removePlayers(delta.playersDestroyed);
+        this.movePlayers(delta.playersTravel);
       }
 
       this.phaseIndex++;

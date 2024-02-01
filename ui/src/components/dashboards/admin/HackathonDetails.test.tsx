@@ -89,9 +89,7 @@ describe('HackathonDetails', () => {
         )
       ).toBeInTheDocument();
       expect(
-        screen.queryByText(
-          'Failed to fetch hackathon. Please try again later.'
-        )
+        screen.queryByText('Failed to fetch hackathon. Please try again later.')
       ).not.toBeInTheDocument();
     });
   });
@@ -111,15 +109,13 @@ describe('HackathonDetails', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText(
-          'Failed to fetch hackathon. Please try again later.'
-        )
+        screen.queryByText('Failed to fetch hackathon. Please try again later.')
       ).toBeInTheDocument();
       expect(
         screen.queryByText(
           'This hackathon does not exist. Please create a new hackathon.'
         )
       ).not.toBeInTheDocument();
-      });
+    });
   });
 });

@@ -1,3 +1,4 @@
+import { PlayerTravel } from '~/components/game/PlayerTravel';
 import PlayerMovementUtils, { PlayerMovement } from '~/enums/PlayerMovement';
 import { Cell } from '~/interfaces/Cell';
 import { Collectable } from '~/interfaces/Collectable';
@@ -9,31 +10,18 @@ import { SpawnPoint } from '~/interfaces/SpawnPoint';
 const spawnPoints: SpawnPoint[] = [];
 
 export class ParsedGameDelta {
-  collectablesAdded: Collectable[] = [];
-  collectablesCollected: number[] = [];
-  playerMovement: Map<number, PlayerMovement> = new Map<
-    number,
-    PlayerMovement
-  >();
-  playersAdded: Player[] = [];
-  playersDestroyed: number[] = [];
-  spawnPointsDestroyed: number[];
-
   private constructor(
-    collectablesAdded: Collectable[],
-    collectablesCollected: number[],
-    playersAdded: Player[],
-    playersDestroyed: number[],
-    playersMovements: Map<number, PlayerMovement>,
-    spawnPointsDestroyed: number[]
-  ) {
-    this.collectablesAdded = collectablesAdded;
-    this.collectablesCollected = collectablesCollected;
-    this.playerMovement = playersMovements;
-    this.playersAdded = playersAdded;
-    this.playersDestroyed = playersDestroyed;
-    this.spawnPointsDestroyed = spawnPointsDestroyed;
-  }
+    public readonly collectablesAdded: Collectable[],
+    public readonly collectablesCollected: number[],
+    public readonly playersAdded: Player[],
+    public readonly playersDestroyed: number[],
+    public readonly playersTravel: Map<number, PlayerTravel>,
+    public readonly spawnPointsDestroyed: number[]
+  ) {}
+
+  private static checkBoundary = (value: number): boolean => {
+    return value > 1 || value < -1;
+  };
 
   private static initialiseSpawnPoints = (gameData: GameResult) => {
     gameData.spawnPoints.forEach((spawnPoint, spawnIndex) => {
@@ -111,8 +99,8 @@ export class ParsedGameDelta {
   private static parsePlayerMovements = (
     index: number,
     gameData: GameResult
-  ): Map<number, PlayerMovement> => {
-    const movements = new Map<number, PlayerMovement>();
+  ): Map<number, PlayerTravel> => {
+    const movements = new Map<number, PlayerTravel>();
 
     gameData.phaseResults[index].playerPositions.forEach(
       (playerPosition: PlayerPosition) => {
@@ -126,16 +114,27 @@ export class ParsedGameDelta {
 
         if (idIndex === -1) {
           // If index = 0, every player should be treated as a spawn:
-          movements.set(playerPosition.id, PlayerMovement.STATIONARY);
+          movements.set(
+            playerPosition.id,
+            new PlayerTravel(
+              PlayerMovement.STATIONARY,
+              playerPosition.position,
+              false
+            )
+          );
         } else {
           let xMovement =
             playerPosition.position.x -
             gameData.phaseResults[index - 1].playerPositions[idIndex].position
               .x;
+
           let yMovement =
             playerPosition.position.y -
             gameData.phaseResults[index - 1].playerPositions[idIndex].position
               .y;
+
+          const hasWrappedAroundMap =
+            this.checkBoundary(xMovement) || this.checkBoundary(yMovement);
 
           // Handle the wrapping of the map:
           xMovement = xMovement > 1 ? -1 : xMovement;
@@ -143,9 +142,18 @@ export class ParsedGameDelta {
           yMovement = yMovement > 1 ? -1 : yMovement;
           yMovement = yMovement < -1 ? 1 : yMovement;
 
+          const playerMovement = PlayerMovementUtils.calculatePlayerMovement(
+            xMovement,
+            yMovement
+          );
+
           movements.set(
             playerPosition.id,
-            PlayerMovementUtils.calculatePlayerMovement(xMovement, yMovement)
+            new PlayerTravel(
+              playerMovement,
+              playerPosition.position,
+              hasWrappedAroundMap
+            )
           );
         }
       }

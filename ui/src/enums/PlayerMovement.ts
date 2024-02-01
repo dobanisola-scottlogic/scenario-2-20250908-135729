@@ -59,4 +59,37 @@ export default class PlayerMovementUtils {
 
     return PlayerMovement.STATIONARY;
   }
+
+  // While Phaser defines the angle as Right (East) = 0, Down (South) = 90,
+  // Our player sprites are drawn on the Sprite Map pointing South West,
+  // so we need to adjust our angles by -135 degrees to account for this:
+  public static getAngle = (playerMovement: PlayerMovement) => {
+    switch (playerMovement) {
+      case PlayerMovement.NORTH:
+        return 135;
+
+      case PlayerMovement.NORTHEAST:
+        return 180;
+
+      case PlayerMovement.EAST:
+        return 225;
+
+      case PlayerMovement.SOUTHEAST:
+        return 270;
+
+      case PlayerMovement.SOUTH:
+        return 315;
+
+      case PlayerMovement.SOUTHWEST:
+        return 0;
+
+      case PlayerMovement.WEST:
+        return 45;
+
+      case PlayerMovement.NORTHWEST:
+        return 90;
+    }
+
+    return 0;
+  };
 }

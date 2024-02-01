@@ -14,7 +14,12 @@ import TeamList from './lists/TeamList';
 const HackathonDetails = () => {
   const { id } = useParams();
 
-  const { data: hackathon, isLoading, isError, error } = useGetHackathonQuery(id!);
+  const {
+    data: hackathon,
+    isLoading,
+    isError,
+    error,
+  } = useGetHackathonQuery(id!);
 
   const hasLoadedData = !isLoading && !isError && hackathon;
 
@@ -34,15 +39,19 @@ const HackathonDetails = () => {
               >
                 {isLoading ? (
                   <CircularProgress size={15} sx={{ ml: 1, mt: 0.5 }} />
-                ) : isError && 'originalStatus' in error && error.originalStatus === 404 ? (
+                ) : isError &&
+                  'originalStatus' in error &&
+                  error.originalStatus === 404 ? (
                   <span style={{ color: colours.errorRed }}>
                     This hackathon does not exist. Please create a new
                     hackathon.
                   </span>
-                ) : !hackathon && (
-                  <span style={{ color: colours.errorRed }}>
-                    Failed to fetch hackathon. Please try again later.
-                  </span>
+                ) : (
+                  !hackathon && (
+                    <span style={{ color: colours.errorRed }}>
+                      Failed to fetch hackathon. Please try again later.
+                    </span>
+                  )
                 )}
               </Typography>
             </Grid>

@@ -34,5 +34,8 @@ export const plainTextOkResponse = (body: string | null) => {
 };
 
 export const notFoundResponse = () => {
-  return new HttpResponse('<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>\n<title>Error 404 Not Found</title>\n</head>\n<body><h2>HTTP ERROR 404 Not Found</h2>\n<table>\n<tr><th>URI:</th><td>/application/api/hackathon/not-found-id</td></tr>\n<tr><th>STATUS:</th><td>404</td></tr>\n<tr><th>MESSAGE:</th><td>Not Found</td></tr>\n<tr><th>SERVLET:</th><td>jersey</td></tr>\n</table>\n\n</body>\n</html>\n', { status: 404 });
+  return new HttpResponse(
+    '<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>\n<title>Error 404 Not Found</title>\n</head>\n<body><h2>HTTP ERROR 404 Not Found</h2>\n<table>\n<tr><th>URI:</th><td>/application/api/hackathon/not-found-id</td></tr>\n<tr><th>STATUS:</th><td>404</td></tr>\n<tr><th>MESSAGE:</th><td>Not Found</td></tr>\n<tr><th>SERVLET:</th><td>jersey</td></tr>\n</table>\n\n</body>\n</html>\n',
+    { status: 404 }
+  );
 };

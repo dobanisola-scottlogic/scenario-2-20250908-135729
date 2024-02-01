@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
+
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  getHackathonNotFoundResponseHandler,
   postUpdateHackathonBadRequestResponseHandler,
   postUpdateHackathonInternalServerErrorResponseHandler,
 } from '~/mocks/handlers/hackathon';
@@ -14,6 +14,7 @@ import {
 } from '~/mocks/test-data/hackathon';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
+
 import CreateUpdateHackathon, {
   hackathonNameErrorMsg,
 } from './CreateUpdateHackathon';
