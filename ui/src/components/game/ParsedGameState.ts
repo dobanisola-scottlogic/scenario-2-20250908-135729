@@ -1,12 +1,11 @@
+import { SpawnPoint } from '~/components/game/SpawnPoint';
+import { TeamInfo } from '~/components/game/TeamInfo';
 import { Cell } from '~/interfaces/Cell';
 import { Collectable } from '~/interfaces/Collectable';
 import { DisqualifiedBot } from '~/interfaces/DisqualifiedBot';
 import { GameResult } from '~/interfaces/GameResult';
 import { PhaseResult } from '~/interfaces/PhaseResult';
 import { Player } from '~/interfaces/Player';
-import { SpawnPoint } from '~/interfaces/SpawnPoint';
-
-import { TeamInfo } from './TeamInfo';
 
 export class ParsedGameState {
   private constructor(
@@ -139,7 +138,9 @@ export class ParsedGameState {
 
     // Set the current spawn points to the previous spawn point
     if (index === 0) {
-      gameData.spawnPoints.forEach((spawnPoint, teamIndex) => {
+      gameData.spawnPoints.forEach((spawnPoint) => {
+        const teamIndex = teams.findIndex((x) => x.owner === spawnPoint.owner);
+
         spawnPoints.push({
           id: spawnPoint.id,
           owner: spawnPoint.owner,

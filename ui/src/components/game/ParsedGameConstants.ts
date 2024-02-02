@@ -1,9 +1,8 @@
-import { Cell } from '~/interfaces/Cell';
+import { SpawnPoint } from '~/components/game/SpawnPoint';
 import { GameResult } from '~/interfaces/GameResult';
 import { GameTeam } from '~/interfaces/GameTeam';
 import { Position } from '~/interfaces/Position';
-import { SpawnPoint } from '~/interfaces/SpawnPoint';
-import { SpawnPointWithCell } from '~/interfaces/SpawnPointWithCell';
+import { SpawnPointData } from '~/interfaces/SpawnPointData';
 import { Colours } from '~/utils/colours';
 
 export class ParsedGameConstants {
@@ -12,7 +11,7 @@ export class ParsedGameConstants {
     public readonly height: number,
     public readonly id: string,
     public readonly outOfBoundPositions: Position[],
-    public readonly spawnPoints: SpawnPointWithCell[],
+    public readonly spawnPoints: SpawnPoint[],
     public readonly teams: GameTeam[],
     public readonly width: number
   ) {}
@@ -31,9 +30,9 @@ export class ParsedGameConstants {
       };
     });
 
-    const spawnPoints: SpawnPointWithCell[] = [];
+    const spawnPoints: SpawnPoint[] = [];
 
-    gameResult.spawnPoints.forEach((spawnPoint: SpawnPoint) => {
+    gameResult.spawnPoints.forEach((spawnPoint: SpawnPointData) => {
       const teamIndex = gameResult.game.teams.findIndex(
         (t) => t.botId === spawnPoint.owner
       );
@@ -42,12 +41,14 @@ export class ParsedGameConstants {
         throw `Unable to determine an owning team for SpawnPoint with id=${spawnPoint.id} and owner=${spawnPoint.owner}`;
       }
 
-      spawnPoints.push({
-        cell: new Cell(spawnPoint.position.x, spawnPoint.position.y),
-        id: spawnPoint.id,
-        owner: spawnPoint.owner,
-        teamIndex,
-      });
+      spawnPoints.push(
+        new SpawnPoint(
+          spawnPoint.id,
+          spawnPoint.owner,
+          spawnPoint.position,
+          teamIndex
+        )
+      );
     });
 
     return new ParsedGameConstants(

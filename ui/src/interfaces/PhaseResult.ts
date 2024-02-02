@@ -2,7 +2,7 @@ import { Collectable } from './Collectable';
 import { DisqualifiedBot } from './DisqualifiedBot';
 import { Player } from './Player';
 import { PlayerPosition } from './PlayerPosition';
-import { SpawnPoint } from './SpawnPoint';
+import { SpawnPointData } from './SpawnPointData';
 
 export interface PhaseResult {
   addedCollectables: Collectable[];
@@ -13,5 +13,5 @@ export interface PhaseResult {
   playerPositions: PlayerPosition[];
   removedCollectables: number[];
   removedPlayers: number[];
-  removedSpawnPoints: SpawnPoint[];
+  removedSpawnPoints: SpawnPointData[];
 }

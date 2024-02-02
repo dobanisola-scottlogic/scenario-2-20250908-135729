@@ -5,9 +5,6 @@ import { Collectable } from '~/interfaces/Collectable';
 import { GameResult } from '~/interfaces/GameResult';
 import { Player } from '~/interfaces/Player';
 import { PlayerPosition } from '~/interfaces/PlayerPosition';
-import { SpawnPoint } from '~/interfaces/SpawnPoint';
-
-const spawnPoints: SpawnPoint[] = [];
 
 export class ParsedGameDelta {
   private constructor(
@@ -21,17 +18,6 @@ export class ParsedGameDelta {
 
   private static checkBoundary = (value: number): boolean => {
     return value > 1 || value < -1;
-  };
-
-  private static initialiseSpawnPoints = (gameData: GameResult) => {
-    gameData.spawnPoints.forEach((spawnPoint, spawnIndex) => {
-      spawnPoints.push({
-        id: spawnPoint.id,
-        owner: spawnPoint.owner,
-        position: spawnPoint.position,
-        teamIndex: spawnIndex,
-      });
-    });
   };
 
   private static parseAddedPlayers = (
@@ -166,8 +152,6 @@ export class ParsedGameDelta {
     if (!gameData) {
       throw 'No gameData';
     }
-
-    this.initialiseSpawnPoints(gameData);
 
     const deltas: ParsedGameDelta[] = [];
 

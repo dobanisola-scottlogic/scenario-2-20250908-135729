@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ParsedGameResult } from '~/components/game/ParsedGameResult';
+import { PlayerTravel } from '~/components/game/PlayerTravel';
 import { CollectableSpriteSheet } from '~/components/game/SpriteSheets/CollectableSpriteSheet';
 import { MapSpriteSheet } from '~/components/game/SpriteSheets/MapSpriteSheet';
 import { PlayerSpriteSheet } from '~/components/game/SpriteSheets/PlayerSpriteSheet';
@@ -9,8 +10,6 @@ import PlayerMovementUtils from '~/enums/PlayerMovement';
 import { Cell } from '~/interfaces/Cell';
 import { Collectable } from '~/interfaces/Collectable';
 import { Player } from '~/interfaces/Player';
-
-import { PlayerTravel } from './PlayerTravel';
 
 export class HackathonPhaserGame extends Phaser.Game {
   private static readonly GameBackgroundGreen: string = '007600';
@@ -69,9 +68,11 @@ class HackathonPhaserScene extends Phaser.Scene {
     spriteSheetRow = 0,
     instanceId: number | null = null
   ): Phaser.GameObjects.Sprite => {
+    const targetCell = new Cell(x, y);
+
     const sprite = this.add.sprite(
-      x * Cell.CellWidth,
-      y * Cell.CellHeight,
+      targetCell.getCentreXPosition(),
+      targetCell.getCentreYPosition(),
       spriteSheetDefinition.identifier,
       frameNumber
     );
@@ -130,8 +131,8 @@ class HackathonPhaserScene extends Phaser.Scene {
   addSpawnPoints = (parsedGameData: ParsedGameResult) => {
     parsedGameData.constants.spawnPoints.forEach((spawnPoint) => {
       this.addSprite(
-        spawnPoint.cell.column,
-        spawnPoint.cell.row,
+        spawnPoint.position.x,
+        spawnPoint.position.y,
         this.spawnSpriteSheet,
         spawnPoint.teamIndex * this.spawnSpriteSheet.repeatsEvery,
         spawnPoint.teamIndex
