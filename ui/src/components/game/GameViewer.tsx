@@ -1,9 +1,11 @@
-import { Box, CircularProgress, Grid } from '@mui/material';
+import { Box, Button, CircularProgress, Grid } from '@mui/material';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetHackathonGameQuery, useGetHackathonQuery } from '~/api/api';
 import Breadcrumb from '~/components/common/Breadcrumb';
 import { CommonContainer } from '~/components/common/CommonContainer';
 import { viewerStyles } from '~/components/commonStyles';
+import GameResultDataGrid from '~/components/dataGrids/GameResultDataGrid';
 import GameDetails from '~/components/game/GameDetails';
 import GamePlayback from '~/components/game/GamePlayback';
 import { BreadcrumbLevel } from '~/enums/BreadcrumbLevel';
@@ -13,6 +15,7 @@ import { getGameTitle } from '~/utils/game-utils';
 
 const GameViewer = () => {
   const { gameId, id } = useParams();
+  const [isAvailableGamesShown, setIsAvailableGamesShown] = useState(false);
 
   const { data: hackathon, isLoading, isError } = useGetHackathonQuery(id!);
 
@@ -46,17 +49,31 @@ const GameViewer = () => {
 
           {loadedDataSuccessfully && (
             <>
-              <Breadcrumb
-                breadcrumbLevel={BreadcrumbLevel.GAME}
-                hackathon={hackathon}
-                gameTitle={gameTitle}
-              />
-
-              <Grid item xs={12}>
-                <Box sx={viewerStyles.commonBoxStyles}>
-                  Game selection placeholder
-                </Box>
+              <Grid container item xs={12}>
+                <Grid item xs={10}>
+                  <Breadcrumb
+                    breadcrumbLevel={BreadcrumbLevel.GAME}
+                    hackathon={hackathon}
+                    gameTitle={gameTitle}
+                  />
+                </Grid>
+                <Grid item xs={2} container justifyContent='flex-end'>
+                  <Button
+                    variant='outlined'
+                    onClick={() =>
+                      setIsAvailableGamesShown(!isAvailableGamesShown)
+                    }
+                  >
+                    Available Games
+                  </Button>
+                </Grid>
               </Grid>
+
+              {isAvailableGamesShown && id && (
+                <Grid container item xs={12}>
+                  <GameResultDataGrid hackathonId={id} customHeight={350} />
+                </Grid>
+              )}
 
               <Grid container item xs={12} md={11} spacing={2}>
                 <GameDetails game={hackathonGameData.game} />

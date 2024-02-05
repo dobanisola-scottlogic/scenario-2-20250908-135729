@@ -7,9 +7,9 @@ import { testHackathonId } from '~/mocks/test-data/hackathon';
 import { getGameTimeString } from '~/utils/game-utils';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import GameResultListTable from './GameResultListTable';
+import GameResultDataGrid from './GameResultDataGrid';
 
-describe('GameResultListTable', () => {
+describe('GameResultDataGrid', () => {
   const hackathonId = testHackathonId.valid;
   const gameTeam1 = removeMilestoneBotPrefix(
     testGameResultBody.game.teams[0].teamName
@@ -22,20 +22,20 @@ describe('GameResultListTable', () => {
 
   it('should render the table correctly after successful data fetch', async () => {
     renderWithRouterAndProvider(
-      <GameResultListTable hackathonId={hackathonId} />
+      <GameResultDataGrid hackathonId={hackathonId} />
     );
 
-    expect(
-      screen.getByRole('columnheader', { name: 'Teams' })
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('List of games')).toBeInTheDocument();
 
-    expect(
-      screen.getByRole('columnheader', { name: 'Map' })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('columnheader', { name: 'Start Time' })
-    ).toBeInTheDocument();
+    const teamsColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Teams',
+    });
+    const mapColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Map',
+    });
+    const startTimeColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Start Time',
+    });
 
     const teamCellRow1 = await screen.findByRole('cell', {
       name: `${gameTeam1} vs ${gameTeam2}`,
@@ -49,6 +49,10 @@ describe('GameResultListTable', () => {
       name: gameTime,
     });
 
+    expect(teamsColumnHeader).toBeInTheDocument();
+    expect(mapColumnHeader).toBeInTheDocument();
+    expect(startTimeColumnHeader).toBeInTheDocument();
+
     expect(teamCellRow1).toBeInTheDocument();
     expect(mapCellRow1).toBeInTheDocument();
     expect(startTimeCellRow1).toBeInTheDocument();
@@ -58,7 +62,7 @@ describe('GameResultListTable', () => {
     server.use(getGameResultsNetworkErrorResponseHandler);
 
     renderWithRouterAndProvider(
-      <GameResultListTable hackathonId={hackathonId} />
+      <GameResultDataGrid hackathonId={hackathonId} />
     );
 
     const error = await screen.findByText(

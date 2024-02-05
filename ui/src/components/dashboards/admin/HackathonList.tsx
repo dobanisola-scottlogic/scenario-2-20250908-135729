@@ -3,8 +3,8 @@ import { useState } from 'react';
 import AddButton from '~/components/common/AddButton';
 import { CommonContainer } from '~/components/common/CommonContainer';
 import SnackbarAlert from '~/components/common/SnackbarAlert';
+import HackathonDataGrid from '~/components/dataGrids/HackathonDataGrid';
 import CreateUpdateHackathon from '~/components/popups/CreateUpdateHackathon';
-import HackathonListTable from '~/components/tables/HackathonListTable';
 import { ContainerRole } from '~/enums/ContainerRole';
 
 const HackathonList = () => {
@@ -22,7 +22,7 @@ const HackathonList = () => {
             text='Add a new hackathon'
           />
         </Box>
-        <HackathonListTable />
+        <HackathonDataGrid />
         <CreateUpdateHackathon
           isOpen={isCreateHackathonOpen}
           setIsOpen={setIsCreateHackathonOpen}

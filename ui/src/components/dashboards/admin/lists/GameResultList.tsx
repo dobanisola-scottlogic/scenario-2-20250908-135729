@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import AddButton from '~/components/common/AddButton';
 import { CommonContainer } from '~/components/common/CommonContainer';
+import GameResultDataGrid from '~/components/dataGrids/GameResultDataGrid';
 import CreateGame from '~/components/popups/CreateGame';
-import GameResultListTable from '~/components/tables/GameResultListTable';
 import { ContainerRole } from '~/enums/ContainerRole';
 
 interface GameResultListProps {
@@ -23,7 +23,7 @@ const GameResultList = ({ hackathonId }: GameResultListProps) => {
           hackathonId={hackathonId}
           setIsOpen={setIsAddGameOpen}
         />
-        <GameResultListTable hackathonId={hackathonId} />
+        <GameResultDataGrid hackathonId={hackathonId} />
       </CommonContainer>
     </>
   );

@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import GameViewer from '~/components/game/GameViewer';
 import { testGameId } from '~/mocks/test-data/game';
@@ -101,5 +101,39 @@ describe('GameViewer', () => {
     expect(
       await screen.findByText('Failed to fetch data. Please try again later.')
     ).toBeInTheDocument();
+  });
+
+  it('should load the game viewer with available games hidden and show when the button is pressed', async () => {
+    renderWithRouterAndProvider(
+      <Routes>
+        <Route path={gameRouteForTesting} element={<GameViewer />}></Route>
+      </Routes>,
+      {
+        initialEntries: [
+          hackathonGameRoute(testHackathonId.valid, testGameId.valid),
+        ],
+      }
+    );
+
+    expect(
+      await screen.findByRole('link', { name: 'Hackathons' })
+    ).toBeInTheDocument();
+    expect(await screen.findByText(hackathonName)).toBeInTheDocument();
+
+    const availableGamesButton = screen.getByRole('button', {
+      name: 'Available Games',
+    });
+
+    expect(
+      screen.queryByRole('columnheader', { name: 'Teams' })
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(availableGamesButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('columnheader', { name: 'Teams' })
+      ).toBeInTheDocument();
+    });
   });
 });

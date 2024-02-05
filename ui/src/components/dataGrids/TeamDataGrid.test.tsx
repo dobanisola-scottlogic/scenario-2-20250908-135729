@@ -5,18 +5,22 @@ import { server } from '~/mocks/server';
 import { testHackathonId } from '~/mocks/test-data/hackathon';
 import { testTeamBody } from '~/mocks/test-data/team';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import TeamListTable from './TeamListTable';
+import TeamDataGrid from './TeamDataGrid';
 
-describe('TeamListTable', () => {
+describe('TeamDataGrid', () => {
   const hackathonId = testHackathonId.valid;
 
-  it('should render the table correctly after successful data fetch', async () => {
-    renderWithRouterAndProvider(<TeamListTable hackathonId={hackathonId} />);
+  it('should render the data grid correctly after successful data fetch', async () => {
+    renderWithRouterAndProvider(<TeamDataGrid hackathonId={hackathonId} />);
 
-    expect(
-      screen.getByRole('columnheader', { name: 'Name' })
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('List of teams')).toBeInTheDocument();
 
+    const columnHeader = await screen.findByRole('columnheader', {
+      name: 'Name',
+    });
+    const actionColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Action',
+    });
     const rowHeader = await screen.findByRole('cell', {
       name: testTeamBody.name,
     });
@@ -24,6 +28,8 @@ describe('TeamListTable', () => {
       name: 'more',
     });
 
+    expect(columnHeader).toBeInTheDocument();
+    expect(actionColumnHeader).toBeInTheDocument();
     expect(rowHeader).toBeInTheDocument();
     expect(moreMenu).toBeInTheDocument();
   });
@@ -31,7 +37,7 @@ describe('TeamListTable', () => {
   it('should display an error message after unsuccessful data fetch', async () => {
     server.use(getTeamsNetworkErrorResponseHandler);
 
-    renderWithRouterAndProvider(<TeamListTable hackathonId={hackathonId} />);
+    renderWithRouterAndProvider(<TeamDataGrid hackathonId={hackathonId} />);
 
     const error = await screen.findByText(
       'Failed to fetch teams. Please try again later.'

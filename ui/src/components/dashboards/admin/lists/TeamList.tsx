@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import AddButton from '~/components/common/AddButton';
 import { CommonContainer } from '~/components/common/CommonContainer';
+import TeamDataGrid from '~/components/dataGrids/TeamDataGrid';
 import CreateUpdateTeam from '~/components/popups/CreateUpdateTeam';
-import TeamListTable from '~/components/tables/TeamListTable';
 import { ContainerRole } from '~/enums/ContainerRole';
 
 interface TeamListProps {
@@ -23,7 +23,7 @@ const TeamList = ({ hackathonId }: TeamListProps) => {
           hackathonId={hackathonId}
           setIsOpen={setIsAddTeamOpen}
         />
-        <TeamListTable hackathonId={hackathonId} />
+        <TeamDataGrid hackathonId={hackathonId} />
       </CommonContainer>
     </>
   );

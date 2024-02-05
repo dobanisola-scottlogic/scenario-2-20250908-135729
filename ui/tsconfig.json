@@ -23,11 +23,11 @@
     /* Path alias */
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*", "./playwright/*"]
+      "~/*": ["./src/*", "./playwright/*"],
     },
 
     /* Typing */
-    "types": ["vitest/globals", "@testing-library/jest-dom", "vite/client"]
+    "types": ["vitest/globals", "@testing-library/jest-dom", "vite/client"],
   },
   "include": ["src", "playwright", "playwright.config.ts", "setupTests.ts"],
   "references": [{ "path": "./tsconfig.node.json" }],
@@ -43,6 +43,6 @@
     // Finally, two additional settings for reducing the amount of possible
     // files to track  work from these directories
     "excludeDirectories": ["**/node_modules"],
-    "excludeFiles": []
-  }
+    "excludeFiles": [],
+  },
 }

@@ -13,19 +13,19 @@ import {
 } from '~/routing/Routes';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 import { renderWithRouterAndProvider } from '~/utils/test-utils';
-import HackathonListTable from './HackathonListTable';
+import HackathonDataGrid from './HackathonDataGrid';
 
-describe('HackathonListTable', () => {
+describe('HackathonDataGrid', () => {
   const hackathonName = testHackathonBody.name;
   const hackathonMilestoneBot = removeMilestoneBotPrefix(
     testHackathonBody.currentMilestoneClassName
   );
   const hackathonMap = testHackathonBody.currentMilestoneMap;
 
-  it('should render the table correctly after successful data fetch', async () => {
+  it('should render the data grid correctly after successful data fetch', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonDataGrid />} />
         <Route
           path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
@@ -33,15 +33,20 @@ describe('HackathonListTable', () => {
       </Routes>
     );
 
-    expect(
-      screen.getByRole('columnheader', { name: 'Name' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('columnheader', { name: 'Map' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('columnheader', { name: 'Bot' })
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('List of hackathons')).toBeInTheDocument();
+
+    const nameColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Name',
+    });
+    const mapColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Map',
+    });
+    const botColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Bot',
+    });
+    const actionColumnHeader = await screen.findByRole('columnheader', {
+      name: 'Action',
+    });
 
     const rowHeader = await screen.findByRole('cell', {
       name: hackathonName,
@@ -56,6 +61,11 @@ describe('HackathonListTable', () => {
       name: 'more',
     });
 
+    expect(nameColumnHeader).toBeInTheDocument();
+    expect(mapColumnHeader).toBeInTheDocument();
+    expect(botColumnHeader).toBeInTheDocument();
+    expect(actionColumnHeader).toBeInTheDocument();
+
     expect(rowHeader).toBeInTheDocument();
     expect(mapCell).toBeInTheDocument();
     expect(botCell).toBeInTheDocument();
@@ -67,7 +77,7 @@ describe('HackathonListTable', () => {
 
     renderWithRouterAndProvider(
       <Routes>
-        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonDataGrid />} />
         <Route
           path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
@@ -84,7 +94,7 @@ describe('HackathonListTable', () => {
 
     renderWithRouterAndProvider(
       <Routes>
-        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonDataGrid />} />
         <Route
           path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
@@ -101,7 +111,7 @@ describe('HackathonListTable', () => {
   it('should navigate to the hackathon details page', async () => {
     renderWithRouterAndProvider(
       <Routes>
-        <Route path={baseRouteForTesting} element={<HackathonListTable />} />
+        <Route path={baseRouteForTesting} element={<HackathonDataGrid />} />
         <Route
           path={hackathonRouteForTesting}
           element={<div data-testid='hackathon-details-page' />}
