@@ -3,7 +3,7 @@ import { GameResult } from '~/interfaces/GameResult';
 import { GameTeam } from '~/interfaces/GameTeam';
 import { Position } from '~/interfaces/Position';
 import { SpawnPointData } from '~/interfaces/SpawnPointData';
-import { Colours } from '~/utils/colours';
+import { getTeamColour } from '~/utils/game-utils';
 
 export class ParsedGameConstants {
   private constructor(
@@ -24,7 +24,7 @@ export class ParsedGameConstants {
     const teams: GameTeam[] = gameResult.game.teams.map((team, index) => {
       return {
         botId: team.botId,
-        colour: Colours.get(index),
+        colour: getTeamColour(index),
         teamId: team.teamId,
         teamName: team.teamName,
       };

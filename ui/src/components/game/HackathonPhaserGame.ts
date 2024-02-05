@@ -189,22 +189,38 @@ class HackathonPhaserScene extends Phaser.Scene {
     });
   };
 
-  removeCollectables = (collectedIds: number[]) => {
-    if (collectedIds?.length > 0) {
-      collectedIds.forEach((id: number) => {
-        const index = this.collectables.findIndex(
-          (c) => c.getData(this.collectableSpriteSheet.idKey) === id
-        );
+  removeSprites = (
+    ids: number[],
+    sprites: Phaser.GameObjects.Sprite[],
+    spriteSheet: SpriteSheetDefinition
+  ) => {
+    ids?.forEach((id: number) => {
+      const index = sprites.findIndex(
+        (c) => c.getData(spriteSheet.idKey) === id
+      );
 
-        if (index > -1) {
-          this.collectables[index].anims.play(
-            this.collectableSpriteSheet.collectedAnimation.key
-          );
-          this.collectables[index].destroy(true);
-          this.collectables.splice(index, 1);
+      if (index > -1) {
+        const sprite = sprites[index];
+
+        if (sprite) {
+          sprite.anims.play(spriteSheet.removeAnimationKey);
+
+          sprite.on('animationcomplete', () => {
+            sprite.destroy(true);
+          });
         }
-      });
-    }
+
+        sprites.splice(index, 1);
+      }
+    });
+  };
+
+  removeCollectables = (collectedIds: number[]) => {
+    this.removeSprites(
+      collectedIds,
+      this.collectables,
+      this.collectableSpriteSheet
+    );
   };
 
   movePlayers = (playersTravels: Map<number, PlayerTravel>) => {
@@ -243,18 +259,7 @@ class HackathonPhaserScene extends Phaser.Scene {
   };
 
   removePlayers = (playerIds: number[]) => {
-    playerIds.forEach((id) => {
-      const index = this.players.findIndex(
-        (p) => p.getData(this.playerSpriteSheet.idKey) === id
-      );
-
-      if (index > -1) {
-        this.players[index].anims.play(this.playerSpriteSheet.dieAnimation.key);
-
-        this.players[index].destroy(true);
-        this.players.splice(index, 1);
-      }
-    });
+    this.removeSprites(playerIds, this.players, this.playerSpriteSheet);
   };
 
   update = () => {

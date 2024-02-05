@@ -12,11 +12,14 @@ export const colours = {
   white: '#FFFFFF',
 };
 
+// Note: the order of these colours is important
+// as it has to match the order of the colours
+// in our sprite sheets!
 export const playerColours = [
   '#A80000', // red
   '#0000FF', // blue
+  '#9400D3', // magenta
   '#006100', // green
-  '#9400D3', // purple
 ];
 
 export const theme = createTheme({

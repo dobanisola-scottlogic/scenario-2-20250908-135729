@@ -5,6 +5,8 @@ import { SpriteSheetAnimationDefinition } from './SpriteSheetAnimationDefinition
 export abstract class SpriteSheetDefinition {
   public readonly animations: SpriteSheetAnimationDefinition[] = [];
   public readonly idKey: string = 'id';
+  public readonly activeAnimationKey: string = 'active';
+  public readonly removeAnimationKey: string = 'remove';
 
   public abstract readonly displayHeight: number;
   public abstract readonly displayWidth: number;

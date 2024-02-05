@@ -5,9 +5,9 @@ import { SpriteSheetDefinition } from './SpriteSheetDefinition';
 
 export class PlayerSpriteSheet extends SpriteSheetDefinition {
   public readonly activeAnimation: SpriteSheetAnimationDefinition =
-    new SpriteSheetAnimationDefinition('active', 0, 7, 10, -1);
+    new SpriteSheetAnimationDefinition(this.activeAnimationKey, 0, 7, 10, -1);
   public readonly dieAnimation: SpriteSheetAnimationDefinition =
-    new SpriteSheetAnimationDefinition('die', 8, 11, 20, 1);
+    new SpriteSheetAnimationDefinition(this.removeAnimationKey, 8, 11, 20, 1);
 
   constructor() {
     super();

@@ -3,9 +3,9 @@ import { SpriteSheetDefinition } from './SpriteSheetDefinition';
 
 export class CollectableSpriteSheet extends SpriteSheetDefinition {
   public readonly spinAnimation: SpriteSheetAnimationDefinition =
-    new SpriteSheetAnimationDefinition('spin', 0, 7, 10, -1);
+    new SpriteSheetAnimationDefinition(this.activeAnimationKey, 0, 7, 10, -1);
   public readonly collectedAnimation: SpriteSheetAnimationDefinition =
-    new SpriteSheetAnimationDefinition('collected', 8, 14, 20, 1);
+    new SpriteSheetAnimationDefinition(this.removeAnimationKey, 8, 14, 20, 1);
 
   constructor() {
     super();
