@@ -77,9 +77,7 @@ export class ParsedGameDelta {
     index: number,
     gameData: GameResult
   ): number[] => {
-    return gameData.phaseResults[index].removedSpawnPoints.map(
-      (spawnPoint) => spawnPoint.id
-    );
+    return gameData.phaseResults[index].removedSpawnPoints;
   };
 
   private static parsePlayerMovements = (

@@ -16,6 +16,10 @@ export abstract class SpriteSheetDefinition {
   public abstract readonly repeatsEvery: number;
   public abstract readonly tileCount: number;
 
+  get hasRemoveAnimation(): boolean {
+    return this.animations?.some((x) => x.key === this.removeAnimationKey);
+  }
+
   get scaleX(): number {
     return Cell.CellWidth / this.spriteHeight;
   }

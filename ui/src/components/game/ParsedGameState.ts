@@ -162,7 +162,7 @@ export class ParsedGameState {
 
         // Decrement the count if the spawnPoint is in the removedSpawns array:
         const isRemoved = gameData.phaseResults[index].removedSpawnPoints.some(
-          (sp) => sp.id === spawnPoint.id
+          (id) => id === spawnPoint.id
         );
 
         if (isRemoved) {

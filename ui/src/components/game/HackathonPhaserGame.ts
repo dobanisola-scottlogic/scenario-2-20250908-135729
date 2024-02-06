@@ -45,6 +45,7 @@ class HackathonPhaserScene extends Phaser.Scene {
   private phaseCount = 0;
   private phaseIndex = 0;
   private players: Phaser.GameObjects.Sprite[] = [];
+  private spawnPoints: Phaser.GameObjects.Sprite[] = [];
 
   constructor(public readonly gameData: ParsedGameResult) {
     super({ key: 'MainScene' });
@@ -130,13 +131,16 @@ class HackathonPhaserScene extends Phaser.Scene {
 
   addSpawnPoints = (parsedGameData: ParsedGameResult) => {
     parsedGameData.constants.spawnPoints.forEach((spawnPoint) => {
-      this.addSprite(
+      const sprite = this.addSprite(
         spawnPoint.position.x,
         spawnPoint.position.y,
         this.spawnSpriteSheet,
         spawnPoint.teamIndex * this.spawnSpriteSheet.repeatsEvery,
-        spawnPoint.teamIndex
+        spawnPoint.teamIndex,
+        spawnPoint.id
       );
+
+      this.spawnPoints.push(sprite);
     });
   };
 
@@ -203,11 +207,15 @@ class HackathonPhaserScene extends Phaser.Scene {
         const sprite = sprites[index];
 
         if (sprite) {
-          sprite.anims.play(spriteSheet.removeAnimationKey);
+          if (spriteSheet.hasRemoveAnimation) {
+            sprite.anims.play(spriteSheet.removeAnimationKey);
 
-          sprite.on('animationcomplete', () => {
+            sprite.on('animationcomplete', () => {
+              sprite.destroy(true);
+            });
+          } else {
             sprite.destroy(true);
-          });
+          }
         }
 
         sprites.splice(index, 1);
@@ -262,8 +270,11 @@ class HackathonPhaserScene extends Phaser.Scene {
     this.removeSprites(playerIds, this.players, this.playerSpriteSheet);
   };
 
+  removeSpawnPoints = (ids: number[]) => {
+    this.removeSprites(ids, this.spawnPoints, this.spawnSpriteSheet);
+  };
+
   update = () => {
-    // todo: process changes on each turn: HAC-255
     if (this.phaseIndex === this.phaseCount) {
       // Check for looped, game over etc:
     }
@@ -285,6 +296,8 @@ class HackathonPhaserScene extends Phaser.Scene {
         this.addPlayers(delta.playersAdded);
         this.removePlayers(delta.playersDestroyed);
         this.movePlayers(delta.playersTravel);
+
+        this.removeSpawnPoints(delta.spawnPointsDestroyed);
       }
 
       this.phaseIndex++;
