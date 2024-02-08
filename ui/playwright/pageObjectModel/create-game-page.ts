@@ -80,4 +80,23 @@ export class CreateGamePage {
   async verifyGameCannotBeCreated() {
     await expect(this.addNewGameButton).toBeDisabled();
   }
+
+  async createGameUsingAPIBetweenMilestoneBotsAndWithMap(
+    hackathonName: string,
+    map: string,
+    player1: number,
+    player2: number
+  ) {
+    const gamePostResponse = await this.page.request.post('./api/game', {
+      data: {
+        hackathonId: hackathonName.toLowerCase(),
+        map: map,
+        teams: [
+          `com.scottlogic.hackathon.bots.Milestone${player1}Bot`,
+          `com.scottlogic.hackathon.bots.Milestone${player2}Bot`,
+        ],
+      },
+    });
+    expect(gamePostResponse.status()).toBe(200);
+  }
 }

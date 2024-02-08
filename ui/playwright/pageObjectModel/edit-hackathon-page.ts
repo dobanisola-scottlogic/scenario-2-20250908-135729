@@ -92,7 +92,7 @@ export class EditHackathonPage {
     bot: string
   ) {
     const hackathonPutResponse = await this.page.request.put(
-      `./api/hackathon/${hackathon}`,
+      `./api/hackathon/${hackathon.toLowerCase()}`,
       {
         data: {
           milestoneClassName: `com.scottlogic.hackathon.bots.${bot}`,

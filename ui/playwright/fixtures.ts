@@ -10,6 +10,7 @@ import { DeleteTeamPage } from './pageObjectModel/delete-team-page';
 import { EditHackathonPage } from './pageObjectModel/edit-hackathon-page';
 import { EditTeamPage } from './pageObjectModel/edit-team-page';
 import { LoginPage } from './pageObjectModel/login-page';
+import { TableOptionsPage } from './pageObjectModel/table-options-page';
 import { TeamDashboardPage } from './pageObjectModel/team-dashboard-page';
 import { ViewInformationPage } from './pageObjectModel/view-information-page';
 
@@ -25,6 +26,7 @@ const test = base.extend<{
   hackathonDetailsPage: HackathonDetailsPage;
   hackathonListPage: HackathonListPage;
   login: LoginPage;
+  tableOptionsPage: TableOptionsPage;
   teamDashboardPage: TeamDashboardPage;
   viewInformationPage: ViewInformationPage;
 }>({
@@ -71,6 +73,10 @@ const test = base.extend<{
   login: async ({ page }, use) => {
     const login = new LoginPage(page);
     await use(login);
+  },
+  tableOptionsPage: async ({ page }, use) => {
+    const tableOptionsPage = new TableOptionsPage(page);
+    await use(tableOptionsPage);
   },
   teamDashboardPage: async ({ page }, use) => {
     const teamDashboardPage = new TeamDashboardPage(page);

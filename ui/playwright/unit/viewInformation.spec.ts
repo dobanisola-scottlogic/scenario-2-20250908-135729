@@ -43,44 +43,44 @@ test.beforeEach(
   }
 );
 
-test.describe('Text within each box appears correctly', () => {
-  for (const fieldChecker of fieldCheckers) {
-    test(`text within the ${fieldChecker.textbox} box is uneditable and can be copied using the copy button`, async ({
-      viewInformationPage,
-    }) => {
-      await viewInformationPage.verifyTextFoundInTextbox(
-        fieldChecker.textbox,
-        fieldChecker.text
-      );
-      await viewInformationPage.verifyTextInTextboxCannotBeEdited(
-        fieldChecker.textbox
-      );
-      await viewInformationPage.copyTextFromTextbox(fieldChecker.textbox);
-      await viewInformationPage.verifyTextHasBeenCopied(fieldChecker.text);
-    });
-  }
+test.afterEach(async ({ hackathonListPage }) => {
+  await hackathonListPage.clearAnyExistingHackathonWithName(hackathonName);
 });
 
-test.describe('other functions and error messages associated with the information box works correctly', () => {
-  test('close button closes the view information box', async ({
-    viewInformationPage,
-    commonPageObjects,
-  }) => {
-    await viewInformationPage.closeViewInformationPopup();
-    await commonPageObjects.confirmPopupIsHidden();
-  });
-
-  test('development environment link is visible and has the correct text', async ({
+for (const fieldChecker of fieldCheckers) {
+  test(`text within the ${fieldChecker.textbox} box is uneditable and can be copied using the copy button`, async ({
     viewInformationPage,
   }) => {
-    await viewInformationPage.verifyDetailsOfDevelopmentEnvironmentLink();
-  });
-
-  test('error message appears if team information cannot be found', async ({
-    commonPageObjects,
-  }) => {
-    await commonPageObjects.confirmErrorMessageIs(
-      'Error fetching team information'
+    await viewInformationPage.verifyTextFoundInTextbox(
+      fieldChecker.textbox,
+      fieldChecker.text
     );
+    await viewInformationPage.verifyTextInTextboxCannotBeEdited(
+      fieldChecker.textbox
+    );
+    await viewInformationPage.copyTextFromTextbox(fieldChecker.textbox);
+    await viewInformationPage.verifyTextHasBeenCopied(fieldChecker.text);
   });
+}
+
+test('close button closes the view information box', async ({
+  viewInformationPage,
+  commonPageObjects,
+}) => {
+  await viewInformationPage.closeViewInformationPopup();
+  await commonPageObjects.confirmPopupIsHidden();
+});
+
+test('development environment link is visible and has the correct text', async ({
+  viewInformationPage,
+}) => {
+  await viewInformationPage.verifyDetailsOfDevelopmentEnvironmentLink();
+});
+
+test('error message appears if team information cannot be found', async ({
+  commonPageObjects,
+}) => {
+  await commonPageObjects.confirmErrorMessageIs(
+    'Error fetching team information'
+  );
 });

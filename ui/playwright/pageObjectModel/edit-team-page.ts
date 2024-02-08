@@ -11,7 +11,7 @@ export class EditTeamPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.teamNameField = page.getByLabel('Name');
+    this.teamNameField = page.getByLabel('Name *');
     this.teamPasswordField = page.getByTestId('password-input');
     this.teamMenuButton = ({ teamName }) =>
       page.getByRole('row', { name: `${teamName}` }).getByLabel('more');

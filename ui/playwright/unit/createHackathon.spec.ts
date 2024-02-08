@@ -84,6 +84,7 @@ test('admin cannot create a hackathon where the name already exists with differe
   await commonPageObjects.confirmErrorMessageIs(
     'Error creating hackathon - Hackathon with ID duplicatename already exists'
   );
+  await hackathonListPage.clearAnyExistingHackathonWithName('DuplicateName');
 });
 
 test('admin cannot enter more than 255 characters for a hackathon name', async ({
