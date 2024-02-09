@@ -14,6 +14,13 @@ beforeAll(() => {
     },
   }));
 
+  // Mock the chart component since there is not support for mocking the SVG that the actual component creates.
+  vi.mock('~/components/charts/CollectablesChart', () => ({
+    default: () => {
+      return 'Collectables chart placeholder';
+    },
+  }));
+
   server.listen();
 });
 

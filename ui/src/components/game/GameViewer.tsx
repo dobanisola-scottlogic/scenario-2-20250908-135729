@@ -2,6 +2,7 @@ import { Box, Button, CircularProgress, Grid } from '@mui/material';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetHackathonGameQuery, useGetHackathonQuery } from '~/api/api';
+import CollectablesChart from '~/components/charts/CollectablesChart';
 import Breadcrumb from '~/components/common/Breadcrumb';
 import { CommonContainer } from '~/components/common/CommonContainer';
 import { viewerStyles } from '~/components/commonStyles';
@@ -110,10 +111,9 @@ const GameViewer = () => {
                 </Grid>
               </Grid>
               <Grid container item xs={12} md={1} direction='column'>
-                <Box sx={{ ...viewerStyles.commonBoxStyles, height: '31rem' }}>
-                  Collectables chart placeholder
-                  <h1>{gameState?.collectables?.length}</h1>
-                </Box>
+                <CollectablesChart
+                  collectablesCount={gameState?.collectables?.length ?? 0}
+                />
               </Grid>
             </>
           )}
