@@ -11,7 +11,15 @@ public class TeamUpdate {
     return name;
   }
 
+  public void setName(final String name) {
+    this.name = name.trim().replaceAll("\\s+", " ");;
+  }
+
   public String getPassword() {
     return password;
+  }
+
+  public void setPassword(final String password) {
+    this.password = password;
   }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.TeamInfo;
 import com.scottlogic.hackathon.server.services.stores.TeamStore;
 import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
+import com.scottlogic.util.StringUtils;
 
 public class TeamService {
   private final Logger logger;
@@ -36,6 +38,16 @@ public class TeamService {
 
   public Team addTeam(final Team team) {
     
+    Preconditions.checkArgument(
+      !StringUtils.isNullOrBlank(team.getName()),
+      "Team name cannot be empty"
+    );
+
+    Preconditions.checkArgument(
+      !StringUtils.isNullOrBlank(team.getPassword()),
+      "Team password cannot be empty"
+    );
+
     var existing = teamStore.get("name", team.getName(), true);
     if (existing != null) {
       throw new IllegalArgumentException("Team name already exists");
@@ -62,6 +74,19 @@ public class TeamService {
   }
 
   public Team updateTeam(final UUID id, final TeamUpdate teamUpdate) {
+    Preconditions.checkArgument(
+      !StringUtils.isNullOrBlank(teamUpdate.getName())
+      || !StringUtils.isNullOrBlank(teamUpdate.getPassword()),
+      "Nothing to change"
+    );
+
+    if(!StringUtils.isNullOrBlank(teamUpdate.getName())) {
+      var existing = teamStore.get("name", teamUpdate.getName(), true);
+      if (existing != null && existing.getId() != id) {
+        throw new IllegalArgumentException("Team name already exists");
+      }
+    }
+
     return teamStore.update(id, teamUpdate);
   }
 

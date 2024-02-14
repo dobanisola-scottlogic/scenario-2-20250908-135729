@@ -1,6 +1,7 @@
 package com.scottlogic.hackathon.server.services;
 
 import java.util.Collections;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import software.amazon.awssdk.services.cloud9.model.ListEnvironmentsResponse;
 import com.scottlogic.hackathon.server.models.Team;
 import com.scottlogic.hackathon.server.models.TeamInfo;
 import com.scottlogic.hackathon.server.services.stores.TeamStore;
+import com.scottlogic.hackathon.server.services.stores.TeamUpdate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -75,6 +77,7 @@ public class TeamServiceTest {
   public void addTeamTest() {
     var team = new Team();
     team.setName("name");
+    team.setPassword("password");
     when(teamStore.save(team)).thenReturn(team);
 
     var result = teamService.addTeam(team);
@@ -86,6 +89,7 @@ public class TeamServiceTest {
   public void addTeam_exceptionOnDuplicateName() {
     var team = new Team();
     team.setName("name");
+    team.setPassword("password");
     when(teamStore.get(anyString(), anyString(), anyBoolean())).thenReturn(team);
 
     var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
@@ -97,12 +101,127 @@ public class TeamServiceTest {
   public void addTeam_exceptionOnDuplicateNameWithSpaces() {
     var request = new Team();
     request.setName(" name ");
+    request.setPassword("password");
 
     var team = new Team();
     team.setName("name");
     when(teamStore.get(anyString(), anyString(), anyBoolean())).thenReturn(team);
 
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(request));
+
+    assertEquals("Team name already exists", thrown.getMessage());
+  }
+
+  @Test
+  public void addTeam_exceptionOnEmptyName() {
+    var team = new Team();
+    team.setName("");
+    team.setPassword("password");
+
     var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
+
+    assertEquals("Team name cannot be empty", thrown.getMessage());
+  }
+
+  @Test
+  public void addTeam_exceptionOnEmptyNameWithSpaces() {
+    var team = new Team();
+    team.setName("   ");
+
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
+
+    assertEquals("Team name cannot be empty", thrown.getMessage());
+  }
+
+  @Test
+  public void addTeam_exceptionOnEmptyPassword() {
+    var team = new Team();
+    team.setName("name");
+    team.setPassword("");
+
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
+
+    assertEquals("Team password cannot be empty", thrown.getMessage());
+  }
+
+  @Test
+  public void addTeam_exceptionOnEmptyPasswordWithSpaces() {
+    var team = new Team();
+    team.setName("name");
+    team.setPassword("    ");
+
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
+
+    assertEquals("Team password cannot be empty", thrown.getMessage());
+  }
+
+  @Test
+  public void updateTeam_newTeamName() {
+    var team = new Team();
+    team.setName("renamed");
+    team.setPassword("password");
+    when(teamStore.get(anyString(), anyString(), anyBoolean())).thenReturn(null);
+    when(teamStore.update(any(), any())).thenReturn(team);
+
+    TeamUpdate teamUpdate = new TeamUpdate();
+    teamUpdate.setName("renamed");
+    var result = teamService.updateTeam(team.getId(), teamUpdate);
+
+    assertEquals(team, result);
+  }
+
+  @Test
+  public void updateTeam_newPassword() {
+    var team = new Team();
+    team.setName("name");
+    team.setPassword("secret");
+
+    when(teamStore.update(any(), any())).thenReturn(team);
+
+    TeamUpdate teamUpdate = new TeamUpdate();
+    teamUpdate.setPassword("secret");
+    var result = teamService.updateTeam(team.getId(), teamUpdate);
+
+    assertEquals(team, result);
+  }
+
+  @Test void updateTeam_newTeamNameAndPassword() {
+    var team = new Team();
+    team.setName("renamed");
+    team.setPassword("secret");
+    when(teamStore.get(anyString(), anyString(), anyBoolean())).thenReturn(null);
+    when(teamStore.update(any(), any())).thenReturn(team);
+
+    TeamUpdate teamUpdate = new TeamUpdate();
+    teamUpdate.setName("renamed");
+    teamUpdate.setPassword("secret");
+    var result = teamService.updateTeam(team.getId(), teamUpdate);
+
+    assertEquals(team, result);
+  }
+
+  @Test void updateTeam_exceptionOnEmptyNameAndPassword() {
+    var team = new Team();
+
+    TeamUpdate teamUpdate = new TeamUpdate();
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.updateTeam(team.getId(), teamUpdate));
+
+    assertEquals("Nothing to change", thrown.getMessage());
+  }
+  
+  @Test void updateTeam_exceptionOnDuplicateTeamName() {
+    var team = new Team();
+    team.setId(UUID.randomUUID());
+
+    var otherTeam = new Team();
+    otherTeam.setId(UUID.randomUUID());
+    otherTeam.setName("name");
+
+    when(teamStore.get(anyString(), anyString(), anyBoolean())).thenReturn(otherTeam);
+
+    TeamUpdate teamUpdate = new TeamUpdate();
+    teamUpdate.setName("name");
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.updateTeam(team.getId(), teamUpdate));
 
     assertEquals("Team name already exists", thrown.getMessage());
   }
@@ -123,7 +242,7 @@ public class TeamServiceTest {
     initGetTeamInfo();
     TeamInfo teamInfo = teamService.getTeamInfo("test99");
 
-    assertEquals(teamInfo, null);
+    assertEquals(null, teamInfo);
   }
 
   private void initGetTeamInfo() {
