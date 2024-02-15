@@ -35,9 +35,8 @@ public class AbstractStore<T> {
           entityClass.getSimpleName(),
           propertyName);
     }
-    var query = currentSession().createSelectionQuery(queryString, entityClass)
+    return currentSession().createSelectionQuery(queryString, entityClass)
         .setParameter("value", value);
-    return query;
   }
 
   public T save(final T entity) {
@@ -64,10 +63,12 @@ public class AbstractStore<T> {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public T get(final Serializable id) {
     return (T) currentSession().get(entityClass, id);
   }
 
+  @SuppressWarnings("unchecked")
   public T get(final String propertyName, final String value, final boolean ignoreCase) {
     var query = createQueryByProperty(propertyName, value, ignoreCase);
 
@@ -79,6 +80,7 @@ public class AbstractStore<T> {
   }
 
   public List<T> list() {
+    @SuppressWarnings("unchecked")
     var entities = (List<T>) currentSession().createSelectionQuery(
         String.format("from %s", entityClass.getSimpleName()),
         entityClass)
@@ -89,6 +91,7 @@ public class AbstractStore<T> {
   public List<T> list(final String propertyName, final String value, boolean ignoreCase) {
     var query = createQueryByProperty(propertyName, value, ignoreCase);
 
+    @SuppressWarnings("unchecked")
     var entities = (List<T>) query.list();
     return Collections.unmodifiableList(entities);
   }
@@ -98,12 +101,12 @@ public class AbstractStore<T> {
   }
 
   public void runInSession(Runnable runnable) {
-    Session currentSession = sessionFactory.openSession();
-    ManagedSessionContext.bind(currentSession);
-    currentSession.beginTransaction();
-    runnable.run();
-    ManagedSessionContext.unbind(sessionFactory);
-    currentSession.getTransaction().commit();
-    currentSession.close();
+    sessionFactory.inSession(session -> {
+      ManagedSessionContext.bind(session);
+      session.beginTransaction();
+      runnable.run();
+      ManagedSessionContext.unbind(sessionFactory);
+      session.getTransaction().commit();
+    });
   }
 }

@@ -26,12 +26,10 @@ public class BotStore extends AbstractStore<TeamBot> {
   public void configureIdGenerator() {
     runInSession(
         () -> {
-          Optional<Long> maxId =
-              ofNullable(
-                  (Long)
-                      currentSession()
-                          .createQuery("select max(bot.id) from TeamBot bot")
-                          .getSingleResult());
+          Optional<Long> maxId = ofNullable(
+              currentSession()
+                  .createQuery("select max(bot.id) from TeamBot bot", Long.class)
+                  .getSingleResultOrNull());
           UniqueIdGenerator.INSTANCE.setSeed(maxId.orElse(1L));
         });
   }

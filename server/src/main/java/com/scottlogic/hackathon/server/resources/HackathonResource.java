@@ -61,13 +61,13 @@ public class HackathonResource {
   @RolesAllowed(Authorizer.ROLE_ADMIN)
   @JsonView(Views.Details.class)
   public Response createHackathon(@Auth final User user, final Hackathon hackathon, @Context UriInfo uriInfo) {
-    Hackathon record = hackathonService.createHackathon(user, hackathon);
+    Hackathon createdHackathon = hackathonService.createHackathon(user, hackathon);
 
     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
 
-    uriBuilder.path(record.getId());
+    uriBuilder.path(createdHackathon.getId());
 
-    return Response.created(uriBuilder.build()).entity(record).build();
+    return Response.created(uriBuilder.build()).entity(createdHackathon).build();
   }
 
   @PUT
@@ -106,7 +106,7 @@ public class HackathonResource {
   public Response getHackathon(@NotNull @PathParam("id") final String id) {
     Hackathon hackathon = null;
 
-    if (id != "null") {
+    if (!id.equals("null")) {
       hackathon = hackathonService.getHackathon(id);
     }
 
