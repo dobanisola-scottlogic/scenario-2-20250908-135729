@@ -27,7 +27,7 @@ module "monitoring" {
 }
 
 module "rds_schedule" {
-  source     = "github.com/barryw/terraform-aws-rds-scheduler"
+  source     = "github.com/pedwin-scottlogic/terraform-aws-rds-scheduler"
   identifier = local.workspace
 
   up_schedule   = local.rds_up_schedule
