@@ -34,13 +34,14 @@ test('admin can edit a hackathon and see it be updated in the hackathon details 
   editHackathonPage,
   hackathonListPage,
   hackathonDetailsPage,
+  commonPageObjects,
 }) => {
   await editHackathonPage.editMilestoneBot();
   await editHackathonPage.clickBotName('Milestone2Bot');
   await editHackathonPage.editMilestoneMap();
   await editHackathonPage.clickMapName('Hard');
   await editHackathonPage.clickUpdateHackathon();
-  await editHackathonPage.verifyHackathonEdited(
+  await commonPageObjects.confirmSuccessMessageIs(
     'Hackathon updated successfully!'
   );
   await hackathonListPage.verifyHackathonDetails(

@@ -32,7 +32,7 @@ test('hackathon can be successfully deleted and subsequent alert can be closed',
   await commonPageObjects.confirmSuccessMessageIs(
     'Hackathon deleted successfully!'
   );
-  await deleteHackathonPage.closeSuccessAlert();
+  await commonPageObjects.closeSuccessAlert();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();
   await hackathonListPage.checkExistenceOfHackathonInTableWithName(
     hackathonName,
@@ -41,7 +41,6 @@ test('hackathon can be successfully deleted and subsequent alert can be closed',
 });
 
 test('hackathon can be successfully deleted with enter key', async ({
-  deleteHackathonPage,
   hackathonListPage,
   commonPageObjects,
   page,
@@ -50,7 +49,7 @@ test('hackathon can be successfully deleted with enter key', async ({
   await commonPageObjects.confirmSuccessMessageIs(
     'Hackathon deleted successfully!'
   );
-  await deleteHackathonPage.closeSuccessAlert();
+  await commonPageObjects.closeSuccessAlert();
   await commonPageObjects.confirmSuccessAlertDoesNotExist();
   await hackathonListPage.checkExistenceOfHackathonInTableWithName(
     hackathonName,

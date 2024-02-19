@@ -1,92 +1,79 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class TeamDashboardPage {
   readonly page: Page;
-  readonly viewInformationButton: Locator;
-  readonly refreshButton: Locator;
-  readonly connectButton: Locator;
-  readonly cancelButton: Locator;
-  readonly addGameButton: Locator;
-  readonly connectStatusText: ({
-    statusText,
-  }: {
-    statusText: string;
-  }) => Locator;
-  readonly milestoneInformation: ({
-    map,
-    bot,
-  }: {
-    map: string;
-    bot: string;
-  }) => Locator;
-  readonly milestoneNotFoundText: Locator;
-  readonly connectionStatistics: ({
-    connectionStatus,
-  }: {
-    connectionStatus: string;
-  }) => Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.viewInformationButton = page.getByRole('button', {
-      name: 'View information',
-    });
-    this.refreshButton = page.getByRole('button', { name: 'Refresh' });
-    this.connectButton = page.getByRole('button', { name: 'Connect' });
-    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
-    this.addGameButton = page.getByRole('button', {
-      name: 'Add a new game',
-    });
-    this.connectStatusText = ({ statusText }) =>
-      page.getByText(`The connection status of your bot is:${statusText}`);
-    this.milestoneInformation = ({ map, bot }) =>
-      page.getByText(`Current Milestone: Map: ${map} - Bot: ${bot}`);
-    this.milestoneNotFoundText = page.getByText(
-      'Failed to fetch current milestone.'
-    );
-    this.connectionStatistics = ({ connectionStatus }) =>
-      page.getByText(`Status: ${connectionStatus}`);
   }
 
+  // Start of locators
+
+  getViewInformationButton = () =>
+    this.page.getByRole('button', {
+      name: 'View information',
+    });
+
+  getRefreshButton = () => this.page.getByRole('button', { name: 'Refresh' });
+
+  getConnectButton = () => this.page.getByRole('button', { name: 'Connect' });
+
+  getCancelButton = () => this.page.getByRole('button', { name: 'Cancel' });
+
+  getAddGameButton = () =>
+    this.page.getByRole('button', {
+      name: 'Add a new game',
+    });
+
+  getConnectStatusText = (statusText: string) =>
+    this.page.getByText(`The connection status of your bot is:${statusText}`);
+
+  getMilestoneInformation = (map: string, bot: string) =>
+    this.page.getByText(`Current Milestone: Map: ${map} - Bot: ${bot}`);
+
+  getMilestoneNotFoundText = () =>
+    this.page.getByText('Failed to fetch current milestone.');
+
+  getConnectionStatistics = (connectionStatus: string) =>
+    this.page.getByText(`Status: ${connectionStatus}`);
+
+  // End of locators
+
   async verifyLoginSuccess() {
-    await expect(this.viewInformationButton).toBeEnabled();
-    await expect(this.refreshButton).toBeEnabled();
-    await expect(this.connectButton).toBeEnabled();
-    await expect(this.addGameButton).toBeDisabled();
+    await expect(this.getViewInformationButton()).toBeEnabled();
+    await expect(this.getRefreshButton()).toBeEnabled();
+    await expect(this.getConnectButton()).toBeEnabled();
+    await expect(this.getAddGameButton()).toBeDisabled();
   }
 
   async verifyStateIsDisconnected() {
-    await expect(this.connectButton).toBeVisible();
-    await expect(this.cancelButton).toBeHidden();
-    await expect(
-      this.connectStatusText({ statusText: 'Disconnected' })
-    ).toBeVisible();
+    await expect(this.getConnectButton()).toBeVisible();
+    await expect(this.getCancelButton()).toBeHidden();
+    await expect(this.getConnectStatusText('Disconnected')).toBeVisible();
   }
 
   async verifyStateIsAwaitingConnection() {
-    await expect(this.cancelButton).toBeVisible();
-    await expect(this.connectButton).toBeHidden();
+    await expect(this.getCancelButton()).toBeVisible();
+    await expect(this.getConnectButton()).toBeHidden();
     await expect(
-      this.connectStatusText({
-        statusText: 'Waiting for you to start your bot',
-      })
+      this.getConnectStatusText('Waiting for you to start your bot')
     ).toBeVisible();
   }
 
   async clickViewInformationButton() {
-    await this.viewInformationButton.click();
+    await this.getViewInformationButton().click();
   }
 
   async clickRefreshButton() {
-    await this.refreshButton.click();
+    await this.getRefreshButton().click();
   }
 
   async clickConnectButton() {
-    await this.connectButton.click();
+    await this.getConnectButton().click();
   }
 
   async verifyGameCanBeAdded() {
-    await expect(this.addGameButton).toBeEnabled();
+    await expect(this.getAddGameButton()).toBeEnabled();
   }
 
   async verifyMilestoneInformationIs({
@@ -96,18 +83,14 @@ export class TeamDashboardPage {
     map: string;
     bot: string;
   }) {
-    await expect(
-      this.milestoneInformation({ map: map, bot: bot })
-    ).toBeVisible();
+    await expect(this.getMilestoneInformation(map, bot)).toBeVisible();
   }
 
   async verifyMilestoneErrorMessageAppears() {
-    await expect(this.milestoneNotFoundText).toBeVisible();
+    await expect(this.getMilestoneNotFoundText()).toBeVisible();
   }
 
   async verifyConnectionStatusIs(connectionStatus: string) {
-    await expect(
-      this.connectStatusText({ statusText: connectionStatus })
-    ).toBeVisible();
+    await expect(this.getConnectStatusText(connectionStatus)).toBeVisible();
   }
 }

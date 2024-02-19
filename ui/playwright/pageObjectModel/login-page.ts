@@ -1,46 +1,64 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
-  readonly loginTitle: Locator;
-  readonly usernameField: Locator;
-  readonly passwordField: Locator;
-  readonly visibilityButton: Locator;
-  readonly loginButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.loginTitle = page.getByRole('heading');
-    this.usernameField = page.getByRole('textbox', { name: 'Username' });
-    this.passwordField = page.getByTestId('password-input');
-    this.visibilityButton = page.getByLabel('toggle password visibility');
-    this.loginButton = page.getByRole('button', { name: 'Login' });
   }
 
+  // Start of locators
+
+  getLoginTitle = () => this.page.getByRole('heading');
+
+  getUsernameField = () => this.page.getByRole('textbox', { name: 'Username' });
+
+  getPasswordField = () => this.page.getByTestId('password-input');
+
+  getVisibilityButton = () =>
+    this.page.getByLabel('toggle password visibility');
+
+  getLoginButton = () => this.page.getByRole('button', { name: 'Login' });
+
+  // End of locators
+
   async inputPassword(password: string) {
-    await this.passwordField.fill(password);
+    await this.getPasswordField().fill(password);
   }
 
   async inputCredentials(username: string, password: string) {
-    await this.usernameField.fill(username);
-    await this.passwordField.fill(password);
+    await this.getUsernameField().fill(username);
+    await this.getPasswordField().fill(password);
   }
 
   async validateUsername(username: string) {
-    await expect(this.usernameField).toHaveValue(username);
+    await expect(this.getUsernameField()).toHaveValue(username);
   }
 
   async validatePassword(password: string) {
-    await expect(this.passwordField).toHaveValue(password);
+    await expect(this.getPasswordField()).toHaveValue(password);
   }
 
   async verifyLoginButtonIsDisabled() {
-    await expect(this.loginButton).toBeDisabled();
+    await expect(this.getLoginButton()).toBeDisabled();
   }
 
   async attemptLogin() {
-    await expect(this.loginButton).toBeEnabled();
-    await this.loginButton.click();
+    await expect(this.getLoginButton()).toBeEnabled();
+    await this.getLoginButton().click();
+  }
+
+  async clickVisibilityButton() {
+    await this.getVisibilityButton().click();
+  }
+
+  async verifyPasswordIs(visibleOrHidden: string) {
+    const requiredType = visibleOrHidden == 'visible' ? 'text' : 'password';
+    await expect(this.getPasswordField()).toHaveAttribute('type', requiredType);
+  }
+
+  async verifyLogoutSuccess() {
+    await expect(this.getLoginTitle()).toContainText('Login');
   }
 
   async attemptTeamLoginWithRequiredInformation() {
@@ -72,19 +90,6 @@ export class LoginPage {
       await route.fulfill({ status: 500 });
     });
     await this.attemptLogin();
-  }
-
-  async clickVisibilityButton() {
-    await this.visibilityButton.click();
-  }
-
-  async verifyPasswordIs(visibleOrHidden: string) {
-    const requiredType = visibleOrHidden == 'visible' ? 'text' : 'password';
-    await expect(this.passwordField).toHaveAttribute('type', requiredType);
-  }
-
-  async verifyLogoutSuccess() {
-    await expect(this.loginTitle).toContainText('Login');
   }
 
   async loginWithUnknownMilestoneBot() {

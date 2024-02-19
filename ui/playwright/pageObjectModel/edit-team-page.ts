@@ -1,71 +1,78 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class EditTeamPage {
   readonly page: Page;
-  readonly teamNameField: Locator;
-  readonly teamPasswordField: Locator;
-  readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
-  readonly updateTeamOption: Locator;
-  readonly updateTeamButton: Locator;
-  readonly togglePasswordVisibility: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.teamNameField = page.getByLabel('Name *');
-    this.teamPasswordField = page.getByTestId('password-input');
-    this.teamMenuButton = ({ teamName }) =>
-      page.getByRole('row', { name: `${teamName}` }).getByLabel('more');
-    this.updateTeamOption = page.getByRole('menuitem', { name: 'Edit...' });
-    this.updateTeamButton = page.getByRole('button', {
-      name: 'Update team',
-    });
-    this.togglePasswordVisibility = page.getByLabel(
-      'toggle password visibility'
-    );
   }
 
+  // Start of locators
+
+  getTeamNameField = () => this.page.getByLabel('Name *');
+
+  getTeamPasswordField = () => this.page.getByTestId('password-input');
+
+  getTeamMenuButton = (teamName: string) =>
+    this.page.getByRole('row', { name: teamName }).getByLabel('more');
+
+  getUpdateTeamOption = () =>
+    this.page.getByRole('menuitem', { name: 'Edit...' });
+
+  getUpdateTeamButton = () =>
+    this.page.getByRole('button', {
+      name: 'Update team',
+    });
+  getTogglePasswordVisibility = () =>
+    this.page.getByLabel('toggle password visibility');
+
+  // End of locators
+
   async openEditPopupOfTeamWithName(teamName: string) {
-    await this.teamMenuButton({ teamName: teamName }).click();
-    await this.updateTeamOption.click();
+    await this.getTeamMenuButton(teamName).click();
+    await this.getUpdateTeamOption().click();
   }
 
   async clearTeamNameField() {
-    await this.teamNameField.clear();
+    await this.getTeamNameField().clear();
   }
 
   async clearTeamPasswordField() {
-    await this.teamPasswordField.clear();
+    await this.getTeamPasswordField().clear();
   }
 
   async enterTeamName(teamName: string) {
-    await this.teamNameField.fill(teamName);
+    await this.getTeamNameField().fill(teamName);
   }
 
   async enterTeamPassword(teamPassword: string) {
-    await this.teamPasswordField.fill(teamPassword);
+    await this.getTeamPasswordField().fill(teamPassword);
   }
 
   async updateTeam() {
-    await this.updateTeamButton.click();
+    await this.getUpdateTeamButton().click();
   }
 
   async verifyTeamCanBeUpdated() {
-    await expect(this.updateTeamButton).toBeEnabled();
+    await expect(this.getUpdateTeamButton()).toBeEnabled();
   }
 
   async verifyTeamCannotBeUpdated() {
-    await expect(this.updateTeamButton).toBeDisabled();
+    await expect(this.getUpdateTeamButton()).toBeDisabled();
   }
 
   async verifyPasswordToggle() {
-    await expect(this.teamPasswordField).toHaveAttribute('type', 'password');
-    await this.togglePasswordVisibility.click();
-    await expect(this.teamPasswordField).toHaveAttribute('type', 'text');
+    await expect(this.getTeamPasswordField()).toHaveAttribute(
+      'type',
+      'password'
+    );
+    await this.getTogglePasswordVisibility().click();
+    await expect(this.getTeamPasswordField()).toHaveAttribute('type', 'text');
   }
 
-  async mock400ErrorOnUpdatingTeam() {
+  async mock500ErrorOnUpdatingTeam() {
     await this.page.route('./api/team/*', async (route) => {
-      await route.fulfill({ status: 400 });
+      await route.fulfill({ status: 500 });
     });
     await this.updateTeam();
   }

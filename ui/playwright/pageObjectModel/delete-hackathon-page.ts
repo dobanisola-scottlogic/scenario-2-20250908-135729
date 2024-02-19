@@ -1,20 +1,23 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 
 export class DeleteHackathonPage {
   readonly page: Page;
-  readonly deleteHackathonButton: Locator;
-  readonly successCloseButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.deleteHackathonButton = page.getByRole('button', {
-      name: 'Delete hackathon',
-    });
-    this.successCloseButton = page.getByLabel('Close');
   }
 
+  // Start of locators
+
+  getDeleteHackathonButton = () =>
+    this.page.getByRole('button', {
+      name: 'Delete hackathon',
+    });
+
+  // End of locators
+
   async deleteHackathon() {
-    await this.deleteHackathonButton.click();
+    await this.getDeleteHackathonButton().click();
   }
 
   async mock400ErrorOnDeletingHackathon() {
@@ -29,9 +32,5 @@ export class DeleteHackathonPage {
       await route.fulfill({ status: 500 });
     });
     await this.deleteHackathon();
-  }
-
-  async closeSuccessAlert() {
-    await this.successCloseButton.click();
   }
 }

@@ -1,84 +1,123 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class CreateGamePage {
   readonly page: Page;
-  readonly createGamePopup: Locator;
-  readonly gamePlayer1Field: Locator;
-  readonly gamePlayer2Field: Locator;
-  readonly gamePlayer3Field: Locator;
-  readonly gamePlayer4Field: Locator;
-  readonly gameMapField: Locator;
-  readonly option: ({ option }: { option: string }) => Locator;
-  readonly dropdownOptions: Locator;
-  readonly addNewGameButton: Locator;
-  readonly cancelButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.createGamePopup = page.getByRole('dialog');
-    this.gamePlayer1Field = page.getByTestId('player-1');
-    this.gamePlayer2Field = page.getByTestId('player-2');
-    this.gamePlayer3Field = page.getByTestId('player-3');
-    this.gamePlayer4Field = page.getByTestId('player-4');
-    this.gameMapField = page.getByTestId('game-map');
-    this.option = ({ option }) => page.getByRole('option', { name: option });
-    this.dropdownOptions = page.getByRole('listbox');
-    this.addNewGameButton = page.getByRole('button', {
+  }
+
+  // Start of locators
+
+  getCreateGamePopup = () => this.page.getByRole('dialog');
+
+  getGamePlayerField = (playerNumber: number) =>
+    this.page.getByTestId(`player-${playerNumber}`);
+
+  getGameMapField = () => this.page.getByTestId('game-map');
+
+  getOption = ({ option }: { option: string }) =>
+    this.page.getByRole('option', { name: option });
+
+  getDropdownOptions = () => this.page.getByRole('listbox');
+
+  getAddNewGameButton = () =>
+    this.page.getByRole('button', {
       name: 'Add a new game',
     });
-    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
-  }
+
+  getCancelButton = () => this.page.getByRole('button', { name: 'Cancel' });
+
+  // End of locators
 
   async addNewGame() {
-    await this.addNewGameButton.click();
+    await this.getAddNewGameButton().click();
   }
 
-  async selectOption(option: string) {
-    await this.option({ option: option }).click();
+  async selectOptionFromDropdown(option: string) {
+    await this.getOption({ option: option }).click();
+  }
+
+  async chooseMapOption(map: string) {
+    await this.getGameMapField().click();
+    await this.selectOptionFromDropdown(map);
+  }
+
+  async choosePlayerOption(playerNumber: number) {
+    await this.getGamePlayerField(playerNumber).click();
+  }
+
+  async chooseOptionForPlayer(playerNumber: number, dropdownOption: string) {
+    await this.getGamePlayerField(playerNumber).click();
+    await this.selectOptionFromDropdown(dropdownOption);
+  }
+
+  async createDefaultGameWithTwoPlayersAndMap(
+    firstPlayer: string,
+    secondPlayer: string,
+    map: string
+  ) {
+    await this.chooseOptionForPlayer(1, firstPlayer);
+    await this.chooseOptionForPlayer(2, secondPlayer);
+    await this.chooseMapOption(map);
+  }
+
+  async createGameWithFourPlayersAndMap(
+    firstPlayer: string,
+    secondPlayer: string,
+    thirdPlayer: string,
+    fourthPlayer: string,
+    map: string
+  ) {
+    await this.chooseOptionForPlayer(1, firstPlayer);
+    await this.chooseOptionForPlayer(2, secondPlayer);
+    await this.chooseOptionForPlayer(3, thirdPlayer);
+    await this.chooseOptionForPlayer(4, fourthPlayer);
+    await this.chooseMapOption(map);
   }
 
   async verifyCreateGamePopUpWithFieldLabels() {
-    await expect(this.createGamePopup).toContainText('Select player 1 *');
-    await expect(this.createGamePopup).toContainText('Select player 2 *');
-    await expect(this.createGamePopup).toContainText('Select player 3');
-    await expect(this.createGamePopup).toContainText('Select player 4');
-    await expect(this.createGamePopup).toContainText('Select map');
-    await expect(this.addNewGameButton).toBeDisabled();
-    await expect(this.cancelButton).toBeVisible();
+    await expect(this.getCreateGamePopup()).toContainText('Select player 1 *');
+    await expect(this.getCreateGamePopup()).toContainText('Select player 2 *');
+    await expect(this.getCreateGamePopup()).toContainText('Select player 3');
+    await expect(this.getCreateGamePopup()).toContainText('Select player 4');
+    await expect(this.getCreateGamePopup()).toContainText('Select map');
+    await expect(this.getAddNewGameButton()).toBeDisabled();
+    await expect(this.getCancelButton()).toBeVisible();
   }
 
   async verifyMandatoryPlayerDropdownField() {
-    await expect(this.dropdownOptions).toContainText(
+    await expect(this.getDropdownOptions()).toContainText(
       'TeamsMilestonesMilestone1BotMilestone2BotMilestone3BotMilestone4BotMilestone5BotFastExpansionBot'
     );
-    await this.dropdownOptions.click();
+    await this.getDropdownOptions().click();
   }
 
   async verifyOptionalPlayerDropdownField() {
-    await expect(this.dropdownOptions).toContainText(
+    await expect(this.getDropdownOptions()).toContainText(
       'NoneTeamsMilestonesMilestone1BotMilestone2BotMilestone3BotMilestone4BotMilestone5BotFastExpansionBot'
     );
-    await this.dropdownOptions.click();
+    await this.getDropdownOptions().click();
   }
 
   async verifyPlayerDropdownFieldWithTeam(teamName: string) {
-    await expect(this.dropdownOptions).toContainText(
+    await expect(this.getDropdownOptions()).toContainText(
       'Teams' +
         teamName +
         'MilestonesMilestone1BotMilestone2BotMilestone3BotMilestone4BotMilestone5BotFastExpansionBot'
     );
-    await this.dropdownOptions.click();
+    await this.getDropdownOptions().click();
   }
 
   async verifyMapDropdownField() {
-    await expect(this.dropdownOptions).toContainText(
+    await expect(this.getDropdownOptions()).toContainText(
       'Very EasyEasyMediumLarge MediumHardThree StarThree Straight'
     );
-    await this.dropdownOptions.click();
+    await this.getDropdownOptions().click();
   }
 
   async verifyGameCannotBeCreated() {
-    await expect(this.addNewGameButton).toBeDisabled();
+    await expect(this.getAddNewGameButton()).toBeDisabled();
   }
 
   async createGameUsingAPIBetweenMilestoneBotsAndWithMap(

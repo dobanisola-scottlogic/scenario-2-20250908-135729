@@ -1,28 +1,34 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 
 export class DeleteTeamPage {
   readonly page: Page;
-  readonly popupBox: Locator;
-  readonly deleteTeamButton: Locator;
-  readonly teamMenuButton: ({ teamName }: { teamName: string }) => Locator;
-  readonly deleteTeamOption: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.popupBox = page.getByRole('dialog');
-    this.deleteTeamButton = page.getByRole('button', { name: 'Delete team' });
-    this.teamMenuButton = ({ teamName }) =>
-      page.getByRole('row', { name: `${teamName}` }).getByLabel('more');
-    this.deleteTeamOption = page.getByRole('menuitem', { name: 'Delete...' });
   }
 
+  // Start of locators
+
+  getPopupBox = () => this.page.getByRole('dialog');
+
+  getDeleteTeamButton = () =>
+    this.page.getByRole('button', { name: 'Delete team' });
+
+  getTeamMenuButton = (teamName: string) =>
+    this.page.getByRole('row', { name: teamName }).getByLabel('more');
+
+  getDeleteTeamOption = () =>
+    this.page.getByRole('menuitem', { name: 'Delete...' });
+
+  // End of locators
+
   async openDeletePopupOfTeamWithName(teamName: string) {
-    await this.teamMenuButton({ teamName: teamName }).click();
-    await this.deleteTeamOption.click();
+    await this.getTeamMenuButton(teamName).click();
+    await this.getDeleteTeamOption().click();
   }
 
   async deleteTeam() {
-    await this.deleteTeamButton.click();
+    await this.getDeleteTeamButton().click();
   }
 
   async mock400ErrorOnTeamDeletion() {

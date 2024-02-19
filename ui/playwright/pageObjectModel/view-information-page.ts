@@ -1,24 +1,28 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class ViewInformationPage {
   readonly page: Page;
-  readonly copyTextButton: Locator;
-  readonly textbox: ({ textboxName }: { textboxName: string }) => Locator;
-  readonly closeButton: Locator;
-  readonly mockDevelopmentEnvironmentLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.copyTextButton = page.getByTestId('ContentCopyRoundedIcon');
-    this.textbox = ({ textboxName }) =>
-      page.getByRole('textbox', { name: `${textboxName}` });
-    this.closeButton = page.getByRole('button', {
+  }
+
+  // Start of locators
+
+  getCopyTextButton = () => this.page.getByTestId('ContentCopyRoundedIcon');
+
+  getTextbox = (textboxName: string) =>
+    this.page.getByRole('textbox', { name: textboxName });
+
+  getCloseButton = () =>
+    this.page.getByRole('button', {
       name: 'Close',
     });
-    this.mockDevelopmentEnvironmentLink = page.getByLabel(
-      'http://localhost:8080/application/ui/'
-    );
-  }
+
+  getMockDevelopmentEnvironmentLink = () =>
+    this.page.getByLabel('http://localhost:8080/application/ui/');
+
+  // End of locators
 
   async copyTextFromTextbox(textboxName: string) {
     let buttonNumber: number;
@@ -35,15 +39,15 @@ export class ViewInformationPage {
       default:
         throw new Error('Invalid textbox name');
     }
-    await this.copyTextButton.nth(buttonNumber).click();
+    await this.getCopyTextButton().nth(buttonNumber).click();
   }
 
   async verifyTextFoundInTextbox(textboxName: string, text: string) {
-    await expect(this.textbox({ textboxName })).toHaveValue(text);
+    await expect(this.getTextbox(textboxName)).toHaveValue(text);
   }
 
   async verifyTextInTextboxCannotBeEdited(textboxName: string) {
-    const editCheck = await this.textbox({ textboxName }).isEditable();
+    const editCheck = await this.getTextbox(textboxName).isEditable();
     expect(editCheck).toEqual(false);
   }
 
@@ -54,13 +58,13 @@ export class ViewInformationPage {
   }
 
   async verifyDetailsOfDevelopmentEnvironmentLink() {
-    await expect(this.mockDevelopmentEnvironmentLink).toBeVisible();
-    await expect(this.mockDevelopmentEnvironmentLink).toContainText(
+    await expect(this.getMockDevelopmentEnvironmentLink()).toBeVisible();
+    await expect(this.getMockDevelopmentEnvironmentLink()).toContainText(
       'Access your development environment'
     );
   }
 
   async closeViewInformationPopup() {
-    await this.closeButton.click();
+    await this.getCloseButton().click();
   }
 }

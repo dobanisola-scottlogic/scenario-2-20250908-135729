@@ -22,21 +22,28 @@ test.afterEach(async ({ hackathonListPage }) => {
 });
 
 test.describe('table sorting occurs on the admin hackathon list page', () => {
-  test.beforeEach(async ({ page, createHackathonPage, editHackathonPage, tableOptionsPage }) => {
-    for (const tableValue of tableValues) {
-      await createHackathonPage.createHackathonUsingAPIWithName(
-        tableValue.hackathonName
-      );
-      await editHackathonPage.updateHackathonDetailsViaAPITo(
-        tableValue.hackathonName,
-        tableValue.map,
-        tableValue.bot
-      );
+  test.beforeEach(
+    async ({
+      page,
+      createHackathonPage,
+      editHackathonPage,
+      tableOptionsPage,
+    }) => {
+      for (const tableValue of tableValues) {
+        await createHackathonPage.createHackathonUsingAPIWithName(
+          tableValue.hackathonName
+        );
+        await editHackathonPage.updateHackathonDetailsViaAPITo(
+          tableValue.hackathonName,
+          tableValue.map,
+          tableValue.bot
+        );
+      }
+      await page.goto(initialURL);
+      await tableOptionsPage.openFilterTextFoundInColumnNamed('Name');
+      await tableOptionsPage.filterTableUsingText(hackathonFilteredName);
     }
-    await page.goto(initialURL);
-    await tableOptionsPage.openFilterTextFoundInColumnNamed("Name");
-    await tableOptionsPage.filterTableUsingText(hackathonFilteredName);
-  });
+  );
 
   for (const hackathonSortColumn of hackathonSortColumns) {
     test(`Sorting the admin hackathon list table using the ${hackathonSortColumn.columnHeader} header is functional`, async ({

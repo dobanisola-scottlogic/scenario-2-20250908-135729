@@ -23,7 +23,6 @@ test.afterEach(async ({ hackathonListPage }) => {
 });
 
 test.describe('create a new game popup without a team being created', () => {
-  // runs tests in serial to prevent clash of game creation tests
   test.beforeEach(async ({ hackathonDetailsPage, commonPageObjects }) => {
     await hackathonDetailsPage.openCreateGamePopup();
     await commonPageObjects.confirmPopupIsVisible();
@@ -34,12 +33,11 @@ test.describe('create a new game popup without a team being created', () => {
     commonPageObjects,
     hackathonDetailsPage,
   }) => {
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player2);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.createDefaultGameWithTwoPlayersAndMap(
+      player1,
+      player2,
+      map
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmSuccessMessageIs(
       'Game created successfully!'
@@ -47,12 +45,11 @@ test.describe('create a new game popup without a team being created', () => {
     await commonPageObjects.closeSuccessAlert();
     await hackathonDetailsPage.openCreateGamePopup();
     await commonPageObjects.confirmPopupIsVisible();
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player3);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player4);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.createDefaultGameWithTwoPlayersAndMap(
+      player3,
+      player4,
+      map
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmSuccessMessageIs(
       'Game created successfully!'
@@ -67,16 +64,13 @@ test.describe('create a new game popup without a team being created', () => {
     commonPageObjects,
     hackathonDetailsPage,
   }) => {
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player3);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer3Field.click();
-    await createGamePage.selectOption(player4);
-    await createGamePage.gamePlayer4Field.click();
-    await createGamePage.selectOption(player2);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.createGameWithFourPlayersAndMap(
+      player2,
+      player4,
+      player1,
+      player3,
+      map
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmSuccessMessageIs(
       'Game created successfully!'
@@ -103,15 +97,9 @@ test.describe('create a new game popup without a team being created', () => {
   test('dropdown fields contain the expected values', async ({
     createGamePage,
   }) => {
-    await createGamePage.gamePlayer1Field.click();
+    await createGamePage.choosePlayerOption(1);
     await createGamePage.verifyMandatoryPlayerDropdownField();
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.verifyMandatoryPlayerDropdownField();
-    await createGamePage.gamePlayer3Field.click();
-    await createGamePage.verifyOptionalPlayerDropdownField();
-    await createGamePage.gamePlayer4Field.click();
-    await createGamePage.verifyOptionalPlayerDropdownField();
-    await createGamePage.gameMapField.click();
+    await createGamePage.getGameMapField().click();
     await createGamePage.verifyMapDropdownField();
   });
 
@@ -119,16 +107,13 @@ test.describe('create a new game popup without a team being created', () => {
     createGamePage,
     commonPageObjects,
   }) => {
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player2);
-    await createGamePage.gamePlayer3Field.click();
-    await createGamePage.selectOption(player3);
-    await createGamePage.gamePlayer4Field.click();
-    await createGamePage.selectOption(player4);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption('Three Straight');
+    await createGamePage.createGameWithFourPlayersAndMap(
+      player1,
+      player2,
+      player3,
+      player4,
+      'Three Straight'
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmErrorMessageIs(
       'Error creating game - The specified number of bots (4) exceeds the available number of spawn points (3)'
@@ -140,27 +125,19 @@ test.describe('create a new game popup without a team being created', () => {
     commonPageObjects,
     hackathonDetailsPage,
   }) => {
-    await createGamePage.verifyGameCannotBeCreated();
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player2);
+    await createGamePage.chooseOptionForPlayer(1, player1);
+    await createGamePage.chooseOptionForPlayer(2, player2);
     await createGamePage.verifyGameCannotBeCreated();
     await commonPageObjects.cancelCurrentAction();
     await hackathonDetailsPage.openCreateGamePopup();
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.chooseOptionForPlayer(1, player1);
+    await createGamePage.chooseMapOption(map);
     await createGamePage.verifyGameCannotBeCreated();
     await commonPageObjects.cancelCurrentAction();
     await hackathonDetailsPage.openCreateGamePopup();
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer3Field.click();
-    await createGamePage.selectOption(player3);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.chooseOptionForPlayer(1, player1);
+    await createGamePage.chooseOptionForPlayer(3, player3);
+    await createGamePage.chooseMapOption(map);
     await createGamePage.verifyGameCannotBeCreated();
   });
 
@@ -168,12 +145,11 @@ test.describe('create a new game popup without a team being created', () => {
     createGamePage,
     commonPageObjects,
   }) => {
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.createDefaultGameWithTwoPlayersAndMap(
+      player1,
+      player1,
+      map
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmErrorMessageIs(
       'Error creating game - all players must be unique'
@@ -183,12 +159,7 @@ test.describe('create a new game popup without a team being created', () => {
 
 test.describe('create a team before entering the create game popup', () => {
   test.beforeEach(
-    async ({
-      hackathonDetailsPage,
-      commonPageObjects,
-      createTeamPage,
-      createGamePage,
-    }) => {
+    async ({ hackathonDetailsPage, commonPageObjects, createTeamPage }) => {
       await hackathonDetailsPage.openCreateTeamPopup();
       await commonPageObjects.confirmPopupIsVisible();
       await createTeamPage.inputTeamName(teamName);
@@ -196,10 +167,10 @@ test.describe('create a team before entering the create game popup', () => {
       await createTeamPage.addNewTeam();
       await hackathonDetailsPage.openCreateGamePopup();
       await commonPageObjects.confirmPopupIsVisible();
-      await createGamePage.gamePlayer1Field.click();
     }
   );
   test('created team appears in dropdown lists', async ({ createGamePage }) => {
+    await createGamePage.choosePlayerOption(1);
     await createGamePage.verifyPlayerDropdownFieldWithTeam(teamName);
   });
 
@@ -207,11 +178,11 @@ test.describe('create a team before entering the create game popup', () => {
     commonPageObjects,
     createGamePage,
   }) => {
-    await createGamePage.selectOption(teamName);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(player2);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.createDefaultGameWithTwoPlayersAndMap(
+      teamName,
+      player2,
+      map
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmErrorMessageIs(
       `Error creating game - Team ${teamName} has no bots`
@@ -219,7 +190,7 @@ test.describe('create a team before entering the create game popup', () => {
   });
 });
 
-test.describe('create a team before entering the create game popup', () => {
+test.describe('add an unknown milestone bot', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test('Error message appears when unknown milestone bot is used', async ({
@@ -237,12 +208,11 @@ test.describe('create a team before entering the create game popup', () => {
     await hackathonListPage.openTheHackathonPage(hackathonName);
     await hackathonDetailsPage.openCreateGamePopup();
     await commonPageObjects.confirmPopupIsVisible();
-    await createGamePage.gamePlayer1Field.click();
-    await createGamePage.selectOption(player1);
-    await createGamePage.gamePlayer2Field.click();
-    await createGamePage.selectOption(playerUnknown);
-    await createGamePage.gameMapField.click();
-    await createGamePage.selectOption(map);
+    await createGamePage.createDefaultGameWithTwoPlayersAndMap(
+      player1,
+      playerUnknown,
+      map
+    );
     await createGamePage.addNewGame();
     await commonPageObjects.confirmErrorMessageIs(
       `Error creating game - com.scottlogic.hackathon.bots.${playerUnknown} is not a valid milestone bot.`

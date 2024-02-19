@@ -1,89 +1,86 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class EditHackathonPage {
   readonly page: Page;
-  readonly editHackathonPopUp: Locator;
-  readonly editHackathonPopUpTitle: Locator;
-  readonly hackathonNameField: Locator;
-  readonly editMilestoneBotDropdown: Locator;
-  readonly editMilestoneMapDropdown: Locator;
-  readonly editList: Locator;
-  readonly updateHackathonButton: Locator;
-  readonly cancelButton: Locator;
-  readonly successIcon: Locator;
-  readonly alertNotification: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.editHackathonPopUp = page.getByRole('dialog');
-    this.editHackathonPopUpTitle = page.getByText('Edit hackathon');
-    this.hackathonNameField = page.getByLabel('Hackathon name');
-    this.editMilestoneBotDropdown = page.getByTestId('current-milestone-bot');
-    this.editMilestoneMapDropdown = page.getByTestId('game-map');
-    this.editList = page.getByRole('listbox');
-    this.updateHackathonButton = page.getByRole('button', {
-      name: 'Update hackathon',
-    });
-    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
-    this.successIcon = page.getByTestId('SuccessOutlinedIcon');
-    this.alertNotification = page.getByRole('alert');
   }
 
+  // Start of locators
+
+  getEditHackathonPopUp = () => this.page.getByRole('dialog');
+
+  getEditHackathonPopUpTitle = () => this.page.getByText('Edit hackathon');
+
+  getHackathonNameField = () => this.page.getByLabel('Hackathon name');
+
+  getEditMilestoneBotDropdown = () =>
+    this.page.getByTestId('current-milestone-bot');
+
+  getEditMilestoneMapDropdown = () => this.page.getByTestId('game-map');
+
+  getEditList = () => this.page.getByRole('listbox');
+
+  getUpdateHackathonButton = () =>
+    this.page.getByRole('button', {
+      name: 'Update hackathon',
+    });
+
+  getCancelButton = () => this.page.getByRole('button', { name: 'Cancel' });
+
+  // End of locators
+
   async editMilestoneBot() {
-    await this.editMilestoneBotDropdown.click();
+    await this.getEditMilestoneBotDropdown().click();
   }
 
   async editMilestoneMap() {
-    await this.editMilestoneMapDropdown.click();
+    await this.getEditMilestoneMapDropdown().click();
   }
 
   async clickUpdateHackathon() {
-    await this.updateHackathonButton.click();
+    await this.getUpdateHackathonButton().click();
   }
 
   async clickBotName(botName: string) {
-    await this.editList.getByText(botName).click();
+    await this.getEditList().getByText(botName).click();
   }
 
   async clickMapName(mapName: string) {
-    await this.editList.getByText(mapName).click();
+    await this.getEditList().getByText(mapName).click();
   }
 
   async verifyEditHackathonPopUp() {
-    await expect(this.editHackathonPopUp).toBeVisible();
-    await expect(this.editHackathonPopUpTitle).toBeVisible();
-    await expect(this.updateHackathonButton).toBeEnabled();
-    await expect(this.cancelButton).toBeVisible();
+    await expect(this.getEditHackathonPopUp()).toBeVisible();
+    await expect(this.getEditHackathonPopUpTitle()).toBeVisible();
+    await expect(this.getUpdateHackathonButton()).toBeEnabled();
+    await expect(this.getCancelButton()).toBeVisible();
   }
 
   async verifyEditHackathonPopUpDoesNotExist() {
-    await expect(this.editHackathonPopUp).toBeHidden();
+    await expect(this.getEditHackathonPopUp()).toBeHidden();
   }
 
   async verifyMilestoneBotList() {
-    await expect(this.editList).toContainText('Milestone1Bot');
-    await expect(this.editList).toContainText('Milestone2Bot');
-    await expect(this.editList).toContainText('Milestone3Bot');
-    await expect(this.editList).toContainText('Milestone4Bot');
-    await expect(this.editList).toContainText('Milestone5Bot');
-    await expect(this.editList).toContainText('FastExpansionBot');
-    await this.editList.click();
+    await expect(this.getEditList()).toContainText('Milestone1Bot');
+    await expect(this.getEditList()).toContainText('Milestone2Bot');
+    await expect(this.getEditList()).toContainText('Milestone3Bot');
+    await expect(this.getEditList()).toContainText('Milestone4Bot');
+    await expect(this.getEditList()).toContainText('Milestone5Bot');
+    await expect(this.getEditList()).toContainText('FastExpansionBot');
+    await this.getEditList().click();
   }
 
   async verifyMilestoneMapList() {
-    await expect(this.editList).toContainText('Very Easy');
-    await expect(this.editList).toContainText('Easy');
-    await expect(this.editList).toContainText('Medium');
-    await expect(this.editList).toContainText('Large Medium');
-    await expect(this.editList).toContainText('Hard');
-    await expect(this.editList).toContainText('Three Star');
-    await expect(this.editList).toContainText('Three Straight');
-    await this.editList.click();
-  }
-
-  async verifyHackathonEdited(alertMessage: string) {
-    await expect(this.successIcon).toBeVisible();
-    await expect(this.alertNotification).toContainText(alertMessage);
+    await expect(this.getEditList()).toContainText('Very Easy');
+    await expect(this.getEditList()).toContainText('Easy');
+    await expect(this.getEditList()).toContainText('Medium');
+    await expect(this.getEditList()).toContainText('Large Medium');
+    await expect(this.getEditList()).toContainText('Hard');
+    await expect(this.getEditList()).toContainText('Three Star');
+    await expect(this.getEditList()).toContainText('Three Straight');
+    await this.getEditList().click();
   }
 
   async updateHackathonDetailsViaAPITo(

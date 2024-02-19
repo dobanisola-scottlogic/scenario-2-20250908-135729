@@ -87,7 +87,7 @@ for (const invalidCharacterError of invalidCharacterErrors) {
   });
 }
 
-test('internal server error returns on updating team name to one that already exists', async ({
+test('bad request error returns on updating team name to one that already exists', async ({
   createTeamPage,
   editTeamPage,
   commonPageObjects,
@@ -106,16 +106,16 @@ test('internal server error returns on updating team name to one that already ex
   await editTeamPage.enterTeamPassword('newTeamPassword');
   await editTeamPage.updateTeam();
   await commonPageObjects.confirmErrorMessageIs(
-    'Error updating team - internal server error'
+    'Error updating team - bad request'
   );
 });
 
-test('bad request error message will appear', async ({
+test('internal server error message will appear', async ({
   editTeamPage,
   commonPageObjects,
 }) => {
-  await editTeamPage.mock400ErrorOnUpdatingTeam();
+  await editTeamPage.mock500ErrorOnUpdatingTeam();
   await commonPageObjects.confirmErrorMessageIs(
-    'Error updating team - bad request'
+    'Error updating team - internal server error'
   );
 });

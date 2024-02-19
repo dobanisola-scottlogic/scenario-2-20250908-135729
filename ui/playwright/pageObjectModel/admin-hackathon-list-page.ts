@@ -7,7 +7,7 @@ export class HackathonListPage {
     this.page = page;
   }
 
-  //Start of locators
+  // Start of locators
 
   getHackathonByName = (hackathonName: string) =>
     this.page.getByRole('link', { name: `${hackathonName}` });
@@ -45,7 +45,7 @@ export class HackathonListPage {
       name: 'Delete...',
     });
 
-  //End of locators
+  // End of locators
 
   async openCreateHackathonPopup() {
     await this.getAddNewHackathonButton().click();

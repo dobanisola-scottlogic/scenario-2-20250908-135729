@@ -1,70 +1,71 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class CommonPageObjects {
   readonly page: Page;
-  readonly popupBox: Locator;
-  readonly navigationBarDropdownButton: ({ user }: { user: string }) => Locator;
-  readonly logoutButton: Locator;
-  readonly popupText: ({ text }: { text: string }) => Locator;
-  readonly successIcon: Locator;
-  readonly errorIcon: Locator;
-  readonly fieldValidationText: ({
-    fieldValidationMessage,
-  }: {
-    fieldValidationMessage: string;
-  }) => Locator;
-  readonly alertNotification: Locator;
-  readonly successCloseButton: Locator;
-  readonly cancelButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.popupBox = page.getByRole('dialog');
-    this.navigationBarDropdownButton = ({ user }) =>
-      page.getByRole('button', { name: `${user}` });
-    this.logoutButton = page.getByRole('menuitem', { name: 'Logout' });
-    this.popupText = ({ text }) => page.getByText(text);
-    this.successIcon = page.getByTestId('SuccessOutlinedIcon');
-    this.errorIcon = page.getByTestId('ErrorOutlineIcon');
-    this.fieldValidationText = ({ fieldValidationMessage }) =>
-      page.getByText(fieldValidationMessage);
-    this.alertNotification = page.getByRole('alert');
-    this.successCloseButton = page.getByLabel('Close');
-    this.cancelButton = page.getByRole('button', {
-      name: 'Cancel',
-    });
   }
 
+  // Start of locators
+
+  getPopupBox = () => this.page.getByRole('dialog');
+
+  getNavigationBarDropdownButton = (user: string) =>
+    this.page.getByRole('button', { name: user });
+
+  getLogoutButton = () => this.page.getByRole('menuitem', { name: 'Logout' });
+
+  getPopupText = (text: string) => this.page.getByText(text);
+
+  getSuccessIcon = () => this.page.getByTestId('SuccessOutlinedIcon');
+
+  getErrorIcon = () => this.page.getByTestId('ErrorOutlineIcon');
+
+  getFieldValidationText = (fieldValidationMessage: string) =>
+    this.page.getByText(fieldValidationMessage);
+
+  getAlertNotification = () => this.page.getByRole('alert');
+
+  getSuccessCloseButton = () => this.page.getByLabel('Close');
+
+  getCancelButton = () =>
+    this.page.getByRole('button', {
+      name: 'Cancel',
+    });
+
+  // End of locators
+
   async confirmPopupIsVisible() {
-    await expect(this.popupBox).toBeVisible();
+    await expect(this.getPopupBox()).toBeVisible();
   }
 
   async confirmPopupIsHidden() {
-    await expect(this.popupBox).toBeHidden();
+    await expect(this.getPopupBox()).toBeHidden();
   }
 
   async confirmPopupTextIs(headerText: string, bodyText: string) {
-    await expect(this.popupText({ text: headerText })).toBeVisible();
-    await expect(this.popupText({ text: bodyText })).toBeVisible();
+    await expect(this.getPopupText(headerText)).toBeVisible();
+    await expect(this.getPopupText(bodyText)).toBeVisible();
   }
 
   async cancelCurrentAction() {
-    await this.cancelButton.click();
+    await this.getCancelButton().click();
   }
 
   async logoutOfAccountWithName(user: string) {
-    await this.navigationBarDropdownButton({ user: user }).click();
-    await this.logoutButton.click();
+    await this.getNavigationBarDropdownButton(user).click();
+    await this.getLogoutButton().click();
   }
 
   async confirmSuccessMessageIs(successMessage: string) {
-    await expect(this.successIcon).toBeVisible();
-    await expect(this.alertNotification).toContainText(successMessage);
+    await expect(this.getSuccessIcon()).toBeVisible();
+    await expect(this.getAlertNotification()).toContainText(successMessage);
   }
 
   async confirmErrorMessageIs(errorMessage: string) {
-    await expect(this.errorIcon).toBeVisible();
-    await expect(this.alertNotification).toContainText(errorMessage);
+    await expect(this.getErrorIcon()).toBeVisible();
+    await expect(this.getAlertNotification()).toContainText(errorMessage);
   }
 
   async confirmValidationMessageExistsForTheField(field: string) {
@@ -80,16 +81,16 @@ export class CommonPageObjects {
       }
     }
     await expect(
-      this.fieldValidationText({ fieldValidationMessage })
+      this.getFieldValidationText(fieldValidationMessage)
     ).toBeVisible();
   }
 
   async closeSuccessAlert() {
-    await this.successCloseButton.click();
+    await this.getSuccessCloseButton().click();
   }
 
   async confirmSuccessAlertDoesNotExist() {
-    await expect(this.successIcon).toBeHidden();
+    await expect(this.getSuccessIcon()).toBeHidden();
   }
 
   async refreshPage() {

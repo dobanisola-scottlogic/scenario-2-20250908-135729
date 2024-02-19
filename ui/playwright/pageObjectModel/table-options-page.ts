@@ -7,23 +7,31 @@ export class TableOptionsPage {
     this.page = page;
   }
 
-  //Start of locators
+  // Start of locators
 
-  getTableHeader = (buttonName: string ) =>
-      this.page.getByLabel(buttonName).getByText(buttonName, {
-        exact: true,
-      });
-    getEditTableButton = () => this.page.getByRole('button', {
+  getTableHeader = (buttonName: string) =>
+    this.page.getByLabel(buttonName).getByText(buttonName, {
+      exact: true,
+    });
+
+  getEditTableButton = () =>
+    this.page.getByRole('button', {
       name: 'Menu',
     });
-    getFilterMenuItem = () =>  this.page.getByRole('menuitem', {
+
+  getFilterMenuItem = () =>
+    this.page.getByRole('menuitem', {
       name: 'Filter',
     });
-    getFilterTextBox = () =>  this.page.getByPlaceholder('Filter value');
-    getValueInRow = (row: number) => this.page.locator(`[aria-rowindex='${row}']`);
-    getHackathonTable = () => this.page.getByLabel('List of hackathons')
 
-  //End of locators
+  getFilterTextBox = () => this.page.getByPlaceholder('Filter value');
+
+  getValueInRow = (row: number) =>
+    this.page.locator(`[aria-rowindex='${row}']`);
+
+  getHackathonTable = () => this.page.getByLabel('List of hackathons');
+
+  // End of locators
 
   async sortTableUsingHeaderField(field: string) {
     await this.getTableHeader(field).click();
@@ -32,7 +40,7 @@ export class TableOptionsPage {
   //The selector for the first row starts at 'aria-rowindex=2' and increments by 1 for each row
   async verifyNameOfValueInRowIs(rowNumber: number, expectedValue: string) {
     await expect(
-      this.getValueInRow(rowNumber + 2 ).filter({
+      this.getValueInRow(rowNumber + 2).filter({
         hasText: expectedValue,
       })
     ).toContainText(expectedValue);
