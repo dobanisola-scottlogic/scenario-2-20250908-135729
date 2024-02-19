@@ -37,11 +37,17 @@ public class TeamService {
     this.teamStore = teamStore;
     this.hackathonService = hackathonService;
     cloud9 = Cloud9Client.builder()
-      .region(Region.of(System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable())))
+      .region(getRegion())
       .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
       .build();
     workspace = System.getenv("WORKSPACE");
     logger = org.slf4j.LoggerFactory.getLogger(this.getClass().getName());
+  }
+
+  private Region getRegion() {
+    // Attempt to use environment variable or fallback to default region
+    String awsRegion = System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable());
+    return awsRegion != null ? Region.of(awsRegion) : Region.EU_WEST_2;
   }
 
   public Team addTeam(final Team team) {
