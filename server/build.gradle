@@ -26,6 +26,81 @@ application {
 
 startScripts.setApplicationName("${applicationName}")
 
+test {
+    useJUnitPlatform()
+    environment 'CONTESTANT_PASSWORD', 'test-password'
+    environment 'WORKSPACE', 'test-workspace'
+    finalizedBy jacocoTestReport
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/java')
+        }
+        resources.srcDir file('src/integrationTest/resources')
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+    environment "AWS_REGION", "eu-west-2"
+}
+
+// remove this line if integrations are too long running
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.19
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "hackathon-server",
+                "Implementation-Version": version,
+                "Main-Class": "${mainClassName}"
+        )
+    }
+}
+
+distributions {
+    main {
+        contents {
+            from(defaultConfigFile) {
+                into 'conf'
+            }
+        }
+    }
+}
+
+tasks.withType(Copy).all { duplicatesStrategy 'exclude' }
+
 dependencies {
     implementation platform('ru.vyarus.guicey:guicey-bom:7.1.1')
 
@@ -68,51 +143,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
     testImplementation 'org.mockito:mockito-core:5.8.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
-}
-
-test {
-    useJUnitPlatform()
-    environment 'CONTESTANT_PASSWORD', 'test-password'
-    environment 'WORKSPACE', 'test-workspace'
-    finalizedBy jacocoTestReport
-}
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-    }
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.19
-            }
-        }
-    }
-}
-check.dependsOn jacocoTestCoverageVerification
-
-jar {
-    manifest {
-        attributes(
-                "Implementation-Title": "hackathon-server",
-                "Implementation-Version": version,
-                "Main-Class": "${mainClassName}"
-        )
-    }
-}
-
-distributions {
-    main {
-        contents {
-            from(defaultConfigFile) {
-                into 'conf'
-            }
-        }
-    }
+    integrationTestImplementation 'io.dropwizard:dropwizard-testing'
+    integrationTestImplementation 'io.dropwizard:dropwizard-client'
+    integrationTestImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
+    integrationTestImplementation project
 }
 
 if(project.hasProperty('database')) {
