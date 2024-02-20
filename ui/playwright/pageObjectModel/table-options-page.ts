@@ -13,12 +13,10 @@ export class TableOptionsPage {
     this.page.getByLabel(buttonName).getByText(buttonName, {
       exact: true,
     });
-
   getEditTableButton = () =>
     this.page.getByRole('button', {
       name: 'Menu',
     });
-
   getFilterMenuItem = () =>
     this.page.getByRole('menuitem', {
       name: 'Filter',

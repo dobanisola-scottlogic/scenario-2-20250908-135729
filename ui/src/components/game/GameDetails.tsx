@@ -1,5 +1,4 @@
-import { Grid } from '@mui/material';
-import Chip from '@mui/material/Chip';
+import { Chip, Grid } from '@mui/material';
 import { viewerStyles } from '~/components/commonStyles';
 import { Game } from '~/interfaces/Game';
 import { GameTeam } from '~/interfaces/GameTeam';
@@ -33,20 +32,27 @@ const GameDetails = ({ game }: GameDetailsProps) => {
   };
 
   return (
-    <>
-      <Grid item xs={12} md={2} sx={viewerStyles.chipItem}>
+    <Grid container item xs={12} spacing={3}>
+      <Grid container item justifyContent='center' alignItems='center' xs={2}>
         <Chip label={`Map: ${mapName}`} sx={viewerStyles.chipStyles} />
       </Grid>
-      <Grid item xs={12} md={8} sx={viewerStyles.chipItem}>
+      <Grid
+        container
+        item
+        justifyContent='center'
+        alignItems='center'
+        spacing={1}
+        xs={8}
+      >
         {getTeamChips()}
       </Grid>
-      <Grid item xs={12} md={2} sx={viewerStyles.chipItem}>
+      <Grid container item justifyContent='center' alignItems='center' xs={2}>
         <Chip
           label={getGameTimeString(gameTime)}
           sx={viewerStyles.chipStyles}
         />
       </Grid>
-    </>
+    </Grid>
   );
 };
 

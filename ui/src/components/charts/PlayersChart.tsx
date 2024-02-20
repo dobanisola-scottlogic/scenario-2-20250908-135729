@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import * as c3 from 'c3';
 import 'c3/c3.min.css';
 import { useEffect, useState } from 'react';
@@ -45,7 +44,7 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
   };
 
   const chartConfiguration: c3.ChartConfiguration = {
-    bindto: '#players-bar-chart',
+    bindto: '#players-line-chart',
     axis: {
       y: {
         label: {
@@ -59,6 +58,12 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
             }
             return '';
           },
+        },
+      },
+      y2: {
+        show: true,
+        tick: {
+          outer: false,
         },
       },
       x: {
@@ -118,9 +123,13 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
 
     const newHighestPlayerCount = getHighestPlayerCount(teams);
 
-    // Set grid lines to middle of graph
+    // Set grid lines to middle and top of graph
     const quotient = Math.floor(highestPlayerCount / 2);
-    const newYGridLines = [{ value: quotient }, { value: highestPlayerCount }];
+    const intervalAmount = highestPlayerCount / 10;
+    const newYGridLines = [
+      { value: quotient },
+      { value: highestPlayerCount + intervalAmount },
+    ];
 
     // Load new grid lines
     playersChart?.ygrids(newYGridLines);
@@ -128,11 +137,7 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
     setHighestPlayerCount(newHighestPlayerCount);
   }, [playersChart, currentPhase]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <Box sx={{ height: '10rem' }}>
-      <svg id='players-bar-chart' height='100%' width='100%' />
-    </Box>
-  );
+  return <svg id='players-line-chart' height='100%' width='100%' />;
 };
 
 export default PlayersChart;

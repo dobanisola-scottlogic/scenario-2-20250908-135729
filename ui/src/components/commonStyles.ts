@@ -35,6 +35,7 @@ const viewerStyles = {
     backgroundColor: colours.darkGrey,
     color: colours.white,
     fontWeight: 'bold',
+    marginRight: '5px',
   } as const,
 };
 

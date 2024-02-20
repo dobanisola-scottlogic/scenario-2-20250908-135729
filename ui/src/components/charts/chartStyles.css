@@ -1,8 +1,28 @@
+:root {
+  --chart-grid-lines-colour: rgba(69, 69, 69, 0.5);
+}
+
 .c3-grid line {
-  stroke: #454545;
+  stroke: var(--chart-grid-lines-colour);
   stroke-dasharray: 0;
 }
 
 .c3-grid text {
   fill: #000000;
+}
+
+#collectables-bar-chart .c3-axis.c3-axis-y path {
+  stroke: var(--chart-grid-lines-colour);
+}
+
+#collectables-bar-chart .c3-axis-y .tick {
+  display: none;
+}
+
+#players-line-chart .c3-axis-y2 .tick {
+  display: none;
+}
+
+#players-line-chart .c3-axis.c3-axis-y2 path {
+  stroke: var(--chart-grid-lines-colour);
 }

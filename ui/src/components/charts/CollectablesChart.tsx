@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import * as c3 from 'c3';
 import 'c3/c3.min.css';
 import { useEffect, useState } from 'react';
@@ -21,7 +20,7 @@ const CollectablesChart = ({ collectablesCount }: CollectablesChartProps) => {
   const chartConfiguration: c3.ChartConfiguration = {
     bindto: '#collectables-bar-chart',
     axis: {
-      y: { show: false },
+      y: { show: true, tick: { outer: false } },
       y2: {
         max: COLLECTABLES_MAX_SPAWN_NUMBER,
         show: true,
@@ -62,10 +61,18 @@ const CollectablesChart = ({ collectablesCount }: CollectablesChartProps) => {
             text: COLLECTABLES_PLENTIFUL.text,
             value: COLLECTABLES_PLENTIFUL.count,
           } as c3.GridLineOptionsWithAxis,
+          {
+            axis: 'y2',
+            position: 'middle',
+            value: 440,
+          } as c3.GridLineOptionsWithAxis,
         ],
       },
     },
     legend: { hide: true },
+    padding: {
+      top: 60,
+    },
     transition: { duration: 400 },
   };
 
@@ -81,9 +88,12 @@ const CollectablesChart = ({ collectablesCount }: CollectablesChartProps) => {
   }, [collectablesChart, collectablesCount]);
 
   return (
-    <Box sx={{ height: '43rem', mt: 5 }}>
-      <svg id='collectables-bar-chart' height='100%' width='100%' />
-    </Box>
+    <svg
+      id='collectables-bar-chart'
+      height='100%'
+      width='100%'
+      transform='translate(-20,30)'
+    />
   );
 };
 

@@ -1,5 +1,5 @@
-/* Defaulting to max 250 for Y axis on collectables - game engine values are too high to make chart readable (See HAC-326) */
-export const COLLECTABLES_MAX_SPAWN_NUMBER = 250;
+/* Defaulting to max 400 for Y axis on collectables - game engine values are too high to make chart readable (See HAC-326) */
+export const COLLECTABLES_MAX_SPAWN_NUMBER = 400;
 
 export const COLLECTABLES_SCARCE = {
   colour: '#FFA856', // Orange

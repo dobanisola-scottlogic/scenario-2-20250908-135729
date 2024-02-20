@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid } from '@mui/material';
+import { Button, CircularProgress, Grid, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetHackathonGameQuery, useGetHackathonQuery } from '~/api/api';
@@ -78,27 +78,32 @@ const GameViewer = () => {
                 </Grid>
               )}
 
-              <Grid container item xs={12} md={11} spacing={2}>
-                <GameDetails game={hackathonGameData.game} />
-                <Grid item xs={12}>
-                  {hackathonGameData && (
+              <Stack
+                direction='row'
+                alignItems='flex-end'
+                justifyContent='center'
+                spacing={1}
+                sx={{ mt: 2 }}
+              >
+                {hackathonGameData && (
+                  <Stack direction='column' spacing={1}>
+                    <GameDetails game={hackathonGameData.game} />
                     <GamePlayback
                       gameResult={hackathonGameData}
                       height={hackathonGameData.game.map.height}
                       width={hackathonGameData.game.map.width}
                       setGameState={setGameState}
                     />
-                  )}
-                </Grid>
-                <Grid item xs={12}>
-                  {gameState && <PlayersChart gameState={gameState} />}
-                </Grid>
-              </Grid>
-              <Grid container item xs={12} md={1} direction='column'>
+                  </Stack>
+                )}
                 <CollectablesChart
                   collectablesCount={gameState?.collectables?.length ?? 0}
                 />
-              </Grid>
+              </Stack>
+
+              <Stack direction='row' sx={{ mt: 2, width: '100%' }}>
+                {gameState && <PlayersChart gameState={gameState} />}
+              </Stack>
             </>
           )}
         </Grid>
