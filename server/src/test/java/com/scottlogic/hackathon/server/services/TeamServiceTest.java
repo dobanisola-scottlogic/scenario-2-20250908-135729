@@ -6,6 +6,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,11 +35,12 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TeamServiceTest {
+class TeamServiceTest {
 
   @Mock
   TeamStore teamStore;
@@ -95,7 +100,7 @@ public class TeamServiceTest {
   }
 
   @Test
-  public void addTeamTest() {
+  void addTeamTest() {
     var team = new Team();
     team.setName("name");
     team.setPassword("password");
@@ -109,7 +114,7 @@ public class TeamServiceTest {
   }
 
   @Test
-  public void addTeam_exceptionOnDuplicateName() {
+  void addTeam_exceptionOnDuplicateName() {
     var team = new Team();
     team.setName("name");
     team.setPassword("password");
@@ -121,7 +126,7 @@ public class TeamServiceTest {
   }
 
   @Test
-  public void addTeam_exceptionOnDuplicateNameWithSpaces() {
+  void addTeam_exceptionOnDuplicateNameWithSpaces() {
     var request = new Team();
     request.setName(" name ");
     request.setPassword("password");
@@ -135,29 +140,20 @@ public class TeamServiceTest {
     assertEquals("Team name already exists", thrown.getMessage());
   }
 
-  @Test
-  public void addTeam_exceptionOnEmptyName() {
+  @ParameterizedTest
+  @ValueSource(strings = { "", "    " })
+  void addTeam_exceptionOnEmptyName(String name) {
     var team = new Team();
-    team.setName("");
+    team.setName(name);
     team.setPassword("password");
 
     var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
 
-    assertEquals("Team name cannot be empty", thrown.getMessage());
+    assertEquals("Team name cannot be blank", thrown.getMessage());
   }
 
   @Test
-  public void addTeam_exceptionOnEmptyNameWithSpaces() {
-    var team = new Team();
-    team.setName("   ");
-
-    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
-
-    assertEquals("Team name cannot be empty", thrown.getMessage());
-  }
-
-  @Test
-  public void addTeam_exceptionOnEmptyPassword() {
+  void addTeam_exceptionOnEmptyPassword() {
     var team = new Team();
     team.setName("name");
     team.setPassword("");
@@ -167,19 +163,9 @@ public class TeamServiceTest {
     assertEquals("Team password cannot be empty", thrown.getMessage());
   }
 
-  @Test
-  public void addTeam_exceptionOnEmptyPasswordWithSpaces() {
-    var team = new Team();
-    team.setName("name");
-    team.setPassword("    ");
-
-    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.addTeam(team));
-
-    assertEquals("Team password cannot be empty", thrown.getMessage());
-  }
-
-  @Test
-  public void updateTeam_newTeamName() {
+  @ParameterizedTest
+  @NullAndEmptySource
+  void updateTeam_newTeamName(String emptyPassword) {
     var team = new Team();
     team.setName("renamed");
     team.setPassword("password");
@@ -188,13 +174,16 @@ public class TeamServiceTest {
 
     TeamUpdate teamUpdate = new TeamUpdate();
     teamUpdate.setName("renamed");
+    teamUpdate.setPassword(emptyPassword);
     var result = teamService.updateTeam(team.getId(), teamUpdate);
 
     assertEquals(team, result);
   }
 
-  @Test
-  public void updateTeam_newPassword() {
+  @ParameterizedTest
+  @NullSource
+  @ValueSource(strings = { "", "    " })
+  void updateTeam_newPassword(String emptyName) {
     var team = new Team();
     team.setName("name");
     team.setPassword("secret");
@@ -202,13 +191,15 @@ public class TeamServiceTest {
     when(teamStore.update(any(), any())).thenReturn(team);
 
     TeamUpdate teamUpdate = new TeamUpdate();
+    teamUpdate.setName(emptyName);
     teamUpdate.setPassword("secret");
     var result = teamService.updateTeam(team.getId(), teamUpdate);
 
     assertEquals(team, result);
   }
 
-  @Test void updateTeam_newTeamNameAndPassword() {
+  @Test
+  void updateTeam_newTeamNameAndPassword() {
     var team = new Team();
     team.setName("renamed");
     team.setPassword("secret");
@@ -223,16 +214,21 @@ public class TeamServiceTest {
     assertEquals(team, result);
   }
 
-  @Test void updateTeam_exceptionOnEmptyNameAndPassword() {
+  @ParameterizedTest
+  @ValueSource(strings = { "", "    " })
+  void updateTeam_exceptionOnEmptyNameAndPassword(String name) {
     var team = new Team();
 
     TeamUpdate teamUpdate = new TeamUpdate();
-    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.updateTeam(team.getId(), teamUpdate));
+    teamUpdate.setName(name);
+    UUID teamId = team.getId();
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.updateTeam(teamId, teamUpdate));
 
     assertEquals("Nothing to change", thrown.getMessage());
   }
-  
-  @Test void updateTeam_exceptionOnDuplicateTeamName() {
+
+  @Test
+  void updateTeam_exceptionOnDuplicateTeamName() {
     var team = new Team();
     team.setId(UUID.randomUUID());
 
@@ -244,40 +240,44 @@ public class TeamServiceTest {
 
     TeamUpdate teamUpdate = new TeamUpdate();
     teamUpdate.setName("name");
-    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.updateTeam(team.getId(), teamUpdate));
+    UUID teamId = team.getId();
+    var thrown = assertThrows(IllegalArgumentException.class, () -> teamService.updateTeam(teamId, teamUpdate));
 
     assertEquals("Team name already exists", thrown.getMessage());
   }
 
   @Test
-  public void getTeamInfoTest() {
-    initGetTeamInfo();
-    TeamInfo teamInfo = teamService.getTeamInfo("test42");
+  void getTeamInfoTest() {
+    TeamService teamServiceSpy = initGetTeamInfo(teamService);
+    TeamInfo teamInfo = teamServiceSpy.getTeamInfo("test42");
 
     assertEquals("account-id", teamInfo.accountId);
     assertEquals("resource-id", teamInfo.userName);
-    assertEquals(System.getenv("CONTESTANT_PASSWORD"), teamInfo.password);
+    assertEquals("test-password", teamInfo.password);
     assertEquals("https://region.console.aws.amazon.com/cloud9/ide/environment-id", teamInfo.devEnvironment);
   }
 
   @Test
-  public void getTeamInfoNotFoundTest() {
-    initGetTeamInfo();
-    TeamInfo teamInfo = teamService.getTeamInfo("test99");
+  void getTeamInfoNotFoundTest() {
+    TeamService teamServiceSpy = initGetTeamInfo(teamService);
+    TeamInfo teamInfo = teamServiceSpy.getTeamInfo("test99");
 
     assertEquals(null, teamInfo);
   }
 
-  private void initGetTeamInfo() {
+  private TeamService initGetTeamInfo(TeamService teamService) {
+    TeamService teamServiceSpy = spy(teamService);
+    when(teamServiceSpy.getWorkspace()).thenReturn("test-workspace");
     when(environment.name()).thenReturn("test-workspace-42");
     when(listResponse.environmentIds()).thenReturn(Collections.singletonList("environment-id"));
     when(cloud9.listEnvironments()).thenReturn(listResponse);
     when(cloud9.describeEnvironments(any(DescribeEnvironmentsRequest.class))).thenReturn(describeResponse);
     when(describeResponse.environments()).thenReturn(Collections.singletonList(environment));
+    return teamServiceSpy;
   }
 
   @Test
-  public void createTeamExistingHackathonTest() {
+  void createTeamExistingHackathonTest() {
     Team testTeam = Team.createTeam("testTeam");
     testTeam.setPassword("password");
     when(teamStore.save(testTeam)).thenReturn(testTeam);
@@ -292,7 +292,7 @@ public class TeamServiceTest {
   }
 
   @Test
-  public void createTeamWithNonExistentHackathonTest() {
+  void createTeamWithNonExistentHackathonTest() {
     when(hackathonService.getHackathon(anyString())).thenReturn(null);
     Team testTeam = Team.createTeam("testTeam");
     testTeam.setPassword("password");

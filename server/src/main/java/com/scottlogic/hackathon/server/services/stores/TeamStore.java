@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.scottlogic.hackathon.server.models.Team;
+import com.scottlogic.util.StringUtils;
 
 public class TeamStore extends AbstractStore<Team> {
   private final Logger logger;
@@ -20,12 +21,14 @@ public class TeamStore extends AbstractStore<Team> {
   public Team update(final UUID id, final TeamUpdate update) {
     Team team = get(id);
     if (team != null) {
-      if (update.getName() != null) {
-        team.setName(update.getName());
+      String newName = update.getName();
+      if (!StringUtils.isNullOrEmpty(newName)) {
+        team.setName(newName);
       }
 
-      if (update.getPassword() != null) {
-        team.setPassword(update.getPassword());
+      String newPassword = update.getPassword();
+      if (!StringUtils.isNullOrEmpty(newPassword)) {
+        team.setPassword(newPassword);
       }
 
       team = saveOrUpdate(team);

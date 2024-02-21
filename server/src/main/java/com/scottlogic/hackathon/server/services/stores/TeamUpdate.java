@@ -12,7 +12,7 @@ public class TeamUpdate {
   }
 
   public void setName(final String name) {
-    this.name = name.trim().replaceAll("\\s+", " ");;
+    this.name = name == null ? null : name.trim().replaceAll("\\s+", " ");
   }
 
   public String getPassword() {
