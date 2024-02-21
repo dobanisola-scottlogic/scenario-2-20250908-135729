@@ -1,16 +1,15 @@
 import { GridRenderCellParams } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
-
 import { useGetHackathonGamesQuery } from '~/api/api';
 import ListDataGrid from '~/components/common/ListDataGrid';
 import { GameResult } from '~/interfaces/GameResult';
+import { hackathonGameRoute } from '~/routing/Routes';
 import { getGameTimeString } from '~/utils/game-utils';
-
-const gameViewerBaseUrl = import.meta.env.VITE_GAME_VIEWER_BASE_URL;
 
 interface GameResultListTableProps {
   customHeight?: number;
   hackathonId: string;
+  openLinksInNewTab?: boolean;
 }
 
 interface GameResultRowType {
@@ -24,12 +23,17 @@ interface GameResultRowType {
 const GameResultDataGrid = ({
   customHeight,
   hackathonId,
+  openLinksInNewTab,
 }: GameResultListTableProps) => {
   const {
     data: games,
     isLoading,
     isError,
   } = useGetHackathonGamesQuery(hackathonId);
+
+  const targetAndRelAttributes = openLinksInNewTab
+    ? { target: '_blank', rel: 'noopener noreferrer' }
+    : {};
 
   const columns = [
     { field: 'id', headerName: 'ID' },
@@ -38,7 +42,9 @@ const GameResultDataGrid = ({
       headerName: 'Teams',
       width: 600,
       renderCell: (params: GridRenderCellParams<GameResultRowType>) => (
-        <Link to={params.row.link}>{params.row.teams}</Link>
+        <Link to={params.row.link} {...targetAndRelAttributes}>
+          {params.row.teams}
+        </Link>
       ),
       type: 'string',
     },
@@ -47,10 +53,7 @@ const GameResultDataGrid = ({
   ];
 
   const tableRows = games?.map((row: GameResult) => {
-    const gameViewerLink = `${gameViewerBaseUrl}/?hackathonId=${row.game.hackathonId}&gameId=${row.id}`;
-
-    /* For use during development - remove old link when new player is in usable state */
-    // const gameViewerLink = hackathonGameRoute(row.game.hackathonId, row.id);
+    const gameViewerLink = hackathonGameRoute(row.game.hackathonId, row.id);
 
     return {
       id: row.id,

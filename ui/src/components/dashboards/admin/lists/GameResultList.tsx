@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import AddButton from '~/components/common/AddButton';
 import { CommonContainer } from '~/components/common/CommonContainer';
 import GameResultDataGrid from '~/components/dataGrids/GameResultDataGrid';
@@ -23,7 +22,7 @@ const GameResultList = ({ hackathonId }: GameResultListProps) => {
           hackathonId={hackathonId}
           setIsOpen={setIsAddGameOpen}
         />
-        <GameResultDataGrid hackathonId={hackathonId} />
+        <GameResultDataGrid hackathonId={hackathonId} openLinksInNewTab />
       </CommonContainer>
     </>
   );
