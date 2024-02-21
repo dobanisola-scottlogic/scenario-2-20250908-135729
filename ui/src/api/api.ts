@@ -71,7 +71,7 @@ export const api = createApi({
         responseHandler: (response) =>
           response.status === 200 ? response.json() : response.text(),
       }),
-      invalidatesTags: ['Hackathon', 'Team', 'Game'],
+      invalidatesTags: ['Hackathon', 'Team', 'Game', 'TeamInformation'],
     }),
     getHackathon: builder.query<Hackathon | undefined, string>({
       query: (id) => ({
