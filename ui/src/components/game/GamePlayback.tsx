@@ -88,17 +88,20 @@ const GamePlayback = ({
         onMouseLeave={() => setIsHovered(false)}
         style={{
           height: height * Cell.CellHeight,
+          position: 'relative',
           width: width * Cell.CellWidth,
           margin: '0 auto',
         }}
       >
-        <GamePlaybackSpeedControl
-          gamePlaybackSpeedMultiplier={gamePlaybackSpeedMultiplier}
-          isPaused={isPaused}
-          isHovered={isHovered}
-          setGamePlaybackSpeedMultiplier={setGamePlaybackSpeedMultiplier}
-          setIsPaused={setIsPaused}
-        ></GamePlaybackSpeedControl>
+        {!gameEndState && (
+          <GamePlaybackSpeedControl
+            gamePlaybackSpeedMultiplier={gamePlaybackSpeedMultiplier}
+            isPaused={isPaused}
+            isHovered={isHovered}
+            setGamePlaybackSpeedMultiplier={setGamePlaybackSpeedMultiplier}
+            setIsPaused={setIsPaused}
+          ></GamePlaybackSpeedControl>
+        )}
 
         <GameOverPanel
           gameEndState={gameEndState}

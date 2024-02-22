@@ -26,7 +26,7 @@ const GamePlaybackSpeedControl = ({
       style={{
         backgroundColor: 'rgba(200, 200, 200, 0.95)',
         borderRadius: 15,
-        bottom: 0,
+        bottom: 40,
         left: '50%',
         marginLeft: 'auto',
         marginRight: 'auto',
