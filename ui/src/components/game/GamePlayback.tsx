@@ -57,20 +57,19 @@ const GamePlayback = ({
   }, [gamePlaybackSpeedMultiplier]);
 
   useEffect(() => {
-    // Only create a new game if one doesn't already exist:
-    if (!game) {
-      try {
-        const gameData: ParsedGameResult = ParsedGameResult.parse(gameResult);
+    try {
+      const gameData: ParsedGameResult = ParsedGameResult.parse(gameResult);
 
-        game = new HackathonPhaserGame(
-          gameData,
-          gameElementId,
-          setGameState,
-          setGameEndState
-        );
-      } catch (error) {
-        setFormError(`Error creating game: ${error as string}`);
-      }
+      game?.destroy(true);
+
+      game = new HackathonPhaserGame(
+        gameData,
+        gameElementId,
+        setGameState,
+        setGameEndState
+      );
+    } catch (error) {
+      setFormError(`Error creating game: ${error as string}`);
     }
   }, [gamePlaybackSpeedMultiplier, gameResult, isPaused, setGameState]);
 
