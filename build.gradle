@@ -59,7 +59,7 @@ subprojects {
         }
 
         ext {
-            slf4jVersion = '1.7.12'
+            slf4jVersion = '2.0.5'
             jettyVersion = '11.0.19'
         }
 
