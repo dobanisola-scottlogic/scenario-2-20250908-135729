@@ -60,6 +60,11 @@ const GamePlayback = ({
     try {
       const gameData: ParsedGameResult = ParsedGameResult.parse(gameResult);
 
+      setGameEndState(undefined);
+      setGamePlaybackSpeedMultiplier(GamePlaybackSpeedMultiplier.Times1);
+      setGameState(undefined);
+      setIsPaused(false);
+
       game?.destroy(true);
 
       game = new HackathonPhaserGame(
@@ -71,7 +76,7 @@ const GamePlayback = ({
     } catch (error) {
       setFormError(`Error creating game: ${error as string}`);
     }
-  }, [gameResult, setGameState]);
+  }, [gameResult]);
 
   return (
     <div>
