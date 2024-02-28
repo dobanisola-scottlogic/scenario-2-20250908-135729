@@ -97,8 +97,12 @@ public class TeamService {
 
     if(!StringUtils.isNullOrEmpty(newName)) {
       validateTeamName(newName);
+
       var existing = teamStore.get("name", teamUpdate.getName(), true);
-      if (existing != null && existing.getId() != id) {
+
+      // Java's UUID equality comparison is by value, taking into account the version and variant fields.
+      // Use equals() to test for value equality:
+      if (existing != null && !existing.getId().equals(id)) {
         throw new IllegalArgumentException("Team name already exists");
       }
     }

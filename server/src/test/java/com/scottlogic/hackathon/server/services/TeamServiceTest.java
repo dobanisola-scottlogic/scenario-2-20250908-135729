@@ -164,6 +164,32 @@ class TeamServiceTest {
   }
 
   @ParameterizedTest
+  @ValueSource(booleans ={true, false} )
+  void updateTeam_whenNewName_andNoTeamFoundWithSpecifiedName(boolean isExistingTeamWithName) {
+    final String teamId = "550e8400-e29b-41d4-a716-446655440000";
+
+    var team = new Team();
+    team.setName("Team1");
+    team.setPassword("P@$$w0rd123");
+
+    // Ensure the id of the entity we return from the mock store
+    // will be a different instance than the one we receive from the caller:
+    team.setId(UUID.fromString(teamId));
+
+    when(teamStore.get(anyString(), anyString(), anyBoolean())).thenReturn(isExistingTeamWithName ? team : null);
+    when(teamStore.update(any(), any())).thenReturn(team);
+
+    TeamUpdate teamUpdate = new TeamUpdate();
+    teamUpdate.setName("Team99");
+    teamUpdate.setPassword("Password");
+
+    // Ensure the id is a different instance than the one we return from the mock store:
+    var result = teamService.updateTeam(UUID.fromString(teamId), teamUpdate);
+
+    assertEquals(team, result);
+  }
+
+  @ParameterizedTest
   @NullAndEmptySource
   void updateTeam_newTeamName(String emptyPassword) {
     var team = new Team();
