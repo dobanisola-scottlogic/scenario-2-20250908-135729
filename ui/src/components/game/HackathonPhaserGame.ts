@@ -16,6 +16,7 @@ import { Collectable } from '~/interfaces/Collectable';
 import { DisqualifiedBot } from '~/interfaces/DisqualifiedBot';
 import { Player } from '~/interfaces/Player';
 import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
+import { SpawnPoint } from './SpawnPoint';
 
 export class HackathonPhaserGame extends Phaser.Game {
   private static readonly GameBackgroundGreen: string = '007600';
@@ -201,8 +202,8 @@ class HackathonPhaserScene extends Phaser.Scene {
     });
   };
 
-  addSpawnPoints = (parsedGameData: ParsedGameResult) => {
-    parsedGameData.constants.spawnPoints.forEach((spawnPoint) => {
+  addSpawnPoints = (spawnPoints: SpawnPoint[]) => {
+    spawnPoints.forEach((spawnPoint) => {
       const sprite = this.addSprite(
         spawnPoint.position.x,
         spawnPoint.position.y,
@@ -219,7 +220,7 @@ class HackathonPhaserScene extends Phaser.Scene {
   create = () => {
     this.addObstacles(this.gameData);
 
-    this.addSpawnPoints(this.gameData);
+    this.addSpawnPoints(this.gameData.constants.spawnPoints);
   };
 
   addCollectables = (collectables: Collectable[]) => {

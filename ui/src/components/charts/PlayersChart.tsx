@@ -3,44 +3,47 @@ import 'c3/c3.min.css';
 import { useEffect, useState } from 'react';
 import { ParsedGameState } from '~/components/game/ParsedGameState';
 import { TeamState } from '~/components/game/TeamState';
+import { GameTeam } from '~/interfaces/GameTeam';
 import { getTeamColour } from '~/utils/game-utils';
+import { removeMilestoneBotPrefix } from '~/utils/milestone-utils';
 
 import './chartStyles.css';
 
 interface PlayersChartProps {
   gameState: ParsedGameState;
+  teamData: GameTeam[];
 }
 
-const PlayersChart = ({ gameState }: PlayersChartProps) => {
+const PlayersChart = ({ gameState, teamData }: PlayersChartProps) => {
   const [playersChart, setPlayersChart] = useState<c3.ChartAPI>();
   const [highestPlayerCount, setHighestPlayerCount] = useState(0);
 
   const currentPhase = gameState.phase;
 
+  const getTeamName = (team: TeamState) => {
+    const teamInfo = teamData.find((t) => t.botId === team.owner);
+    return removeMilestoneBotPrefix(teamInfo?.teamName ?? '');
+  };
+
   const teams = gameState?.teams ?? [];
-  const teamIndexes = teams.map((team) => {
-    return [`${team.teamIndex}`, 0];
-  });
+  const teamIndexes: (string | number)[][] = teams.map((team) => [
+    getTeamName(team),
+  ]);
 
   // Counts will be appended to each index every phase change
   const [gamePlayerCounts, setGamePlayerCounts] = useState(teamIndexes);
 
   const initialChartData = {
-    colors: teams.reduce(
-      (entry, team) => ({
-        ...entry,
-        [team.teamIndex]: getTeamColour(team.teamIndex),
-      }),
-      {}
-    ),
+    colors: teams.reduce((entry, team) => {
+      return { ...entry, [getTeamName(team)]: getTeamColour(team.teamIndex) };
+    }, {}),
     columns: [
       ['x', ...Array.from(Array(currentPhase).keys())],
       ...teamIndexes,
     ] as [string, ...c3.Primitive[]][],
-    xs: teams.reduce(
-      (entry, team) => ({ ...entry, [team.teamIndex]: 'x' }),
-      {}
-    ),
+    xs: teams.reduce((entry, team) => {
+      return { ...entry, [getTeamName(team)]: 'x' };
+    }, {}),
   };
 
   const chartConfiguration: c3.ChartConfiguration = {
@@ -82,10 +85,16 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
     data: initialChartData,
     legend: { hide: true },
     point: { r: 1.5 },
+    tooltip: {
+      format: {
+        title: (x) => `Turn ${x?.toString()}`,
+        value: (value) => value?.toString(),
+      },
+    },
     transition: { duration: 400 },
   };
 
-  const getHighestPlayerCount = (teams: TeamState[]) => {
+  const getHighestPlayerCount = () => {
     const max = teams.reduce((prev, current) => {
       return prev && prev.playerCount > current.playerCount ? prev : current;
     });
@@ -121,7 +130,10 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
       ] as [string, ...c3.Primitive[]][],
     });
 
-    const newHighestPlayerCount = getHighestPlayerCount(teams);
+    // Prevents graphical issues on replay
+    playersChart?.flush();
+
+    const newHighestPlayerCount = getHighestPlayerCount();
 
     // Set grid lines to middle and top of graph
     const quotient = Math.floor(highestPlayerCount / 2);
@@ -137,7 +149,7 @@ const PlayersChart = ({ gameState }: PlayersChartProps) => {
     setHighestPlayerCount(newHighestPlayerCount);
   }, [playersChart, currentPhase]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <svg id='players-line-chart' height='100%' width='100%' />;
+  return <div id='players-line-chart' />;
 };
 
 export default PlayersChart;

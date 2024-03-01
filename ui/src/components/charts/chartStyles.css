@@ -2,6 +2,10 @@
   --chart-grid-lines-colour: rgba(69, 69, 69, 0.5);
 }
 
+.c3-event-rect {
+  cursor: default !important; /* Remove for HAC-328 if chart nodes can be clicked to replay */
+}
+
 .c3-grid line {
   stroke: var(--chart-grid-lines-colour);
   stroke-dasharray: 0;

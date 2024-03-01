@@ -101,8 +101,16 @@ const GameViewer = () => {
                 />
               </Stack>
 
-              <Stack direction='row' sx={{ mt: 2, width: '100%' }}>
-                {gameState && <PlayersChart gameState={gameState} />}
+              <Stack
+                direction='row'
+                sx={{ height: '200px', mt: 2, width: '100%' }}
+              >
+                {gameState && (
+                  <PlayersChart
+                    gameState={gameState}
+                    teamData={hackathonGameData.game.teams}
+                  />
+                )}
               </Stack>
             </>
           )}
