@@ -27,7 +27,12 @@ public class AdminUser {
   public static AdminUser getAdmin() {
     if (admin == null) {
       adminId = UUID.randomUUID();
-      admin = new AdminUser(adminId, "secret");
+      // Read admin password from environment variable, fallback to default for development
+      String adminPassword = System.getenv("ADMIN_PASSWORD");
+      if (adminPassword == null || adminPassword.trim().isEmpty()) {
+        adminPassword = "secret"; // Development fallback - should be changed in production
+      }
+      admin = new AdminUser(adminId, adminPassword);
     }
     return admin;
   }

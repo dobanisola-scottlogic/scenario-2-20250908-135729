@@ -103,7 +103,7 @@ Hackathon Game Server~~
 
 ### 3 - Define new Hackathon in Game Server Admin
 
-Point your browser at <http://some_aws_domain/application> and login with username 'admin' and password 'secret'.
+Point your browser at <http://some_aws_domain/application> and login with the admin username and password configured for your deployment.
 
 ![define a new hackathon](images/definehackathon.png)
 

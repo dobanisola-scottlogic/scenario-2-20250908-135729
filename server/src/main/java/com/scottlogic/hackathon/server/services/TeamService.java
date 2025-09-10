@@ -127,12 +127,36 @@ public class TeamService {
     Preconditions.checkArgument(
       !StringUtils.isNullOrBlank(name),
       "Team name cannot be blank");
+    
+    // Prevent potential XSS and injection attacks by restricting characters
+    Preconditions.checkArgument(
+      name.matches("^[a-zA-Z0-9\\s\\-_]+$"),
+      "Team name can only contain letters, numbers, spaces, hyphens, and underscores");
+      
+    Preconditions.checkArgument(
+      name.length() <= 50,
+      "Team name cannot exceed 50 characters");
   }
 
   private void validatePassword(String password) {
     Preconditions.checkArgument(
       !StringUtils.isNullOrEmpty(password),
       "Team password cannot be empty"
+    );
+    
+    // Enforce minimum password strength for better security
+    Preconditions.checkArgument(
+      password.length() >= 8,
+      "Team password must be at least 8 characters long"
+    );
+    
+    // Check for at least one number and one letter for basic strength
+    boolean hasLetter = password.chars().anyMatch(Character::isLetter);
+    boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+    
+    Preconditions.checkArgument(
+      hasLetter && hasDigit,
+      "Team password must contain at least one letter and one number"
     );
   }
 

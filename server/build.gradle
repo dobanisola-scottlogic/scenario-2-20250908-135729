@@ -157,12 +157,13 @@ if(project.hasProperty('database')) {
 run {
     args "server", "$defaultConfigFile"
 
-    // Uncomment and populate these lines to enable team info requests
-    // environment 'AWS_REGION', 'eu-west-2'
-    // environment 'AWS_ACCESS_KEY_ID', 'access-key'
-    // environment 'AWS_SECRET_ACCESS_KEY', 'secret-key'
-    // environment 'WORKSPACE', 'workspace'
-    // environment 'CONTESTANT_PASSWORD', 'password'
+    // Configure environment variables for team info requests as needed:
+    // environment 'AWS_REGION', 'your-aws-region'
+    // environment 'AWS_ACCESS_KEY_ID', 'your-access-key-id' 
+    // environment 'AWS_SECRET_ACCESS_KEY', 'your-secret-access-key'
+    // environment 'WORKSPACE', 'your-workspace'
+    // environment 'CONTESTANT_PASSWORD', 'your-contestant-password'
+    // environment 'ADMIN_PASSWORD', 'your-secure-admin-password'
 }
 
 task('dockerContext', type: Sync) {

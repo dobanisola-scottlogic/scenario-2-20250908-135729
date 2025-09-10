@@ -24,12 +24,27 @@ public class Authenticator implements io.dropwizard.auth.Authenticator<BasicCred
     String adminPassword = adminService.getAdmin().getPassword();
 
     if ("admin".equals(credentials.getUsername())
-        && adminPassword.equals(credentials.getPassword())) {
+        && constantTimeEquals(adminPassword, credentials.getPassword())) {
       authenticatedUser = Optional.of(new User(credentials.getUsername(), User.Role.ADMIN));
     } else if (teamService.authenticate(credentials)) {
       authenticatedUser = Optional.of(new User(credentials.getUsername(), User.Role.TEAM));
     }
 
     return authenticatedUser;
+  }
+
+  // Constant-time string comparison to prevent timing attacks
+  private boolean constantTimeEquals(String a, String b) {
+    if (a == null || b == null) {
+      return a == b;
+    }
+    if (a.length() != b.length()) {
+      return false;
+    }
+    int result = 0;
+    for (int i = 0; i < a.length(); i++) {
+      result |= a.charAt(i) ^ b.charAt(i);
+    }
+    return result == 0;
   }
 }

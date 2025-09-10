@@ -78,6 +78,7 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
                 configuration, environment, hibernateBundle, new BotThreadFactory(sysOut)));
 
     setupCrossOriginHeaders(environment);
+    setupSecurityHeaders(environment);
 
     final Authenticator authenticator =
         new UnitOfWorkAwareProxyFactory(hibernateBundle)
@@ -124,13 +125,21 @@ public class HackathonApplication extends Application<HackathonConfiguration> {
 
         if ("dev".equals(System.getenv("ENVIRONMENT"))) {
             filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
+            // Development CORS settings - more permissive for local development
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "http://localhost:3000,http://localhost:8080");
         } else {
             filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, environment.getApplicationContext().getContextPath() + "*");
+            // Production CORS settings - restrictive for security
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, System.getenv("ALLOWED_ORIGINS") != null ? System.getenv("ALLOWED_ORIGINS") : "https://yourdomain.com");
         }
 
         filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,PUT,DELETE,HEAD,OPTIONS,PATCH");
-        filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-        filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "*");
+        filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Content-Type,Authorization,X-Requested-With");
         filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
     }
+
+  private void setupSecurityHeaders(final Environment environment) {
+    // Add security headers to prevent XSS, clickjacking, and other attacks
+    environment.servlets().addFilter("SecurityHeadersFilter", new SecurityHeadersFilter()).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+  }
 }

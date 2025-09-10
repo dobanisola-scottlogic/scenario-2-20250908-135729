@@ -58,7 +58,23 @@ public class Team {
   }
 
   public boolean authenticate(final BasicCredentials credentials) {
-    return credentials.getUsername().equals(name) && credentials.getPassword().equals(password);
+    // Use constant-time comparison to prevent timing attacks
+    return credentials.getUsername().equals(name) && constantTimeEquals(credentials.getPassword(), password);
+  }
+
+  // Constant-time string comparison to prevent timing attacks
+  private boolean constantTimeEquals(String a, String b) {
+    if (a == null || b == null) {
+      return a == b;
+    }
+    if (a.length() != b.length()) {
+      return false;
+    }
+    int result = 0;
+    for (int i = 0; i < a.length(); i++) {
+      result |= a.charAt(i) ^ b.charAt(i);
+    }
+    return result == 0;
   }
 
   public String getHackathonId() {
