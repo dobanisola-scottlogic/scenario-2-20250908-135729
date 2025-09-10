@@ -34,10 +34,21 @@ The application automatically adds the following security headers:
 - `Referrer-Policy: strict-origin-when-cross-origin` - Controls referrer information
 - `Permissions-Policy` - Restricts access to sensitive browser features
 
-### 4. Authentication
+### 4. Authentication Security
 - Uses HTTP Basic Authentication
 - Supports both admin and team authentication
+- **New**: Constant-time password comparison to prevent timing attacks
 - **Recommendation**: Deploy behind HTTPS to protect credentials in transit
+
+### 5. Input Validation
+- **Team Names**: Restricted to alphanumeric characters, spaces, hyphens, and underscores (max 50 chars)
+- **Passwords**: Minimum 8 characters, must contain at least one letter and one number
+- **SQL Injection Protection**: Uses parameterized queries throughout
+
+### 6. Database Security
+- All database operations use parameterized queries
+- No direct SQL string concatenation
+- Hibernate ORM provides additional protection layers
 
 ## Deployment Security Checklist
 
@@ -49,6 +60,8 @@ The application automatically adds the following security headers:
 - [ ] Review and configure firewall rules to restrict access
 - [ ] Regularly update dependencies to patch security vulnerabilities
 - [ ] Monitor application logs for suspicious activity
+- [ ] Test authentication and authorization controls
+- [ ] Verify security headers are properly set
 
 ### Password Requirements
 
@@ -58,20 +71,42 @@ For the admin password, use:
 - Avoid common passwords or dictionary words
 - Consider using a password manager to generate and store the password
 
+For team passwords (enforced by validation):
+- Minimum 8 characters
+- At least one letter and one number
+
 ### Network Security
 
 - Deploy behind a reverse proxy (nginx, Apache) with HTTPS termination
 - Use strong TLS configuration (TLS 1.2 minimum, prefer TLS 1.3)
 - Implement rate limiting to prevent brute force attacks
 - Consider IP whitelisting for admin access
+- Configure appropriate firewall rules
+
+## Security Vulnerabilities Fixed
+
+### Critical Issues Resolved:
+1. **Hardcoded Admin Password**: Now configurable via environment variable
+2. **Insecure CORS**: Restricted to specific origins in production
+3. **Timing Attacks**: Constant-time password comparison implemented
+4. **Missing Security Headers**: Comprehensive security headers added
+5. **Weak Input Validation**: Enhanced validation for team names and passwords
+
+### Additional Protections Added:
+- XSS prevention through Content Security Policy
+- Clickjacking prevention through X-Frame-Options
+- MIME sniffing prevention
+- Input sanitization and validation
+- Protection against common web vulnerabilities
 
 ## Security Updates
 
-This application includes basic security measures. For production use:
+This application includes comprehensive security measures for a hackathon environment. For production use:
 - Regularly update all dependencies
 - Monitor security advisories for used libraries
 - Implement proper logging and monitoring
 - Consider additional security measures based on your threat model
+- Perform regular security assessments
 
 ## Reporting Security Issues
 
