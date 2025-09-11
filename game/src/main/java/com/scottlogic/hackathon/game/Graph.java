@@ -36,7 +36,7 @@ class Graph {
           Objects.requireNonNull(from),
           Objects.requireNonNull(to),
           new MapGraph(Objects.requireNonNull(map), Objects.requireNonNull(avoid)),
-          map::distance)
+          pos -> map.distance(pos, to))
           .map(
               route -> new RouteImpl(
                   map,
